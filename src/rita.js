@@ -4,7 +4,7 @@
  */
 (function(window, undefined) {
 	
-	var _VERSION_ = '0.16';
+	var _VERSION_ = '0.17';
 	
     /**
      * Simple type-checking functions
