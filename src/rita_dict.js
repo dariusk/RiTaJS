@@ -12056,7 +12056,10 @@ RiTa_DICTIONARY = {
 'foundry': ['f-aw1-n-d r-iy','nn'],
 'fountain': ['f-aw1-n-t ax-n','nn'],
 'fountains': ['f-aw1-n-t ax-n-z','nns'],
+<<<<<<< HEAD
 'four': ['f-ao-r','cd'],
+=======
+>>>>>>> 333adb8c05f2add16a5abb95e4aada7b2c2f4a8e
 'fourfold': ['f-ao1-r-f ow1-l-d','rb jj'],
 'fours': ['f-ao1-r-z','nns'],
 'foursome': ['f-ao1-r-s ax-m','nn'],
@@ -20133,7 +20136,10 @@ RiTa_DICTIONARY = {
 'oncologist': ['aa-ng-k aa1-l ax-jh ih-s-t','nn'],
 'oncology': ['aa-ng-k aa1-l ax-jh iy','nn'],
 'oncoming': ['ao1-n-k ah1-m ih-ng','jj'],
+<<<<<<< HEAD
 'one': ['w-ah1-n','cd'],
+=======
+>>>>>>> 333adb8c05f2add16a5abb95e4aada7b2c2f4a8e
 'oneness': ['w-ah1-n n-ax-s','nn'],
 'onerous': ['ow1-n er ax-s','jj'],
 'ones': ['w-ah1-n-z','nns'],
@@ -30252,7 +30258,10 @@ RiTa_DICTIONARY = {
 'threateningly': ['th-r-eh1-t ax-n ih-ng l-iy','rb'],
 'threatens': ['th-r-eh1-t ax-n-z','vbz'],
 'threats': ['th-r-eh1-t-s','nns vbz'],
+<<<<<<< HEAD
 'three': ['th-r-iy','cd'],
+=======
+>>>>>>> 333adb8c05f2add16a5abb95e4aada7b2c2f4a8e
 'threefold': ['th-r-iy1-f ow1-l-d','jj rb'],
 'threemonth': ['th-r-iy1-m aa-n-th','jj'],
 'threes': ['th-r-iy1-z','nns'],
@@ -31218,7 +31227,10 @@ RiTa_DICTIONARY = {
 'twitch': ['t-w-ih1-ch','nn vb'],
 'twitched': ['t-w-ih1-ch-t','vbd'],
 'twitching': ['t-w-ih1-ch ih-ng','vbg'],
+<<<<<<< HEAD
 'two': ['t-uw','cd'],
+=======
+>>>>>>> 333adb8c05f2add16a5abb95e4aada7b2c2f4a8e
 'twofold': ['t-uw1-f ow1-l-d','jj rb'],
 'twos': ['t-uw1-z','nns'],
 'twosome': ['t-uw1-s ax-m','nn'],
