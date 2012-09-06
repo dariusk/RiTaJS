@@ -1,4 +1,4 @@
-RiTa_DICTIONARY = {
+_RiTa_DICT={
 'a': ['ey1','dt vb vbn nnp fw jj ls nn'],
 'aback': ['ax-b ae1-k','rb'],
 'abalone': ['ae1-b ax-l ow1-n iy','nn'],
@@ -9257,7 +9257,7 @@ RiTa_DICTIONARY = {
 'drunken': ['d-r-ah1-ng-k ax-n','jj'],
 'drunkenness': ['d-r-ah1-ng-k ax-n n-ax-s','nn'],
 'drunks': ['d-r-ah1-ng-k-s','nns'],
-'dry': ['d-r-ay1','jj rb vb vbp'],
+'dry': ['d-r-ay1','jj vb vbp'],
 'dryer': ['d-r-ay1 er','nn'],
 'drying': ['d-r-ay1 ih-ng','vbg nn'],
 'dryly': ['d-r-ay1-l iy','rb'],
@@ -11491,7 +11491,7 @@ RiTa_DICTIONARY = {
 'firsts': ['f-er1-s-t-s','nns'],
 'fiscal': ['f-ih1-s k-ax-l','jj in nn'],
 'fiscally': ['f-ih1-s k-ax-l iy','rb'],
-'fish': ['f-ih1-sh','nn rb vb nns'],
+'fish': ['f-ih1-sh','nn vb nns'],
 'fishbowl': ['f-ih1-sh b-ow1-l','nn'],
 'fished': ['f-ih1-sh-t','vbn'],
 'fisheries': ['f-ih1-sh er iy-z','nns'],
@@ -32775,7 +32775,7 @@ RiTa_DICTIONARY = {
 'warts': ['w-ao1-r-t-s','nns'],
 'wary': ['w-eh1-r iy','jj'],
 'was': ['w-aa1-z','vbd :'],
-'wash': ['w-aa1-sh','nn vbp jj vb'],
+'wash': ['w-aa1-sh','nn vbp vb'],
 'washable': ['w-aa1-sh ax-b ax-l','jj'],
 'washbasin': ['w-aa1-sh b-ey1-s ax-n','nn'],
 'washboard': ['w-aa1-sh b-ao1-r-d','nn'],
