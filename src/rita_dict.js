@@ -19541,8 +19541,6 @@ _RiTa_DICT={
 'nifty': ['n-ih1-f t-iy','jj'],
 'niger': ['n-ay1-jh er','nn'],
 'niggardly': ['n-ih1-g er-d l-iy','jj'],
-'nigger': ['n-ih1-g er','nn'],
-'niggers': ['n-ih1-g er-z','nns'],
 'nigh': ['n-ay1','rb'],
 'night': ['n-ay1-t','nn rb'],
 'nightclub': ['n-ay1-t k-l-ah1-b','nn'],

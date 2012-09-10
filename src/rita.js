@@ -1,6 +1,6 @@
 
 /*
- * $Id: rita.js,v 1.192 2012/09/05 03:53:34 dev Exp $ 
+ * $Id: rita.js,v 1.195 2012/09/10 13:20:59 dev Exp $ 
  */
 
 (function(window, undefined) {
@@ -163,7 +163,7 @@
             if (!tn) return {};
 
             var nexts = tn.childNodes();
-            for ( var i = 0; i < nexts.length; i++) {
+            for (var i = 0; i < nexts.length; i++) {
                 var node = nexts[i];
                 if (node)  {
                     probs[node.token] = node.probability();
@@ -2242,17 +2242,6 @@
         toString : function() {
             
             return "RiString["+this._text+"]";
-        },
-
-        /**
-         * Returns true if and only if this string contains the specified sequence of char values.
-         * 
-         * @param {string} text text to be checked
-         * @returns {boolean}
-         */
-        containsWord : function(text) {
-            
-            return this.indexOf(text) > -1; 
         },
 
         /**
@@ -11222,6 +11211,6 @@
         module.exports['RiTa'] = RiTa;
     }
     
-    RiTa.p5Compatible(0); // TODO: pick a default? false...
+    RiTa.p5Compatible(hasProcessing); // TODO: whats the default?
 
 })(typeof window !== 'undefined' ? window : null);
