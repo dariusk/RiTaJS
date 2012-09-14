@@ -1,6 +1,6 @@
 
 /*
- * $Id: rita.js,v 1.195 2012/09/10 13:20:59 dev Exp $ 
+ * $Id: rita.js,v 1.196 2012/09/14 16:55:50 dev Exp $ 
  */
 
 (function(window, undefined) {
@@ -1523,11 +1523,11 @@
             
             return E;
         }
-
     }
     
-    Phones = {
-        
+    
+    var Phones =        
+    {
           consonants: [ 'b', 'ch', 'd', 'dh', 'f', 'g', 'hh', 'jh', 'k', 'l', 'm', 'n', 
                         'ng', 'p', 'r', 's', 'sh', 't', 'th', 'v', 'w', 'y', 'z', 'zh' ],
 
@@ -6479,7 +6479,6 @@
                 RiText.setDefaultAlignment = RiText.defaultAlignment;
                 RiText.setCallbackTimer = RiText.timer;
                 
-                console.log(hasProcessing);
                 if (typeof window != 'undefined' && !hasProcessing) {
 
                     // add some common P5 global methods (sorry, namespace)

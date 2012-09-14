@@ -19541,8 +19541,6 @@ _RiTa_DICT={
 'nifty': ['n-ih1-f t-iy','jj'],
 'niger': ['n-ay1-jh er','nn'],
 'niggardly': ['n-ih1-g er-d l-iy','jj'],
-'nigger': ['n-ih1-g er','nn'],
-'niggers': ['n-ih1-g er-z','nns'],
 'nigh': ['n-ay1','rb'],
 'night': ['n-ay1-t','nn rb'],
 'nightclub': ['n-ay1-t k-l-ah1-b','nn'],
@@ -46725,7 +46723,7 @@ _RiTa_LTS=[
 ];
 
 /*
- * $Id: rita.js,v 1.186 2012/09/02 13:41:41 dev Exp $ 
+ * $Id: rita.js,v 1.195 2012/09/10 13:20:59 dev Exp $ 
  */
 
 (function(window, undefined) {
@@ -46733,7 +46731,7 @@ _RiTa_LTS=[
 	var _VERSION_ = '0.20';
 	
     /**  @private Simple type-checking functions */ 
-    Type = {
+    var Type = {
         
         N : 'number', S : 'string', O : 'object', A :'array', B : 'boolean', R : 'regexp', F : 'function',
         
@@ -46888,7 +46886,7 @@ _RiTa_LTS=[
             if (!tn) return {};
 
             var nexts = tn.childNodes();
-            for ( var i = 0; i < nexts.length; i++) {
+            for (var i = 0; i < nexts.length; i++) {
                 var node = nexts[i];
                 if (node)  {
                     probs[node.token] = node.probability();
@@ -47248,7 +47246,7 @@ _RiTa_LTS=[
         }
         <pre>
      */   
-    RiTaEvent = makeClass();
+    var RiTaEvent = makeClass();
     
     RiTaEvent._callbacksDisabled = false;
     
@@ -47353,7 +47351,7 @@ _RiTa_LTS=[
         var rhymes = lex.getSimpleRhymes("cat");
         // etc.
      */
-    RiLexicon = makeClass();
+    var RiLexicon = makeClass();
 
     
     // ////////////////////////////////////////////////////////////
@@ -47666,8 +47664,8 @@ _RiTa_LTS=[
         },
         
         /**
-         * Returns the array of all words in the lexicon or those matching a specific regex. If specified,
-         * the order of the result array is randomized before return.
+         * Returns the array of all words in the lexicon or those matching a specific regex. 
+         * If specified, the order of the result array is randomized before return.
          *  
          * @param {regex} regex (string or object) pattern to match (optional)
          * @param {boolean} randomize randomizes the order (default=false)
@@ -48281,7 +48279,7 @@ _RiTa_LTS=[
      * @class The basic text container object, implementing a variety of 
      * additional functionality atop the javascript string object
      */
-    RiString = makeClass();
+    var RiString = makeClass();
 
     
     /**
@@ -48737,12 +48735,11 @@ _RiTa_LTS=[
          *        index 0
          * @param {number} end (Optional) Where to end the extraction. If omitted, slice() selects all
          *        characters from the begin position to the end of the string
-         * @returns {object} this RiString
+         * @returns {String} 
          */
         slice : function(begin, end) {
             
-            var res = this._text.slice(begin, end) || E;
-            return this.text(res);  
+            return this._text.slice(begin, end) || E;  
         },
 
         /**
@@ -48822,6 +48819,7 @@ _RiTa_LTS=[
 
 				var len = regex.length, idx = ret.lastIndexOf(regex);
 				if (idx >= 0) {
+				    
 					this._text = ret.substring(0, idx) + replaceWith + ret.substring(idx + len);
 				}	
 			} 
@@ -48910,12 +48908,12 @@ _RiTa_LTS=[
          *        index 0
          * @param {number} length (optional) The index where to stop the extraction. If omitted, it extracts the
          *        rest of the string
-         * @returns {object} this RiString
+         * @returns {String}
          */
         substr : function(start, length) {
             
-            var res = this._text.substr(start, length);
-            return this.text(res);
+            return this._text.substr(start, length);
+            // return this.text(res);
         },
 
         /**
@@ -48926,11 +48924,12 @@ _RiTa_LTS=[
          *        index 0
          * @param {number} to (optional) The index where to stop the extraction. If omitted, it extracts the
          *        rest of the string
-         * @returns {object} this RiString
+         * @returns {String} 
          */
         substring : function(from, to) {
 
-            return this.text(this._text.substring(from, to));
+            // return this.text(this._text.substring(from, to));
+            return this._text.substring(from, to);
         },
 
         /**
@@ -48966,17 +48965,6 @@ _RiTa_LTS=[
         toString : function() {
             
             return "RiString["+this._text+"]";
-        },
-
-        /**
-         * Returns true if and only if this string contains the specified sequence of char values.
-         * 
-         * @param {string} text text to be checked
-         * @returns {boolean}
-         */
-        containsWord : function(text) {
-            
-            return this.indexOf(text) > -1; 
         },
 
         /**
@@ -49113,7 +49101,7 @@ _RiTa_LTS=[
      * 
      * @author dhowe 
      */
-    RiGrammar = makeClass();
+    var RiGrammar = makeClass();
     
     RiGrammar.START_RULE = "<start>";
     RiGrammar.OPEN_RULE_CHAR = "<";
@@ -49134,7 +49122,7 @@ _RiTa_LTS=[
             RiGrammar._execDisabled = disableExec;
         }
         return RiGrammar._execDisabled;
-    }
+    }    
 
     RiGrammar.prototype = {
 
@@ -49932,7 +49920,7 @@ _RiTa_LTS=[
      * @property {number} x The x position
      * @property {number} y The y position
      */    
-    RiText = makeClass();
+    var RiText = makeClass();
         
     //////////////////////////////////////////////////////////////////////
     //////// RiText statics
@@ -53184,6 +53172,8 @@ _RiTa_LTS=[
          */
         p5Compatible : function(value) {
             
+            //console.log('p5Compatible('+value+'['+window+'])');
+            
             if (!arguments.callee.setupAndDraw) {
                 
                 arguments.callee.setupAndDraw = function() {
@@ -53212,10 +53202,9 @@ _RiTa_LTS=[
                 RiText.setDefaultAlignment = RiText.defaultAlignment;
                 RiText.setCallbackTimer = RiText.timer;
                 
-                if (!undef(window) && !hasProcessing) {
+                if (typeof window != 'undefined' && !hasProcessing) {
 
                     // add some common P5 global methods (sorry, namespace)
-
                     if (!window.line) window.line = RiText.line;
                     if (!window.size) window.size= RiText.size;
                     if (!window.width) window.width = RiText.width; // want the var
@@ -53247,7 +53236,7 @@ _RiTa_LTS=[
                 delete RiText.setDefaultAlignment;
                 delete RiText.setCallbackTimer;
                 
-                if (!hasProcessing)  {
+                if (typeof window != 'undefined' && window && !hasProcessing)  {
                     
                     // are these checks needed?
                     if (window.line === RiText.line) delete window.line;
@@ -53260,8 +53249,8 @@ _RiTa_LTS=[
                     if (window.RIGHT === RiText.RIGHT) delete window.RIGHT;
                     if (window.LEFT === RiText.LEFT) delete window.LEFT;
                     if (window.CENTER === RiText.CENTER) delete window.CENTER;
-                    
-                    if (window.onload == arguments.callee.setupAndDraw)
+
+                    if (window.onload && (window.onload == arguments.callee.setupAndDraw))
                         delete window.onload;
                 }
             }
@@ -57875,6 +57864,8 @@ _RiTa_LTS=[
 
     var hasProcessing = (typeof Processing !== 'undefined');
     
+    // console.log('hasProcessing='+hasProcessing);
+    
     if (hasProcessing) {
 
         Processing.registerLibrary("RiTa", {
@@ -57913,22 +57904,35 @@ _RiTa_LTS=[
         }
     }
     
-    console && console.log("[INFO] RiTaJS.version ["+RiTa.VERSION+RiTa.PHASE+"]");
+    if (!RiTa.SILENT)
+        console && console.log("[INFO] RiTaJS.version ["+RiTa.VERSION+RiTa.PHASE+"]");
     
     /////////////////////////////////////////////////////////////////////////////////////////
     // Core RiTa objects (in global namespace)
     /////////////////////////////////////////////////////////////////////////////////////////
 
-    if (window) {
+    if (window) { // for browser
+        
+        window['RiText'] = RiText;
         window['RiString'] = RiString;
         window['RiLexicon'] = RiLexicon;
         window['RiGrammar'] = RiGrammar;
         window['RiMarkov'] = RiMarkov;
-        window['RiText'] = RiText;
+        window['RiTaEvent'] = RiTaEvent;
         window['RiTa'] = RiTa;
     }
     
-    RiTa.p5Compatible(true); // TODO: pick a default? false...
+    if (typeof module != 'undefined' && module.exports) { // for node
+        
+        //module.exports['RiText'] = RiText; // not in Node
+        module.exports['RiString'] = RiString;
+        module.exports['RiLexicon'] = RiLexicon;
+        module.exports['RiGrammar'] = RiGrammar;
+        module.exports['RiMarkov'] = RiMarkov;
+        module.exports['RiTaEvent'] = RiTaEvent;
+        module.exports['RiTa'] = RiTa;
+    }
+    
+    RiTa.p5Compatible(hasProcessing); // TODO: whats the default?
 
 })(typeof window !== 'undefined' ? window : null);
-
