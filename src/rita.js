@@ -5,8 +5,8 @@
 
 (function(window, undefined) {
 	
-	var _VERSION_ = '0.20';
-	
+	var _VERSION_ = '0.21';
+
     /**  @private Simple type-checking functions */ 
     var Type = {
         
@@ -587,13 +587,13 @@
                 catch(err) {
                     
                     RiTaEvent._callbacksDisabled = true;
-                    console.warn("RiTaEvent: error calling 'onRiTaEvent' "+err);
+                    warn("RiTaEvent: error calling 'onRiTaEvent' "+err);
                     throw err;
                 }                
             }
             else if (!RiTaEvent._callbacksDisabled) {
                 
-                console.warn("RiTaEvent: no 'onRiTaEvent' callback found");
+                warn("RiTaEvent: no 'onRiTaEvent' callback found");
                 RiTaEvent._callbacksDisabled = true;
             }
             
@@ -699,7 +699,7 @@
             
                if (typeof _RiTa_DICT != 'undefined') 
                {
-                 if (!RiTa.SILENT && console) console.log('[RiTa] Loaded lexicon data...'); 
+                 log('[RiTa] Loaded lexicon data...'); 
                  
                  RiLexicon.data = {}; // TODO: test perf. of this
                  for (var word in _RiTa_DICT) 
@@ -1755,10 +1755,9 @@
                 
                 if (!raw) {
                     
-                    if (!RiTa.SILENT && console) {
-                        if (words[i].match(/[a-zA-Z]+/))
-                            log("[RiTa] Used LTS-rules for '"+words[i]+"'");
-                    }
+                    if (words[i].match(/[a-zA-Z]+/))
+                        log("[RiTa] Used LTS-rules for '"+words[i]+"'");
+                    
                       
                     lts = lts || LetterToSound();
                     raw = RiString._syllabify(lts.getPhones(words[i]));
@@ -2621,16 +2620,6 @@
         },
         
         /**
-         * Expands a grammar from its '<start>' symbol
-         * @returns {string}
-         */
-        expand : function() {
-            
-            return this.expandFrom(RiGrammar.START_RULE);
-            
-        },
-        
-        /**
          * Expands the grammar after replacing an instance of the non-terminal
          * 'symbol' with the String in 'literal'.
          * <P>
@@ -2675,22 +2664,44 @@
          */
         _handleExec : function(input) { // TODO: private
                        
+            //console.log("handleExec: "+input);
+            
             if (!input || !input.length) return E;
             
             // strip backticks and eval
             var exec = input.replace(RiGrammar.STRIP_TICKS, "$1");
             
             try {
-                //log("handleExec: "+exec);
-                input = eval(exec);
+                input = RiTa._eval(exec);
             }
             catch (e) {
                 
-                warn("Error evaluating: "+input+" (backticks ignored)\n  "+e.message);
+                warn("RiGrammar._handleExec failed on '"+input+"'\n  -> "+e.message);
+                
+                // if (is(exports, O)) { // we are running in node
+                	// console.log("found node! "+typeof module.vm);
+                	// module.vm.runInThisContext(exec);
+                	// //eval("function adj(){return 56;}") 
+                // }
             }
             
             return input;
         },
+        
+                
+        /**
+         * Expands a grammar from its '<start>' symbol
+         * @param {string} One or more function to be added to the current context BEFORE 
+         * executing the expand() call. Useful for defining functions referenced in back-ticked rules.
+         * @returns {string}
+         */
+        expand : function(funs) {
+
+			funs && RiTa._eval(funs);
+            
+            return this.expandFrom(RiGrammar.START_RULE);
+        }, 
+        // TODO: reconsider
         
         /**
          * Expands the grammar, starting from the given symbol.
@@ -2702,6 +2713,8 @@
          */
         expandFrom : function(rule) {
             
+            //console.log("no-exec; "+this._execDisabled);
+            
             if (!this.hasRule(rule)) {
                 warn("Rule not found: " + rule + "\nRules: ");
                 (!RiTa.SILENT) && this.print();
@@ -2711,16 +2724,14 @@
             var maxIterations = 1000;
             while (++iterations < maxIterations) {
                 
-                //log("expand: '"+rule +"'");
                 var next = this._expandRule(rule);
                 if (!next) {
 
-                    //  we're done, check for back-ticked strings to eval?
-
-                    (!this._execDisabled) && (rule=rule.replace(RiGrammar.EXEC_PATT, this._handleExec));                  
-                                        
+                    //  we're done, check for back-ticked strings to eval
+                    (!this._execDisabled && (rule = rule.replace(RiGrammar.EXEC_PATT, this._handleExec)));
+					             
                     break;
-                }
+                } 
                 rule = next;
             }
     
@@ -11007,6 +11018,7 @@
 
     function err(msg) {
         
+        //console.log("err(msg) :: "+RiTa.SILENT);
         (!RiTa.SILENT) && console && console.trace(this);
         
         throw Error("[RiTa] " + msg);
@@ -11188,6 +11200,8 @@
     // Core RiTa objects (in global namespace)
     /////////////////////////////////////////////////////////////////////////////////////////
 
+	RiTa._eval = eval;
+	
     if (window) { // for browser
         
         window['RiText'] = RiText;
@@ -11208,8 +11222,12 @@
         module.exports['RiMarkov'] = RiMarkov;
         module.exports['RiTaEvent'] = RiTaEvent;
         module.exports['RiTa'] = RiTa;
+        
+		module.vm = require("vm"); // TODO: reconsider, use deps?
+		module.vm && (RiTa._eval = module.vm.runInThisContext);
     }
     
+
     RiTa.p5Compatible(hasProcessing); // TODO: whats the default?
 
 })(typeof window !== 'undefined' ? window : null);
