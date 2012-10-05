@@ -5,7 +5,7 @@
 
 (function(window, undefined) {
 	
-	var _VERSION_ = '0.21';
+	var _VERSION_ = '0.22';
 
     /**  @private Simple type-checking functions */ 
     var Type = {
