@@ -46958,7 +46958,7 @@ _RiTa_LTS=[
             else { // fill the end
     
                 var hash = this.getProbabilities(pre);
-                var keys = Object.keys(hash);
+                var keys = okeys(hash);
                 return keys.sort(function(a, b) {
     
                     return hash[b] - hash[a]
@@ -47118,7 +47118,7 @@ _RiTa_LTS=[
          * Loads a text string into the model after tokenizing it.
          * 
          * @param {string} text the string
-         * @param {number} multiplier Weighting for text (optional, default=1) <br>
+         * @param {number} multiplier Weighting for text (optional, default=1) 
          * @param {string | regex} a regular expression to be used for tokenizing
          *   (optional, if not supplied, uses RiTa.tokenize())
          * @see RiTa.tokenize
@@ -47135,7 +47135,7 @@ _RiTa_LTS=[
          * construction of the model. 
          * 
          * @param {array} tokens the strings with which to load the model 
-         * @param {number} multiplier Weighting for tokens in the array (optional, default=1) <br>
+         * @param {number} multiplier Weighting for tokens in the array (optional, default=1)
          * @returns {object} this RiMarkov
          */
         loadTokens : function(tokens, multiplier) {
@@ -47674,7 +47674,7 @@ _RiTa_LTS=[
         getWords : function() {
             
             var a = arguments, randomize = false, regex = undefined,
-                wordArr = [], words =  Object.keys(RiLexicon.data); // TODO: replace Object.keys()
+                wordArr = [], words =  okeys(RiLexicon.data);
             
             switch (a.length) {
                 
@@ -47694,7 +47694,7 @@ _RiTa_LTS=[
                 case 1:
                                         
                     if (is(a[0],B)) {
-                        return a[0] ? shuffle(words) : Object.keys(words);
+                        return a[0] ? shuffle(words) : okeys(words);
                     }
                     
                     regex = (is(a[0],R)) ? a[0] : new RegExp(a[0]);
@@ -47934,13 +47934,13 @@ _RiTa_LTS=[
          */
         size : function() {
             
-            return RiLexicon.data ? Object.keys(RiLexicon.data).length : 0
+            return RiLexicon.data ? okeys(RiLexicon.data).length : 0
         },
 
         _checkType: function(word, tagArray) {
 
             if (word && word.indexOf(SP) != -1) 
-                 err("isX() expects a single word, found: "+word); 
+                 throw Error("isX() expects a single word, found: "+word); 
 
             var psa = this._getPosArr(word);
             for (var i = 0; i < psa.length; i++) {
@@ -48168,8 +48168,8 @@ _RiTa_LTS=[
          */
         getRandomWord : function() {  // takes nothing, pos, syllableCount, or both 
             
-            var found = false, a = arguments, wordArr = Object.keys(RiLexicon.data),
-                ran = Math.floor(Math.random() * Object.keys(RiLexicon.data).length),
+            var found = false, a = arguments, wordArr = okeys(RiLexicon.data),
+                ran = Math.floor(Math.random() * okeys(RiLexicon.data).length),
                 ranWordArr = shuffle(wordArr);
             
             switch (a.length) {
@@ -57658,51 +57658,16 @@ _RiTa_LTS=[
         
       return !isNaN(parseFloat(n)) && isFinite(n);
     }
+    
+    function okeys(obj) {
+    
+    	
+    	var keys = [];  // replaces Object.keys();
+		for(var k in obj) keys.push(k);
+		return keys;
+	}
 
-    // Arrays ////////////////////////////////////////////////////////////////////////
-    
-    function shuffle(oldArray) {
-        var newArray = oldArray.slice();
-        var len = newArray.length;
-        var i = len;
-         while (i--) {
-            var p = parseInt(Math.random()*len);
-            var t = newArray[i];
-            newArray[i] = newArray[p];	
-            newArray[p] = t;
-        }
-        return newArray; 
-    }
-    
-    // Array Remove - from John Resig (MIT Licensed)
-    function remove(array, from, to) {
-        
-      // remove? only used once
-      var rest = array.slice((to || from) + 1 || array.length);
-      array.length = from < 0 ? array.length + from : from;
-      return array.push.apply(array, rest);
-    }
- 
-    function insert(array, item, idx) {
-        
-      array.slice(idx,0,item);
-      return array;
-    }
-    
-    function removeFromArray(items, element) {
-        
-        while (items.indexOf(element) !== -1) {
-            items.splice(items.indexOf(element), 1);
-        }
-    }
-    
-    function inArray(array, val) {
-        if (!array) return false;
-        return array.indexOf(val)>-1;
-    }
-    
-    // Misc ////////////////////////////////////////////////////////////////////////
-
+   
     function dump(obj) {
 
         var properties = "";
@@ -57835,8 +57800,6 @@ _RiTa_LTS=[
    
         var a = arguments, len = a.length;
         
-        //log('parseColor:'+len);
-        
         var color = { r: 0, g: 0, b: 0, a: 255 };
 
         if (!len) return color;
@@ -57871,7 +57834,48 @@ _RiTa_LTS=[
             str += " ";
         return str;
     }
+     // Arrays ////////////////////////////////////////////////////////////////////////
     
+    function shuffle(oldArray) {
+        var newArray = oldArray.slice();
+        var len = newArray.length;
+        var i = len;
+         while (i--) {
+            var p = parseInt(Math.random()*len);
+            var t = newArray[i];
+            newArray[i] = newArray[p];	
+            newArray[p] = t;
+        }
+        return newArray; 
+    }
+    
+    // Array Remove - from John Resig (MIT Licensed)
+    function remove(array, from, to) {
+        
+      // remove? only used once
+      var rest = array.slice((to || from) + 1 || array.length);
+      array.length = from < 0 ? array.length + from : from;
+      return array.push.apply(array, rest);
+    }
+ 
+    function insert(array, item, idx) {
+        
+      array.slice(idx,0,item);
+      return array;
+    }
+    
+    function removeFromArray(items, element) {
+        
+        while (items.indexOf(element) !== -1) {
+            items.splice(items.indexOf(element), 1);
+        }
+    }
+    
+    function inArray(array, val) {
+        if (!array) return false;
+        return array.indexOf(val)>-1;
+    }
+
     // ///////////////////////////// End Functions ////////////////////////////////////
 
     var hasProcessing = (typeof Processing !== 'undefined');
@@ -57924,7 +57928,7 @@ _RiTa_LTS=[
     /////////////////////////////////////////////////////////////////////////////////////////
 
 	RiTa._eval = eval;
-	
+
     if (window) { // for browser
         
         window['RiText'] = RiText;
