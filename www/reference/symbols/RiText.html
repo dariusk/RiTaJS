@@ -414,7 +414,7 @@ Can be modified directly or through API methods.</div>
 							<td class="nameDescription">
 								<div class="fixedFont">RiText.<b><a href="../symbols/RiText.html#.defaultColor">defaultColor</a></b>(r, g, b, a)
 								</div>
-								<div class="description"></div>
+								<div class="description">Sets/gets the default color</div>
 							</td>
 						</tr>
 					
@@ -571,16 +571,6 @@ or an array of RiText objects (if supplied as an argument)</div>
 								<div class="fixedFont"><b><a href="../symbols/RiText.html#fontSize">fontSize</a></b>(sz)
 								</div>
 								<div class="description">Sets/gets the size of the current font.</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&lt;static&gt; &nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont">RiText.<b><a href="../symbols/RiText.html#.foreach">foreach</a></b>(theFunction)
-								</div>
-								<div class="description">A convenience method to call a member function on each RiText in the array,
-or all existing RiText objects (with no argument)</div>
 							</td>
 						</tr>
 					
@@ -2223,12 +2213,12 @@ Can be modified directly or through API methods.
 					<a name=".defaultColor"> </a>
 					<div class="fixedFont">&lt;static&gt; 
 					
-					
+					<span class="light">{object}</span>
 					<span class="light">RiText.</span><b>defaultColor</b>(r, g, b, a)
 					
 					</div>
 					<div class="description">
-						
+						Sets/gets the default color
 						
 						
 					</div>
@@ -2269,6 +2259,13 @@ Can be modified directly or through API methods.
 						
 						
 						
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							
+								<dd><span class="light fixedFont">{object}</span> the current default color</dd>
+							
+							</dl>
+						
 						
 						
 
@@ -2297,7 +2294,7 @@ Can be modified directly or through API methods.
 									<span class="light fixedFont">{object}</span> <b>font</b>
 									
 								</dt>
-								<dd>(optional, for sets only)</dd>
+								<dd>(optional, for 'sets' only)</dd>
 							
 							</dl>
 						
@@ -3026,43 +3023,6 @@ effects only scaleX/Y, not the font's internal properties
 								<dd><span class="light fixedFont">{object | number}</span> either this RiText (for set) or the current font size (for get)</dd>
 							
 							</dl>
-						
-						
-						
-
-					<hr />
-				
-					<a name=".foreach"> </a>
-					<div class="fixedFont">&lt;static&gt; 
-					
-					
-					<span class="light">RiText.</span><b>foreach</b>(theFunction)
-					
-					</div>
-					<div class="description">
-						A convenience method to call a member function on each RiText in the array,
-or all existing RiText objects (with no argument)
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{array}</span> <b>theFunction</b>
-									
-								</dt>
-								<dd>defaults to all riText if an array is not supplied (optional, default=all)</dd>
-							
-							</dl>
-						
-						
-						
-						
 						
 						
 						
