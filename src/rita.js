@@ -577,7 +577,8 @@
          */
         _fire : function(callback) {
 
-            callback = callback || window.onRiTaEvent || RiText.graphics() && RiText.graphics().onRiTaEvent; // last is for P5
+            callback = callback || window.onRiTaEvent 
+            	|| RiText.graphics() && RiText.graphics().onRiTaEvent; // last is for P5
             
             if (typeof callback === 'function') {
                 
@@ -5722,7 +5723,7 @@
          * every 'period' seconds
          * 
          * @param {number} period
-         * @param {function} callback called every 'period' seconds
+         * @param {function} callback called every 'period' seconds (optional)
          * @returns {number} the unique id for the timer
          */
         timer: function(period, callback) {
@@ -6420,6 +6421,19 @@
                 }
             }
             
+            // TODO: add mouse-handling methods here?
+            if (typeof window.mouseClicked == F) 
+            	window.onmouseup = window.mouseClicked;
+      		if (typeof window.mousePressed == F) 
+            	window.onmousedown = window.mousePressed;
+    		if (typeof window.mouseReleased == F) 
+            	window.onmouseup = window.mouseReleased;
+            if (typeof window.mouseMoved == F) 
+            	window.onmousemove = window.mouseMoved;
+            //if (typeof window.mouseDragged == F) 
+            	//window.onmousemove = window.mouseDragged;	
+			// window.onmousemove = mouseDragged;
+
             if (value) {
                 
                 // alias for some P5 member functions 
