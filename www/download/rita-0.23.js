@@ -46728,7 +46728,7 @@ _RiTa_LTS=[
 
 (function(window, undefined) {
 	
-	var _VERSION_ = '0.22';
+	var _VERSION_ = '0.23';
 
     /**  @private Simple type-checking functions */ 
     var Type = {
@@ -46828,14 +46828,11 @@ _RiTa_LTS=[
          * @param {boolean} useSmoothing whether the model should be case-sensitive (optional, default=false)
          */
         init : function(nFactor, useSmoothing) {
-            //init : function(nFactor, caseSensitive, useSmoothing) {
        
             ok(nFactor,N);
            
             this._n = nFactor;
             this.smoothing = useSmoothing || false;
-            //this.ignoresCase = !caseSensitive || true;
-            //TextNode.ignoreCase = !this.ignoresCase;
             this.root = new TextNode(null, 'ROOT');
         },
 
@@ -46978,9 +46975,9 @@ _RiTa_LTS=[
          */ 
         generateUntil : function(regex, minLength, maxLength){
            
-            minLength = minLength || 1, maxLength = maxLength || 99;
+            minLength = minLength || 1, maxLength = maxLength || 9999999;
             
-            var mn, tokens, tries=0, maxTries=500;
+            var mn, tokens, tries=0, maxTries=999;
             
             OUT: while (++tries < maxTries) {
             
@@ -47112,6 +47109,8 @@ _RiTa_LTS=[
         print : function() {
             
             console && console.log(this.root.asTree(false));
+            
+            return this;
         },
         
         /**
@@ -47125,6 +47124,7 @@ _RiTa_LTS=[
          * @returns {object} this RiMarkov
          */
         loadText : function(text, multiplier, regex) {
+        	
           ok(text,S);
           return this.loadTokens(RiTa.tokenize(text,regex), multiplier);
         },
@@ -47300,7 +47300,8 @@ _RiTa_LTS=[
          */
         _fire : function(callback) {
 
-            callback = callback || window.onRiTaEvent || RiText.graphics() && RiText.graphics().onRiTaEvent; // last is for P5
+            callback = callback || window.onRiTaEvent 
+            	|| RiText.graphics() && RiText.graphics().onRiTaEvent; // last is for P5
             
             if (typeof callback === 'function') {
                 
@@ -49126,7 +49127,7 @@ _RiTa_LTS=[
     RiGrammar.prototype = {
 
         /**
-         * inits a grammar, optionally accepting an object or JSON string containing the rules
+         * Initializes a grammar, optionally accepting an object or JSON string containing the rules
          * 
          * @param  {none | string | object } grammar containing the grammar rules
          */
@@ -49199,7 +49200,7 @@ _RiTa_LTS=[
         /**
          * Makes a (deep) copy of this object
          * 
-         * @returns {object} this RiGrammar
+         * @returns {object} a newly created RiGrammar
          */
         clone : function() { // TODO: test me well
 
@@ -51232,8 +51233,10 @@ _RiTa_LTS=[
          * 
          * @param {string} newText
          *          to be faded in
+         * 
          * @param {number} seconds
          *          time for fade
+         * 
          * @param {number} endAlpha 
          *  (optional, default=255), the alpha to end on
          *  
@@ -51314,7 +51317,7 @@ _RiTa_LTS=[
          * Set/gets the text for this RiText
          * 
          * @param {string} txt the new text (optional)
-         * @returns {object | number} this RiText (for sets) or the current text (for gets) 
+         * @returns {object | string} this RiText (for sets) or the current text (for gets) 
          */
         text : function(txt) {
             
@@ -52060,8 +52063,10 @@ _RiTa_LTS=[
          * 
          * @returns {object} either this RiText (for sets) or object {x, y} (for gets)
          */
-        position : function(x,y) {
+        position : function(x, y) {
             
+            //TODO: add Z
+             
             if (!arguments.length) 
                 return { x: this.x, y: this.y };
             this.x = x;
@@ -52074,10 +52079,11 @@ _RiTa_LTS=[
          * 
          * @param {number} rotate degree to rotate
          * 
-         * @returns {object | number} either this RiText (for sets) or the current degree to rotation (for gets)
+         * @returns {object} either this RiText (for sets) or the current degree of rotation (for gets)
          */
         rotate : function(rotate) {
             
+            //TODO: add X,Y ??
           if (!arguments.length) 
               return this._rotateZ
           this._rotateZ = rotate;
@@ -52090,11 +52096,11 @@ _RiTa_LTS=[
          * @param {number} theScaleX the ScaleX ratio
          * @param {number} theScaleY (optional) the ScaleY ratio 
          * 
-         @returns {object | number} either this RiText (for sets) or the current degree of rotation (for gets)
+         @returns { object } either this RiText (for sets) or the current scales (for gets)
          */
         scale : function(theScaleX, theScaleY) {
             
-            if (!arguments.length) return { x:this._scaleX, y:this._scaleY };
+            if (!arguments.length) return { x:this._scaleX, y:this._scaleY }; //TODO: add Z
                 
             if (arguments.length == 1) theScaleY = theScaleX;
             
@@ -52189,7 +52195,7 @@ _RiTa_LTS=[
          */
         fontSize : function(sz) {
  
-            // TODO: what to do if scaleX and scaleY are different
+            // TODO: what to do if scaleX and scaleY are different?
             
             return (arguments.length) ? this.scale( sz / this._font.size) 
                 : (this._font.size * this._scaleX);
@@ -52239,7 +52245,9 @@ _RiTa_LTS=[
         
         /**
          * Removes the specified text behavior for the object  
+         * 
          * @param {number} the behavior id
+         * @returns {object} this RiText
          */
         stopBehavior: function ( id ) {
 
@@ -52253,18 +52261,18 @@ _RiTa_LTS=[
     
                 }
             }
-
+            return this;
         },
         
         /**
          * Removes all text behaviors for the object  
          * 
-         * @returns {array} 
+         * @returns {object} this RiText 
          */
         stopBehaviors: function () {
 
             this._behaviors = [];
-
+            return this;
         },
         
         /**
@@ -52445,7 +52453,7 @@ _RiTa_LTS=[
          * every 'period' seconds
          * 
          * @param {number} period
-         * @param {function} callback called every 'period' seconds
+         * @param {function} callback called every 'period' seconds (optional)
          * @returns {number} the unique id for the timer
          */
         timer: function(period, callback) {
@@ -53143,6 +53151,19 @@ _RiTa_LTS=[
                 }
             }
             
+            // TODO: add mouse-handling methods here?
+            if (typeof window.mouseClicked == F) 
+            	window.onmouseup = window.mouseClicked;
+      		if (typeof window.mousePressed == F) 
+            	window.onmousedown = window.mousePressed;
+    		if (typeof window.mouseReleased == F) 
+            	window.onmouseup = window.mouseReleased;
+            if (typeof window.mouseMoved == F) 
+            	window.onmousemove = window.mouseMoved;
+            //if (typeof window.mouseDragged == F) 
+            	//window.onmousemove = window.mouseDragged;	
+			// window.onmousemove = mouseDragged;
+
             if (value) {
                 
                 // alias for some P5 member functions 

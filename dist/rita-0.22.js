@@ -46744,7 +46744,7 @@ _RiTa_LTS=[
         },
         
         /**
-         * Returns true if the object if of type 'type, otherwise false
+         * Returns true if the object is of type 'type, otherwise false
          */
         is : function(obj,type) {
             
@@ -46767,7 +46767,7 @@ _RiTa_LTS=[
         
     } // end Type
     
-    var is = Type.is, ok = Type.ok; // aliases
+    var is = Type.is, ok = Type.ok; // alias
 
     // ////////////////////////////////////////////////////////////
     // RiMarkov
@@ -50295,29 +50295,201 @@ _RiTa_LTS=[
         RiText.instances = [];
     }
     
-    // TODO: if txt is an array, maintain line breaks... ? 
+   RiText.createWords = function(txt, x, y, w, h, fontObj) {
+
+        return RiText._createRiTexts(txt, x, y, w, h, fontObj, RiText.prototype.splitWords);
+    }
+
+    RiText.createLetters = function(txt, x, y, w, h, fontObj) {
+
+        return RiText._createRiTexts(txt, x, y, w, h, fontObj, RiText.prototype.splitLetters);
+    }
+
     // TODO: other alignments?
     RiText.createLines = function(txt, x, y, maxW, maxH, theFont) { 
    
-        ok(txt, S);
-        
-        // remove line breaks
-        txt = replaceAll(txt, "[\r\n]", SP);
+   		var strLines = txt, theFont = theFont || RiText._getDefaultFont();
+   		   		 
+        if (is(txt, S)) 
+        	strLines = RiText._makeLines(txt, x, y, maxW, maxH, theFont);
 
-        //  adds spaces around html tokens
-        txt = replaceAll(txt," ?(<[^>]+>) ?", " $1 ");
+        if (!(strLines && strLines.length)) 
+        	err('Unexpected fail in createLines: no lines');
+        
+        // lay out the lines
+        var rts = RiText._createLinesByCharCountFromArray(strLines, x, y, theFont);
+        
+        if (!rts || rts.length < 1) return [];
+
+        // set the paragraph spacing
+        if (RiText.defaults.paragraphLeading > 0)  {
+            
+          var lead = 0;
+          for (var i = 0; i < rts.length; i++) {
+              
+            var str = rts[i].text();
+            var idx = str.indexOf('|');
+            if (idx > -1) {
+              lead += RiText.defaults.paragraphLeading;
+              rts[i].removeCharAt(idx);
+            }
+            rts[i].y += lead;
+          }
+        }
+        
+        // check all the lines are still in the rect
+        var toKill = [];
+        var check = rts[rts.length - 1];   
+        for (var z = 1; check.y > y + maxH; z++) {
+            
+            toKill.push(check);
+            var idx = rts.length - 1 - z;
+            if (idx < 0) break;
+            check = rts[idx];
+        }
+        
+        // remove the dead ones
+        for (var z = 0; z < toKill.length; z++) {
+            
+            removeFromArray(rts, toKill[z]);
+        }
+        
+        RiText._disposeArray(toKill);
+
+        return rts;
+    }
+
+
+    /**
+     * Sets/gets the default font size for all RiTexts
+     * @param {object} motionType
+     * @returns {object} the current default motionType
+     */
+    RiText.defaultMotionType = function(motionType) {
+
+        if (arguments.length==1) 
+            RiText.defaults.motionType = motionType;
+        return RiText.defaults.motionType;
+    }
+    
+    /**
+     * Sets/gets the default alignment for all RiTexts
+     * @param {number} align (optional, for sets only)
+     * @returns {number} the current default alignment
+     */
+    RiText.defaultAlignment = function(align) {
+
+        if (arguments.length==1)
+            RiText.defaults.alignment = align;
+        return RiText.defaults.alignment;
+    }
+    
+    /**
+     * Sets/gets the default font size for all RiTexts
+     * @param {number} size (optional, for sets only)
+     * @returns {number} the current default font size
+     */
+    RiText.defaultFontSize = function(size) {
+
+        if (arguments.length==1) 
+            RiText.defaults.fontSize = size;
+        return RiText.defaults.fontSize;
+    }
+
+    /**
+     * Sets/gets the default bounding box visibility
+     * @param {boolean} size (optional, for sets only)
+     * @returns {boolean} the current default bounding box visibility
+     */
+    RiText.showBoundingBoxes = function(value) {
+        
+        if (arguments.length==1) 
+            RiText.defaults.boundingBoxVisible = value;
+        return RiText.defaults.boundingBoxVisible;
+    }
+
+    /**
+     * Sets/gets the default font for all RiTexts
+     * @param {object} font (optional, for 'sets' only)
+     * @returns {object} the current default font
+     */
+    RiText.defaultFont = function(font) {
+        
+        var a = arguments;
+        if (a.length == 1 && typeof a[0] == O) {
+            RiText.defaults.font = a[0];
+        }
+        else if (a.length > 1) {
+            RiText.defaults.font = RiText.renderer._createFont.apply(RiText.renderer,a);
+        }
+        if (!RiText.defaults.font.leading)
+        	RiText.defaults.font.leading = RiText.defaults.font.size * RiText.defaults.leadingFactor;
+        
+        return RiText.defaults.font;
+    }
+    
+    RiText.createFont = function(fontName, fontSize, leading) {
+        
+        if (!fontName) err('RiText.createFont requires fontName');
+        
+        fontSize = fontSize || RiText.defaults.fontSize;
+        
+        return RiText.renderer._createFont(fontName, fontSize, leading);
+    }
+    
+    /**
+     * A convenience method to draw all existing RiText objects (with no argument)
+     * or an array of RiText objects (if supplied as an argument)
+     * @param {array} array draws only the array if supplied (optional)
+     */
+    RiText.drawAll = function(array) {
+        
+        if (arguments.length == 1 && is(array,A)) { 
+            for ( var i = 0; i < array.length; i++)
+                array[i] && array[i].draw();
+        }
+        else {
+            for ( var i = 0; i < RiText.instances.length; i++)
+                RiText.instances[i] && RiText.instances[i].draw();
+        }
+        
+    }
+    
+    
+    /**
+     * Sets/gets the default color
+     * @returns {object} the current default color
+     */
+    RiText.defaultColor = function(r, g, b, a) {
+ 
+        if (arguments.length) { 
+            RiText.defaults.color = parseColor.apply(this,arguments);
+        }
+        return RiText.defaults.color;
+    }
+
+    
+    // private statics ///////////////////////////////////////////////////////////////
+    
+   RiText._makeLines = function(txt, x, y, maxW, maxH, theFont) {
+
+        //log('_makeLines('+txt.length+','+x+','+y+','+maxW+','+maxH+','+theFont+')');
+
+ 		var currentH = 0, currentW = 0, newParagraph = false, forceBreak = false, strLines = [],
+            sb = RiText.defaults.indentFirstParagraph ? RiText.defaults.paragraphIndent : E,
+            g = RiText.renderer, fn = RiText._makeLines;
+            
+	    // remove line breaks & add spaces around html
+        txt = replaceAll(txt, "[\r\n]", SP);
+        txt = replaceAll(txt," ?(<[^>]+>) ?", " $1 "); 	
 
         // split into reversed array of words
         var tmp = txt.split(SP), words = [];
         for ( var i = tmp.length - 1; i >= 0; i--)
             words.push(tmp[i]);
 
-        if (!words.length) return [];
-        
-        var g = RiText.renderer;
-        var fn = RiText.createLines;
-        
-        // cached helpers //////////////////////////////////////////// ?
+
+        // cached helpers //////////////////////////////////////////// 
         
         fn.checkLineHeight = fn.checkLineHeight || function(currentH, lineH, maxH) {
             
@@ -50327,21 +50499,16 @@ _RiTa_LTS=[
         fn.addLine = fn.addLine || function(arr, s) {
             if (s && s.length) {
                 // strip trailing spaces (regex?)
-                while (s.length > 0 && endsWith(s, " "))
+                while (s.length > 0 && endsWith(s, ' '))
                     s = s.substring(0, s.length - 1);
                 arr.push(s); 
             }
         };
         
         // the guts ////////////////////////////////////////////////
-
-        theFont = theFont || RiText._getDefaultFont();
-        
+	        
         var tmp = new RiText('_',0,0,theFont), textH = tmp.textHeight();
-        RiText.dispose(tmp);
-
-        var currentH = 0, currentW = 0, newParagraph = false, forceBreak = false, strLines = [], 
-            sb = RiText.defaults.indentFirstParagraph ? RiText.defaults.paragraphIndent : E;
+        RiText.dispose(tmp); // grab the line height [?]
         
         while (words.length > 0) {
 
@@ -50357,7 +50524,7 @@ _RiTa_LTS=[
                 }
                 else if (next === RiText.PARAGRAPH || next === "</p>") {
                     
-                    if (sb.length > 0) {// case: paragraph break
+                    if (sb.length > 0) { // case: paragraph break
                         
                         newParagraph = true;
                     }
@@ -50397,10 +50564,9 @@ _RiTa_LTS=[
                     }
                     newParagraph = false;
                     forceBreak = false;
-                    sb += next + SP;//addWord(sb, next);
+                    sb += next + SP;
 
-                    currentH += textH; // DCH: changed(port-to-js), 3.3.12 
-                    // currentH += lineHeight; 
+                    currentH += textH;
                 }
                 else {
                     
@@ -50421,200 +50587,13 @@ _RiTa_LTS=[
             for ( var i = tmp.length - 1; i >= 0; i--) {
                 words.push(tmp[i]);
             }
-            //fn.pushLine(words, sb.split(SP));
-        }
-
-        if (!strLines.length) err('Unexpected fail in createLines: no lines');
-        
-        // lay out the lines
-        var rts = RiText._createLinesByCharCountFromArray(strLines, x, y+textH, theFont);
-
-        // set the paragraph spacing
-        if (RiText.defaults.paragraphLeading > 0)  {
-            
-          var lead = 0;
-          for (var i = 0; i < rts.length; i++) {
-              
-            var str = rts[i].text();
-            var idx = str.indexOf('|');
-            if (idx > -1) {
-              lead += RiText.defaults.paragraphLeading;
-              rts[i].removeCharAt(idx);
-            }
-            rts[i].y += lead;
-          }
         }
         
-        // check all the lines are still in the rect
-        var toKill = [];
-        var check = rts[rts.length - 1];   
-        for (var z = 1; check.y > y + maxH; z++) {
-            
-            toKill.push(check);
-            var idx = rts.length - 1 - z;
-            if (idx < 0) break;
-            check = rts[idx];
-        }
-        
-        // remove the dead ones
-        for (var z = 0; z < toKill.length; z++) {
-            
-            removeFromArray(rts, toKill[z]);
-        }
-        
-        RiText._disposeArray(toKill);
+		return strLines;
+	}
+	
+    RiText._createRiTexts = function(txt, x, y, w, h, fontObj, splitFun) {  
 
-
-        return rts;
-    }
-
-    // TODO: add example
-    /**
-     * Sets/gets the default font size for all RiTexts
-     * @param {object} motionType
-     * @returns {object} the current default motionType
-     */
-    RiText.defaultMotionType = function(motionType) {
-
-        if (arguments.length==1) 
-            RiText.defaults.motionType = motionType;
-        return RiText.defaults.motionType;
-    }
-    
-    // TODO: add example
-    /**
-     * Sets/gets the default alignment for all RiTexts
-     * @param {number} align (optional, for sets only)
-     * @returns {number} the current default alignment
-     */
-    RiText.defaultAlignment = function(align) {
-
-        if (arguments.length==1)
-            RiText.defaults.alignment = align;
-        return RiText.defaults.alignment;
-    }
-    
-    /**
-     * Sets/gets the default font size for all RiTexts
-     * @param {number} size (optional, for sets only)
-     * @returns {number} the current default font size
-     */
-    RiText.defaultFontSize = function(size) {
-
-        if (arguments.length==1) 
-            RiText.defaults.fontSize = size;
-        return RiText.defaults.fontSize;
-    }
-
-    /**
-     * Sets/gets the default bounding box visibility
-     * @param {boolean} size (optional, for sets only)
-     * @returns {boolean} the current default bounding box visibility
-     */
-    RiText.showBoundingBoxes = function(value) {
-        
-        if (arguments.length==1) 
-            RiText.defaults.boundingBoxVisible = value;
-        return RiText.defaults.boundingBoxVisible;
-    }
-
-    /**
-     * Sets/gets the default font for all RiTexts
-     * @param {object} font (optional, for sets only)
-     * @returns {object} the current default font
-     */
-    RiText.defaultFont = function(font) {
-        
-        var a = arguments;
-        if (a.length == 1 && typeof a[0] == O) {
-            RiText.defaults.font = a[0];
-        }
-        else if (a.length > 1) {
-            RiText.defaults.font = RiText.renderer._createFont.apply(RiText.renderer,a);
-        }
-        return RiText.defaults.font;
-    }
-    
-    RiText.createFont = function(fontName, fontSize, leading) {
-        
-        if (!fontName) err('RiText.createFont requires fontName');
-        
-        fontSize = fontSize || RiText.defaults.fontSize;
-        
-        return RiText.renderer._createFont(fontName, fontSize, leading);
-    }
-
-    RiText.createWords = function(txt, x, y, w, h, fontObj) {
-
-        return RiText._createRiTexts(txt, x, y, w, h, fontObj, RiText.prototype.splitWords);
-    }
-
-    RiText.createLetters = function(txt, x, y, w, h, fontObj) {
-
-        return RiText._createRiTexts(txt, x, y, w, h, fontObj, RiText.prototype.splitLetters);
-    }
-    
-    // private statics ///////////////////////////////////////////////////////////////
-
-    // make a sub-case of _createLinesByCharCount(() ?
-    RiText._createLinesByCharCountFromArray = function(txtArr, startX, startY, fontObj) {
-
-        //log('createLinesByCharCountFromArray('+txtArr.length+','+startX+','+startY+','+maxCharsPerLine+','+fontObj+')');
-
-        fontObj = fontObj || RiText._getDefaultFont();
-
-        var rts = [];
-        for ( var i = 0; i < txtArr.length; i++) {
-            //log(i+")"+txtArr[i]);
-            rts.push(RiText(txtArr[i], startX, startY, fontObj));
-        }
-
-        if (rts.length < 1) return [];
-
-        return RiText._handleLeading(fontObj, rts, startY);
-    }
-    
-    // TODO: if txt is an array, maintain line breaks... ? Is this even being used??
-    // TODO: should this be private -- need a way to respect line-breaks in createWords, createLetters, etc. - add test
-    RiText._createLinesByCharCount = function(txt, startX, startY, maxCharsPerLine, fontObj) {
-
-        //log("RiText._createLinesByCharCount(("+txt+", "+startX+","+startY+", "+maxCharsPerLine+", "+fontObj+")");
-
-        if (!maxCharsPerLine || maxCharsPerLine<0) maxCharsPerLine = Number.MAX_VALUE;
-
-        if (txt == null || txt.length == 0) return new Array();
-
-        if (txt.length < maxCharsPerLine) return [ new RiText(txt, startX, startY) ];
-
-        // remove any line breaks from the original
-        txt = replaceAll(txt,"\n", " ");
-
-        var texts = [];
-        while (txt.length > maxCharsPerLine) {
-            var toAdd = txt.substring(0, maxCharsPerLine);
-            txt = txt.substring(maxCharsPerLine, txt.length);
-
-            var idx = toAdd.lastIndexOf(" ");
-            var end = "";
-            if (idx >= 0) {
-                end = toAdd.substring(idx, toAdd.length);
-                if (maxCharsPerLine < Number.MAX_VALUE) end = end.trim();
-                toAdd = toAdd.substring(0, idx);
-            }
-            texts.push(new RiText(toAdd.trim(), startX, startY));
-            txt = end + txt;
-        }
-
-        if (txt.length > 0) {
-            if (maxCharsPerLine < Number.MAX_VALUE) txt = txt.trim();
-            texts.push(new RiText(txt, startX, startY));
-        }
-
-        return RiText._handleLeading(fontObj, texts, startY);
-    }
-    
-    RiText._createRiTexts = function(txt, x, y, w, h, fontObj, splitFun) // private 
-    {
         if (!txt || !txt.length) return [];
         fontObj = fontObj || RiText._getDefaultFont();
 
@@ -50622,11 +50601,13 @@ _RiTa_LTS=[
         if (!rlines) return [];
 
         var result = [];
-        for ( var i = 0; i < rlines.length; i++) {
+        for (var i = 0; i < rlines.length; i++) {
             
             var rts = splitFun.call(rlines[i]);
-            for ( var j = 0; j < rts.length; j++)
-                result.push(rts[j].font(fontObj)); // add the words
+            for (var j = 0; j < rts.length; j++) {// add the words
+            	
+                result.push(rts[j].font(fontObj)); 
+            }
             
             RiText.dispose(rlines[i]);
         }
@@ -50634,11 +50615,24 @@ _RiTa_LTS=[
         return result;
     }
     
+    RiText._createLinesByCharCountFromArray = function(txtArr, startX, startY, fontObj) {
 
-    // Returns the pixel x-offset for the word at 'wordIdx' (make private in RiText)
+        fontObj = fontObj || RiText._getDefaultFont(); // remove?
+
+        //log('createLinesByCharCountFromArray('+txtArr.length+','+startX+','+startY+','+fontObj.size+','+fontObj.leading+')');
+
+        var rts = [], leading = fontObj.leading, yOff = startY + leading;
+        
+        for ( var i = 0; i < txtArr.length; i++) {
+        	
+            rts.push(RiText(txtArr[i], startX, yOff, fontObj));
+        }
+        
+        return (rts && rts.length > 1)  ? RiText._handleLeading(fontObj, rts, yOff) : []; 
+    }
+    
+    // Returns the pixel x-offset for the word at 'wordIdx' 
     RiText._wordOffsetFor = function(rt, words, wordIdx) { 
-
-        //log("wordOffset("+words+","+wordIdx+")");
 
         if (wordIdx < 0 || wordIdx >= words.length)
             throw new Error("Bad wordIdx=" + wordIdx + " for " + words);
@@ -50716,7 +50710,7 @@ _RiTa_LTS=[
     
     // TODO: test this font default across all platforms and browsers
     
-    RiText._getDefaultFont = function() { // make private??
+    RiText._getDefaultFont = function() {
         
         //log("RiText._getDefaultFont: "+RiText.defaults.fontFamily+","+RiText.defaults.font.size);
         
@@ -50727,50 +50721,6 @@ _RiTa_LTS=[
         return RiText.defaults.font;
     }
     
-    /**
-     * A convenience method to call a member function on each RiText in the array,
-     * or all existing RiText objects (with no argument)
-     * @param {array} theFunction defaults to all riText if an array is not supplied (optional, default=all)
-     */
-    RiText.foreach = function(theFunction) {
-        
-        if (arguments.length == 1 && is(array,A)) { 
-            for ( var i = 0; i < array.length; i++)
-                array[i] && array[i].theFunction();
-        }
-        else {
-            for ( var i = 0; i < RiText.instances.length; i++)
-                RiText.instances[i] && RiText.instances[i].theFunction();
-        }
-        
-    }
-    
-    /**
-     * A convenience method to draw all existing RiText objects (with no argument)
-     * or an array of RiText objects (if supplied as an argument)
-     * @param {array} array draws only the array if supplied (optional)
-     */
-    RiText.drawAll = function(array) {
-        
-        if (arguments.length == 1 && is(array,A)) { 
-            for ( var i = 0; i < array.length; i++)
-                array[i] && array[i].draw();
-        }
-        else {
-            for ( var i = 0; i < RiText.instances.length; i++)
-                RiText.instances[i] && RiText.instances[i].draw();
-        }
-        
-    }
-    
-    RiText.defaultColor = function(r, g, b, a) {
- 
-        if (arguments.length) { 
-            RiText.defaults.color = parseColor.apply(this,arguments);
-        }
-        return RiText.defaults.color;
-    }
-
     // PUBLIC statics (TODO: clean up) ///////////////////////////////////////////
    
     RiText.NON_BREAKING_SPACE = "<sp>";
