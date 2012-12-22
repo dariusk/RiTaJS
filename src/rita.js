@@ -610,7 +610,7 @@
     /**
      * @name RiLexicon
      * 
-     * @class The core 'dictionary' (or lexicon) for the RiTa tools 
+     * @class The core 'dictionary' (or lexicon) for the RiTa tools. 
      * <p>
      * It contains ~40,000 words augmented with phonemic and syllabic data, as well as a list of valid parts-of-speech for each. 
      * The lexicon can be extended and/or customized for additional words, usages, or pronunciations.
@@ -2308,9 +2308,7 @@
     /**
      * @name RiGrammar
      * @class A probabilistic context-free grammar with literary extensions designed for text-generation
-     */
-    
-     /* <pre> 
+		<pre> 
      * 
         rg = new RiGrammar("mygrammar.g");
         System.out.println(rg.expand());</pre>
