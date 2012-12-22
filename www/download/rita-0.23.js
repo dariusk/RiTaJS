@@ -46736,7 +46736,7 @@ _RiTa_LTS=[
         N : 'number', S : 'string', O : 'object', A :'array', B : 'boolean', R : 'regexp', F : 'function',
         
         /**
-         * from: http://javascriptweblog.wordpress.com/2011/08/08/fixing-the-javascript-typeof-operator/
+         * From: http://javascriptweblog.wordpress.com/2011/08/08/fixing-the-javascript-typeof-operator/
          */
         get : function(obj) {
             
@@ -49957,14 +49957,34 @@ _RiTa_LTS=[
      * Starts a timer that calls 'onRiTaEvent' or the specified callback every 'period'
      * seconds
      * 
-     * @param {number} period
-     * @param {function} callback called every 'period' seconds
+     * @param {number} period (in seconds)
+     * @param {function} callback called every 'period' seconds (default=onRiTaEvent)
      * @returns {number} the unique id for the timer
      */
     RiText.timer = function(period, callback) {
 
         return RiTa.timer.apply(this,arguments);
-    }, 
+    }
+    
+    /**
+     * Stops a timer according to its unique id
+     * @param {number} the unique id for the timer
+     */
+    RiText.stopTimer = function(id) {
+
+		RiTa.stopTimer.apply(this,arguments);
+    } 
+    
+    /**
+     * Pauses a timer according to its unique id (and assigns a new unique id)
+     * @param {number} the unique id for the timer
+	 * @param {number} period (in seconds)
+     * @returns {number} the new unique id for the timer
+     */
+    RiText.pauseTimer = function(id, pauseSec) {
+        
+        return RiTa.pauseTimer.apply(this,arguments);
+    }   
     
     /**
      * Returns the number of frames since the start of the sketch 
@@ -50879,8 +50899,9 @@ _RiTa_LTS=[
 
             //log('RiText) '+this._rs._text +" / "+ this._font.name);
 
+			// center by default
             this.x = arguments.length>1 ? x : this.g._width() / 2 - this.textWidth() / 2.0;
-            this.y = arguments.length>1 ? y : this.g._height() / 2;
+            this.y = arguments.length>1 ? y : this.g._height() / 2 + this.textHeight() / 2.0;
     
             RiText.instances.push(this);
             
@@ -52030,15 +52051,15 @@ _RiTa_LTS=[
         },
     
         /**
-         * Returns false if the alpha value of this object is <= 0, else true
+         * Returns false if the alpha value of this object is &lt;= 0, else true
          * @returns {boolean} 
          */
-        isVisible : function() { 
+        isVisible : function(b) { 
             
             if (arguments.length)
                  err('visible() takes no arguments');
             
-            return this._color.a > 0;
+          	return this._color.a > 0;
         },
         
         /**
@@ -52447,26 +52468,58 @@ _RiTa_LTS=[
             
         },
         
-        
         /**
          * Starts a timer that calls 'onRiTaEvent', or the specified callback, 
          * every 'period' seconds
          * 
-         * @param {number} period
+         * @param {number} period (in seconds)
          * @param {function} callback called every 'period' seconds (optional)
          * @returns {number} the unique id for the timer
          */
         timer: function(period, callback) {
             
-            var id = setInterval(function(){
-                
-                RiTaEvent(RiTa, 'tick')._fire(callback);  
-                
-            }, period * 1000);
-            
+            var timer = Timer(
+            	function(){       
+                	RiTaEvent(RiTa, 'tick')._fire(callback);  
+             }, period * 1000, true);
+            timer.go();
+			var id = timer.id(); 
+			timers[id] = timer;
             return id;
         }, 
         
+   		/**
+         * Stops a timer according to its unique id
+         * @param {number} the unique id for the timer
+         */
+        stopTimer: function(id) {
+            
+            if (timers[id])  
+            	timers[id].stop();
+           	else
+           		warn('no timer with id: '+id);
+        }, 
+        
+        /**
+         * Pauses a timer according to its unique id
+         * @param {number} the unique id for the timer
+		 * @param {number} pause-time (in seconds)
+         * @returns {number} the new unique id for the timer
+         */
+        pauseTimer: function(id, pauseSec) {
+            
+            pauseSec = is(pauseSec, N) ? pauseSec : Number.MAX_VALUE;
+            
+        	if (timers[id])  {
+            	timers[id].pause();
+            	setTimeout(function() { 
+            		if (timers[id]) timers[id].play(); else warn("no timer!!!");
+            	}, pauseSec*1000);
+            }
+           	else
+           		warn('no timer with id: '+id);
+        },   
+
         /**
          * Returns true if 'tag' is a valid PENN part-of-speech tag (e.g. cd, fw, jj, ls, nn, sym, vbg, wp)
          * @param {string} tag the PENN part-of-speech tag
@@ -52489,7 +52542,7 @@ _RiTa_LTS=[
         _tagForWordNet  : function(words) {
             
             var posArr = RiTa.getPosTags(words);
-            //var posArr = posTag(words);
+
             if (!undef(words) && posArr.length) {
                 for ( var i = 0; i < posArr.length; i++) {
                     var pos = posArr[i];
@@ -53151,15 +53204,17 @@ _RiTa_LTS=[
                 }
             }
             
-            // TODO: add mouse-handling methods here?
-            if (typeof window.mouseClicked == F) 
-            	window.onmouseup = window.mouseClicked;
-      		if (typeof window.mousePressed == F) 
-            	window.onmousedown = window.mousePressed;
-    		if (typeof window.mouseReleased == F) 
-            	window.onmouseup = window.mouseReleased;
-            if (typeof window.mouseMoved == F) 
-            	window.onmousemove = window.mouseMoved;
+            if (window) {
+	            // TODO: add mouse-handling methods here?
+	            if (typeof window.mouseClicked == F) 
+	            	window.onmouseup = window.mouseClicked;
+	      		if (typeof window.mousePressed == F) 
+	            	window.onmousedown = window.mousePressed;
+	    		if (typeof window.mouseReleased == F) 
+	            	window.onmouseup = window.mouseReleased;
+	            if (typeof window.mouseMoved == F) 
+	            	window.onmousemove = window.mouseMoved;
+            }
             //if (typeof window.mouseDragged == F) 
             	//window.onmousemove = window.mouseDragged;	
 			// window.onmousemove = mouseDragged;
@@ -53185,7 +53240,7 @@ _RiTa_LTS=[
                 RiText.setCallbackTimer = RiText.timer;
                 
                 if (typeof window != 'undefined' && !hasProcessing) {
-
+                	
                     // add some common P5 global methods (sorry, namespace)
                     if (!window.line) window.line = RiText.line;
                     if (!window.size) window.size= RiText.size;
@@ -54127,6 +54182,117 @@ _RiTa_LTS=[
         }
         
     }        
+    
+    // ////////////////////////////////////////////////////////////
+    // Timer
+    // ////////////////////////////////////////////////////////////
+    
+    var timers = new Object(); // static
+
+    /**
+     * @name Timer - modified from Resig's JQuery-Timer
+     * @class
+     * @private
+     */
+    var Timer = function(func, time, autostart) {
+    		
+	 	this.set = function(func, time, autostart) {
+	 		
+	 		this.init = true;
+	 	 	if (typeof func == 'function') this.action = func;
+		 	if (!isNaN(time)) this.intervalTime = time;
+		 	if (autostart && !this.isActive) {
+			 	this.isActive = true;
+			 	this.setTimer();
+		 	}
+		 	return this;
+	 	};
+	 	
+	 	this.once = function(time) {
+	 		
+			var timer = this;
+	 	 	if(isNaN(time)) time = 0;
+			window.setTimeout(function() {timer.action();}, time);
+	 		return this;
+	 	};
+	 	
+		this.play = function(reset) {
+			
+			if (!this.isActive) {
+				if (reset) this.setTimer();
+				else this.setTimer(this.remaining);
+				this.isActive = true;
+			}
+			return this;
+		};
+		
+		this.pause = function() {
+			
+			if (this.isActive) {
+				this.isActive = false;
+				this.remaining -= new Date() - this.last;
+				this.clearTimer();
+			}
+			return this;
+		};
+		
+		this.stop = function() {
+			
+			this.isActive = false;
+			this.remaining = this.intervalTime;
+			this.clearTimer();
+			return this;
+		};
+		
+		this.toggle = function(reset) {
+			
+			if (this.isActive) this.pause();
+			else if (reset) this.play(true);
+			else this.play();
+			return this;
+		};
+		
+		this.reset = function() {
+			
+			this.isActive = false;
+			this.play(true);
+			return this;
+		};
+		
+		this.id = function() {
+			return this.timeoutObject;
+		};
+			
+		this.clearTimer = function() { // private
+			window.clearTimeout(this.timeoutObject);
+		};
+		
+	 	this.setTimer = function(time) {
+	 		
+			var timer = this;
+	 	 	if (typeof this.action != 'function') return;
+	 	 	if (isNaN(time)) time = this.intervalTime;
+		 	this.remaining = time;
+	 	 	this.last = new Date();
+			this.clearTimer();
+			this.timeoutObject = window.setTimeout
+				(function() { timer.go(); }, time);
+		};
+		
+	 	this.go = function() {
+	 		if (this.isActive) {
+	 			this.action();
+	 			this.setTimer();
+	 		}
+	 	};
+	 	
+	 	if (this.init) {
+	 		return new Timer(func, time, autostart);
+	 	} else {
+			this.set(func, time, autostart);
+	 		return this;
+	 	}
+	};
         
     // ////////////////////////////////////////////////////////////
     // TextNode
@@ -57687,9 +57853,8 @@ _RiTa_LTS=[
         
         if (RiTa.SILENT || !console) return;
         
-        for ( var i = 0; i < arguments.length; i++) {
+        for ( var i = 0; i < arguments.length; i++) 
             console.warn(arguments[i]);
-        }
     }
  
     function log() {
@@ -57850,8 +58015,7 @@ _RiTa_LTS=[
     // ///////////////////////////// End Functions ////////////////////////////////////
 
     var hasProcessing = (typeof Processing !== 'undefined');
-    
-    // console.log('hasProcessing='+hasProcessing);
+    //console.log('hasProcessing='+hasProcessing);
     
     if (hasProcessing) {
 
@@ -57926,6 +58090,6 @@ _RiTa_LTS=[
     }
     
 
-    RiTa.p5Compatible(hasProcessing); // TODO: whats the default?
+    RiTa.p5Compatible(hasProcessing); // TODO: whats the default? false, for now
 
 })(typeof window !== 'undefined' ? window : null);

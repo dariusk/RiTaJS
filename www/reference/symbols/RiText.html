@@ -631,9 +631,9 @@ or an array of RiText objects (if supplied as an argument)</div>
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/RiText.html#isVisible">isVisible</a></b>()
+								<div class="fixedFont"><b><a href="../symbols/RiText.html#isVisible">isVisible</a></b>(b)
 								</div>
-								<div class="description">Returns false if the alpha value of this object is <= 0, else true</div>
+								<div class="description">Returns false if the alpha value of this object is &lt;= 0, else true</div>
 							</td>
 						</tr>
 					
@@ -764,6 +764,15 @@ Note: uses the current <code>motionType</code> for this object, starting at 'del
 								<div class="fixedFont">RiText.<b><a href="../symbols/RiText.html#.noLoop">noLoop</a></b>()
 								</div>
 								<div class="description">Immediately stops the current animation loop and clears</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&lt;static&gt; &nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">RiText.<b><a href="../symbols/RiText.html#.pauseTimer">pauseTimer</a></b>(the, period)
+								</div>
+								<div class="description">Pauses a timer according to its unique id (and assigns a new unique id)</div>
 							</td>
 						</tr>
 					
@@ -1002,6 +1011,15 @@ tokenized with the supplied regex.</div>
 								<div class="fixedFont"><b><a href="../symbols/RiText.html#stopBehaviors">stopBehaviors</a></b>()
 								</div>
 								<div class="description">Removes all text behaviors for the object</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&lt;static&gt; &nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">RiText.<b><a href="../symbols/RiText.html#.stopTimer">stopTimer</a></b>(the)
+								</div>
+								<div class="description">Stops a timer according to its unique id</div>
 							</td>
 						</tr>
 					
@@ -3277,17 +3295,28 @@ Default features include RiTa.STRESSES, RiTa.PHONEMES, and RiTa.SYLLABLES.
 					<div class="fixedFont">
 					
 					<span class="light">{boolean}</span>
-					<b>isVisible</b>()
+					<b>isVisible</b>(b)
 					
 					</div>
 					<div class="description">
-						Returns false if the alpha value of this object is <= 0, else true
+						Returns false if the alpha value of this object is &lt;= 0, else true
 						
 						
 					</div>
 					
 					
 					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>b</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
 						
 						
 						
@@ -3760,6 +3789,55 @@ Note: uses the current <code>motionType</code> for this object, starting at 'del
 						
 						
 						
+						
+						
+						
+
+					<hr />
+				
+					<a name=".pauseTimer"> </a>
+					<div class="fixedFont">&lt;static&gt; 
+					
+					<span class="light">{number}</span>
+					<span class="light">RiText.</span><b>pauseTimer</b>(the, period)
+					
+					</div>
+					<div class="description">
+						Pauses a timer according to its unique id (and assigns a new unique id)
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{number}</span> <b>the</b>
+									
+								</dt>
+								<dd>unique id for the timer</dd>
+							
+								<dt>
+									<span class="light fixedFont">{number}</span> <b>period</b>
+									
+								</dt>
+								<dd>(in seconds)</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							
+								<dd><span class="light fixedFont">{number}</span> the new unique id for the timer</dd>
+							
+							</dl>
 						
 						
 						
@@ -4974,6 +5052,42 @@ tokenized with the supplied regex.
 
 					<hr />
 				
+					<a name=".stopTimer"> </a>
+					<div class="fixedFont">&lt;static&gt; 
+					
+					
+					<span class="light">RiText.</span><b>stopTimer</b>(the)
+					
+					</div>
+					<div class="description">
+						Stops a timer according to its unique id
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{number}</span> <b>the</b>
+									
+								</dt>
+								<dd>unique id for the timer</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
 					<a name="substr"> </a>
 					<div class="fixedFont">
 					
@@ -5336,13 +5450,13 @@ seconds
 									<span class="light fixedFont">{number}</span> <b>period</b>
 									
 								</dt>
-								<dd></dd>
+								<dd>(in seconds)</dd>
 							
 								<dt>
 									<span class="light fixedFont">{function}</span> <b>callback</b>
 									
 								</dt>
-								<dd>called every 'period' seconds</dd>
+								<dd>called every 'period' seconds (default=onRiTaEvent)</dd>
 							
 							</dl>
 						
