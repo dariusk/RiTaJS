@@ -6,6 +6,7 @@
 (function(window, undefined) {
 	
 	var _VERSION_ = '0.23';
+	// also update /RiTaLibraryJS/www/download/index.html (should be automatic)
 
     /**  @private Simple type-checking functions */ 
     var Type = {
