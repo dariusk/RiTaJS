@@ -253,7 +253,7 @@
          */ 
         generateUntil : function(regex, minLength, maxLength){
            
-            minLength = minLength || 1, maxLength = maxLength || 9999999;
+            minLength = minLength || 1, maxLength = maxLength || Number.MAX_VALUE;
             
             var mn, tokens, tries=0, maxTries=999;
             
@@ -1819,33 +1819,33 @@
              
         /**
          * Compares this RiString to the specified object. The result is true if and only if the
-         * argument is not null and is a RiString object that represents the same sequence of
-         * characters as this object.
+         * argument is not null and is a String or RiString object that represents the same sequence 
+         * of characters as this object.
          * 
-         * @param {object} riString RiString object to compare this RiString against.
+         * @param {string | object} str String or RiString object to compare this RiString against
          * @returns {boolean} true if the RiString are equal; false otherwise.
          */
-        equals : function(riString) {
+        equals : function(arg) {
             
-            return riString._text === this._text;  
+			return (typeof arg === S) ? arg === this._text :  arg.text() === this._text; 
         },
 
         /**
          * Compares this RiString to another RiString, ignoring case considerations.
          * 
-         * @param {string | object} str String or RiString object to compare this RiString against
+         * @param {string | object} arg String or RiString object to compare this RiString against
          * @returns {boolean} true if the argument is not null and the Strings are equal, ignoring
          *         case; false otherwise.
          */
-        equalsIgnoreCase : function(str) {
+        equalsIgnoreCase : function(arg) {
             
-            if (typeof str === S) {
+            if (typeof arg === S) {
                 
-                return str.toLowerCase() === this._text.toLowerCase();
+                return arg.toLowerCase() === this._text.toLowerCase();
             } 
             else {
                 
-                return str.text().toLowerCase() === this._text.toLowerCase();
+                return arg.text().toLowerCase() === this._text.toLowerCase();
             }
         },
 
