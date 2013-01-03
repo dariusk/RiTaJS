@@ -2047,14 +2047,20 @@
          */
         insertChar : function(idx, toInsert) {
         	
-        	if (idx < 0 || idx >= this.length()) 
-                return this;
-                
-            var s = this.text();
+        	var s = this.text();
+        	
+        	if (idx > s.length || idx < -s.length) {
+	    		console.warn("bad index="+idx);
+	    		return this;
+        	}
+
+			 
+            idx = idx < 0 ? idx += s.length : idx;
+            //if (idx < 0) console.log("idx="+idx);
             var beg = s.substring(0, idx);
-            var end = s.substring(idx + 1);
+            var end = s.substring(idx);
          
-            if (toInsert) beg += replaceWith;
+            if (toInsert) beg += toInsert;
 
             return this.text(beg+end);
         },
@@ -2147,7 +2153,7 @@
          */
         removeWord : function(wordIdx) {
         	
-        	return replaceWord(wordIdx,E);
+        	return this.replaceWord(wordIdx,E);
         },    
             
         /**
@@ -2160,7 +2166,9 @@
          */
         insertWord : function(wordIdx, newWord) {
         	
-        	return replaceWord(wordIdx, this.words()[wordIdx]+' '+newWord);
+        	//console.log(newWord+' '+this.words()[wordIdx]);
+        	//if (wordIdx == 0)  return text(newWord+' '+this.text());
+        	return this.replaceWord(wordIdx, newWord+' '+this.words()[wordIdx]);
         },
             
         /**
@@ -2175,6 +2183,8 @@
             
             var words = this.words(); //  tokenize
             
+            if (wordIdx < 0) wordIdx += words.length;
+            
             if (wordIdx >= 0 && wordIdx < words.length) {
                 
                 words[wordIdx] = newWord;
@@ -2182,7 +2192,7 @@
                 this.text(RiTa.untokenize(words));
             }
             
-            return this;  
+            return this.trim();  
         },
 
         /**
@@ -5793,7 +5803,8 @@
                         newStr += arr[i];
                     }
                 }
-                return newStr;
+                
+                return newStr.trim();
             }
  
             return arr.join(delim);  
