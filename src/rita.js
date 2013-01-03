@@ -542,7 +542,7 @@
             this._id = ++(fn.ID);
             
             this._source = sourceRiText;
-            this._type = eventType || RiText.UNKNOWN;
+            this._type = eventType || RiTa.UNKNOWN;
             //this._data = data;
         },
         
@@ -2037,14 +2037,39 @@
         },
 
         /**
-         * Replaces the character at 'idx' with 'replaceWith'. If the specified 'idx' is less than
-         * zero, or beyond the length of the current text, there will be no effect.
+         * Inserts the character at 'idx'.
+         * If the specified 'idx' is less than zero, or beyond the
+         * length of the current text, there will be no effect.
          * 
          * @param {number} idx the character index
          * @param {string} replaceWith the replacement
          * @returns {object} this RiString
          */
-        replaceCharAt : function(idx, replaceWith) {
+        insertChar : function(idx, toInsert) {
+        	
+        	if (idx < 0 || idx >= this.length()) 
+                return this;
+                
+            var s = this.text();
+            var beg = s.substring(0, idx);
+            var end = s.substring(idx + 1);
+         
+            if (toInsert) beg += replaceWith;
+
+            return this.text(beg+end);
+        },
+         
+         
+        /**
+         * Replaces the character at 'idx' with 'replaceWith'.
+         * If the specified 'idx' is less than zero, or beyond the
+         * length of the current text, there will be no effect.
+         * 
+         * @param {number} idx the character index
+         * @param {string} replaceWith the replacement
+         * @returns {object} this RiString
+         */
+        replaceChar : function(idx, replaceWith) {
             
             if (idx < 0 || idx >= this.length()) 
                 return this;
@@ -2052,15 +2077,11 @@
             var s = this.text();
             var beg = s.substring(0, idx);
             var end = s.substring(idx + 1);
-            var s2 = null;
-            
+         
             if (replaceWith)
-                s2 = beg + replaceWith + end;
-            else
-                s2 = beg + end;
+                beg += replaceWith;
 
-            return this.text(s2);
-            
+            return this.text(beg+end);
         },
 
         /**
@@ -2116,7 +2137,19 @@
 
 			return this;
         },
-
+        
+      	/**
+         * Removes the word at 'wordIdx'.
+         * 
+         * @param {number} wordIdx the index
+         * 
+         * @returns {object} this RiString
+         */
+        removeWord : function(wordIdx) {
+        	
+        	return replaceWord(wordIdx,E);
+        },    
+            
         /**
          * Replaces the word at 'wordIdx' with 'newWord'
          * 
@@ -2125,7 +2158,20 @@
          * 
          * @returns {object} this RiString
          */
-        replaceWordAt : function(wordIdx, newWord) {
+        insertWord : function(wordIdx, newWord) {
+        	
+        	return replaceWord(wordIdx, this.words()[wordIdx]+' '+newWord);
+        },
+            
+        /**
+         * Replaces the word at 'wordIdx' with 'newWord'
+         * 
+         * @param {number} wordIdx the index
+         * @param {string} newWord the replacement
+         * 
+         * @returns {object} this RiString
+         */
+        replaceWord : function(wordIdx, newWord) {
             
             var words = this.words(); //  tokenize
             
@@ -2292,7 +2338,7 @@
          * @param {number} idx the index
          * @returns {object} this RiString
          */
-        removeCharAt : function(idx) { 
+        removeChar : function(idx) { 
             
             this.text(this._text.substring(0, idx).concat(this._text.substring(idx + 1)));
             return this;   
@@ -2450,16 +2496,6 @@
             
         },
         
-        /**
-         * Returns the current set of rules as an associative array: {names -> definitions}
-         * @returns {object} 
-         */ 
-        getRules : function()  {
-            
-            return this._rules;
-            
-        },
-        
         
         /**
          * Deletes the named rule from the grammar
@@ -2471,21 +2507,6 @@
             delete this._rules[name];
             return this;
             
-        },
-        
-        /**
-         * Makes a (deep) copy of this object
-         * 
-         * @returns {object} a newly created RiGrammar
-         */
-        clone : function() { // TODO: test me well
-
-          var tmp = RiGrammar();
-          for (var name in this._rules) {
-              tmp._rules[name] = this._rules[name];
-          }
-          return tmp;
-          
         },
 
         
@@ -2588,7 +2609,7 @@
          * Prints the grammar rules to the console in human-readable format (useful for debugging) 
          * @returns {object} this RiGrammar
          */
-        print : function() {
+        print : function() { //TODO: compare to RiTa
             
             if (console) {
                 console.log("Grammar----------------");
@@ -3628,7 +3649,7 @@
             var idx = str.indexOf('|');
             if (idx > -1) {
               lead += RiText.defaults.paragraphLeading;
-              rts[i].removeCharAt(idx);
+              rts[i].removeChar(idx);
             }
             rts[i].y += lead;
           }
@@ -4026,60 +4047,6 @@
     
     RiText.instances = [];
 
-    RiText.LEFT = 37; RiText.UP = 38; RiText.RIGHT = 39; RiText.DOWN = 40,  RiText.CENTER = 3;
-
-    // ==== RiTaEvent ============
-
-    RiText.UNKNOWN = -1; RiText.TEXT_ENTERED = 1; RiText.BEHAVIOR_COMPLETED = 2; RiText.TIMER_TICK = 3;
-
-    // ==== TextBehavior ============
-
-    RiText.MOVE_TO = 1; RiText.FADE_COLOR = 2; RiText.FADE_IN = 3; RiText.FADE_OUT = 4; RiText.FADE_TO_TEXT = 5; 
-    RiText.TIMER = 6; RiText.SCALE_TO = 7; RiText.LERP = 8;
-
-    // ==== Animation types ============
-
-    RiText.LINEAR = Easing.Linear.None; 
-    
-    RiText.EASE_IN =  Easing.Exponential.In;
-    RiText.EASE_OUT =  Easing.Exponential.Out; 
-    RiText.EASE_IN_OUT =  Easing.Exponential.InOut;
-    
-    RiText.EASE_IN_EXPO =  Easing.Exponential.In;
-    RiText.EASE_OUT_EXPO =  Easing.Exponential.Out;
-    RiText.EASE_IN_OUT_EXPO =  Easing.Exponential.InOut;
-    
-    RiText.EASE_IN_SINE = Easing.Sinusoidal.In;
-    RiText.EASE_OUT_SINE = Easing.Sinusoidal.Out;
-    RiText.EASE_IN_OUT_SINE = Easing.Sinusoidal.InOut;
-    
-    RiText.EASE_IN_CUBIC =  Easing.Cubic.In;
-    RiText.EASE_OUT_CUBIC = Easing.Cubic.Out;
-    RiText.EASE_IN_OUT_CUBIC =  Easing.Cubic.InOut;
-    
-    RiText.EASE_IN_QUARTIC =  Easing.Quartic.In;
-    RiText.EASE_OUT_QUARTIC =  Easing.Quartic.Out;
-    RiText.EASE_IN_OUT_QUARTIC =  Easing.Quartic.InOut;
-    
-    RiText.EASE_IN_QUINTIC = Easing.Quintic.In;
-    RiText.EASE_OUT_QUINTIC = Easing.Circular.Out;
-    RiText.EASE_IN_OUT_QUINTIC = Easing.Circular.InOut;
-    
-    RiText.BACK_IN = Easing.Back.In;
-    RiText.BACK_OUT = Easing.Back.Out;
-    RiText.BACK_IN_OUT = Easing.Back.InOut;
-    
-    RiText.BOUNCE_IN = Easing.Bounce.In;
-    RiText.BOUNCE_OUT = Easing.Bounce.Out;
-    RiText.BOUNCE_IN_OUT = Easing.Bounce.InOut;
-    
-    RiText.CIRCULAR_IN = Easing.Circular.In;
-    RiText.CIRCULAR_OUT = Easing.Circular.Out;
-    RiText.CIRCULAR_IN_OUT = Easing.Circular.InOut;
-    
-    RiText.ELASTIC_IN = Easing.Elastic.In;
-    RiText.ELASTIC_OUT = Easing.Elastic.Out;
-    RiText.ELASTIC_IN_OUT = Easing.Elastic.InOut;
     
     /**
      * A set of static defaults to be shared by RiText objects
@@ -4834,14 +4801,28 @@
         },
 
          /**
+         * Inserts the character at the specified index
+         * 
+         * @param {number} ind the index
+         * @param {string} theChar the character(s)
+         * @returns {object} RiText
+         */
+        insertChar : function(ind, theChar) { 
+            
+            this._rs.insertChar(ind, theChar);
+            return this;
+            
+        },
+        
+        /**
          * Removes the character at the specified index
          * 
          * @param {number} ind the index
          * @returns {object} RiText
          */
-        removeCharAt : function(ind) { 
+        removeChar : function(ind) { 
             
-            this._rs.removeCharAt(ind);
+            this._rs.removeChar(ind);
             return this;
             
         },
@@ -4854,23 +4835,24 @@
          * @param {string} replaceWith the replacement
          * @returns {object} this RiText
          */
-        replaceCharAt : function(idx, replaceWith) {
+        replaceChar : function(idx, replaceWith) {
             
-            if (idx < 0 || idx >= this._rs.length()) 
-                return this;
-                
-            var s = this._rs.text();
-            var beg = s.substring(0, idx);
-            var end = s.substring(idx + 1);
-            var s2 = null;
-            
-            if (replaceWith)
-                s2 = beg + replaceWith + end;
-            else
-                s2 = beg + end;
-
-            return this._rs.text(s2);
-            
+            // if (idx < 0 || idx >= this._rs.length()) 
+                // return this;
+//                 
+            // var s = this._rs.text();
+            // var beg = s.substring(0, idx);
+            // var end = s.substring(idx + 1);
+            // var s2 = null;
+//             
+            // if (replaceWith)
+                // s2 = beg + replaceWith + end;
+            // else
+                // s2 = beg + end;
+// 
+            // return this._rs.text(s2);
+            this._rs.replaceChar(idx, replaceWith);
+            return this;
         },
 
         /**
@@ -4933,6 +4915,38 @@
             
         },
         
+        /**
+         * Inserts 'newWord' at 'wordIdx' 
+         * 
+         * @param {number} wordIdx the index
+         * @param {string} newWord the string to insert
+         * 
+         * @returns {object} this RiText
+         */
+        insertWord : function(wordIdx, newWord) {
+        	
+        	// var words = this.words();
+//         	  
+            // if (wordIdx >= 0 && wordIdx < words.length) { 
+//                 
+                // var newWords = [];
+//                 
+                // for (var i=0; i <= wordIdx; i++)  // OPT?
+                  // newWords.push(words[i]);
+//                 
+                // newWords.push(newWord);
+//                 
+                // for (var i=wordIdx+1; i < words.length; i++) 
+                  // newWords.push(words[i]);
+//                   
+             	// this._rs.text(RiTa.untokenize(words));
+            // }
+//             
+			this._rs.insertWord(wordIdx, newWord);
+            return this;
+		},
+		
+		   
          /**
          * Replaces the word at 'wordIdx' with 'newWord'
          * 
@@ -4941,20 +4955,35 @@
          * 
          * @returns {object} this RiText
          */
-        replaceWordAt : function(wordIdx, newWord) {
+        replaceWord : function(wordIdx, newWord) {
             
-            var words = this.words();
-            
-            if (wordIdx >= 0 && wordIdx < words.length) {
+            // var words = this.words();
+             
+            // if (wordIdx >= 0 && wordIdx < words.length) {
                 
-                words[wordIdx] = newWord;
-                
-                this._rs.text(RiTa.untokenize(words));
-            }
+                // words[wordIdx] = newWord;
+                 
+                // this._rs.text(RiTa.untokenize(words));
+            // }
             
-            return this;
+            this._rs.replaceWord(wordIdx, newWord);
             
+            return this; // TODO: check that all RiText methods use the delegate 
+            			//  (like above) for methods that exist in RiString
         },
+        
+        /**
+         * Removes the word at 'wordIdx'.
+         * 
+         * @param {number} wordIdx the index
+         * 
+         * @returns {object} this RiText
+         */
+        removeWord : function(wordIdx) {
+        	
+        	this._rs.removeWord(wordIdx,E);
+        	return this;
+        },  
         
          /**
          * Extracts a part of a string from this RiText
@@ -5631,6 +5660,63 @@
         
         /** For tokenization, Can't -> Can not, etc. */
         SPLIT_CONTRACTIONS : false,
+        
+	    // :::: For RiTaEvents :::::::::
+	
+	    UNKNOWN : -1, TEXT_ENTERED : 1, BEHAVIOR_COMPLETED : 2, TIMER_TICK : 3,
+	
+	    // :::: TextBehavior ::::::::::::
+	
+	    MOVE_TO : 1, FADE_COLOR : 2, FADE_IN : 3, FADE_OUT : 4, FADE_TO_TEXT : 5, 
+	    TIMER : 6, SCALE_TO : 7, LERP : 8,
+	
+		// :::: RiText Constants  :::::::::	
+		   
+	    LEFT : 37, UP : 38, RIGHT : 39, DOWN : 40,  CENTER : 3,
+	
+	    // :::: Animation types :::::::::
+	
+	    LINEAR : Easing.Linear.None, 
+	    
+	    EASE_IN :  Easing.Exponential.In,
+	    EASE_OUT :  Easing.Exponential.Out, 
+	    EASE_IN_OUT :  Easing.Exponential.InOut,
+	    
+	    EASE_IN_EXPO :  Easing.Exponential.In,
+	    EASE_OUT_EXPO :  Easing.Exponential.Out,
+	    EASE_IN_OUT_EXPO :  Easing.Exponential.InOut,
+	    
+	    EASE_IN_SINE : Easing.Sinusoidal.In,
+	    EASE_OUT_SINE : Easing.Sinusoidal.Out,
+	    EASE_IN_OUT_SINE : Easing.Sinusoidal.InOut,
+	    
+	    EASE_IN_CUBIC :  Easing.Cubic.In,
+	    EASE_OUT_CUBIC : Easing.Cubic.Out,
+	    EASE_IN_OUT_CUBIC :  Easing.Cubic.InOut,
+	    
+	    EASE_IN_QUARTIC :  Easing.Quartic.In,
+	    EASE_OUT_QUARTIC :  Easing.Quartic.Out,
+	    EASE_IN_OUT_QUARTIC :  Easing.Quartic.InOut,
+	    
+	    EASE_IN_QUINTIC : Easing.Quintic.In,
+	    EASE_OUT_QUINTIC : Easing.Circular.Out,
+	    EASE_IN_OUT_QUINTIC : Easing.Circular.InOut,
+	    
+	    BACK_IN : Easing.Back.In,
+	    BACK_OUT : Easing.Back.Out,
+	    BACK_IN_OUT : Easing.Back.InOut,
+	    
+	    BOUNCE_IN : Easing.Bounce.In,
+	    BOUNCE_OUT : Easing.Bounce.Out,
+	    BOUNCE_IN_OUT : Easing.Bounce.InOut,
+	    
+	    CIRCULAR_IN : Easing.Circular.In,
+	    CIRCULAR_OUT : Easing.Circular.Out,
+	    CIRCULAR_IN_OUT : Easing.Circular.InOut,
+	    
+	    ELASTIC_IN : Easing.Elastic.In,
+	    ELASTIC_OUT : Easing.Elastic.Out,
+	    ELASTIC_IN_OUT : Easing.Elastic.InOut,
 
         // For Conjugator =================================
         
@@ -5813,7 +5899,7 @@
          * set { 'n', 'v', 'a', 'r' } as a string. 
          * 
          * @param {string | array} words the text to be tagged
-         * @returns {string | array} the corresponding part-of-speech for WordNet
+         * @returns {array} the corresponding parts-of-speech for WordNet
          */
         _tagForWordNet  : function(words) {
             
@@ -5837,7 +5923,7 @@
         /**
          * Uses the default PosTagger to tag the input with a tag from the PENN tag set
          * @param {string | array} words the text to be tagged
-         * @returns {string | array}
+         * @returns {array}
          * 
          */
         getPosTags : function(words) {    
@@ -6411,9 +6497,10 @@
         },
         
         /**
-         * Returns the # of words in the object according to the default WordTokenizer.
+         * Returns the # of words in the String according to the default tokenizer.
          * 
          * @param {string} words the string to analyze
+         * 
          * @returns {number}
          */
         getWordCount : function(words) {
