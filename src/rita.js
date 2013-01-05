@@ -5,7 +5,7 @@
 
 (function(window, undefined) {
 	
-	var _VERSION_ = '0.23';
+	var _VERSION_ = '0.24';
 	// also update /RiTaLibraryJS/www/download/index.html (should be automatic)
 
     /**  @private Simple type-checking functions */ 
@@ -46,6 +46,1406 @@
     } // end Type
     
     var is = Type.is, ok = Type.ok; // alias
+
+var Easing = {
+    
+        Linear: {
+    
+            None: function ( k ) {
+    
+                return k;
+    
+            }
+    
+        },
+    
+        Quadratic: {
+    
+            In: function ( k ) {
+    
+                return k * k;
+    
+            },
+    
+            Out: function ( k ) {
+    
+                return k * ( 2 - k );
+    
+            },
+    
+            InOut: function ( k ) {
+    
+                if ( ( k *= 2 ) < 1 ) return 0.5 * k * k;
+                return - 0.5 * ( --k * ( k - 2 ) - 1 );
+    
+            }
+    
+        },
+    
+        Cubic: {
+    
+            In: function ( k ) {
+    
+                return k * k * k;
+    
+            },
+    
+            Out: function ( k ) {
+    
+                return --k * k * k + 1;
+    
+            },
+    
+            InOut: function ( k ) {
+    
+                if ( ( k *= 2 ) < 1 ) return 0.5 * k * k * k;
+                return 0.5 * ( ( k -= 2 ) * k * k + 2 );
+    
+            }
+    
+        },
+    
+        Quartic: {
+    
+            In: function ( k ) {
+    
+                return k * k * k * k;
+    
+            },
+    
+            Out: function ( k ) {
+    
+                return 1 - --k * k * k * k;
+    
+            },
+    
+            InOut: function ( k ) {
+    
+                if ( ( k *= 2 ) < 1) return 0.5 * k * k * k * k;
+                return - 0.5 * ( ( k -= 2 ) * k * k * k - 2 );
+    
+            }
+    
+        },
+    
+        Quintic: {
+    
+            In: function ( k ) {
+    
+                return k * k * k * k * k;
+    
+            },
+    
+            Out: function ( k ) {
+    
+                return --k * k * k * k * k + 1;
+    
+            },
+    
+            InOut: function ( k ) {
+    
+                if ( ( k *= 2 ) < 1 ) return 0.5 * k * k * k * k * k;
+                return 0.5 * ( ( k -= 2 ) * k * k * k * k + 2 );
+    
+            }
+    
+        },
+    
+        Sinusoidal: {
+    
+            In: function ( k ) {
+    
+                return 1 - Math.cos( k * Math.PI / 2 );
+    
+            },
+    
+            Out: function ( k ) {
+    
+                return Math.sin( k * Math.PI / 2 );
+    
+            },
+    
+            InOut: function ( k ) {
+    
+                return 0.5 * ( 1 - Math.cos( Math.PI * k ) );
+    
+            }
+    
+        },
+    
+        Exponential: {
+    
+            In: function ( k ) {
+    
+                return k === 0 ? 0 : Math.pow( 1024, k - 1 );
+    
+            },
+    
+            Out: function ( k ) {
+    
+                return k === 1 ? 1 : 1 - Math.pow( 2, - 10 * k );
+    
+            },
+    
+            InOut: function ( k ) {
+    
+                if ( k === 0 ) return 0;
+                if ( k === 1 ) return 1;
+                if ( ( k *= 2 ) < 1 ) return 0.5 * Math.pow( 1024, k - 1 );
+                return 0.5 * ( - Math.pow( 2, - 10 * ( k - 1 ) ) + 2 );
+    
+            }
+    
+        },
+    
+        Circular: {
+    
+            In: function ( k ) {
+    
+                return 1 - Math.sqrt( 1 - k * k );
+    
+            },
+    
+            Out: function ( k ) {
+    
+                return Math.sqrt( 1 - --k * k );
+    
+            },
+    
+            InOut: function ( k ) {
+    
+                if ( ( k *= 2 ) < 1) return - 0.5 * ( Math.sqrt( 1 - k * k) - 1);
+                return 0.5 * ( Math.sqrt( 1 - ( k -= 2) * k) + 1);
+    
+            }
+    
+        },
+    
+        Elastic: {
+    
+            In: function ( k ) {
+    
+                var s, a = 0.1, p = 0.4;
+                if ( k === 0 ) return 0;
+                if ( k === 1 ) return 1;
+                if ( !a || a < 1 ) { a = 1; s = p / 4; }
+                else s = p * Math.asin( 1 / a ) / ( 2 * Math.PI );
+                return - ( a * Math.pow( 2, 10 * ( k -= 1 ) ) * Math.sin( ( k - s ) * ( 2 * Math.PI ) / p ) );
+    
+            },
+    
+            Out: function ( k ) {
+    
+                var s, a = 0.1, p = 0.4;
+                if ( k === 0 ) return 0;
+                if ( k === 1 ) return 1;
+                if ( !a || a < 1 ) { a = 1; s = p / 4; }
+                else s = p * Math.asin( 1 / a ) / ( 2 * Math.PI );
+                return ( a * Math.pow( 2, - 10 * k) * Math.sin( ( k - s ) * ( 2 * Math.PI ) / p ) + 1 );
+    
+            },
+    
+            InOut: function ( k ) {
+    
+                var s, a = 0.1, p = 0.4;
+                if ( k === 0 ) return 0;
+                if ( k === 1 ) return 1;
+                if ( !a || a < 1 ) { a = 1; s = p / 4; }
+                else s = p * Math.asin( 1 / a ) / ( 2 * Math.PI );
+                if ( ( k *= 2 ) < 1 ) return - 0.5 * ( a * Math.pow( 2, 10 * ( k -= 1 ) ) * Math.sin( ( k - s ) * ( 2 * Math.PI ) / p ) );
+                return a * Math.pow( 2, -10 * ( k -= 1 ) ) * Math.sin( ( k - s ) * ( 2 * Math.PI ) / p ) * 0.5 + 1;
+    
+            }
+    
+        },
+    
+        Back: {
+    
+            In: function ( k ) {
+    
+                var s = 1.70158;
+                return k * k * ( ( s + 1 ) * k - s );
+    
+            },
+    
+            Out: function ( k ) {
+    
+                var s = 1.70158;
+                return --k * k * ( ( s + 1 ) * k + s ) + 1;
+    
+            },
+    
+            InOut: function ( k ) {
+    
+                var s = 1.70158 * 1.525;
+                if ( ( k *= 2 ) < 1 ) return 0.5 * ( k * k * ( ( s + 1 ) * k - s ) );
+                return 0.5 * ( ( k -= 2 ) * k * ( ( s + 1 ) * k + s ) + 2 );
+    
+            }
+    
+        },
+    
+        Bounce: {
+    
+            In: function ( k ) {
+    
+                return 1 - Easing.Bounce.Out( 1 - k );
+    
+            },
+    
+            Out: function ( k ) {
+    
+                if ( k < ( 1 / 2.75 ) ) {
+    
+                    return 7.5625 * k * k;
+    
+                } else if ( k < ( 2 / 2.75 ) ) {
+    
+                    return 7.5625 * ( k -= ( 1.5 / 2.75 ) ) * k + 0.75;
+    
+                } else if ( k < ( 2.5 / 2.75 ) ) {
+    
+                    return 7.5625 * ( k -= ( 2.25 / 2.75 ) ) * k + 0.9375;
+    
+                } else {
+    
+                    return 7.5625 * ( k -= ( 2.625 / 2.75 ) ) * k + 0.984375;
+    
+                }
+    
+            },
+    
+            InOut: function ( k ) {
+    
+                if ( k < 0.5 ) return Easing.Bounce.In( k * 2 ) * 0.5;
+                return Easing.Bounce.Out( k * 2 - 1 ) * 0.5 + 0.5;
+    
+            }
+    
+        }
+    
+    }
+    
+    var Interpolation = {
+    
+        Linear: function ( v, k ) {
+    
+            var m = v.length - 1, f = m * k, i = Math.floor( f ), fn = Interpolation.Utils.Linear;
+    
+            if ( k < 0 ) return fn( v[ 0 ], v[ 1 ], f );
+            if ( k > 1 ) return fn( v[ m ], v[ m - 1 ], m - f );
+    
+            return fn( v[ i ], v[ i + 1 > m ? m : i + 1 ], f - i );
+    
+        },
+    
+        Bezier: function ( v, k ) {
+    
+            var b = 0, n = v.length - 1, pw = Math.pow, bn = Interpolation.Utils.Bernstein, i;
+    
+            for ( i = 0; i <= n; i++ ) {
+                b += pw( 1 - k, n - i ) * pw( k, i ) * v[ i ] * bn( n, i );
+            }
+    
+            return b;
+    
+        },
+    
+        CatmullRom: function ( v, k ) {
+    
+            var m = v.length - 1, f = m * k, i = Math.floor( f ), fn = Interpolation.Utils.CatmullRom;
+    
+            if ( v[ 0 ] === v[ m ] ) {
+    
+                if ( k < 0 ) i = Math.floor( f = m * ( 1 + k ) );
+    
+                return fn( v[ ( i - 1 + m ) % m ], v[ i ], v[ ( i + 1 ) % m ], v[ ( i + 2 ) % m ], f - i );
+    
+            } else {
+    
+                if ( k < 0 ) return v[ 0 ] - ( fn( v[ 0 ], v[ 0 ], v[ 1 ], v[ 1 ], -f ) - v[ 0 ] );
+                if ( k > 1 ) return v[ m ] - ( fn( v[ m ], v[ m ], v[ m - 1 ], v[ m - 1 ], f - m ) - v[ m ] );
+    
+                return fn( v[ i ? i - 1 : 0 ], v[ i ], v[ m < i + 1 ? m : i + 1 ], v[ m < i + 2 ? m : i + 2 ], f - i );
+    
+            }
+    
+        },
+    
+        Utils: {
+    
+            Linear: function ( p0, p1, t ) {
+    
+                return ( p1 - p0 ) * t + p0;
+    
+            },
+    
+            Bernstein: function ( n , i ) {
+    
+                var fc = Interpolation.Utils.Factorial;
+                return fc( n ) / fc( i ) / fc( n - i );
+    
+            },
+    
+            Factorial: ( function () {
+    
+                var a = [ 1 ];
+    
+                return function ( n ) {
+    
+                    var s = 1, i;
+                    if ( a[ n ] ) return a[ n ];
+                    for ( i = n; i > 1; i-- ) s *= i;
+                    return a[ n ] = s;
+    
+                }
+    
+            } )(),
+    
+            CatmullRom: function ( p0, p1, p2, p3, t ) {
+    
+                var v0 = ( p2 - p0 ) * 0.5, v1 = ( p3 - p1 ) * 0.5, t2 = t * t, t3 = t * t2;
+                return ( 2 * p1 - 2 * p2 + v0 + v1 ) * t3 + ( - 3 * p1 + 3 * p2 - 2 * v0 - v1 ) * t2 + v0 * t + p1;
+    
+            }
+    
+        }
+    
+    }
+    // ////////////////////////////////////////////////////////////
+    // RiTa object (singleton)
+    // ////////////////////////////////////////////////////////////
+    
+    /**
+     * @namespace A collection of static variables and functions for the RiTa library
+     */
+    RiTa = {
+        // RiTa constants =================================
+        
+        /** The current version of the RiTa tools */
+
+        VERSION : _VERSION_,
+
+        /** 
+         * a=alpha
+         * b=beta
+         * @private
+         */
+        PHASE : 'a', 
+
+        /** For tokenization, Can't -> Can not, etc. */
+        SPLIT_CONTRACTIONS : false,
+        
+        // :::: For RiTaEvents :::::::::
+    
+        UNKNOWN : -1, TEXT_ENTERED : 1, BEHAVIOR_COMPLETED : 2, TIMER_TICK : 3,
+    
+        // :::: TextBehavior ::::::::::::
+    
+        MOVE_TO : 1, FADE_COLOR : 2, FADE_IN : 3, FADE_OUT : 4, FADE_TO_TEXT : 5, 
+        TIMER : 6, SCALE_TO : 7, LERP : 8,
+    
+        // :::: RiText Constants  ::::::::: 
+           
+        LEFT : 37, UP : 38, RIGHT : 39, DOWN : 40,  CENTER : 3,
+    
+        // :::: Animation types :::::::::
+    
+        LINEAR : Easing.Linear.None, 
+        
+        EASE_IN :  Easing.Exponential.In,
+        EASE_OUT :  Easing.Exponential.Out, 
+        EASE_IN_OUT :  Easing.Exponential.InOut,
+        
+        EASE_IN_EXPO :  Easing.Exponential.In,
+        EASE_OUT_EXPO :  Easing.Exponential.Out,
+        EASE_IN_OUT_EXPO :  Easing.Exponential.InOut,
+        
+        EASE_IN_SINE : Easing.Sinusoidal.In,
+        EASE_OUT_SINE : Easing.Sinusoidal.Out,
+        EASE_IN_OUT_SINE : Easing.Sinusoidal.InOut,
+        
+        EASE_IN_CUBIC :  Easing.Cubic.In,
+        EASE_OUT_CUBIC : Easing.Cubic.Out,
+        EASE_IN_OUT_CUBIC :  Easing.Cubic.InOut,
+        
+        EASE_IN_QUARTIC :  Easing.Quartic.In,
+        EASE_OUT_QUARTIC :  Easing.Quartic.Out,
+        EASE_IN_OUT_QUARTIC :  Easing.Quartic.InOut,
+        
+        EASE_IN_QUINTIC : Easing.Quintic.In,
+        EASE_OUT_QUINTIC : Easing.Circular.Out,
+        EASE_IN_OUT_QUINTIC : Easing.Circular.InOut,
+        
+        BACK_IN : Easing.Back.In,
+        BACK_OUT : Easing.Back.Out,
+        BACK_IN_OUT : Easing.Back.InOut,
+        
+        BOUNCE_IN : Easing.Bounce.In,
+        BOUNCE_OUT : Easing.Bounce.Out,
+        BOUNCE_IN_OUT : Easing.Bounce.InOut,
+        
+        CIRCULAR_IN : Easing.Circular.In,
+        CIRCULAR_OUT : Easing.Circular.Out,
+        CIRCULAR_IN_OUT : Easing.Circular.InOut,
+        
+        ELASTIC_IN : Easing.Elastic.In,
+        ELASTIC_OUT : Easing.Elastic.Out,
+        ELASTIC_IN_OUT : Easing.Elastic.InOut,
+
+        // For Conjugator =================================
+        
+        //TODO: add comments
+        
+        PHONEMES : 'phonemes',
+        
+        STRESSES : 'stresses',
+        
+        SYLLABLES : 'syllables',
+        
+        FIRST_PERSON : 1,
+
+        SECOND_PERSON : 2,
+
+        THIRD_PERSON : 3,
+
+        PAST_TENSE : 4,
+
+        PRESENT_TENSE : 5,
+
+        FUTURE_TENSE : 6,
+
+        SINGULAR : 7,
+
+        PLURAL : 8,
+
+        NORMAL : 9,
+        
+        ABBREVIATIONS : [   "Adm." ,"Capt." ,"Cmdr." ,"Col." ,"Dr." ,"Gen." ,"Gov." ,"Lt." ,"Maj." ,"Messrs." ,"Mr.","Mrs." ,"Ms." ,"Prof." ,"Rep." ,"Reps." ,"Rev." ,"Sen." ,"Sens." ,"Sgt." ,"Sr." ,"St.","a.k.a." ,"c.f." ,"i.e." ,"e.g." ,"vs." ,"v.", "Jan." ,"Feb." ,"Mar." ,"Apr." ,"Mar." ,"Jun." ,"Jul." ,"Aug." ,"Sept." ,"Oct." ,"Nov." ,"Dec." ],
+           
+        /** The infinitive verb form  - 'to eat an apple' */
+        INFINITIVE : 1,
+
+        /** Gerund form of a verb  - 'eating an apple' */
+        GERUND : 2,
+
+        /** The imperative verb form - 'eat an apple!' */
+        IMPERATIVE : 3,
+
+        /** Bare infinitive verb form - 'eat an apple' */
+        BARE_INFINITIVE : 4,
+
+        /** The subjunctive verb form */
+        SUBJUNCTIVE : 5,
+ 
+        /** Set to true to disable all console output */
+        SILENT : false,
+        
+        // Start Methods =================================
+        
+        /**
+         * Joins array of word, similar to words.join(" "), but attempts to preserve punctuation position
+         * unless the 'adjustPunctuationSpacing' flag is set to false
+         * 
+         * @param {array} arr the array to join
+         * @param {string} delim the characters to place between each array element
+         * @param {boolean} adjustPunctuationSpacing (optional, default=true)
+         * 
+         * @returns {string} the joined array as string
+         */
+         untokenize: function(arr, delim, adjustPunctuationSpacing) {
+             
+            delim = delim || SP;
+            adjustPunctuationSpacing = adjustPunctuationSpacing || 1;
+            
+            if (adjustPunctuationSpacing) {
+                
+                var newStr = arr[0] || E;
+                for ( var i = 1; i < arr.length; i++) {
+                    if (arr[i]) {
+                        if (!RiTa.isPunctuation(arr[i]))
+                            newStr += delim;
+                        newStr += arr[i];
+                    }
+                }
+                
+                return newStr.trim();
+            }
+ 
+            return arr.join(delim);  
+        },
+        
+        /**
+         * Returns a random number between min(default=0) and max(default=1)
+         * @returns {number}
+         */
+        random: function() {
+            
+            var currentRandom = Math.random();
+            if (arguments.length === 0) return currentRandom;
+            if (arguments.length === 1) return currentRandom * arguments[0];
+            var aMin = arguments[0], aMax = arguments[1];
+            
+            return currentRandom * (aMax - aMin) + aMin;
+            
+        },
+        
+        /**
+         * Convenience method to get the distance between 2 points
+         * @param {number} x1
+         * @param {number} y1
+         * @param {number} x2
+         * @param {number} y2
+         * 
+         * @returns {number}
+         */
+        distance: function(x1,y1,x2,y2) {
+            
+            var dx = x1 - x2, dy = y1 - y2;
+            return Math.sqrt(dx * dx + dy * dy);
+            
+        },
+        
+        /**
+         * Starts a timer that calls 'onRiTaEvent', or the specified callback, 
+         * every 'period' seconds
+         * 
+         * @param {number} period (in seconds)
+         * @param {function} callback called every 'period' seconds (optional)
+         * @returns {number} the unique id for the timer
+         */
+        timer: function(period, callback) {
+            
+            var timer = Timer(
+                function(){       
+                    RiTaEvent(RiTa, 'tick')._fire(callback);  
+             }, period * 1000, true);
+            timer.go();
+            var id = timer.id(); 
+            timers[id] = timer;
+            return id;
+        }, 
+        
+        /**
+         * Stops a timer according to its unique id
+         * @param {number} the unique id for the timer
+         */
+        stopTimer: function(id) {
+            
+            if (timers[id])  
+                timers[id].stop();
+            else
+                warn('no timer with id: '+id);
+        }, 
+        
+        /**
+         * Pauses a timer according to its unique id
+         * @param {number} the unique id for the timer
+         * @param {number} pause-time (in seconds)
+         * @returns {number} the new unique id for the timer
+         */
+        pauseTimer: function(id, pauseSec) {
+            
+            pauseSec = is(pauseSec, N) ? pauseSec : Number.MAX_VALUE;
+            
+            if (timers[id])  {
+                timers[id].pause();
+                setTimeout(function() { 
+                    if (timers[id]) timers[id].play(); else warn("no timer!!!");
+                }, pauseSec*1000);
+            }
+            else
+                warn('no timer with id: '+id);
+        },   
+
+        /**
+         * Returns true if 'tag' is a valid PENN part-of-speech tag (e.g. cd, fw, jj, ls, nn, sym, vbg, wp)
+         * @param {string} tag the PENN part-of-speech tag
+         * @returns {boolean} true if the tag a valid PENN part-of-speech tag
+         */
+        _isPosTag : function(tag) {
+            return PosTagger.isTag(tag);
+            
+        },
+             
+        // TODO: example
+        /**
+         * Tags the word (as usual) with a part-of-speech from the Penn tagset, 
+         * then returns the corresponding part-of-speech for WordNet from the
+         * set { 'n', 'v', 'a', 'r' } as a string. 
+         * 
+         * @param {string | array} words the text to be tagged
+         * @returns {array} the corresponding parts-of-speech for WordNet
+         */
+        _tagForWordNet  : function(words) {
+            
+            var posArr = RiTa.getPosTags(words);
+
+            if (!undef(words) && posArr.length) {
+                for ( var i = 0; i < posArr.length; i++) {
+                    var pos = posArr[i];
+                    if (PosTagger.isNoun(pos))      posArr[i] =  "n";
+                    if (PosTagger.isVerb(pos))      posArr[i] =  "v";
+                    if (PosTagger.isAdverb(pos))    posArr[i] =  "r";
+                    if (PosTagger.isAdj(pos))      posArr[i] =  "a";
+                }
+                return posArr;  
+            }
+            return []; 
+        },
+          
+        //TODO: example
+        
+        /**
+         * Uses the default PosTagger to tag the input with a tag from the PENN tag set
+         * @param {string | array} words the text to be tagged
+         * @returns {array}
+         * 
+         */
+        getPosTags : function(words) {    
+            
+            var arr = is(words,S) ? RiTa.tokenize(words) : words;
+            return PosTagger.tag(arr);
+        },
+        
+        // TODO: example
+        /**
+         * Takes an array of words and of tags and returns a 
+         * combined String of the form:
+         *  <pre>"The/dt doctor/nn treated/vbd dogs/nns"</pre>
+         * assuming a "/" as 'delimiter'.
+         *
+         * @param {string} words the text to tag
+         * @returns {string} 
+         */
+        getPosTagsInline : function(words, delimiter) { 
+            
+            if (!words || !words.length) return E;
+            
+            delimiter = delimiter || '/';
+            words = is(words,S) ? RiTa.tokenize(words) : words;
+            
+            var sb = E, tags = RiTa.getPosTags(words);
+            for (var i = 0; i < words.length; i++) {
+
+                sb += (words[i]);
+                if (!RiTa.isPunctuation(words[i])) {
+                    sb +=  delimiter + tags[i];
+                }
+                sb += SP;
+            }
+            
+            return sb.trim();
+        },
+
+        // TODO: example
+        
+        /**
+         * Converts a PENN part-of-speech tag to the simplified WordNet scheme 
+         * (e.g. nn -> n, nns -> n, vbz -> v, rb -> r)
+         * { "n" (noun), "v"(verb), "a"(adj), "r"(adverb), "-"(other) }
+         * as a String.
+         * 
+         * @param {string} tag pos tag to convert
+         * @returns {string} simplified WordNet tag
+         */
+        posToWordNet  : function(tag) {
+            
+            if (!strOk(tag)) return E;
+
+            if (PosTagger.isNoun(tag))    
+                return 'n';
+            else if (PosTagger.isVerb(tag))
+                return 'v';
+            else if (PosTagger.isAdverb(tag))
+                return  'r';
+            else if (PosTagger.isAdj(tag))
+                return  'a';
+            else  {
+                warn("[WARN] "+tag+" is not a valid pos-tag");
+                return  '-';
+            }
+        },
+        
+        /**
+         *  Returns the present participle form of the stemmed or non-stemmed 'verb'. 
+         *  @param {string} verb the verb
+         *  @returns {string} the present participle form of the verb
+         */
+        getPresentParticiple : function(verb) { 
+            
+            // TODO: need to call stem() and try again if first try fails
+            return Conjugator().getPresentParticiple(verb);
+        },
+
+        /**
+         *  Returns the past participle form of the stemmed or non-stemmed 'verb'. 
+         *  @param {string} verb the verb
+         *  @returns {string} the past participle form of the verb
+         */
+        getPastParticiple : function(verb) { 
+            
+            // TODO: need to call stem() and try again if first try fails
+            return Conjugator().getPastParticiple(verb);
+        },
+
+        // TODO: 2 examples
+        /**
+         *  Conjugates the 'verb' according to the specified options
+         *  @param {string} verb the verb stem
+         *  @param {object} args containing the relevant options for the conjugator
+         *  @returns {string}  the conjugated verb
+         */
+        conjugate : function(verb, args) {
+
+            return Conjugator().conjugate(verb, args);            
+        },
+
+       
+        // TODO: 2 examples (regular & irregular) in javadoc
+        
+        /** 
+         * Pluralizes a word according to pluralization rules (see regexs in constants)
+         * Returns the regular or irregular plural form of noun.       
+         * 
+         * @param {string} word the noun
+         * 
+         * @returns {string} the plural form of noun
+         */
+        pluralize : function(word) {
+
+            if (!strOk(word)) return E;
+            
+            var i, rule, rules = PLURAL_RULES;
+
+            if (inArray(MODALS, word.toLowerCase())) {
+                return word;
+            }
+
+            i = rules.length;
+            while (i--) {
+                rule = rules[i];
+                if (rule.applies(word.toLowerCase())) {
+                    return rule.fire(word);
+                }
+            }
+
+            return DEFAULT_PLURAL_RULE.fire(word);            
+        },
+        
+        // TODO: 2 examples (regular & irregular) in javadoc        
+
+        /**
+         *
+         * Singularize a word according to singularization rules (see regexs in constants)
+         * @param {string} word the noun
+         * @returns {string}  the singular form of noun
+         */ 
+        singularize : function(word) {
+
+            if (!strOk(word)) return E;
+
+            var i, rule, rules = SINGULAR_RULES;
+
+            if (inArray(MODALS, word.toLowerCase())) {
+                return word;
+            }
+
+            i = rules.length;
+            while (i--) {
+                rule = rules[i];
+                if (rule.applies(word.toLowerCase())) {
+                    return rule.fire(word);
+                }
+            }
+
+            
+            return this.stem(word, 'Pling');
+        },
+
+
+        /**
+         *  Removes blank space from either side of a string
+         *
+         *  @param {string} the input string
+         *  
+         *  @returns {string}  
+         */
+        trim : function(str) {
+            
+            return trim(str); // delegate to private
+        },
+
+    
+        /**
+         *  Tokenizes the string according to Penn Treebank conventions
+         *  See: http://www.cis.upenn.edu/~treebank/tokenization.html
+         *  
+         *  @param {string} words a sentence
+         *  @param {string | regex} regex (optional) the pattern to be used for tozenization
+         *  
+         *  @return{array} strings, which each element is a single token (or word) 
+         */
+        tokenize : function(words, regex) {
+            
+            //TODO: 2 examples for doc comment, one with 1 arg, one with 2 (a regex that splits on spaces)
+
+            if (regex) return words.split(regex);
+            
+            words = trim(words).replace(/``/g, "`` ");
+            words = words.replace(/''/g, "  ''");
+            words = words.replace(/([\\?!\"\\.,;:@#$%&])/g, " $1 ");
+            words = words.replace(/\\.\\.\\./g, " ... ");
+            words = words.replace(/\\s+/g, SP);
+            words = words.replace(/,([^0-9])/g, " , $1");
+            words = words.replace(/([^.])([.])([\])}>\"']*)\\s*$/g, "$1 $2$3 ");
+            words = words.replace(/([\[\](){}<>])/g, " $1 ");
+            words = words.replace(/--/g, " -- ");
+            words = words.replace(/$/g, SP);
+            words = words.replace(/^/g, SP);
+            words = words.replace(/([^'])' /g, "$1 ' ");
+            words = words.replace(/'([SMD]) /g, " '$1 ");
+ 
+            if (RiTa.SPLIT_CONTRACTIONS) { // SAVE
+                words = words.replace(/'ll /g, " 'll "); 
+                words = words.replace(/'re /g, " 're "); 
+                words = words.replace(/'ve /g, " have ");
+                words = words.replace(/n't /g, " not "); 
+                
+                words = words.replace(/'LL /g, " 'LL "); 
+                words = words.replace(/'RE /g, " 'RE "); 
+                words = words.replace(/'VE /g, " 'VE "); 
+                words = words.replace(/N'T /g, " N'T "); 
+            }
+            
+            words = words.replace(/ ([Cc])an't /g, " $1an not ");
+            words = words.replace(/ ([Cc])annot /g, " $1an not ");
+            words = words.replace(/ ([Dd])idn't /g, " $1id not ");
+            words = words.replace(/ ([CcWw])ouldn't /g, " $1ould not ");
+            
+
+            // "Nicole I. Kidman" gets tokenized as "Nicole I . Kidman"
+            words = words.replace(/ ([A-Z]) \\./g, " $1. ");
+            words = words.replace(/\\s+/g, SP);
+            words = words.replace(/^\\s+/g, E);
+            
+            return trim(words).split(/\s+/); // DCH: fixed bug here, 6/3/12
+        },
+
+        
+        // TODO: test and (probably) re-implement from RiTa (RiSplitter.java)
+        /**
+         *  Splits the 'text' into sentences (according to PENN Treebank conventions)
+         *  
+         *  @param {string} text the text to be split
+         *  @param {string | regex} regex (optional) the pattern to be used for tozenization
+         *  
+         *  @returns {array} of sentences 
+         */
+        splitSentences : function(text, regex) {
+
+            var arr = text.match(/(\S.+?[.!?])(?=\s+|$)/g);
+
+            return (text.length && arr && arr.length) ? arr : [ text ];
+            
+        },
+
+        /**
+         * Returns true if and only if the string matches 'pattern'
+         * 
+         * @param {string} string string to test
+         * @param {string | regex} pattern object containing regular expression
+         * @returns {boolean} true if matched, else false
+         */
+        _regexMatch : function(string, pattern) {
+            
+            if (undef(string) || undef(pattern))
+                return false;
+            
+            if (typeof pattern === S)
+                pattern = new RegExp(pattern);
+            
+            return pattern.test(string);
+            
+        },
+
+        /**
+         * Replaces all matches of 'pattern' in the 'string' with 'replacement'
+         * 
+         * @param {string} string to test
+         * @param {string | regex } pattern object containing regular expression
+         * @param {string} replacement the replacement
+         * @returns {string} with replacements or thestring on error
+         */
+        _regexReplace : function(string, pattern, replacement) {
+            
+            if (undef(string) || undef(pattern))
+                return E;
+            if (typeof pattern === S)
+                pattern = new RegExp(pattern); // TODO: is this necessary?
+            return string.replace(pattern, replacement);
+            
+        },
+             
+        /**
+         * Returns true if 'input' is an abbreviation
+         * 
+         * @param {string} input
+         * @param {boolean} caseSensitive (optional, default=false)
+         * 
+         * @returns {boolean} true if 'input' is an abbreviation
+         */
+        isAbbreviation : function(input, caseSensitive) {
+            
+            caseSensitive = caseSensitive || false;
+            input = caseSensitive ? input : RiTa._titleCase(input);
+            return inArray(this.ABBREVIATIONS, input);
+            
+        },
+        
+        /**
+         * Returns true if sentence starts with a question word.
+         * 
+         * @param {string} sentence
+         * 
+         * @returns {boolean} true if 'sentence' starts with a question word.
+         */
+        isQuestion : function(sentence) {
+            
+            var sentenceArr = RiTa.tokenize((sentence));
+            
+            for (var i = 0; i < QUESTION_STARTS.length; i++) {
+                
+                  if (equalsIgnoreCase(sentenceArr[0], QUESTION_STARTS[i]))
+                    return true;
+            }
+            return false;
+            
+        },
+
+        /**
+         * Returns true if 'currentWord' is the final word of a sentence.
+         * This is a simplified version of the OAK/JET sentence splitter method.
+         * 
+         * @param {string} currentWord
+         * @param {string} nextWord
+         * @returns {boolean} true if 'currentWord' is the final word of a sentence.
+         */
+        isSentenceEnd : function(currentWord, nextWord) {
+
+            if ( !is(currentWord,S) || !is(nextWord,S) )
+                return false;
+            
+            var cw = currentWord.charAt(0), cWL = currentWord.length; 
+            
+            // token is a mid-sentence abbreviation (mainly, titles) --> middle of sent
+            if (RiTa.isAbbreviation(currentWord))
+              return false;
+            
+            if (cWL > 1 && cw.indexOf("`'\"([{<") != -1 && RiTa.isAbbreviation(currentWord.substring(1)))
+              return false;
+        
+            if (cWL > 2 && ((currentWord.charAt(0) == '\'' 
+              && currentWord.charAt(1) == '\'') || (currentWord.charAt(0) == '`' 
+              && currentWord.charAt(1) == '`')) && RiTa.isAbbreviation(currentWord.substring(2)))
+            {
+              return false;
+            }
+            
+            var nTL = nextWord.length,
+                currentToken0 = currentWord.charAt(cWL - 1), 
+                currentToken1 = (cWL > 1) ? currentWord.charAt(cWL - 2) : ' ', 
+                currentToken2 = (cWL > 2) ? currentWord.charAt(cWL - 3) : ' ',
+                nextToken0 = nextWord.charAt(0), 
+                nextToken1 = (nTL > 1) ? nextWord.charAt(1) : ' ',
+                nextToken2 = (nTL > 2) ? nextWord.charAt(2) : ' ';
+        
+            // nextToken does not begin with an upper case,
+            // [`'"([{<] + upper case, `` + upper case, or < -> middle of sent.
+            if (!  (nextToken0 == nextToken0.toUpperCase()
+                || (nextToken1 == nextToken1.toUpperCase() && nextToken0.indexOf("`'\"([{<") != -1)
+                || (nextToken2 == nextToken2.toUpperCase() && ((nextToken0 == '`' && nextToken1 == '`') 
+                || (nextToken0 == '\'' && nextToken1 == '\'')))
+                ||  nextWord == "_" || nextToken0 == '<'))
+              return false;
+        
+            // ends with ?, !, [!?.]["'}>)], or [?!.]'' -> end of sentence
+            if (currentToken0 == '?'
+                || currentToken0 == '!'
+                || (currentToken1.indexOf("?!.") != -1 && currentToken0.indexOf("\"'}>)") != -1)
+                || (currentToken2.indexOf("?!.") != -1 && currentToken1 == '\'' && currentToken0 == '\''))
+              return true;
+              
+            // last char not "." -> middle of sentence
+            if (currentToken0 != '.') return false;
+        
+            // Note: wont handle Q. / A. at start of sentence, as in a news wire
+            //if (startOfSentence && (currentWord.equalsIgnoreCase("Q.") 
+              //|| currentWord.equalsIgnoreCase("A.")))return true; 
+            
+            // single upper-case alpha + "." -> middle of sentence
+            if (cWL == 2 && currentToken1 == currentToken1.toUpperCase())
+              return false;
+        
+            // double initial (X.Y.) -> middle of sentence << added for ACE
+            if (cWL == 4 && currentToken2 == '.'
+                && (currentToken1 == currentToken1.toUpperCase() && currentWord.charAt(0) == currentWord.charAt(0).toUpperCase() ))
+              return false;
+        
+            // U.S. or U.N. -> middle of sentence
+            //if (currentToken.equals("U.S.") || currentToken.equals("U.N."))
+              //return false; // dch
+              
+            //if (Util.isAbbreviation(currentToken)) return false;
+            
+            // (for XML-marked text) next char is < -> end of sentence
+           // if (nextToken0 == '<') return true;
+            
+            return true;
+
+        },
+        
+        /**
+         * Returns true if sentence starts with a w-question word, eg (who,what,why,where,when,etc.)
+         * 
+         * @param {string} sentence
+         * @returns {boolean} true if sentence starts with a w-question word, eg (who,what,why,where,when,etc.)
+         */
+        isW_Question : function(sentence) {    
+            var sentenceArr = RiTa.tokenize((sentence));
+            for (var i = 0; i < W_QUESTION_STARTS.length; i++)
+                if (equalsIgnoreCase(sentenceArr[0], W_QUESTION_STARTS[i]))
+                  return true;
+            return false;
+            
+        },
+
+        /**
+         * Returns a randomly ordered array of unique integers from 0 to numElements. 
+         * The size of the array will be numElements.
+         * 
+         * @param {number} numElements
+         * @returns {array} unique integers from 0 to numElements. 
+         */
+        randomOrdering : function(numElements) {    
+            
+            if (!numElements || numElements < 1)// !isNum(numElements)) 
+                err("bad arg");
+            
+            var o = [];
+            for ( var i = 0; i < numElements; i++) {
+                o.push(i);
+            }
+            
+            // Array shuffle, from Jonas Raoni Soares Silva (http://jsfromhell.com/array/shuffle)
+            for(var j, x, i = o.length; i; j = parseInt(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x){}
+
+            return o;
+            
+        },
+
+        /**
+         * Removes and returns a random element from an array, returning
+         * it and leaving the array 1 element shorter.
+         * 
+         * @param {array} arr
+         * @returns {array} 
+         */
+        removeRandom : function(arr) { 
+            
+            var i = Math.floor((Math.random()*arr.length));
+            remove(arr, i, i);
+            return arr;
+            
+        },
+            
+        /**
+         * Strips all punctuation from the given string
+         * @param {string} text input
+         * @returns {string} result
+         */
+        stripPunctuation : function(text) {    
+
+            return (text === E) ? E : text.replace(PUNCTUATION_CLASS, E); 
+        },
+        
+        // PUNCTUATION : "����`'""\",;:!?)([].#\"\\!@$%&}<>|+=-_\\/*{^",
+        
+        
+        /**
+         * Trims punctuation from each side of the token (does not trim whitespace or internal punctuation).
+         * 
+         * @param {string} text input
+         * @returns {string} result
+         */
+        trimPunctuation : function(text) {
+            
+            // TODO: replace all this with 1 regex
+
+            // from the front
+            while (text.length > 0) {
+               var c = text.charAt(0);
+               if (!RiTa.isPunctuation(c)) 
+                   break;
+               text = text.substr(1);
+            }
+            
+            // from the back
+            while (text.length > 0) {
+                var c = text.charAt(text.length-1);
+                if (!RiTa.isPunctuation(c)) 
+                    break;
+                text = text.substring(0, text.length-1);
+             }
+            return text;
+
+            
+        },
+              
+        /**
+         * Returns true if every character of 'text' is a punctuation character
+         * 
+         * @param {string} text input
+         * @returns {boolean} 
+         */
+        // TEST: PUNCTUATION : "����`'""\",;:!?)([].#\"\\!@$%&}<>|+=-_\\/*{^",
+        isPunctuation : function(text) { 
+            
+            if (!text || !text.length) return false;
+  
+            return ONLY_PUNCT.test(text); 
+            
+        },
+        
+        /**
+         * Returns true if any character of 'text' is a punctuation character
+         * 
+         * @param {string} text input
+         * @returns {boolean}
+         */
+        // TEST: PUNCTUATION : "����`'""\",;:!?)([].#\"\\!@$%&}<>|+=-_\\/*{^",
+        hasPunctuation : function(text) { 
+            
+            if (!text || !text.length) return false;
+  
+            return ONLY_PUNCT.test(text); 
+        },
+
+        /**
+         * Returns a string containing all phonemes for the input text
+         * 
+         * @param {string | array} words to analyze
+         * @returns {string}  e.g., "dh-ax-d-ao-g-r-ae-n-f-ae-s-t"
+         */
+        getPhonemes : function(words) {
+
+            return RiString(words).analyze().get(RiTa.PHONEMES);
+            
+        },
+
+        /**
+         * Analyzes the given string and returns a new string containing the stresses
+         *  for each syllable of the input text 
+         * 
+         * @param {string | array} words to analyze
+         * 
+         * @returns {string}  e.g., "01-0-1", with 1's meaning 'stressed', 
+         *      and 0's meaning 'unstressed', 
+         */
+        getStresses : function(words) {
+
+            return RiString(words).analyze().get(RiTa.STRESSES);
+        },
+
+        /**
+         * Analyzes the given string, Returns a String containing the phonemes for each syllable of
+         * each word of the input text,  delimited by dashes (phonemes) and spaces (words) 
+         * 
+         * @param {string | array} words to analyze
+         * 
+         * @returns {string} e.g., "dh-ax d-ao-g r-ae-n f-ae-s-t" 
+         *  for the 4 syllables of the phrase 'The dog ran fast'
+         */
+        getSyllables : function(words) {
+
+            return RiString(words).analyze().get(RiTa.SYLLABLES);
+
+        },
+        
+        /**
+         * Returns the # of words in the String according to the default tokenizer.
+         * 
+         * @param {string} words the string to analyze
+         * 
+         * @returns {number}
+         */
+        getWordCount : function(words) {
+            
+            return RiTa.tokenize(words).length;
+
+        },
+        
+        /**
+         * Extracts base roots from a word according to the specified stemming algorithm
+         * <p>
+         * Note: see http://text-processing.com/demo/stem/ for comparison of 
+         * Lancaster and Porter algorithms or  http://mpii.de/yago-naga/javatools 
+         * for info on PlingStemmer
+         * 
+         * @param {string} word the word to analyze
+         * 
+         * @param {string} type one of ['Lancaster' (the default), 'Porter', or 'Pling'] 
+         *  to specify the stemming algorithm to use
+         * 
+         * @returns {string} the stemmed form of 'word'
+         */
+        stem : function(word, type) {
+            
+            type = type || 'Lancaster';  // CONSTANTS
+            
+            if (type != 'Lancaster' && type != 'Porter' && type != 'Pling')
+                err('Bad stemmer type: '+type);
+            
+            var stemImpl = Stemmer['stem_'+type];
+            
+            if (word.indexOf(SP) < 0) return stemImpl(word);
+            
+            // dump non-words && multiple white-space - http://qaa.ath.cx/porter_js_demo.html
+            word = word.replace(/[^\w]/g, SP);
+            word = word.replace(/\s+/g, SP); 
+            
+            var res = [], words = word.split(SP);
+            
+            for ( var i = 0; i < words.length; i++) {
+                
+                res.push(stemImpl(words[i]));
+            }
+            
+            return res.join(SP);
+        },
+        
+        /**
+         * For convenience, provides implementations of some of Processing built-in 
+         * method, e.g. size(), background(), etc. and backwards compatibility with
+         * the original RiTa/Processing Java library
+         * 
+         * @param {boolean} true to enable compatibility, else false
+         */
+        p5Compatible : function(value) {
+            
+            //console.log('p5Compatible('+value+'['+window+'])');
+            
+            if (!arguments.callee.setupAndDraw) {
+                
+                arguments.callee.setupAndDraw = function() {
+                    if (typeof window.setup == F) setup();
+                    if (typeof window.draw == F) RiText.loop();
+                }
+            }
+            
+            if (window) {
+                // TODO: add mouse-handling methods here?
+                if (typeof window.mouseClicked == F) 
+                    window.onmouseup = window.mouseClicked;
+                if (typeof window.mousePressed == F) 
+                    window.onmousedown = window.mousePressed;
+                if (typeof window.mouseReleased == F) 
+                    window.onmouseup = window.mouseReleased;
+                if (typeof window.mouseMoved == F) 
+                    window.onmousemove = window.mouseMoved;
+            }
+            //if (typeof window.mouseDragged == F) 
+                //window.onmousemove = window.mouseDragged; 
+            // window.onmousemove = mouseDragged;
+
+            if (value) {
+                
+                // alias for some P5 member functions 
+                RiText.prototype.fill       = RiText.prototype.color;
+                RiText.prototype.textAlign  = RiText.prototype.align;
+                RiText.prototype.textFont   = RiText.prototype.font;
+                RiText.prototype.textSize   = RiText.prototype.fontSize;
+                
+                // alias for some RiTa-java functions
+                RiText.prototype.setText    = RiText.prototype.text;
+                RiText.prototype.fadeColor  = RiText.prototype.colorTo;
+                RiText.prototype.fadeToText = RiText.prototype.textTo;
+                RiText.prototype.setColor   = RiText.prototype.color;
+                
+                // alias for RiTa-java static functions
+                RiText.setDefaultFont = RiText.defaultFont;
+                RiText.setDefaultColor = RiText.defaultColor;
+                RiText.setDefaultAlignment = RiText.defaultAlignment;
+                RiText.setCallbackTimer = RiText.timer;
+                RiText.delete = RiText.dispose;
+                RiText.deleteAll = RiText.disposeAll;
+                
+                if (typeof window != 'undefined' && !hasProcessing) {
+                    
+                    // add some common P5 global methods (sorry, namespace)
+                    
+                    if (!window.line) window.line = RiText.line;
+                    if (!window.size) window.size= RiText.size;
+                    if (!window.width) window.width = RiText.width; // want the var
+                    if (!window.height) window.height= RiText.height; // want the var
+                    if (!window.createFont) window.createFont= RiText.createFont;
+                    if (!window.background) window.background= RiText.background;
+                    if (!window.random) window.random= RiText.random;
+                    if (!window.RIGHT) window.RIGHT = RiTa.RIGHT;
+                    if (!window.LEFT) window.LEFT = RiTa.LEFT;
+                    if (!window.CENTER) window.CENTER = RiTa.CENTER;
+                    
+                    window.onload = arguments.callee.setupAndDraw;
+                }
+            }
+            else { // non-compatible mode (clear extra stuff)
+                
+                delete RiText.prototype.fill;
+                delete RiText.prototype.textAlign;
+                delete RiText.prototype.textFont;
+                delete RiText.prototype.textSize;
+                
+                delete RiText.prototype.setColor;
+                delete RiText.prototype.setText;
+                delete RiText.prototype.fadeColor;
+                delete RiText.prototype.fadeToText;
+                
+                delete RiText.setDefaultFont;
+                delete RiText.setDefaultColor;
+                delete RiText.setDefaultAlignment;
+                delete RiText.setCallbackTimer;
+                
+                if (typeof window != 'undefined' && window && !hasProcessing)  {
+                    
+                    // are these checks needed?
+                    if (window.line === RiText.line) delete window.line;
+                    if (window.size === RiText.size) delete window.size;
+                    if (window.width === RiText.width) delete window.width;
+                    if (window.height === RiText.height) delete window.height;
+                    if (window.createFont === RiText.createFont) delete window.createFont;
+                    if (window.background === RiText.background) delete window.background;
+                    if (window.random === RiText.random) delete window.random;
+                    if (window.RIGHT === RiTa.RIGHT) delete window.RIGHT;
+                    if (window.LEFT === RiTa.LEFT) delete window.LEFT;
+                    if (window.CENTER === RiTa.CENTER) delete window.CENTER;
+
+                    if (window.onload && (window.onload == arguments.callee.setupAndDraw))
+                        delete window.onload;
+                }
+            }
+        },
+        
+        /**
+         * Converts 'input' to Titlecase (1st letter upper, rest lower)
+         */
+        _titleCase : function(input) {
+            
+            if (!input || !input.length) return input;
+            
+            return input.substring(0,1).toUpperCase() + input.substring(1);
+        }
+        
+    } // end RiTa object
 
     // ////////////////////////////////////////////////////////////
     // RiMarkov
@@ -3059,371 +4459,7 @@
     } // end RiGrammar
     
 
-    var Easing = {
     
-        Linear: {
-    
-            None: function ( k ) {
-    
-                return k;
-    
-            }
-    
-        },
-    
-        Quadratic: {
-    
-            In: function ( k ) {
-    
-                return k * k;
-    
-            },
-    
-            Out: function ( k ) {
-    
-                return k * ( 2 - k );
-    
-            },
-    
-            InOut: function ( k ) {
-    
-                if ( ( k *= 2 ) < 1 ) return 0.5 * k * k;
-                return - 0.5 * ( --k * ( k - 2 ) - 1 );
-    
-            }
-    
-        },
-    
-        Cubic: {
-    
-            In: function ( k ) {
-    
-                return k * k * k;
-    
-            },
-    
-            Out: function ( k ) {
-    
-                return --k * k * k + 1;
-    
-            },
-    
-            InOut: function ( k ) {
-    
-                if ( ( k *= 2 ) < 1 ) return 0.5 * k * k * k;
-                return 0.5 * ( ( k -= 2 ) * k * k + 2 );
-    
-            }
-    
-        },
-    
-        Quartic: {
-    
-            In: function ( k ) {
-    
-                return k * k * k * k;
-    
-            },
-    
-            Out: function ( k ) {
-    
-                return 1 - --k * k * k * k;
-    
-            },
-    
-            InOut: function ( k ) {
-    
-                if ( ( k *= 2 ) < 1) return 0.5 * k * k * k * k;
-                return - 0.5 * ( ( k -= 2 ) * k * k * k - 2 );
-    
-            }
-    
-        },
-    
-        Quintic: {
-    
-            In: function ( k ) {
-    
-                return k * k * k * k * k;
-    
-            },
-    
-            Out: function ( k ) {
-    
-                return --k * k * k * k * k + 1;
-    
-            },
-    
-            InOut: function ( k ) {
-    
-                if ( ( k *= 2 ) < 1 ) return 0.5 * k * k * k * k * k;
-                return 0.5 * ( ( k -= 2 ) * k * k * k * k + 2 );
-    
-            }
-    
-        },
-    
-        Sinusoidal: {
-    
-            In: function ( k ) {
-    
-                return 1 - Math.cos( k * Math.PI / 2 );
-    
-            },
-    
-            Out: function ( k ) {
-    
-                return Math.sin( k * Math.PI / 2 );
-    
-            },
-    
-            InOut: function ( k ) {
-    
-                return 0.5 * ( 1 - Math.cos( Math.PI * k ) );
-    
-            }
-    
-        },
-    
-        Exponential: {
-    
-            In: function ( k ) {
-    
-                return k === 0 ? 0 : Math.pow( 1024, k - 1 );
-    
-            },
-    
-            Out: function ( k ) {
-    
-                return k === 1 ? 1 : 1 - Math.pow( 2, - 10 * k );
-    
-            },
-    
-            InOut: function ( k ) {
-    
-                if ( k === 0 ) return 0;
-                if ( k === 1 ) return 1;
-                if ( ( k *= 2 ) < 1 ) return 0.5 * Math.pow( 1024, k - 1 );
-                return 0.5 * ( - Math.pow( 2, - 10 * ( k - 1 ) ) + 2 );
-    
-            }
-    
-        },
-    
-        Circular: {
-    
-            In: function ( k ) {
-    
-                return 1 - Math.sqrt( 1 - k * k );
-    
-            },
-    
-            Out: function ( k ) {
-    
-                return Math.sqrt( 1 - --k * k );
-    
-            },
-    
-            InOut: function ( k ) {
-    
-                if ( ( k *= 2 ) < 1) return - 0.5 * ( Math.sqrt( 1 - k * k) - 1);
-                return 0.5 * ( Math.sqrt( 1 - ( k -= 2) * k) + 1);
-    
-            }
-    
-        },
-    
-        Elastic: {
-    
-            In: function ( k ) {
-    
-                var s, a = 0.1, p = 0.4;
-                if ( k === 0 ) return 0;
-                if ( k === 1 ) return 1;
-                if ( !a || a < 1 ) { a = 1; s = p / 4; }
-                else s = p * Math.asin( 1 / a ) / ( 2 * Math.PI );
-                return - ( a * Math.pow( 2, 10 * ( k -= 1 ) ) * Math.sin( ( k - s ) * ( 2 * Math.PI ) / p ) );
-    
-            },
-    
-            Out: function ( k ) {
-    
-                var s, a = 0.1, p = 0.4;
-                if ( k === 0 ) return 0;
-                if ( k === 1 ) return 1;
-                if ( !a || a < 1 ) { a = 1; s = p / 4; }
-                else s = p * Math.asin( 1 / a ) / ( 2 * Math.PI );
-                return ( a * Math.pow( 2, - 10 * k) * Math.sin( ( k - s ) * ( 2 * Math.PI ) / p ) + 1 );
-    
-            },
-    
-            InOut: function ( k ) {
-    
-                var s, a = 0.1, p = 0.4;
-                if ( k === 0 ) return 0;
-                if ( k === 1 ) return 1;
-                if ( !a || a < 1 ) { a = 1; s = p / 4; }
-                else s = p * Math.asin( 1 / a ) / ( 2 * Math.PI );
-                if ( ( k *= 2 ) < 1 ) return - 0.5 * ( a * Math.pow( 2, 10 * ( k -= 1 ) ) * Math.sin( ( k - s ) * ( 2 * Math.PI ) / p ) );
-                return a * Math.pow( 2, -10 * ( k -= 1 ) ) * Math.sin( ( k - s ) * ( 2 * Math.PI ) / p ) * 0.5 + 1;
-    
-            }
-    
-        },
-    
-        Back: {
-    
-            In: function ( k ) {
-    
-                var s = 1.70158;
-                return k * k * ( ( s + 1 ) * k - s );
-    
-            },
-    
-            Out: function ( k ) {
-    
-                var s = 1.70158;
-                return --k * k * ( ( s + 1 ) * k + s ) + 1;
-    
-            },
-    
-            InOut: function ( k ) {
-    
-                var s = 1.70158 * 1.525;
-                if ( ( k *= 2 ) < 1 ) return 0.5 * ( k * k * ( ( s + 1 ) * k - s ) );
-                return 0.5 * ( ( k -= 2 ) * k * ( ( s + 1 ) * k + s ) + 2 );
-    
-            }
-    
-        },
-    
-        Bounce: {
-    
-            In: function ( k ) {
-    
-                return 1 - Easing.Bounce.Out( 1 - k );
-    
-            },
-    
-            Out: function ( k ) {
-    
-                if ( k < ( 1 / 2.75 ) ) {
-    
-                    return 7.5625 * k * k;
-    
-                } else if ( k < ( 2 / 2.75 ) ) {
-    
-                    return 7.5625 * ( k -= ( 1.5 / 2.75 ) ) * k + 0.75;
-    
-                } else if ( k < ( 2.5 / 2.75 ) ) {
-    
-                    return 7.5625 * ( k -= ( 2.25 / 2.75 ) ) * k + 0.9375;
-    
-                } else {
-    
-                    return 7.5625 * ( k -= ( 2.625 / 2.75 ) ) * k + 0.984375;
-    
-                }
-    
-            },
-    
-            InOut: function ( k ) {
-    
-                if ( k < 0.5 ) return Easing.Bounce.In( k * 2 ) * 0.5;
-                return Easing.Bounce.Out( k * 2 - 1 ) * 0.5 + 0.5;
-    
-            }
-    
-        }
-    
-    }
-    
-    var Interpolation = {
-    
-        Linear: function ( v, k ) {
-    
-            var m = v.length - 1, f = m * k, i = Math.floor( f ), fn = Interpolation.Utils.Linear;
-    
-            if ( k < 0 ) return fn( v[ 0 ], v[ 1 ], f );
-            if ( k > 1 ) return fn( v[ m ], v[ m - 1 ], m - f );
-    
-            return fn( v[ i ], v[ i + 1 > m ? m : i + 1 ], f - i );
-    
-        },
-    
-        Bezier: function ( v, k ) {
-    
-            var b = 0, n = v.length - 1, pw = Math.pow, bn = Interpolation.Utils.Bernstein, i;
-    
-            for ( i = 0; i <= n; i++ ) {
-                b += pw( 1 - k, n - i ) * pw( k, i ) * v[ i ] * bn( n, i );
-            }
-    
-            return b;
-    
-        },
-    
-        CatmullRom: function ( v, k ) {
-    
-            var m = v.length - 1, f = m * k, i = Math.floor( f ), fn = Interpolation.Utils.CatmullRom;
-    
-            if ( v[ 0 ] === v[ m ] ) {
-    
-                if ( k < 0 ) i = Math.floor( f = m * ( 1 + k ) );
-    
-                return fn( v[ ( i - 1 + m ) % m ], v[ i ], v[ ( i + 1 ) % m ], v[ ( i + 2 ) % m ], f - i );
-    
-            } else {
-    
-                if ( k < 0 ) return v[ 0 ] - ( fn( v[ 0 ], v[ 0 ], v[ 1 ], v[ 1 ], -f ) - v[ 0 ] );
-                if ( k > 1 ) return v[ m ] - ( fn( v[ m ], v[ m ], v[ m - 1 ], v[ m - 1 ], f - m ) - v[ m ] );
-    
-                return fn( v[ i ? i - 1 : 0 ], v[ i ], v[ m < i + 1 ? m : i + 1 ], v[ m < i + 2 ? m : i + 2 ], f - i );
-    
-            }
-    
-        },
-    
-        Utils: {
-    
-            Linear: function ( p0, p1, t ) {
-    
-                return ( p1 - p0 ) * t + p0;
-    
-            },
-    
-            Bernstein: function ( n , i ) {
-    
-                var fc = Interpolation.Utils.Factorial;
-                return fc( n ) / fc( i ) / fc( n - i );
-    
-            },
-    
-            Factorial: ( function () {
-    
-                var a = [ 1 ];
-    
-                return function ( n ) {
-    
-                    var s = 1, i;
-                    if ( a[ n ] ) return a[ n ];
-                    for ( i = n; i > 1; i-- ) s *= i;
-                    return a[ n ] = s;
-    
-                }
-    
-            } )(),
-    
-            CatmullRom: function ( p0, p1, p2, p3, t ) {
-    
-                var v0 = ( p2 - p0 ) * 0.5, v1 = ( p3 - p1 ) * 0.5, t2 = t * t, t3 = t * t2;
-                return ( 2 * p1 - 2 * p2 + v0 + v1 ) * t3 + ( - 3 * p1 + 3 * p2 - 2 * v0 - v1 ) * t2 + v0 * t + p1;
-    
-            }
-    
-        }
-    
-    }
     
     //////////////////////////////////////////////////////////////////////
     ////////// RiText   
@@ -3769,16 +4805,6 @@
         return {x:posX,y:posY};
     }
 
-//    /**
-//     * Returns the mouseY position from a mouse event
-//     * in a cross-browser compatible fashion
-//     * @param mouseEvent
-//     */
-//    RiText.mouseY = function(e) {
-//
-//        return posY;
-//    }
-//    
     /**
      * Returns all RiTexts that contain the point x,y or null if none do.
      * <p>
@@ -3795,8 +4821,8 @@
      * @param {number} x
      * @param {number} y
      * 
-     * @returns {array} RiText[] 1 or more RiTexts containing
-     * the point, or null if none do.
+     * @returns {array} RiText[] one or more RiTexts containing
+     * the point, or an empty array if none do.
      */
     RiText.picked = function(x, y)
     {
@@ -4187,13 +5213,13 @@
             //log("x="+xPos+" pre='"+preStr+"' tw=" + tw); 
 
             switch (rt._alignment) {
-                case RiText.LEFT:
+                case RiTa.LEFT:
                     xPos = rt.x + tw;
                     break;
-                case RiText.RIGHT:
+                case RiTa.RIGHT:
                     xPos = rt.x - tw;
                     break;
-                case RiText.CENTER:
+                case RiTa.CENTER:
                     console.warn("TODO: test center-align here");
                     xPos = rt.x; // ?
                     break;
@@ -4254,6 +5280,12 @@
         return RiText.defaults.font;
     }
     
+    RiText.foreach = function(fun) {
+    
+		var f = function(el,idx,arr){ fun(el,idx,arr); return 1; }; 
+		RiText.instances.every(f);
+    }
+    
     // PUBLIC statics (TODO: clean up) ///////////////////////////////////////////
    
     RiText.NON_BREAKING_SPACE = "<sp>";
@@ -4261,6 +5293,7 @@
     RiText.PARAGRAPH = "<p>";
     
     RiText.instances = [];
+    //RiText.LEFT = RiTa.LEFT;
 
     
     /**
@@ -4268,11 +5301,11 @@
      * Can be modified directly or through API methods.
      * 
      * @example 
-     *  RiText.defaultAlignment(RiText.RIGHT);
+     *  RiText.defaultAlignment(RiTa.RIGHT);
      *  RiText.defaultFontSize(20);
      * 
      * @example 
-     *  RiText.defaults.alignment = RiText.RIGHT;
+     *  RiText.defaults.alignment = RiTa.RIGHT;
      *  RiText.defaults.fontSize = 20;
 
      * @property {object} defaults
@@ -4280,7 +5313,7 @@
     RiText.defaults = { 
         
         color : { r : 0, g : 0, b : 0, a : 255 }, scaleX:1, scaleY:1, scaleZ:1,
-        alignment : RiText.LEFT, motionType : RiText.LINEAR, rotateZ:0, font:null,
+        alignment : RiTa.LEFT, motionType : RiTa.LINEAR, rotateZ:0, font:null,
         paragraphLeading :  0, paragraphIndent: '    ', indentFirstParagraph: false,
         fontFamily: 'Times New Roman', fontSize: 14, fontLeading : 16, leadingFactor : 1.1,
         boundingBoxStroke : null, boundingBoxFill: null, boundingBoxVisible : false
@@ -4341,9 +5374,8 @@
     
             this._boundingBoxVisible = RiText.defaults.boundingBoxVisible;
             this._motionType = RiText.defaults.motionType;
-            
             this._alignment = RiText.defaults.alignment;
-            
+    
             this._rotateZ = RiText.defaults.rotateZ;
             this._scaleX = RiText.defaults.scaleX;
             this._scaleY = RiText.defaults.scaleY;
@@ -4460,10 +5492,10 @@
                     // shift bounds based on alignment
                     switch(this._alignment) {
                         
-                        case RiText.RIGHT:
+                        case RiTa.RIGHT:
                             g._translate(-bb.width,0);
                             break;
-                        case RiText.CENTER:
+                        case RiTa.CENTER:
                             g._translate(-bb.width/2,0);
                             break;
                     }
@@ -5497,7 +6529,7 @@
         },
         
         /**
-         * Set/gets the alignment for this RiText (RiText.LEFT || RiText.CENTER || RiText.RIGHT)
+         * Set/gets the alignment for this RiText (RiTa.LEFT || RiTa.CENTER || RiTa.RIGHT)
          * 
          * @param {object} align (optional) the alignment 
          * @returns {object} this RiText (set) or the current font (get)
@@ -5703,7 +6735,7 @@
             //          }
             //          * @param {boolean} (optional, default=false) 
             //          *   if true, bounding box is first transformed (rotate,translate,scale) 
-            //          * according to the RiTexts current matrix
+            //          * according to the RiText's current matrix
           return bb;
         },
         
@@ -5848,1043 +6880,6 @@
             return '['+Math.round(this.x)+","+Math.round(this.y)+",'"+s+"']";
         }
     }
-
-    // ////////////////////////////////////////////////////////////
-    // RiTa object (singleton)
-    // ////////////////////////////////////////////////////////////
-    
-    /**
-     * @namespace A collection of static variables and functions for the RiTa library
-     */
-    RiTa = {
-
-        // RiTa constants =================================
-        
-        /** The current version of the RiTa tools */
-
-        VERSION : _VERSION_,
-
-        /** 
-         * a=alpha
-         * b=beta
-         * @private
-         */
-        PHASE : 'a', 
-        
-        /** @private */
-        P5_COMPATIBLE : true,
-        
-        /** For tokenization, Can't -> Can not, etc. */
-        SPLIT_CONTRACTIONS : false,
-        
-	    // :::: For RiTaEvents :::::::::
-	
-	    UNKNOWN : -1, TEXT_ENTERED : 1, BEHAVIOR_COMPLETED : 2, TIMER_TICK : 3,
-	
-	    // :::: TextBehavior ::::::::::::
-	
-	    MOVE_TO : 1, FADE_COLOR : 2, FADE_IN : 3, FADE_OUT : 4, FADE_TO_TEXT : 5, 
-	    TIMER : 6, SCALE_TO : 7, LERP : 8,
-	
-		// :::: RiText Constants  :::::::::	
-		   
-	    LEFT : 37, UP : 38, RIGHT : 39, DOWN : 40,  CENTER : 3,
-	
-	    // :::: Animation types :::::::::
-	
-	    LINEAR : Easing.Linear.None, 
-	    
-	    EASE_IN :  Easing.Exponential.In,
-	    EASE_OUT :  Easing.Exponential.Out, 
-	    EASE_IN_OUT :  Easing.Exponential.InOut,
-	    
-	    EASE_IN_EXPO :  Easing.Exponential.In,
-	    EASE_OUT_EXPO :  Easing.Exponential.Out,
-	    EASE_IN_OUT_EXPO :  Easing.Exponential.InOut,
-	    
-	    EASE_IN_SINE : Easing.Sinusoidal.In,
-	    EASE_OUT_SINE : Easing.Sinusoidal.Out,
-	    EASE_IN_OUT_SINE : Easing.Sinusoidal.InOut,
-	    
-	    EASE_IN_CUBIC :  Easing.Cubic.In,
-	    EASE_OUT_CUBIC : Easing.Cubic.Out,
-	    EASE_IN_OUT_CUBIC :  Easing.Cubic.InOut,
-	    
-	    EASE_IN_QUARTIC :  Easing.Quartic.In,
-	    EASE_OUT_QUARTIC :  Easing.Quartic.Out,
-	    EASE_IN_OUT_QUARTIC :  Easing.Quartic.InOut,
-	    
-	    EASE_IN_QUINTIC : Easing.Quintic.In,
-	    EASE_OUT_QUINTIC : Easing.Circular.Out,
-	    EASE_IN_OUT_QUINTIC : Easing.Circular.InOut,
-	    
-	    BACK_IN : Easing.Back.In,
-	    BACK_OUT : Easing.Back.Out,
-	    BACK_IN_OUT : Easing.Back.InOut,
-	    
-	    BOUNCE_IN : Easing.Bounce.In,
-	    BOUNCE_OUT : Easing.Bounce.Out,
-	    BOUNCE_IN_OUT : Easing.Bounce.InOut,
-	    
-	    CIRCULAR_IN : Easing.Circular.In,
-	    CIRCULAR_OUT : Easing.Circular.Out,
-	    CIRCULAR_IN_OUT : Easing.Circular.InOut,
-	    
-	    ELASTIC_IN : Easing.Elastic.In,
-	    ELASTIC_OUT : Easing.Elastic.Out,
-	    ELASTIC_IN_OUT : Easing.Elastic.InOut,
-
-        // For Conjugator =================================
-        
-        //TODO: add comments
-        
-        PHONEMES : 'phonemes',
-        
-        STRESSES : 'stresses',
-        
-        SYLLABLES : 'syllables',
-        
-        FIRST_PERSON : 1,
-
-        SECOND_PERSON : 2,
-
-        THIRD_PERSON : 3,
-
-        PAST_TENSE : 4,
-
-        PRESENT_TENSE : 5,
-
-        FUTURE_TENSE : 6,
-
-        SINGULAR : 7,
-
-        PLURAL : 8,
-
-        NORMAL : 9,
-        
-        ABBREVIATIONS : [   "Adm." ,"Capt." ,"Cmdr." ,"Col." ,"Dr." ,"Gen." ,"Gov." ,"Lt." ,"Maj." ,"Messrs." ,"Mr.","Mrs." ,"Ms." ,"Prof." ,"Rep." ,"Reps." ,"Rev." ,"Sen." ,"Sens." ,"Sgt." ,"Sr." ,"St.","a.k.a." ,"c.f." ,"i.e." ,"e.g." ,"vs." ,"v.", "Jan." ,"Feb." ,"Mar." ,"Apr." ,"Mar." ,"Jun." ,"Jul." ,"Aug." ,"Sept." ,"Oct." ,"Nov." ,"Dec." ],
-           
-        /** The infinitive verb form  - 'to eat an apple' */
-        INFINITIVE : 1,
-
-        /** Gerund form of a verb  - 'eating an apple' */
-        GERUND : 2,
-
-        /** The imperative verb form - 'eat an apple!' */
-        IMPERATIVE : 3,
-
-        /** Bare infinitive verb form - 'eat an apple' */
-        BARE_INFINITIVE : 4,
-
-        /** The subjunctive verb form */
-        SUBJUNCTIVE : 5,
- 
-        /** Set to true to disable all console output */
-        SILENT : false,
-        
-        // Start Methods =================================
-        
-        /**
-         * Joins array of word, similar to words.join(" "), but attempts to preserve punctuation position
-         * unless the 'adjustPunctuationSpacing' flag is set to false
-         * 
-         * @param {array} arr the array to join
-         * @param {string} delim the characters to place between each array element
-         * @param {boolean} adjustPunctuationSpacing (optional, default=true)
-         * 
-         * @returns {string} the joined array as string
-         */
-         untokenize: function(arr, delim, adjustPunctuationSpacing) {
-             
-            delim = delim || SP;
-            adjustPunctuationSpacing = adjustPunctuationSpacing || 1;
-            
-            if (adjustPunctuationSpacing) {
-            	
-                var newStr = arr[0] || E;
-                for ( var i = 1; i < arr.length; i++) {
-                    if (arr[i]) {
-                        if (!RiTa.isPunctuation(arr[i]))
-                            newStr += delim;
-                        newStr += arr[i];
-                    }
-                }
-                
-                return newStr.trim();
-            }
- 
-            return arr.join(delim);  
-        },
-        
-        /**
-         * Returns a random number between min(default=0) and max(default=1)
-         * @returns {number}
-         */
-        random: function() {
-            
-            var currentRandom = Math.random();
-            if (arguments.length === 0) return currentRandom;
-            if (arguments.length === 1) return currentRandom * arguments[0];
-            var aMin = arguments[0], aMax = arguments[1];
-            
-            return currentRandom * (aMax - aMin) + aMin;
-            
-        },
-        
-        /**
-         * Convenience method to get the distance between 2 points
-         * @param {number} x1
-         * @param {number} y1
-         * @param {number} x2
-         * @param {number} y2
-         * 
-         * @returns {number}
-         */
-        distance: function(x1,y1,x2,y2) {
-            
-            var dx = x1 - x2, dy = y1 - y2;
-            return Math.sqrt(dx * dx + dy * dy);
-            
-        },
-        
-        /**
-         * Starts a timer that calls 'onRiTaEvent', or the specified callback, 
-         * every 'period' seconds
-         * 
-         * @param {number} period (in seconds)
-         * @param {function} callback called every 'period' seconds (optional)
-         * @returns {number} the unique id for the timer
-         */
-        timer: function(period, callback) {
-            
-            var timer = Timer(
-            	function(){       
-                	RiTaEvent(RiTa, 'tick')._fire(callback);  
-             }, period * 1000, true);
-            timer.go();
-			var id = timer.id(); 
-			timers[id] = timer;
-            return id;
-        }, 
-        
-   		/**
-         * Stops a timer according to its unique id
-         * @param {number} the unique id for the timer
-         */
-        stopTimer: function(id) {
-            
-            if (timers[id])  
-            	timers[id].stop();
-           	else
-           		warn('no timer with id: '+id);
-        }, 
-        
-        /**
-         * Pauses a timer according to its unique id
-         * @param {number} the unique id for the timer
-		 * @param {number} pause-time (in seconds)
-         * @returns {number} the new unique id for the timer
-         */
-        pauseTimer: function(id, pauseSec) {
-            
-            pauseSec = is(pauseSec, N) ? pauseSec : Number.MAX_VALUE;
-            
-        	if (timers[id])  {
-            	timers[id].pause();
-            	setTimeout(function() { 
-            		if (timers[id]) timers[id].play(); else warn("no timer!!!");
-            	}, pauseSec*1000);
-            }
-           	else
-           		warn('no timer with id: '+id);
-        },   
-
-        /**
-         * Returns true if 'tag' is a valid PENN part-of-speech tag (e.g. cd, fw, jj, ls, nn, sym, vbg, wp)
-         * @param {string} tag the PENN part-of-speech tag
-         * @returns {boolean} true if the tag a valid PENN part-of-speech tag
-         */
-        _isPosTag : function(tag) {
-            return PosTagger.isTag(tag);
-            
-        },
-             
-        // TODO: example
-        /**
-         * Tags the word (as usual) with a part-of-speech from the Penn tagset, 
-         * then returns the corresponding part-of-speech for WordNet from the
-         * set { 'n', 'v', 'a', 'r' } as a string. 
-         * 
-         * @param {string | array} words the text to be tagged
-         * @returns {array} the corresponding parts-of-speech for WordNet
-         */
-        _tagForWordNet  : function(words) {
-            
-            var posArr = RiTa.getPosTags(words);
-
-            if (!undef(words) && posArr.length) {
-                for ( var i = 0; i < posArr.length; i++) {
-                    var pos = posArr[i];
-                    if (PosTagger.isNoun(pos))      posArr[i] =  "n";
-                    if (PosTagger.isVerb(pos))      posArr[i] =  "v";
-                    if (PosTagger.isAdverb(pos))    posArr[i] =  "r";
-                    if (PosTagger.isAdj(pos))      posArr[i] =  "a";
-                }
-                return posArr;  
-            }
-            return []; 
-        },
-          
-        //TODO: example
-        
-        /**
-         * Uses the default PosTagger to tag the input with a tag from the PENN tag set
-         * @param {string | array} words the text to be tagged
-         * @returns {array}
-         * 
-         */
-        getPosTags : function(words) {    
-            
-            var arr = is(words,S) ? RiTa.tokenize(words) : words;
-            return PosTagger.tag(arr);
-        },
-        
-        // TODO: example
-        /**
-         * Takes an array of words and of tags and returns a 
-         * combined String of the form:
-         *  <pre>"The/dt doctor/nn treated/vbd dogs/nns"</pre>
-         * assuming a "/" as 'delimiter'.
-         *
-         * @param {string} words the text to tag
-         * @returns {string} 
-         */
-        getPosTagsInline : function(words, delimiter) { 
-            
-            if (!words || !words.length) return E;
-            
-            delimiter = delimiter || '/';
-            words = is(words,S) ? RiTa.tokenize(words) : words;
-            
-            var sb = E, tags = RiTa.getPosTags(words);
-            for (var i = 0; i < words.length; i++) {
-
-                sb += (words[i]);
-                if (!RiTa.isPunctuation(words[i])) {
-                    sb +=  delimiter + tags[i];
-                }
-                sb += SP;
-            }
-            
-            return sb.trim();
-        },
-
-        // TODO: example
-        
-        /**
-         * Converts a PENN part-of-speech tag to the simplified WordNet scheme 
-         * (e.g. nn -> n, nns -> n, vbz -> v, rb -> r)
-         * { "n" (noun), "v"(verb), "a"(adj), "r"(adverb), "-"(other) }
-         * as a String.
-         * 
-         * @param {string} tag pos tag to convert
-         * @returns {string} simplified WordNet tag
-         */
-        posToWordNet  : function(tag) {
-            
-            if (!strOk(tag)) return E;
-
-            if (PosTagger.isNoun(tag))    
-                return 'n';
-            else if (PosTagger.isVerb(tag))
-                return 'v';
-            else if (PosTagger.isAdverb(tag))
-                return  'r';
-            else if (PosTagger.isAdj(tag))
-                return  'a';
-            else  {
-            	warn("[WARN] "+tag+" is not a valid pos-tag");
-                return  '-';
-           	}
-        },
-        
-        /**
-         *  Returns the present participle form of the stemmed or non-stemmed 'verb'. 
-         *  @param {string} verb the verb
-         *  @returns {string} the present participle form of the verb
-         */
-        getPresentParticiple : function(verb) { 
-            
-            // TODO: need to call stem() and try again if first try fails
-            return Conjugator().getPresentParticiple(verb);
-        },
-
-        /**
-         *  Returns the past participle form of the stemmed or non-stemmed 'verb'. 
-         *  @param {string} verb the verb
-         *  @returns {string} the past participle form of the verb
-         */
-        getPastParticiple : function(verb) { 
-            
-            // TODO: need to call stem() and try again if first try fails
-            return Conjugator().getPastParticiple(verb);
-        },
-
-        // TODO: 2 examples
-        /**
-         *  Conjugates the 'verb' according to the specified options
-         *  @param {string} verb the verb stem
-         *  @param {object} args containing the relevant options for the conjugator
-         *  @returns {string}  the conjugated verb
-         */
-        conjugate : function(verb, args) {
-
-            return Conjugator().conjugate(verb, args);            
-        },
-
-       
-        // TODO: 2 examples (regular & irregular) in javadoc
-        
-        /** 
-         * Pluralizes a word according to pluralization rules (see regexs in constants)
-         * Returns the regular or irregular plural form of noun.       
-         * 
-         * @param {string} word the noun
-         * 
-         * @returns {string} the plural form of noun
-         */
-        pluralize : function(word) {
-
-			if (!strOk(word)) return E;
-			
-            var i, rule, rules = PLURAL_RULES;
-
-            if (inArray(MODALS, word.toLowerCase())) {
-                return word;
-            }
-
-            i = rules.length;
-            while (i--) {
-                rule = rules[i];
-                if (rule.applies(word.toLowerCase())) {
-                    return rule.fire(word);
-                }
-            }
-
-            return DEFAULT_PLURAL_RULE.fire(word);            
-        },
-        
-		// TODO: 2 examples (regular & irregular) in javadoc        
-
-		/**
-		 *
-		 * Singularize a word according to singularization rules (see regexs in constants)
-		 * @param {string} word the noun
-		 * @returns {string}  the singular form of noun
-		 */ 
-		singularize : function(word) {
-
-			if (!strOk(word)) return E;
-
-            var i, rule, rules = SINGULAR_RULES;
-
-            if (inArray(MODALS, word.toLowerCase())) {
-                return word;
-            }
-
-            i = rules.length;
-            while (i--) {
-                rule = rules[i];
-                if (rule.applies(word.toLowerCase())) {
-                    return rule.fire(word);
-                }
-            }
-
-			
-			return this.stem(word, 'Pling');
-		},
-
-
-        /**
-         *  Removes blank space from either side of a string
-         *
-         *  @param {string} the input string
-         *  
-         *  @returns {string}  
-         */
-        trim : function(str) {
-            
-            return trim(str); // delegate to private
-        },
-
-    
-        /**
-         *  Tokenizes the string according to Penn Treebank conventions
-         *  See: http://www.cis.upenn.edu/~treebank/tokenization.html
-         *  
-         *  @param {string} words a sentence
-         *  @param {string | regex} regex (optional) the pattern to be used for tozenization
-         *  
-         *  @return{array} strings, which each element is a single token (or word) 
-         */
-        tokenize : function(words, regex) {
-            
-            //TODO: 2 examples for doc comment, one with 1 arg, one with 2 (a regex that splits on spaces)
-
-            if (regex) return words.split(regex);
-            
-            words = trim(words).replace(/``/g, "`` ");
-            words = words.replace(/''/g, "  ''");
-            words = words.replace(/([\\?!\"\\.,;:@#$%&])/g, " $1 ");
-            words = words.replace(/\\.\\.\\./g, " ... ");
-            words = words.replace(/\\s+/g, SP);
-            words = words.replace(/,([^0-9])/g, " , $1");
-            words = words.replace(/([^.])([.])([\])}>\"']*)\\s*$/g, "$1 $2$3 ");
-            words = words.replace(/([\[\](){}<>])/g, " $1 ");
-            words = words.replace(/--/g, " -- ");
-            words = words.replace(/$/g, SP);
-            words = words.replace(/^/g, SP);
-            words = words.replace(/([^'])' /g, "$1 ' ");
-            words = words.replace(/'([SMD]) /g, " '$1 ");
- 
-            if (RiTa.SPLIT_CONTRACTIONS) { // SAVE
-                words = words.replace(/'ll /g, " 'll "); 
-                words = words.replace(/'re /g, " 're "); 
-                words = words.replace(/'ve /g, " have ");
-                words = words.replace(/n't /g, " not "); 
-                
-                words = words.replace(/'LL /g, " 'LL "); 
-                words = words.replace(/'RE /g, " 'RE "); 
-                words = words.replace(/'VE /g, " 'VE "); 
-                words = words.replace(/N'T /g, " N'T "); 
-            }
-            
-            words = words.replace(/ ([Cc])an't /g, " $1an not ");
-            words = words.replace(/ ([Cc])annot /g, " $1an not ");
-            words = words.replace(/ ([Dd])idn't /g, " $1id not ");
-            words = words.replace(/ ([CcWw])ouldn't /g, " $1ould not ");
-            
-
-            // "Nicole I. Kidman" gets tokenized as "Nicole I . Kidman"
-            words = words.replace(/ ([A-Z]) \\./g, " $1. ");
-            words = words.replace(/\\s+/g, SP);
-            words = words.replace(/^\\s+/g, E);
-            
-            return trim(words).split(/\s+/); // DCH: fixed bug here, 6/3/12
-        },
-
-        
-        // TODO: test and (probably) re-implement from RiTa (RiSplitter.java)
-        /**
-         *  Splits the 'text' into sentences (according to PENN Treebank conventions)
-         *  
-         *  @param {string} text the text to be split
-         *  @param {string | regex} regex (optional) the pattern to be used for tozenization
-         *  
-         *  @returns {array} of sentences 
-         */
-        splitSentences : function(text, regex) {
-
-            var arr = text.match(/(\S.+?[.!?])(?=\s+|$)/g);
-
-            return (text.length && arr && arr.length) ? arr : [ text ];
-            
-        },
-
-        /**
-         * Returns true if and only if the string matches 'pattern'
-         * 
-         * @param {string} string string to test
-         * @param {string | regex} pattern object containing regular expression
-         * @returns {boolean} true if matched, else false
-         */
-        _regexMatch : function(string, pattern) {
-            
-            if (undef(string) || undef(pattern))
-                return false;
-            
-            if (typeof pattern === S)
-                pattern = new RegExp(pattern);
-            
-            return pattern.test(string);
-            
-        },
-
-        /**
-         * Replaces all matches of 'pattern' in the 'string' with 'replacement'
-         * 
-         * @param {string} string to test
-         * @param {string | regex } pattern object containing regular expression
-         * @param {string} replacement the replacement
-         * @returns {string} with replacements or thestring on error
-         */
-        _regexReplace : function(string, pattern, replacement) {
-            
-            if (undef(string) || undef(pattern))
-                return E;
-            if (typeof pattern === S)
-                pattern = new RegExp(pattern); // TODO: is this necessary?
-            return string.replace(pattern, replacement);
-            
-        },
-             
-        /**
-         * Returns true if 'input' is an abbreviation
-         * 
-         * @param {string} input
-         * @param {boolean} caseSensitive (optional, default=false)
-         * 
-         * @returns {boolean} true if 'input' is an abbreviation
-         */
-        isAbbreviation : function(input, caseSensitive) {
-            
-            caseSensitive = caseSensitive || false;
-            input = caseSensitive ? input : RiTa._titleCase(input);
-            return inArray(this.ABBREVIATIONS, input);
-            
-        },
-        
-        /**
-         * Returns true if sentence starts with a question word.
-         * 
-         * @param {string} sentence
-         * 
-         * @returns {boolean} true if 'sentence' starts with a question word.
-         */
-        isQuestion : function(sentence) {
-            
-            var sentenceArr = RiTa.tokenize((sentence));
-            
-            for (var i = 0; i < QUESTION_STARTS.length; i++) {
-                
-                  if (equalsIgnoreCase(sentenceArr[0], QUESTION_STARTS[i]))
-                    return true;
-            }
-            return false;
-            
-        },
-
-        /**
-         * Returns true if 'currentWord' is the final word of a sentence.
-         * This is a simplified version of the OAK/JET sentence splitter method.
-         * 
-         * @param {string} currentWord
-         * @param {string} nextWord
-         * @returns {boolean} true if 'currentWord' is the final word of a sentence.
-         */
-        isSentenceEnd : function(currentWord, nextWord) {
-
-            if ( !is(currentWord,S) || !is(nextWord,S) )
-                return false;
-            
-            var cw = currentWord.charAt(0), cWL = currentWord.length; 
-            
-            // token is a mid-sentence abbreviation (mainly, titles) --> middle of sent
-            if (RiTa.isAbbreviation(currentWord))
-              return false;
-            
-            if (cWL > 1 && cw.indexOf("`'\"([{<") != -1 && RiTa.isAbbreviation(currentWord.substring(1)))
-              return false;
-        
-            if (cWL > 2 && ((currentWord.charAt(0) == '\'' 
-              && currentWord.charAt(1) == '\'') || (currentWord.charAt(0) == '`' 
-              && currentWord.charAt(1) == '`')) && RiTa.isAbbreviation(currentWord.substring(2)))
-            {
-              return false;
-            }
-            
-            var nTL = nextWord.length,
-                currentToken0 = currentWord.charAt(cWL - 1), 
-                currentToken1 = (cWL > 1) ? currentWord.charAt(cWL - 2) : ' ', 
-                currentToken2 = (cWL > 2) ? currentWord.charAt(cWL - 3) : ' ',
-                nextToken0 = nextWord.charAt(0), 
-                nextToken1 = (nTL > 1) ? nextWord.charAt(1) : ' ',
-                nextToken2 = (nTL > 2) ? nextWord.charAt(2) : ' ';
-        
-            // nextToken does not begin with an upper case,
-            // [`'"([{<] + upper case, `` + upper case, or < -> middle of sent.
-            if (!  (nextToken0 == nextToken0.toUpperCase()
-                || (nextToken1 == nextToken1.toUpperCase() && nextToken0.indexOf("`'\"([{<") != -1)
-                || (nextToken2 == nextToken2.toUpperCase() && ((nextToken0 == '`' && nextToken1 == '`') 
-                || (nextToken0 == '\'' && nextToken1 == '\'')))
-                ||  nextWord == "_" || nextToken0 == '<'))
-              return false;
-        
-            // ends with ?, !, [!?.]["'}>)], or [?!.]'' -> end of sentence
-            if (currentToken0 == '?'
-                || currentToken0 == '!'
-                || (currentToken1.indexOf("?!.") != -1 && currentToken0.indexOf("\"'}>)") != -1)
-                || (currentToken2.indexOf("?!.") != -1 && currentToken1 == '\'' && currentToken0 == '\''))
-              return true;
-              
-            // last char not "." -> middle of sentence
-            if (currentToken0 != '.') return false;
-        
-            // Note: wont handle Q. / A. at start of sentence, as in a news wire
-            //if (startOfSentence && (currentWord.equalsIgnoreCase("Q.") 
-              //|| currentWord.equalsIgnoreCase("A.")))return true; 
-            
-            // single upper-case alpha + "." -> middle of sentence
-            if (cWL == 2 && currentToken1 == currentToken1.toUpperCase())
-              return false;
-        
-            // double initial (X.Y.) -> middle of sentence << added for ACE
-            if (cWL == 4 && currentToken2 == '.'
-                && (currentToken1 == currentToken1.toUpperCase() && currentWord.charAt(0) == currentWord.charAt(0).toUpperCase() ))
-              return false;
-        
-            // U.S. or U.N. -> middle of sentence
-            //if (currentToken.equals("U.S.") || currentToken.equals("U.N."))
-              //return false; // dch
-              
-            //if (Util.isAbbreviation(currentToken)) return false;
-            
-            // (for XML-marked text) next char is < -> end of sentence
-           // if (nextToken0 == '<') return true;
-            
-            return true;
-
-        },
-        
-        /**
-         * Returns true if sentence starts with a w-question word, eg (who,what,why,where,when,etc.)
-         * 
-         * @param {string} sentence
-         * @returns {boolean} true if sentence starts with a w-question word, eg (who,what,why,where,when,etc.)
-         */
-        isW_Question : function(sentence) {    
-            var sentenceArr = RiTa.tokenize((sentence));
-            for (var i = 0; i < W_QUESTION_STARTS.length; i++)
-                if (equalsIgnoreCase(sentenceArr[0], W_QUESTION_STARTS[i]))
-                  return true;
-            return false;
-            
-        },
-
-        /**
-         * Returns a randomly ordered array of unique integers from 0 to numElements. 
-         * The size of the array will be numElements.
-         * 
-         * @param {number} numElements
-         * @returns {array} unique integers from 0 to numElements. 
-         */
-        randomOrdering : function(numElements) {    
-            
-            if (!numElements || numElements < 1)// !isNum(numElements)) 
-                err("bad arg");
-            
-            var o = [];
-            for ( var i = 0; i < numElements; i++) {
-                o.push(i);
-            }
-            
-            // Array shuffle, from Jonas Raoni Soares Silva (http://jsfromhell.com/array/shuffle)
-            for(var j, x, i = o.length; i; j = parseInt(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x){}
-
-            return o;
-            
-        },
-
-        /**
-         * Removes and returns a random element from an array, returning
-         * it and leaving the array 1 element shorter.
-         * 
-         * @param {array} arr
-         * @returns {array} 
-         */
-        removeRandom : function(arr) { 
-            
-            var i = Math.floor((Math.random()*arr.length));
-            remove(arr, i, i);
-            return arr;
-            
-        },
-            
-        /**
-         * Strips all punctuation from the given string
-         * @param {string} text input
-         * @returns {string} result
-         */
-        stripPunctuation : function(text) {    
-
-            return (text === E) ? E : text.replace(PUNCTUATION_CLASS, E); 
-        },
-        
-        // PUNCTUATION : "����`'""\",;:!?)([].#\"\\!@$%&}<>|+=-_\\/*{^",
-        
-        
-        /**
-         * Trims punctuation from each side of the token (does not trim whitespace or internal punctuation).
-         * 
-         * @param {string} text input
-         * @returns {string} result
-         */
-        trimPunctuation : function(text) {
-            
-            // TODO: replace all this with 1 regex
-
-            // from the front
-            while (text.length > 0) {
-               var c = text.charAt(0);
-               if (!RiTa.isPunctuation(c)) 
-                   break;
-               text = text.substr(1);
-            }
-            
-            // from the back
-            while (text.length > 0) {
-                var c = text.charAt(text.length-1);
-                if (!RiTa.isPunctuation(c)) 
-                    break;
-                text = text.substring(0, text.length-1);
-             }
-            return text;
-
-            
-        },
-              
-        /**
-         * Returns true if every character of 'text' is a punctuation character
-         * 
-         * @param {string} text input
-         * @returns {boolean} 
-         */
-        // TEST: PUNCTUATION : "����`'""\",;:!?)([].#\"\\!@$%&}<>|+=-_\\/*{^",
-        isPunctuation : function(text) { 
-            
-            if (!text || !text.length) return false;
-  
-            return ONLY_PUNCT.test(text); 
-            
-        },
-        
-        /**
-         * Returns true if any character of 'text' is a punctuation character
-         * 
-         * @param {string} text input
-         * @returns {boolean}
-         */
-        // TEST: PUNCTUATION : "����`'""\",;:!?)([].#\"\\!@$%&}<>|+=-_\\/*{^",
-        hasPunctuation : function(text) { 
-            
-            if (!text || !text.length) return false;
-  
-            return ONLY_PUNCT.test(text); 
-        },
-
-        /**
-         * Returns a string containing all phonemes for the input text
-         * 
-         * @param {string | array} words to analyze
-         * @returns {string}  e.g., "dh-ax-d-ao-g-r-ae-n-f-ae-s-t"
-         */
-        getPhonemes : function(words) {
-
-            return RiString(words).analyze().get(RiTa.PHONEMES);
-            
-        },
-
-        /**
-         * Analyzes the given string and returns a new string containing the stresses
-         *  for each syllable of the input text 
-         * 
-         * @param {string | array} words to analyze
-         * 
-         * @returns {string}  e.g., "01-0-1", with 1's meaning 'stressed', 
-         *      and 0's meaning 'unstressed', 
-         */
-        getStresses : function(words) {
-
-            return RiString(words).analyze().get(RiTa.STRESSES);
-        },
-
-        /**
-         * Analyzes the given string, Returns a String containing the phonemes for each syllable of
-         * each word of the input text,  delimited by dashes (phonemes) and spaces (words) 
-         * 
-         * @param {string | array} words to analyze
-         * 
-         * @returns {string} e.g., "dh-ax d-ao-g r-ae-n f-ae-s-t" 
-         *  for the 4 syllables of the phrase 'The dog ran fast'
-         */
-        getSyllables : function(words) {
-
-            return RiString(words).analyze().get(RiTa.SYLLABLES);
-
-        },
-        
-        /**
-         * Returns the # of words in the String according to the default tokenizer.
-         * 
-         * @param {string} words the string to analyze
-         * 
-         * @returns {number}
-         */
-        getWordCount : function(words) {
-            
-            return RiTa.tokenize(words).length;
-
-        },
-        
-        /**
-         * Extracts base roots from a word according to the specified stemming algorithm
-         * <p>
-         * Note: see http://text-processing.com/demo/stem/ for comparison of 
-         * Lancaster and Porter algorithms or  http://mpii.de/yago-naga/javatools 
-         * for info on PlingStemmer
-         * 
-         * @param {string} word the word to analyze
-         * 
-         * @param {string} type one of ['Lancaster' (the default), 'Porter', or 'Pling'] 
-         *  to specify the stemming algorithm to use
-         * 
-         * @returns {string} the stemmed form of 'word'
-         */
-        stem : function(word, type) {
-            
-            type = type || 'Lancaster';  // CONSTANTS
-            
-            if (type != 'Lancaster' && type != 'Porter' && type != 'Pling')
-                err('Bad stemmer type: '+type);
-            
-            var stemImpl = Stemmer['stem_'+type];
-            
-         	if (word.indexOf(SP) < 0) return stemImpl(word);
-            
-            // dump non-words && multiple white-space - http://qaa.ath.cx/porter_js_demo.html
-            word = word.replace(/[^\w]/g, SP);
-            word = word.replace(/\s+/g, SP); 
-            
-            var res = [], words = word.split(SP);
-            
-            for ( var i = 0; i < words.length; i++) {
-                
-                res.push(stemImpl(words[i]));
-            }
-            
-            return res.join(SP);
-        },
-        
-        /**
-         * For convenience, provides implementations of some of Processing built-in 
-         * method, e.g. size(), background(), etc. and backwards compatibility with
-         * the original RiTa/Processing Java library
-         * 
-         * @param {boolean} true to enable compatibility, else false
-         */
-        p5Compatible : function(value) {
-            
-            //console.log('p5Compatible('+value+'['+window+'])');
-            
-            if (!arguments.callee.setupAndDraw) {
-                
-                arguments.callee.setupAndDraw = function() {
-                    if (typeof window.setup == F) setup();
-                    if (typeof window.draw == F) RiText.loop();
-                }
-            }
-            
-            if (window) {
-	            // TODO: add mouse-handling methods here?
-	            if (typeof window.mouseClicked == F) 
-	            	window.onmouseup = window.mouseClicked;
-	      		if (typeof window.mousePressed == F) 
-	            	window.onmousedown = window.mousePressed;
-	    		if (typeof window.mouseReleased == F) 
-	            	window.onmouseup = window.mouseReleased;
-	            if (typeof window.mouseMoved == F) 
-	            	window.onmousemove = window.mouseMoved;
-            }
-            //if (typeof window.mouseDragged == F) 
-            	//window.onmousemove = window.mouseDragged;	
-			// window.onmousemove = mouseDragged;
-
-            if (value) {
-                
-                // alias for some P5 member functions 
-                RiText.prototype.fill       = RiText.prototype.color;
-                RiText.prototype.textAlign  = RiText.prototype.align;
-                RiText.prototype.textFont   = RiText.prototype.font;
-                RiText.prototype.textSize   = RiText.prototype.fontSize;
-                
-                // alias for some RiTa-java functions
-                RiText.prototype.setText    = RiText.prototype.text;
-                RiText.prototype.fadeColor  = RiText.prototype.colorTo;
-                RiText.prototype.fadeToText = RiText.prototype.textTo;
-                RiText.prototype.setColor   = RiText.prototype.color;
-                
-                // alias for RiTa-java static functions
-                RiText.setDefaultFont = RiText.defaultFont;
-                RiText.setDefaultColor = RiText.defaultColor;
-                RiText.setDefaultAlignment = RiText.defaultAlignment;
-                RiText.setCallbackTimer = RiText.timer;
-                
-                if (typeof window != 'undefined' && !hasProcessing) {
-                	
-                    // add some common P5 global methods (sorry, namespace)
-                    if (!window.line) window.line = RiText.line;
-                    if (!window.size) window.size= RiText.size;
-                    if (!window.width) window.width = RiText.width; // want the var
-                    if (!window.height) window.height= RiText.height; // want the var
-                    if (!window.createFont) window.createFont= RiText.createFont;
-                    if (!window.background) window.background= RiText.background;
-                    if (!window.random) window.random= RiText.random;
-                    if (!window.RIGHT) window.RIGHT = RiText.RIGHT;
-                    if (!window.LEFT) window.LEFT = RiText.LEFT;
-                    if (!window.CENTER) window.CENTER = RiText.CENTER;
-                    
-                    window.onload = arguments.callee.setupAndDraw;
-                }
-            }
-            else { // not-compatible (clear extra stuff)
-                
-                delete RiText.prototype.fill;
-                delete RiText.prototype.textAlign;
-                delete RiText.prototype.textFont;
-                delete RiText.prototype.textSize;
-                
-                delete RiText.prototype.setColor;
-                delete RiText.prototype.setText;
-                delete RiText.prototype.fadeColor;
-                delete RiText.prototype.fadeToText;
-                
-                delete RiText.setDefaultFont;
-                delete RiText.setDefaultColor;
-                delete RiText.setDefaultAlignment;
-                delete RiText.setCallbackTimer;
-                
-                if (typeof window != 'undefined' && window && !hasProcessing)  {
-                    
-                    // are these checks needed?
-                    if (window.line === RiText.line) delete window.line;
-                    if (window.size === RiText.size) delete window.size;
-                    if (window.width === RiText.width) delete window.width;
-                    if (window.height === RiText.height) delete window.height;
-                    if (window.createFont === RiText.createFont) delete window.createFont;
-                    if (window.background === RiText.background) delete window.background;
-                    if (window.random === RiText.random) delete window.random;
-                    if (window.RIGHT === RiText.RIGHT) delete window.RIGHT;
-                    if (window.LEFT === RiText.LEFT) delete window.LEFT;
-                    if (window.CENTER === RiText.CENTER) delete window.CENTER;
-
-                    if (window.onload && (window.onload == arguments.callee.setupAndDraw))
-                        delete window.onload;
-                }
-            }
-        },
-        
-        /**
-         * Converts 'input' to Titlecase (1st letter upper, rest lower)
-         */
-        _titleCase : function(input) {
-            
-            if (!input || !input.length) return input;
-            
-            return input.substring(0,1).toUpperCase() + input.substring(1);
-        }
-        
-    } // end RiTa object
-
     
     /////////////////////////////////////////////////////////////////////////
     // RiLetterToSound (adapted from FreeTTS text-to-speech)
@@ -7574,13 +7569,13 @@
         _textAlign : function(align) {
             
             switch (align) {
-                case RiText.LEFT:
+                case RiTa.LEFT:
                     this.ctx.textAlign = 'left';
                     break;
-                case RiText.CENTER:
+                case RiTa.CENTER:
                     this.ctx.textAlign = 'center';
                     break;
-                case RiText.RIGHT:
+                case RiTa.RIGHT:
                     this.ctx.textAlign = 'right';
                     break;
             }
@@ -10361,11 +10356,7 @@
     
         this.update = function ( time ) {
     
-            if ( time < _startTime ) {
-    
-                return true;
-    
-            }
+            if ( time < _startTime ) return true;
     
             var elapsed = ( time - _startTime ) / _duration;
             elapsed = elapsed > 1 ? 1 : elapsed;
@@ -10571,7 +10562,7 @@
             
             this.p.popStyle();
             
-            return { x: 0, y: descent-1, width: width, height: (ascent+descent)+1 };
+            return { x: 000, y: descent-1, width: width, height: (ascent+descent)+1 };
         },
         
         _type : function() {
