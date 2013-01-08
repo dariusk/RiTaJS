@@ -1131,23 +1131,6 @@
 			
 		},
 
-
-
-		/**
-		 * Removes and returns a random element from an array, returning
-		 * it and leaving the array 1 element shorter.
-		 * 
-		 * @param {array} arr
-		 * @returns {array} 
-		 */
-		removeRandom : function(arr) { 
-			
-			var i = Math.floor((Math.random()*arr.length));
-			remove(arr, i, i);
-			return arr;
-			
-		},
-			
 		/**
 		 * Strips all punctuation from the given string
 		 * @param {string} text input
@@ -2384,15 +2367,16 @@
 		 * @returns {array} matching words 
 		 */
 		similarBySound: function(input, minEditDist) { // take options arg instead?
-		minEditDist = minEditDist || 1;
 
-		var minVal = Number.MAX_VALUE,
-			entry, result = [],
-			minLen = 2,
-			phonesArr, phones = RiTa.getPhonemes(input),
-			med, targetPhonesArr = phones.split("-");
+			minEditDist = minEditDist || 1;
 
-			targetPhonesArr = phones ? phones.split("-") : [];
+			var minVal = Number.MAX_VALUE,
+				entry, result = [],
+				minLen = 2,
+				phonesArr, phones = RiTa.getPhonemes(input),
+				med;
+
+			targetPhonesArr = phones ? phones.split('-') : [];
 
 			if(!targetPhonesArr[0] || !(input && input.length)) return [];
 
@@ -2417,15 +2401,16 @@
 				med = MinEditDist.computeRaw(phonesArr, targetPhonesArr);
 
 				if(med == 0) continue; // same phones 
-				
-				// we found something even closer
+
+				// found something even closer
 				if(med >= minEditDist && med < minVal) {
 
 					minVal = med;
 					result = [entry];
 				}
-				// we have another best to add
+				// another best to add
 				else if(med == minVal) {
+
 					result.push(entry);
 				}
 			}
@@ -2519,7 +2504,7 @@
 		 * @param {boolean} randomize randomizes the order (default=false)
 		 * @returns {array} words in the RiLexicon  
 		 */
-		getWords : function() {
+		words : function() {
 			
 			var a = arguments, randomize = false, regex = undefined, wordArr = [], words =  okeys(RiLexicon.data);
 			
@@ -2626,7 +2611,7 @@
 		 * @param {string} word
 		 * @returns {array} strings of the rhymes for a given word, or empty array if none are found
 		 */
-		getRhymes : function(word) {
+		rhymes : function(word) {
 
 			//this._buildWordlist_();
 
@@ -2656,7 +2641,7 @@
 		 * @param {string} word input
 		 * @returns {array} strings of alliterations
 		 */
-		getAlliterations : function(word) {
+		alliterations : function(word) {
 
 			if (this.containsWord(word)) {
 
@@ -2894,26 +2879,22 @@
 			return stresses.join(" ").replace(/ \//g, "/");
 		},
 		
-		/**
-		 * Returns the raw dictionary data used to create the default lexicon
-		 * @returns {object} dictionary mapping words to their pronunciation/pos data
-		 */
-		getLexicalData : function() {
-			
-			return RiLexicon.data;
-		},
 		
 		/**
-		 * Allows one to set the raw dictionary data used to create the default lexicon.
+		 * Allows one to set/get the raw dictionary data used to create the default lexicon.
 		 * See RiLexicon.addWord() for data format
 		 * 
-		 * @param {object} dictionaryDataObject mapping words to their pronunciation/pos data
-		 * @returns {object} this RiLexicon
+		 * @param {object} dictionaryDataObject mapping words to their pronunciation/pos data (optional, for sets only)
+		 * @returns {object} this RiLexicon or lexical data (for gets)
 		 */
-		setLexicalData : function(dictionaryDataObject) {
+		lexicalData : function(dictionaryDataObject) {
 
-			RiLexicon.data = dictionaryDataObject;
 			
+			if (arguments.length == 1) {
+				RiLexicon.data = dictionaryDataObject;
+				return this;
+			}
+
 			return RiLexicon.data;
 		},
 		
@@ -3013,7 +2994,7 @@
 		 * @param {string} syllableCount (optional)
 		 * @returns {string} random word
 		 */
-		getRandomWord : function() {  // takes nothing, pos, syllableCount, or both 
+		randomWord : function() {  // takes nothing, pos, syllableCount, or both 
 			
 			var found = false, a = arguments, wordArr = okeys(RiLexicon.data),
 				ran = Math.floor(Math.random() * okeys(RiLexicon.data).length),
@@ -4679,7 +4660,7 @@
 	 */
 	RiText.random = function() {
 		
-		return RiTa.random.apply(this,arguments);
+		return RiTa.random.apply(this ,arguments);
 	}
 	
 	/**
@@ -4833,7 +4814,7 @@
 
 		if (!(strLines && strLines.length)) 
 			err('Unexpected fail in createLines: no lines');
-		
+
 		// lay out the lines
 		var rts = RiText._createLinesByCharCountFromArray(strLines, x, y, theFont);
 		
@@ -4936,9 +4917,11 @@
 		if (a.length == 1 && typeof a[0] == O) {
 			RiText.defaults.font = a[0];
 		}
-		else if (a.length > 1) {
-			RiText.defaults.font = RiText.renderer._createFont.apply(RiText.renderer,a);
+		// this allows for RiText.defaultFont(name,sz,lead); // TODO: remove or add to params
+		else if (a.length > 1 && typeof a[0] == S) {
+			RiText.defaults.font = RiText.renderer._createFont.apply(RiText.renderer, a);
 		}
+
 		if (!RiText.defaults.font.leading)
 			RiText.defaults.font.leading = RiText.defaults.font.size * RiText.defaults.leadingFactor;
 		
@@ -4950,7 +4933,8 @@
 		if (!fontName) err('RiText.createFont requires fontName');
 		
 		fontSize = fontSize || RiText.defaults.fontSize;
-		
+
+		log("XXX");
 		return RiText.renderer._createFont(fontName, fontSize, leading);
 	}
 	
@@ -5109,6 +5093,7 @@
 	RiText._createRiTexts = function(txt, x, y, w, h, fontObj, splitFun) {  
 
 		if (!txt || !txt.length) return [];
+
 		fontObj = fontObj || RiText._getDefaultFont();
 
 		var rlines = RiText.createLines(txt, x, y, w, h, fontObj);
@@ -5131,7 +5116,7 @@
 	
 	RiText._createLinesByCharCountFromArray = function(txtArr, startX, startY, fontObj) {
 
-		fontObj = fontObj || RiText._getDefaultFont(); // remove?
+		if (!fontObj) err('no font in _createLinesByCharCountFromArray!');
 
 		//log('createLinesByCharCountFromArray('+txtArr.length+','+startX+','+startY+','+fontObj.size+','+fontObj.leading+')');
 
@@ -5185,22 +5170,25 @@
 		return xPos;
 	}
 	
-	RiText._handleLeading = function(fontObj, rts, startY)  {
-		
-	  if (!rts || !rts.length) return;
+	RiText._handleLeading = function(fontObj, rts, startY) {
 
-	  fontObj = fontObj || RiText._getDefaultFont();
-	  
-	  var nextHeight = startY;
-	  rts[0].font(fontObj);
-	  for ( var i = 0; i < rts.length; i++) {
-		  
-		if (fontObj) rts[i].font(fontObj); // set the font
-		rts[i].y = nextHeight; // adjust y-pos
-		nextHeight += fontObj.leading;
-	  }
-	  
-	  return rts;
+		
+		if(!rts || !rts.length) return;
+
+		fontObj = fontObj || RiText._getDefaultFont();
+
+		//log('handleLeading: '+fontObj.leading);
+
+		var nextHeight = startY;
+		rts[0].font(fontObj);
+		for(var i = 0; i < rts.length; i++) {
+
+			if(fontObj) rts[i].font(fontObj); // set the font
+			rts[i].y = nextHeight; // adjust y-pos
+			nextHeight += fontObj.leading;
+		}
+
+		return rts;
 	}
 	
 	RiText._disposeOne = function(toDelete) {
@@ -5230,7 +5218,7 @@
 		
 		RiText.defaults.font = RiText.defaults.font || 
 			RiText.renderer._createFont(RiText.defaults.fontFamily, 
-				RiText.defaults.fontSize, RiText.defaults.fontLeading);
+				RiText.defaults.fontSize, RiText.defaults.fontSize * RiText.defaults.leadingFactor);
 		
 		return RiText.defaults.font;
 	}
@@ -5265,10 +5253,11 @@
 	 */
 	RiText.defaults = { 
 		
-		color : { r : 0, g : 0, b : 0, a : 255 }, scaleX:1, scaleY:1, scaleZ:1,
-		alignment : RiTa.LEFT, motionType : RiTa.LINEAR, rotateZ:0, font:null,
+		color : { r : 0, g : 0, b : 0, a : 255 }, 
+		alignment : RiTa.LEFT, motionType : RiTa.LINEAR, font: null,
+		rotateX:0, rotateY:0, rotateZ: 0, scaleX:1, scaleY:1, scaleZ:1,
 		paragraphLeading :  0, paragraphIndent: '    ', indentFirstParagraph: false,
-		fontFamily: 'Times New Roman', fontSize: 14, fontLeading : 16, leadingFactor : 1.1,
+		fontFamily: 'Times New Roman', fontSize: 14, leadingFactor : 1.1,
 		boundingBoxStroke : null, boundingBoxFill: null, boundingBoxVisible : false
 	}
 
@@ -5345,7 +5334,8 @@
 			// center by default
 			this.x = arguments.length>1 ? x : this.g._width() / 2 - this.textWidth() / 2.0;
 			this.y = arguments.length>1 ? y : this.g._height() / 2 + this.textHeight() / 2.0;
-	
+			this.z = 0;
+
 			RiText.instances.push(this);
 			
 			return this;
@@ -7488,12 +7478,12 @@
 						if (renderer) console.warn("Renderer arg ignored");
 					},
 					
-					_createFont : function(fontName, fontSize, fontLeading) {
+					_createFont : function(fontName, fontSize, leading) {
 						
 						var font = {
 							name:       fontName, 
 							size:       fontSize || RiText.defaults.font.size, 
-							leading:    fontLeading || (fontSize * RiText.defaults.leadingFactor) 
+							leading:    leading || (fontSize * RiText.defaults.leadingFactor) 
 						};
 						return font;
 					},
@@ -9745,7 +9735,7 @@
 		var categoryU_US = ["apercus", "barbus", "cornus", "ecrus", "emus", "fondus", "gnus", "iglus", "mus", "nandus", "napus", "poilus", "quipus", "snafus", "tabus", "tamandus", "tatus", "timucus", "tiramisus", "tofus", "tutus"];
 	
 		/** Words that change from "-sse" to "-sses" (like "finesse" etc.), listed in their plural forms,plus those ending in mousse*/
-		var categorySSE_SSES = [≠"bouillabaisses", "coulisses", "crevasses", "crosses", "cuisses", "demitasses", "ecrevisses", "fesses", "finesses", "fosses", "impasses", "lacrosses", "largesses", "masses", "noblesses", "palliasses", "pelisses", "politesses", "posses", "tasses", "wrasses"];
+		var categorySSE_SSES = ["bouillabaisses", "coulisses", "crevasses", "crosses", "cuisses", "demitasses", "ecrevisses", "fesses", "finesses", "fosses", "impasses", "lacrosses", "largesses", "masses", "noblesses", "palliasses", "pelisses", "politesses", "posses", "tasses", "wrasses"];
 	
 		/** Words that change from "-che" to "-ches" (like "brioche" etc.), listed in their plural forms*/
 		var categoryCHE_CHES = ["adrenarches", "attaches", "avalanches", "barouches", "brioches", "caches", "caleches", "caroches", "cartouches", "cliches", "cloches", "creches", "demarches", "douches", "gouaches", "guilloches", "headaches", "heartaches", "huaraches", "menarches", "microfiches", "moustaches", "mustaches", "niches", "panaches", "panoches", "pastiches", "penuches", "pinches", "postiches", "psyches", "quiches", "schottisches", "seiches", "soutaches", "synecdoches", "thelarches", "troches"];
@@ -10438,8 +10428,11 @@
 		// actual creation: only called from RiText.createDefaultFont();!
 		_createFont : function(fontName, fontSize, leading) { // ignores leading
 			
-			//log("[P5] Creating font: "+fontName+"-"+fontSize+"/"+leading);
-			return this.p.createFont(fontName, fontSize);                
+			console.log("[P5] Creating font: "+fontName+"-"+fontSize+"/"+leading);
+			var pfont = this.p.createFont(fontName, fontSize);                
+			if (leading) pfont.leading = leading;
+			//console.log(pfont);
+			return pfont;
 		},
 
 		_rect : function(x,y,w,h) {
