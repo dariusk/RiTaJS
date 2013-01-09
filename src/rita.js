@@ -1841,7 +1841,8 @@
 
 		generateSentences: function(num) {
 
-			if (!this.recognizeSentences) err("Illegal: call to generateSentences() while generateSentences=false");
+			if (!this.recognizeSentences) 
+				err("Illegal: call to generateSentences() while generateSentences=false");
 
 			var s, result = [],
 				counter = 0,
@@ -1943,6 +1944,8 @@
 				j = 1; // awful hack
 				for (; j < tokens.length; j++)
 					allWords.push(tokens[j]);
+
+				return this;
 			}
 
 			// ------------------------------------------------
@@ -2501,12 +2504,13 @@
 		 * If specified, the order of the result array is randomized before return.
 		 *  
 		 * @param {regex} regex (string or object) pattern to match (optional)
-		 * @param {boolean} randomize randomizes the order (default=false)
+		 * @param {boolean} sorted In sorted order when true (default=false)
 		 * @returns {array} words in the RiLexicon  
 		 */
 		words : function() {
 			
-			var a = arguments, randomize = false, regex = undefined, wordArr = [], words =  okeys(RiLexicon.data);
+			var a = arguments, sorted = false, regex = undefined, 
+				wordArr = [], words =  okeys(RiLexicon.data);
 			
 			switch (a.length) {
 				
@@ -2517,7 +2521,7 @@
 						regex = (is(a[1],R)) ? a[1] : new RegExp(a[1]);
 					} 
 					else {
-						randomize = a[1];
+						sorted = a[1];
 						regex = (is(a[0],R)) ? a[0] : new RegExp(a[0]);
 					}
 
@@ -2546,7 +2550,9 @@
 				}
 			}
 			
-			return randomize ? shuffle(wordArr) : wordArr;  
+			// TODO: make sure we have a test for both sorted=false/true
+
+			return sorted ? wordArr | shuffle(wordArr);  
 		},
 		
 		/**
@@ -4068,6 +4074,14 @@
 			
 		},
 
+		_clone: function() {  // NIAPI
+			var tmp = RiGrammar();
+			for(var name in this._rules) {
+				tmp._rules[name] = this._rules[name];
+			}
+			return tmp;
+
+		},
 		
 		/**
 		 * Adds a rule to the existing grammar, replacing any existing rule with the same name 
@@ -4213,7 +4227,7 @@
 		 */
 		expandWith : function(literal, symbol) { // TODO: finish 
 
-			var gr = this.clone();
+			var gr = this._clone();
 			
 			var match = false;
 			for ( var name in gr._rules) {
