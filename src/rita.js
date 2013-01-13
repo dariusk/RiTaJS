@@ -2517,7 +2517,7 @@
 				case 2:
 					
 					if (is(a[0],B)) {
-						randomize = a[0];
+						sorted = a[0];
 						regex = (is(a[1],R)) ? a[1] : new RegExp(a[1]);
 					} 
 					else {
@@ -2750,7 +2750,7 @@
 		 * @returns boolean} true if the word can be used as an adverb 
 		 */
 		isAdverb : function(word) {
-			
+			//log("isAdverb("+word+")");
 			return this._checkType(word, PosTagger.ADV);
 		},
 		
@@ -2778,11 +2778,11 @@
 		_checkType: function(word, tagArray) {
 
 			if (word && word.indexOf(SP) != -1) 
-				 throw Error("isX() expects a single word, found: "+word); 
+				 throw Error("_checkType() expects a single word, found: "+word); 
 
 			var psa = this._getPosArr(word);
 			for (var i = 0; i < psa.length; i++) {
-				if (tagArray.indexOf(psa[i].toUpperCase())>-1)
+				if (tagArray.indexOf(psa[i].toUpperCase()) > -1)
 					return true;
 			} 
 			
@@ -2882,7 +2882,7 @@
 				}
 			}
 			
-			return stresses.join(" ").replace(/ \//g, "/");
+			return stresses.join(SP).replace(/ \//g, "/");
 		},
 		
 		
@@ -2940,7 +2940,7 @@
 		},
 
 		
-		_getPosArr : function(word) { // SHOULD BE PRIVATE
+		_getPosArr : function(word) { 
 			
 			var pl = this._getPosData(word);
 			
@@ -2952,7 +2952,7 @@
 		
 		_firstConsonant : function(rawPhones) {
 
-			if (!strOk(rawPhones)) return E; // return null?
+			if (!strOk(rawPhones)) return E; 
 			
 			var phones = rawPhones.split(RiLexicon.PHONEME_BOUNDARY);
 			// var phones = rawPhones.split(PHONEME_BOUNDARY);
@@ -3422,7 +3422,7 @@
 		},
 
 		/**
-		 * Returns an array of part-of-speech tags, one per word, using RiTa.tokenize() and RiTa.posTag().
+		 * Returns an array of part-of-speech tags, one per word, using RiTa.tokenize() and RiTa.getPosTags().
 		 *
 		 * @returns {array} strings of pos, one per word
 		 */
@@ -3440,7 +3440,7 @@
 		},
 
 		/**
-		 * Returns the part-of-speech tag for the word at 'index', using RiTa.tokenize() and RiTa.posTag().
+		 * Returns the part-of-speech tag for the word at 'index', using RiTa.tokenize() and RiTa.getPosTags().
 		 * 
 		 * @param {number} index the word index
 		 * @returns {string} the pos
@@ -8454,73 +8454,77 @@
 	// ////////////////////////////////////////////////////////////
 	// PosTagger  (singleton)
 	// ////////////////////////////////////////////////////////////
-	
 	var PosTagger = {
 
-		// Penn Pos types ------------------------------
-		UNKNOWN : [ "???", "UNKNOWN" ],
-		N : [ "N", "NOUN_KEY" ],
-		V : [ "V", "VERB_KEY" ],
-		R : [ "R", "ADVERB_KEY" ],
-		A : [ "A", "ADJECTIVE_KEY" ],
-		CC : [ "CC", "Coordinating conjunction" ],
-		CD : [ "CD", "Cardinal number" ],
-		DT : [ "DT", "Determiner" ],
-		EX : [ "EX", "Existential there" ],
-		FW : [ "FW", "Foreign word" ],
-		IN : [ "IN", "Preposition or subordinating conjunction" ],
-		JJ : [ "JJ", "Adjective" ],
-		JJR : [ "JJR", "Adjective, comparative" ],
-		JJS : [ "JJS", "Adjective, superlative" ],
-		LS : [ "LS", "List item marker" ],
-		MD : [ "MD", "Modal" ],
-		NN : [ "NN", "Noun, singular or mass" ],
-		NNS : [ "NNS", "Noun, plural" ],
-		NNP : [ "NNP", "Proper noun, singular" ],
-		NNPS : [ "NNPS", "Proper noun, plural" ],
-		PDT : [ "PDT", "Predeterminer" ],
-		POS : [ "POS", "Possessive ending" ],
-		PRP : [ "PRP", "Personal pronoun" ],
-		PRP$ : [ "PRP$", "Possessive pronoun (prolog version PRP-S)" ],
-		RB : [ "RB", "Adverb" ],
-		RBR : [ "RBR", "Adverb, comparative" ],
-		RBS : [ "RBS", "Adverb, superlative" ],
-		RP : [ "RP", "Particle" ],
-		SYM : [ "SYM", "Symbol" ],
-		TO : [ "TO", "to" ],
-		UH : [ "UH", "Interjection" ],
-		VB : [ "VB", "Verb, base form" ],
-		VBD : [ "VBD", "Verb, past tense" ],
-		VBG : [ "VBG", "Verb, gerund or present participle" ],
-		VBN : [ "VBN", "Verb, past participle" ],
-		VBP : [ "VBP", "Verb, non-3rd person singular present" ],
-		VBZ : [ "VBZ", "Verb, 3rd person singular present" ],
-		WDT : [ "WDT", "Wh-determiner" ],
-		WP : [ "WP", "Wh-pronoun" ],
-		WP$ : [ "WP$", "Possessive wh-pronoun (prolog version WP-S)" ],
-		WRB : [ "WRB", "Wh-adverb" ],
+		// Penn Pos types ------------------------------ (40+UKNOWN)
 
-		TAGS : [ "CC", "CD", "DT", "EX", "FW", "IN", "JJ", 
-				"JJR", "JJS", "LS", "MD", "NN", "NNS", "NNP", 
-				"NNPS", "PDT", "POS", "PRP", "PRP$", "RB", 
-				"RBR", "RBS", "RP", "SYM", "TO", 
-				 "UH", "VB", "VBD", "VBG", "VBN", "VBP", "VBZ", "WDT", 
-				 "WP", "WP$", "WRB", "UNKNOWN" ],
-		NOUNS : [ "NN", "NNS", "NNP", "NNPS" ],
-		VERBS : [ "VB", "VBD", "VBG", "VBN", "VBP", "VBZ" ],
-		ADJ : [ "JJ", "JJR", "JJS" ],
-		ADV : [ "RB", "RBR", "RBS", "RP" ],
+		UNKNOWN : [ '???', 'UNKNOWN' ],
+		N : [ 'N', 'NOUN_KEY' ],
+		V : [ 'V', 'VERB_KEY' ],
+		R : [ 'R', 'ADVERB_KEY' ],
+		A : [ 'A', 'ADJECTIVE_KEY' ],
+		CC : [ 'CC', 'Coordinating conjunction' ],
+		CD : [ 'CD', 'Cardinal number' ],
+		DT : [ 'DT', 'Determiner' ],
+		EX : [ 'EX', 'Existential there' ],
+		FW : [ 'FW', 'Foreign word' ],
+		IN : [ 'IN', 'Preposition or subordinating conjunction' ],
+		JJ : [ 'JJ', 'Adjective' ],
+		JJR : [ 'JJR', 'Adjective, comparative' ],
+		JJS : [ 'JJS', 'Adjective, superlative' ],
+		LS : [ 'LS', 'List item marker' ],
+		MD : [ 'MD', 'Modal' ],
+		NN : [ 'NN', 'Noun, singular or mass' ],
+		NNS : [ 'NNS', 'Noun, plural' ],
+		NNP : [ 'NNP', 'Proper noun, singular' ],
+		NNPS : [ 'NNPS', 'Proper noun, plural' ],
+		PDT : [ 'PDT', 'Predeterminer' ],
+		POS : [ 'POS', 'Possessive ending' ],
+		PRP : [ 'PRP', 'Personal pronoun' ],
+		PRP$ : [ 'PRP$', 'Possessive pronoun (prolog version PRP-S)' ],
+		RB : [ 'RB', 'Adverb' ],
+		RBR : [ 'RBR', 'Adverb, comparative' ],
+		RBS : [ 'RBS', 'Adverb, superlative' ],
+		RP : [ 'RP', 'Particle' ],
+		SYM : [ 'SYM', 'Symbol' ],
+		TO : [ 'TO', 'to' ],
+		UH : [ 'UH', 'Interjection' ],
+		VB : [ 'VB', 'Verb, base form' ],
+		VBD : [ 'VBD', 'Verb, past tense' ],
+		VBG : [ 'VBG', 'Verb, gerund or present participle' ],
+		VBN : [ 'VBN', 'Verb, past participle' ],
+		VBP : [ 'VBP', 'Verb, non-3rd person singular present' ],
+		VBZ : [ 'VBZ', 'Verb, 3rd person singular present' ],
+		WDT : [ 'WDT', 'Wh-determiner' ],
+		WP : [ 'WP', 'Wh-pronoun' ],
+		WP$ : [ 'WP$', 'Possessive wh-pronoun (prolog version WP-S)' ],
+		WRB : [ 'WRB', 'Wh-adverb' ],
+
+		TAGS : [ 'CC', 'CD', 'DT', 'EX', 'FW', 'IN', 'JJ', 
+				'JJR', 'JJS', 'LS', 'MD', 'NN', 'NNS', 'NNP', 
+				'NNPS', 'PDT', 'POS', 'PRP', 'PRP$', 'RB', 
+				'RBR', 'RBS', 'RP', 'SYM', 'TO', 
+				 'UH', 'VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ', 'WDT', 
+				 'WP', 'WP$', 'WRB', 'UNKNOWN' ],
+
+		NOUNS : [ 'NN', 'NNS', 'NNP', 'NNPS' ],
+		VERBS : [ 'VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ' ],
+		ADJ : [ 'JJ', 'JJR', 'JJS' ],
+		ADV : [ 'RB', 'RBR', 'RBS', 'RP' ],
 
    
 		isVerb : function(tag) {
+			
 			return inArray(this.VERBS, tag.toUpperCase());
 		},
 
 		isNoun : function(tag) {
+			
 			return inArray(this.NOUNS, tag.toUpperCase());
 		},
 
 		isAdverb : function(tag) {
+log('tag='+tag+' count='+this.TAGS.length);
 			return inArray(this.ADV, tag.toUpperCase());
 		},
 
@@ -8533,6 +8537,7 @@
 		},
 
 		hasTag : function(choices, tag) {
+			ok(choices,A);
 			var choiceStr = choices.join();
 			return (choiceStr.indexOf(tag) > -1);
 		},
@@ -8543,13 +8548,17 @@
 		 */
 		tag : function(words) {
 			
-			var result = [], choices = [], lex = RiLexicon._getInstance(); 
+			var result = [], lex = RiLexicon._getInstance(); 
+			var choices2d = [];
 			
 			words = is(words,A) ?  words : [ words ];
 			
 			for (var i = 0, l = words.length; i < l; i++) {
 	 
-				if (!strOk(words[i])) continue
+				if (!strOk(words[i])) {
+					choices2d[i] = [];
+					continue;
+				}
 				
 				var data = lex._getPosArr(words[i]);
 
@@ -8563,17 +8572,16 @@
 						
 						result.push("nn");
 					}
-					choices[i] = null;  // TODO: OK?
+					choices2d[i] = [];  // TODO: OK?
 				} 
 				else {
 					result.push(data[0]);
-					choices.push(data);
+					choices2d[i] = data;
 				}
 			}
 
-			// Adjust pos according to transformation rules
-			return this._applyContext(words, result, choices);
-			
+					// Adjust pos according to transformation rules
+			return this._applyContext(words, result, choices2d);	
 		},
 
 		
@@ -8583,7 +8591,7 @@
 			//log("_applyContext("+words+","+result+","+choices+")");
 
 			// Shortcuts for brevity/readability
-			var sW = startsWith, eW = endsWith, PRINT_CUSTOM_TAGS = true, PRINT = PRINT_CUSTOM_TAGS;
+			var sW = startsWith, eW = endsWith, PRINT_CUSTOM_TAGS = (0 && !RiTa.SILENT);
 
 			// Apply transformations
 			for (var i = 0, l = words.length; i < l; i++) {
@@ -8593,8 +8601,8 @@
 				// transform 1: DT, {VBD | VBP | VB} --> DT, NN
 				if (i > 0 && (result[i - 1] == "dt")) {
 					if (sW(result[i], "vb")) {
-						if (PRINT) {
-							log("BrillPosTagger: changing verb to noun: " + words[i]);
+						if (PRINT_CUSTOM_TAGS) {
+							log("PosTagger: changing verb to noun: " + words[i]);
 						}
 						result[i] = "nn";
 					}
@@ -8602,12 +8610,10 @@
 					// transform 1: DT, {RB | RBR | RBS} --> DT, {JJ |
 					// JJR | JJS}
 					else if (sW(result[i], "rb")) {
-						if (PRINT) {
-							log("BrillPosTagger:  custom tagged '" + words[i] + "', "
-									+ result[i]);
-						}
+						if (PRINT_CUSTOM_TAGS) 
+							log("PosTagger: custom tagged '"+words[i]+"', "+ result[i]);
 						result[i] = (result[i].length > 2) ? "jj" + result[i].charAt(2) : "jj";
-						if (PRINT) {
+						if (PRINT_CUSTOM_TAGS) {
 							log(" -> " + result[i]);
 						}
 					}
@@ -8660,8 +8666,8 @@
 					// 'morning'
 					if (this.hasTag(choices[i], "vb")) {
 						result[i] = "vbg";
-					} else if (PRINT) {
-						log("[RiTa] BrillPosTagger tagged '" + words[i] + "' as " + result[i]);
+					} else if (PRINT_CUSTOM_TAGS) {
+						log("[RiTa] PosTagger tagged '" + words[i] + "' as " + result[i]);
 					}
 				}
 
@@ -8683,8 +8689,7 @@
 			}
 		 
 			return result;
-			
-		}//.returns(A)
+		}
 
 	}// end PosTagger
 
@@ -11510,7 +11515,8 @@
 			str += " ";
 		return str;
 	}
-	 // Arrays ////////////////////////////////////////////////////////////////////////
+
+	// Arrays ////////////////////////////////////////////////////////////////////////
 	
 	function shuffle(oldArray) {
 		var newArray = oldArray.slice();
@@ -11519,7 +11525,7 @@
 		 while (i--) {
 			var p = parseInt(Math.random()*len);
 			var t = newArray[i];
-			newArray[i] = newArray[p];	
+			newArray[i] = newArray[p];
 			newArray[p] = t;
 		}
 		return newArray; 
