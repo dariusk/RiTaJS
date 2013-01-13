@@ -277,9 +277,9 @@ Can be modified directly or through API methods.</div>
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/RiText.html#boundingBox">boundingBox</a></b>()
+								<div class="fixedFont"><b><a href="../symbols/RiText.html#boundingBox">boundingBox</a></b>((optional,)
 								</div>
-								<div class="description">Returns the bounding box for the current text.</div>
+								<div class="description">Returns the relative bounding box for the current text</div>
 							</td>
 						</tr>
 					
@@ -421,7 +421,7 @@ Can be modified directly or through API methods.</div>
 						<tr>
 							<td class="attributes">&lt;static&gt; &nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont">RiText.<b><a href="../symbols/RiText.html#.defaultFont">defaultFont</a></b>(font)
+								<div class="fixedFont">RiText.<b><a href="../symbols/RiText.html#.defaultFont">defaultFont</a></b>(font, the, the, the)
 								</div>
 								<div class="description">Sets/gets the default font for all RiTexts</div>
 							</td>
@@ -770,7 +770,7 @@ according to one of the following functions: <br>
 								<div class="fixedFont">RiText.<b><a href="../symbols/RiText.html#.mouse">mouse</a></b>(e)
 								</div>
 								<div class="description">Returns the mouse position from a mouse event
-in a cross-browser -ompatible fashion</div>
+in a cross-browser compatible fashion</div>
 							</td>
 						</tr>
 					
@@ -1525,17 +1525,29 @@ Can be modified directly or through API methods.
 					<div class="fixedFont">
 					
 					<span class="light">{object}</span>
-					<b>boundingBox</b>()
+					<b>boundingBox</b>((optional,)
 					
 					</div>
 					<div class="description">
-						Returns the bounding box for the current text.
+						Returns the relative bounding box for the current text
 						
 						
 					</div>
 					
 					
 					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{boolean}</span> <b>(optional,</b>
+									
+								</dt>
+								<dd>default=false) 
+	if true, bounding box is first transformed (rotate,translate,scale)</dd>
+							
+							</dl>
 						
 						
 						
@@ -2329,7 +2341,7 @@ Can be modified directly or through API methods.
 					<div class="fixedFont">&lt;static&gt; 
 					
 					<span class="light">{object}</span>
-					<span class="light">RiText.</span><b>defaultFont</b>(font)
+					<span class="light">RiText.</span><b>defaultFont</b>(font, the, the, the)
 					
 					</div>
 					<div class="description">
@@ -2349,6 +2361,24 @@ Can be modified directly or through API methods.
 									
 								</dt>
 								<dd>(optional, for 'sets' only)</dd>
+							
+								<dt>
+									<span class="light fixedFont">{string}</span> <b>the</b>
+									
+								</dt>
+								<dd>font name (optional, for 'sets' only)</dd>
+							
+								<dt>
+									<span class="light fixedFont">{number}</span> <b>the</b>
+									
+								</dt>
+								<dd>font size (optional, for 'sets' only)</dd>
+							
+								<dt>
+									<span class="light fixedFont">{number}</span> <b>the</b>
+									
+								</dt>
+								<dd>font leading (optional, for 'sets' only)</dd>
 							
 							</dl>
 						
@@ -3836,7 +3866,7 @@ according to one of the following functions: <br>
 					</div>
 					<div class="description">
 						Returns the mouse position from a mouse event
-in a cross-browser -ompatible fashion
+in a cross-browser compatible fashion
 						
 						
 					</div>

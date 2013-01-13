@@ -47854,23 +47854,6 @@ _RiTa_LTS=[
 			
 		},
 
-
-
-		/**
-		 * Removes and returns a random element from an array, returning
-		 * it and leaving the array 1 element shorter.
-		 * 
-		 * @param {array} arr
-		 * @returns {array} 
-		 */
-		removeRandom : function(arr) { 
-			
-			var i = Math.floor((Math.random()*arr.length));
-			remove(arr, i, i);
-			return arr;
-			
-		},
-			
 		/**
 		 * Strips all punctuation from the given string
 		 * @param {string} text input
@@ -48581,7 +48564,8 @@ _RiTa_LTS=[
 
 		generateSentences: function(num) {
 
-			if (!this.recognizeSentences) err("Illegal: call to generateSentences() while generateSentences=false");
+			if (!this.recognizeSentences) 
+				err("Illegal: call to generateSentences() while generateSentences=false");
 
 			var s, result = [],
 				counter = 0,
@@ -48683,6 +48667,8 @@ _RiTa_LTS=[
 				j = 1; // awful hack
 				for (; j < tokens.length; j++)
 					allWords.push(tokens[j]);
+
+				return this;
 			}
 
 			// ------------------------------------------------
@@ -49107,15 +49093,16 @@ _RiTa_LTS=[
 		 * @returns {array} matching words 
 		 */
 		similarBySound: function(input, minEditDist) { // take options arg instead?
-		minEditDist = minEditDist || 1;
 
-		var minVal = Number.MAX_VALUE,
-			entry, result = [],
-			minLen = 2,
-			phonesArr, phones = RiTa.getPhonemes(input),
-			med, targetPhonesArr = phones.split("-");
+			minEditDist = minEditDist || 1;
 
-			targetPhonesArr = phones ? phones.split("-") : [];
+			var minVal = Number.MAX_VALUE,
+				entry, result = [],
+				minLen = 2,
+				phonesArr, phones = RiTa.getPhonemes(input),
+				med;
+
+			targetPhonesArr = phones ? phones.split('-') : [];
 
 			if(!targetPhonesArr[0] || !(input && input.length)) return [];
 
@@ -49141,14 +49128,15 @@ _RiTa_LTS=[
 
 				if(med == 0) continue; // same phones 
 
-				// we found something even closer
+				// found something even closer
 				if(med >= minEditDist && med < minVal) {
 
 					minVal = med;
 					result = [entry];
 				}
-				// we have another best to add
+				// another best to add
 				else if(med == minVal) {
+
 					result.push(entry);
 				}
 			}
@@ -49239,12 +49227,13 @@ _RiTa_LTS=[
 		 * If specified, the order of the result array is randomized before return.
 		 *  
 		 * @param {regex} regex (string or object) pattern to match (optional)
-		 * @param {boolean} randomize randomizes the order (default=false)
+		 * @param {boolean} sorted In sorted order when true (default=false)
 		 * @returns {array} words in the RiLexicon  
 		 */
-		getWords : function() {
+		words : function() {
 			
-			var a = arguments, randomize = false, regex = undefined, wordArr = [], words =  okeys(RiLexicon.data);
+			var a = arguments, sorted = false, regex = undefined, 
+				wordArr = [], words =  okeys(RiLexicon.data);
 			
 			switch (a.length) {
 				
@@ -49255,7 +49244,7 @@ _RiTa_LTS=[
 						regex = (is(a[1],R)) ? a[1] : new RegExp(a[1]);
 					} 
 					else {
-						randomize = a[1];
+						sorted = a[1];
 						regex = (is(a[0],R)) ? a[0] : new RegExp(a[0]);
 					}
 
@@ -49284,7 +49273,9 @@ _RiTa_LTS=[
 				}
 			}
 			
-			return randomize ? shuffle(wordArr) : wordArr;  
+			// TODO: make sure we have a test for both sorted=false/true
+
+			return sorted ? wordArr : shuffle(wordArr);  
 		},
 		
 		/**
@@ -49349,7 +49340,7 @@ _RiTa_LTS=[
 		 * @param {string} word
 		 * @returns {array} strings of the rhymes for a given word, or empty array if none are found
 		 */
-		getRhymes : function(word) {
+		rhymes : function(word) {
 
 			//this._buildWordlist_();
 
@@ -49379,7 +49370,7 @@ _RiTa_LTS=[
 		 * @param {string} word input
 		 * @returns {array} strings of alliterations
 		 */
-		getAlliterations : function(word) {
+		alliterations : function(word) {
 
 			if (this.containsWord(word)) {
 
@@ -49617,26 +49608,22 @@ _RiTa_LTS=[
 			return stresses.join(" ").replace(/ \//g, "/");
 		},
 		
-		/**
-		 * Returns the raw dictionary data used to create the default lexicon
-		 * @returns {object} dictionary mapping words to their pronunciation/pos data
-		 */
-		getLexicalData : function() {
-			
-			return RiLexicon.data;
-		},
 		
 		/**
-		 * Allows one to set the raw dictionary data used to create the default lexicon.
+		 * Allows one to set/get the raw dictionary data used to create the default lexicon.
 		 * See RiLexicon.addWord() for data format
 		 * 
-		 * @param {object} dictionaryDataObject mapping words to their pronunciation/pos data
-		 * @returns {object} this RiLexicon
+		 * @param {object} dictionaryDataObject mapping words to their pronunciation/pos data (optional, for sets only)
+		 * @returns {object} this RiLexicon or lexical data (for gets)
 		 */
-		setLexicalData : function(dictionaryDataObject) {
+		lexicalData : function(dictionaryDataObject) {
 
-			RiLexicon.data = dictionaryDataObject;
 			
+			if (arguments.length == 1) {
+				RiLexicon.data = dictionaryDataObject;
+				return this;
+			}
+
 			return RiLexicon.data;
 		},
 		
@@ -49736,7 +49723,7 @@ _RiTa_LTS=[
 		 * @param {string} syllableCount (optional)
 		 * @returns {string} random word
 		 */
-		getRandomWord : function() {  // takes nothing, pos, syllableCount, or both 
+		randomWord : function() {  // takes nothing, pos, syllableCount, or both 
 			
 			var found = false, a = arguments, wordArr = okeys(RiLexicon.data),
 				ran = Math.floor(Math.random() * okeys(RiLexicon.data).length),
@@ -50655,25 +50642,21 @@ _RiTa_LTS=[
 	/**
 	 * @name RiGrammar
 	 * @class A probabilistic context-free grammar with literary extensions designed for text-generation
-		<pre> 
-	 * 
+	 * <pre> 
 		rg = new RiGrammar("mygrammar.g");
-		System.out.println(rg.expand());</pre>
-	 *
-	 *   
-	 * RiTa grammar files are JSON text files that follow the format below:
-	 *  <pre>   myGrammar = {
-		  &lt;start&gt;
-		  &lt;rule1&gt; | &lt;rule2&gt; | &lt;rule3&gt;
-		}
+		System.out.println(rg.expand());
+
+		</pre>
+	 * 
+	 * RiTa grammar files are JSON-formatted text files that follow the format below:
+	 *  <pre>   
+
+		  "&lt;start&gt;": "&lt;rule1&gt; | &lt;rule2&gt; | &lt;rule3&gt;"
 	
-		{
-		  &lt;rule2&gt;
-		  terminal1 | 
-		  terminal2 | &lt;rule1&gt;
-		  # this is a comment 
-		}
-		...</pre>   
+		  "&lt;rule2&gt;": "terminal1 |  terminal2 | &lt;rule1&gt;"
+		
+		   ...
+		</pre>   
 	 * <b>Primary methods of interest:</b>
 	 * <ul>
 	 * <li><code>expand()</code> which simply begins at the &lt;start&gt; state and 
@@ -50698,26 +50681,23 @@ _RiTa_LTS=[
 	 *<li>A RiGrammar object will assign (by default) equal weights to all choices in a rule. 
 	 *One can adjust the weights by adding 'multipliers' as follows: (in the rule below,
 	 * 'terminal1' will be chosen twice as often as the 2 other choices.
-	 * <pre>   {
-		 &lt;rule2&gt;
-		 [2] terminal1 | 
-		 terminal2 | &lt;rule1&gt; 
-	   }</pre>
+	 * <pre>   
+		 "&lt;rule2&gt;": "[2] terminal1 | terminal2 | &lt;rule1&gt;" 
+	   </pre>
 		
 	 *<li>The RiGrammar object supports callbacks, from your grammar, back into your code.
 	 * To generate a callback, add the method call in your grammar, surrounded by back-ticks, as follows:
 	 * <pre>   
-	 *     {
-	 *       &lt;rule2&gt;
-	 *       The cat ran after the `getRhyme("cat");` |
-	 *       The &lt;noun&gt; ran after the `pluralize(&lt;noun&gt;);` 
-	 *     }</pre>
+	 *     
+	 *       "&lt;rule2&gt;": "The cat ran after the `pluralize('cat');` | \
+	 *       The &lt;noun&gt; ran after the `pluralize(&lt;noun&gt;);`" 
+	 *     </pre>
 	 *     
 	 * Any number of arguments may be passed in a callback, but for each call,
 	 * there must be a corresponding method in the sketch, e.g.,
 	 * 
 	 * <pre>
-	 *    function pluralize(String s) {
+	 *    function pluralize(theString) {
 	 *      ...
 	 *    }
 	 * </pre>
@@ -50810,6 +50790,14 @@ _RiTa_LTS=[
 			
 		},
 
+		_clone: function() {  // NIAPI
+			var tmp = RiGrammar();
+			for(var name in this._rules) {
+				tmp._rules[name] = this._rules[name];
+			}
+			return tmp;
+
+		},
 		
 		/**
 		 * Adds a rule to the existing grammar, replacing any existing rule with the same name 
@@ -50955,7 +50943,7 @@ _RiTa_LTS=[
 		 */
 		expandWith : function(literal, symbol) { // TODO: finish 
 
-			var gr = this.clone();
+			var gr = this._clone();
 			
 			var match = false;
 			for ( var name in gr._rules) {
@@ -51402,7 +51390,7 @@ _RiTa_LTS=[
 	 */
 	RiText.random = function() {
 		
-		return RiTa.random.apply(this,arguments);
+		return RiTa.random.apply(this ,arguments);
 	}
 	
 	/**
@@ -51452,7 +51440,7 @@ _RiTa_LTS=[
 	
 	/**
 	 * Returns the mouse position from a mouse event
-	 * in a cross-browser -ompatible fashion
+	 * in a cross-browser compatible fashion
 	 * @param {MouseEvent} e mouseEvent
 	 * @returns {object} mouse position with x,y properties
 	 */
@@ -51556,7 +51544,7 @@ _RiTa_LTS=[
 
 		if (!(strLines && strLines.length)) 
 			err('Unexpected fail in createLines: no lines');
-		
+
 		// lay out the lines
 		var rts = RiText._createLinesByCharCountFromArray(strLines, x, y, theFont);
 		
@@ -51651,6 +51639,10 @@ _RiTa_LTS=[
 	/**
 	 * Sets/gets the default font for all RiTexts
 	 * @param {object} font (optional, for 'sets' only)
+	 * @param {string} the font name (optional, for 'sets' only)
+	 * @param {number} the font size (optional, for 'sets' only)
+	 * @param {number} the font leading (optional, for 'sets' only)
+	 *
 	 * @returns {object} the current default font
 	 */
 	RiText.defaultFont = function(font) {
@@ -51659,12 +51651,14 @@ _RiTa_LTS=[
 		if (a.length == 1 && typeof a[0] == O) {
 			RiText.defaults.font = a[0];
 		}
-		else if (a.length > 1) {
-			RiText.defaults.font = RiText.renderer._createFont.apply(RiText.renderer,a);
+		// this allows for RiText.defaultFont(name,sz,lead); // TODO: remove or add to params
+		else if (a.length > 1 && typeof a[0] == S) {
+			RiText.defaults.font = RiText.renderer._createFont.apply(RiText.renderer, a);
 		}
+
 		if (!RiText.defaults.font.leading)
 			RiText.defaults.font.leading = RiText.defaults.font.size * RiText.defaults.leadingFactor;
-		
+ 
 		return RiText.defaults.font;
 	}
 	
@@ -51673,7 +51667,7 @@ _RiTa_LTS=[
 		if (!fontName) err('RiText.createFont requires fontName');
 		
 		fontSize = fontSize || RiText.defaults.fontSize;
-		
+
 		return RiText.renderer._createFont(fontName, fontSize, leading);
 	}
 	
@@ -51832,6 +51826,7 @@ _RiTa_LTS=[
 	RiText._createRiTexts = function(txt, x, y, w, h, fontObj, splitFun) {  
 
 		if (!txt || !txt.length) return [];
+
 		fontObj = fontObj || RiText._getDefaultFont();
 
 		var rlines = RiText.createLines(txt, x, y, w, h, fontObj);
@@ -51854,7 +51849,7 @@ _RiTa_LTS=[
 	
 	RiText._createLinesByCharCountFromArray = function(txtArr, startX, startY, fontObj) {
 
-		fontObj = fontObj || RiText._getDefaultFont(); // remove?
+		if (!fontObj) err('no font in _createLinesByCharCountFromArray!');
 
 		//log('createLinesByCharCountFromArray('+txtArr.length+','+startX+','+startY+','+fontObj.size+','+fontObj.leading+')');
 
@@ -51908,22 +51903,25 @@ _RiTa_LTS=[
 		return xPos;
 	}
 	
-	RiText._handleLeading = function(fontObj, rts, startY)  {
-		
-	  if (!rts || !rts.length) return;
+	RiText._handleLeading = function(fontObj, rts, startY) {
 
-	  fontObj = fontObj || RiText._getDefaultFont();
-	  
-	  var nextHeight = startY;
-	  rts[0].font(fontObj);
-	  for ( var i = 0; i < rts.length; i++) {
-		  
-		if (fontObj) rts[i].font(fontObj); // set the font
-		rts[i].y = nextHeight; // adjust y-pos
-		nextHeight += fontObj.leading;
-	  }
-	  
-	  return rts;
+		
+		if(!rts || !rts.length) return;
+
+		fontObj = fontObj || RiText._getDefaultFont();
+
+		//log('handleLeading: '+fontObj.leading);
+
+		var nextHeight = startY;
+		rts[0].font(fontObj);
+		for(var i = 0; i < rts.length; i++) {
+
+			if(fontObj) rts[i].font(fontObj); // set the font
+			rts[i].y = nextHeight; // adjust y-pos
+			nextHeight += fontObj.leading;
+		}
+
+		return rts;
 	}
 	
 	RiText._disposeOne = function(toDelete) {
@@ -51953,7 +51951,7 @@ _RiTa_LTS=[
 		
 		RiText.defaults.font = RiText.defaults.font || 
 			RiText.renderer._createFont(RiText.defaults.fontFamily, 
-				RiText.defaults.fontSize, RiText.defaults.fontLeading);
+				RiText.defaults.fontSize, RiText.defaults.fontSize * RiText.defaults.leadingFactor);
 		
 		return RiText.defaults.font;
 	}
@@ -51988,10 +51986,11 @@ _RiTa_LTS=[
 	 */
 	RiText.defaults = { 
 		
-		color : { r : 0, g : 0, b : 0, a : 255 }, scaleX:1, scaleY:1, scaleZ:1,
-		alignment : RiTa.LEFT, motionType : RiTa.LINEAR, rotateZ:0, font:null,
+		color : { r : 0, g : 0, b : 0, a : 255 }, 
+		alignment : RiTa.LEFT, motionType : RiTa.LINEAR, font: null,
+		rotateX:0, rotateY:0, rotateZ: 0, scaleX:1, scaleY:1, scaleZ:1,
 		paragraphLeading :  0, paragraphIndent: '    ', indentFirstParagraph: false,
-		fontFamily: 'Times New Roman', fontSize: 14, fontLeading : 16, leadingFactor : 1.1,
+		fontFamily: 'Times New Roman', fontSize: 14, leadingFactor : 1.1,
 		boundingBoxStroke : null, boundingBoxFill: null, boundingBoxVisible : false
 	}
 
@@ -52068,7 +52067,8 @@ _RiTa_LTS=[
 			// center by default
 			this.x = arguments.length>1 ? x : this.g._width() / 2 - this.textWidth() / 2.0;
 			this.y = arguments.length>1 ? y : this.g._height() / 2 + this.textHeight() / 2.0;
-	
+			this.z = 0;
+
 			RiText.instances.push(this);
 			
 			return this;
@@ -52169,7 +52169,7 @@ _RiTa_LTS=[
 							g._translate(-bb.width/2,0);
 							break;
 					}
-					g._rect(bb.x, bb.y, bb.width, -bb.height);
+					g._rect(0, bb.y, bb.width, bb.height);
 				}
 				
 				g._popState();
@@ -53391,24 +53391,38 @@ _RiTa_LTS=[
 					},
 
 					/**
-					 * Returns the bounding box for the current text.
+					 * Returns the relative bounding box for the current text
+					 * @param {boolean} (optional, default=false) 
+					 * 	if true, bounding box is first transformed (rotate,translate,scale) 
 					 * @returns {object} x,y,width,height 
 					 */
-					boundingBox : function() {
-						
-					  var bb = this.g._getBoundingBox(this);
-						//          if (0 && transformed) { // tmp: do with matrix
-						//              bb.x += this.x;
-						//              bb.y += this.y;
-						//              bb.width *= this._scaleX;
-						//              bb.height *= this._scaleY;
-						//          }
-						//          * @param {boolean} (optional, default=false) 
-						//          *   if true, bounding box is first transformed (rotate,translate,scale) 
-						//          * according to the RiText's current matrix
-					  return bb;
+					boundingBox : function(transformed) {
+
+						var g = this.g;
+
+						g._pushState();
+
+						g._rotate(this._rotateZ);
+						g._translate(this.x, this.y);
+						g._scale(this._scaleX, this._scaleY, this._scaleZ); 
+				
+						// Set font params
+						g._textFont(this._font);
+						g._textAlign(this._alignment);
+		
+							var bb = this.g._getBoundingBox(this);
+							if (transformed) {
+								bb.x += this.x;
+								bb.y += this.y;
+								bb.width *= this._scaleX;
+								bb.height *= this._scaleY
+							}
+								
+						g._popState();
+
+						return bb;
 					},
-					
+
 					/**
 					 * Returns the current width of the text (derived from the bounding box)
 					 * @returns {number} the width of the text
@@ -54211,12 +54225,12 @@ _RiTa_LTS=[
 						if (renderer) console.warn("Renderer arg ignored");
 					},
 					
-					_createFont : function(fontName, fontSize, fontLeading) {
+					_createFont : function(fontName, fontSize, leading) {
 						
 						var font = {
 							name:       fontName, 
 							size:       fontSize || RiText.defaults.font.size, 
-							leading:    fontLeading || (fontSize * RiText.defaults.leadingFactor) 
+							leading:    leading || (fontSize * RiText.defaults.leadingFactor) 
 						};
 						return font;
 					},
@@ -54305,7 +54319,7 @@ _RiTa_LTS=[
 						var metrics = this._getMetrics(rt);
 						//log('[CTX] ascent='+metrics.ascent+' descent='+metrics.descent+" h="+(metrics.ascent+metrics.descent));
 						this.ctx.restore();
-						return { x: 0, y: metrics.descent-1, width: w, height: metrics.ascent+metrics.descent+1 };
+						return { x: 0, y: -metrics.ascent-1, width: w, height: metrics.ascent+metrics.descent+1 };
 					},
 
 					_getOffset : function(elem) { // private, not in API 
@@ -57161,8 +57175,13 @@ _RiTa_LTS=[
 		// actual creation: only called from RiText.createDefaultFont();!
 		_createFont : function(fontName, fontSize, leading) { // ignores leading
 			
-			//log("[P5] Creating font: "+fontName+"-"+fontSize+"/"+leading);
-			return this.p.createFont(fontName, fontSize);                
+			//console.log("[P5] Creating font: "+fontName+"-"+fontSize+"/"+leading);
+			var pfont = this.p.createFont(fontName, fontSize);                
+			
+			if (leading) pfont.leading = leading;
+
+			//console.log(pfont);
+			return pfont;
 		},
 
 		_rect : function(x,y,w,h) {
@@ -57229,14 +57248,14 @@ _RiTa_LTS=[
 		_getBoundingBox : function(rt) {
 			
 			this.p.pushStyle();
-			
+
 			var ascent  =   Math.round(this.p.textAscent()),
 				descent =   Math.round(this.p.textDescent()),
 				width   =   Math.round(this.p.textWidth(rt.text()));
 			
 			this.p.popStyle();
 			
-			return { x: 000, y: descent-1, width: width, height: (ascent+descent)+1 };
+			return { x: 0, y: -ascent-1, width: width, height: (ascent+descent)+1 };
 		},
 		
 		_type : function() {

@@ -1,7 +1,7 @@
 
 (function(window, undefined) {
 	
-	var _VERSION_ = '0.24';
+	var _VERSION_ = '0.25';
 	// also update /RiTaLibraryJS/www/download/index.html (TODO: should be automatic)
 
 	/**  @private Simple type-checking functions */ 
@@ -466,8 +466,8 @@
 		EASE_IN_OUT_QUARTIC :  Easing.Quartic.InOut,
 		
 		EASE_IN_QUINTIC : Easing.Quintic.In,
-		EASE_OUT_QUINTIC : Easing.Circular.Out,
-		EASE_IN_OUT_QUINTIC : Easing.Circular.InOut,
+		EASE_OUT_QUINTIC : Easing.Quintic.Out,
+		EASE_IN_OUT_QUINTIC : Easing.Quintic.InOut,
 		
 		BACK_IN : Easing.Back.In,
 		BACK_OUT : Easing.Back.Out,
@@ -2552,7 +2552,7 @@
 			
 			// TODO: make sure we have a test for both sorted=false/true
 
-			return sorted ? wordArr | shuffle(wordArr);  
+			return sorted ? wordArr : shuffle(wordArr);  
 		},
 		
 		/**
@@ -3919,25 +3919,21 @@
 	/**
 	 * @name RiGrammar
 	 * @class A probabilistic context-free grammar with literary extensions designed for text-generation
-		<pre> 
-	 * 
+	 * <pre> 
 		rg = new RiGrammar("mygrammar.g");
-		System.out.println(rg.expand());</pre>
-	 *
-	 *   
-	 * RiTa grammar files are JSON text files that follow the format below:
-	 *  <pre>   myGrammar = {
-		  &lt;start&gt;
-		  &lt;rule1&gt; | &lt;rule2&gt; | &lt;rule3&gt;
-		}
+		System.out.println(rg.expand());
+
+		</pre>
+	 * 
+	 * RiTa grammar files are JSON-formatted text files that follow the format below:
+	 *  <pre>   
+
+		  "&lt;start&gt;": "&lt;rule1&gt; | &lt;rule2&gt; | &lt;rule3&gt;"
 	
-		{
-		  &lt;rule2&gt;
-		  terminal1 | 
-		  terminal2 | &lt;rule1&gt;
-		  # this is a comment 
-		}
-		...</pre>   
+		  "&lt;rule2&gt;": "terminal1 |  terminal2 | &lt;rule1&gt;"
+		
+		   ...
+		</pre>   
 	 * <b>Primary methods of interest:</b>
 	 * <ul>
 	 * <li><code>expand()</code> which simply begins at the &lt;start&gt; state and 
@@ -3962,26 +3958,23 @@
 	 *<li>A RiGrammar object will assign (by default) equal weights to all choices in a rule. 
 	 *One can adjust the weights by adding 'multipliers' as follows: (in the rule below,
 	 * 'terminal1' will be chosen twice as often as the 2 other choices.
-	 * <pre>   {
-		 &lt;rule2&gt;
-		 [2] terminal1 | 
-		 terminal2 | &lt;rule1&gt; 
-	   }</pre>
+	 * <pre>   
+		 "&lt;rule2&gt;": "[2] terminal1 | terminal2 | &lt;rule1&gt;" 
+	   </pre>
 		
 	 *<li>The RiGrammar object supports callbacks, from your grammar, back into your code.
 	 * To generate a callback, add the method call in your grammar, surrounded by back-ticks, as follows:
 	 * <pre>   
-	 *     {
-	 *       &lt;rule2&gt;
-	 *       The cat ran after the `getRhyme("cat");` |
-	 *       The &lt;noun&gt; ran after the `pluralize(&lt;noun&gt;);` 
-	 *     }</pre>
+	 *     
+	 *       "&lt;rule2&gt;": "The cat ran after the `pluralize('cat');` | \
+	 *       The &lt;noun&gt; ran after the `pluralize(&lt;noun&gt;);`" 
+	 *     </pre>
 	 *     
 	 * Any number of arguments may be passed in a callback, but for each call,
 	 * there must be a corresponding method in the sketch, e.g.,
 	 * 
 	 * <pre>
-	 *    function pluralize(String s) {
+	 *    function pluralize(theString) {
 	 *      ...
 	 *    }
 	 * </pre>
@@ -4724,7 +4717,7 @@
 	
 	/**
 	 * Returns the mouse position from a mouse event
-	 * in a cross-browser -ompatible fashion
+	 * in a cross-browser compatible fashion
 	 * @param {MouseEvent} e mouseEvent
 	 * @returns {object} mouse position with x,y properties
 	 */
@@ -4923,6 +4916,10 @@
 	/**
 	 * Sets/gets the default font for all RiTexts
 	 * @param {object} font (optional, for 'sets' only)
+	 * @param {string} the font name (optional, for 'sets' only)
+	 * @param {number} the font size (optional, for 'sets' only)
+	 * @param {number} the font leading (optional, for 'sets' only)
+	 *
 	 * @returns {object} the current default font
 	 */
 	RiText.defaultFont = function(font) {
@@ -4938,7 +4935,7 @@
 
 		if (!RiText.defaults.font.leading)
 			RiText.defaults.font.leading = RiText.defaults.font.size * RiText.defaults.leadingFactor;
-		
+ 
 		return RiText.defaults.font;
 	}
 	
@@ -4948,7 +4945,6 @@
 		
 		fontSize = fontSize || RiText.defaults.fontSize;
 
-		log("XXX");
 		return RiText.renderer._createFont(fontName, fontSize, leading);
 	}
 	
@@ -5450,7 +5446,7 @@
 							g._translate(-bb.width/2,0);
 							break;
 					}
-					g._rect(bb.x, bb.y, bb.width, -bb.height);
+					g._rect(0, bb.y, bb.width, bb.height);
 				}
 				
 				g._popState();
@@ -6672,24 +6668,38 @@
 					},
 
 					/**
-					 * Returns the bounding box for the current text.
+					 * Returns the relative bounding box for the current text
+					 * @param {boolean} (optional, default=false) 
+					 * 	if true, bounding box is first transformed (rotate,translate,scale) 
 					 * @returns {object} x,y,width,height 
 					 */
-					boundingBox : function() {
-						
-					  var bb = this.g._getBoundingBox(this);
-						//          if (0 && transformed) { // tmp: do with matrix
-						//              bb.x += this.x;
-						//              bb.y += this.y;
-						//              bb.width *= this._scaleX;
-						//              bb.height *= this._scaleY;
-						//          }
-						//          * @param {boolean} (optional, default=false) 
-						//          *   if true, bounding box is first transformed (rotate,translate,scale) 
-						//          * according to the RiText's current matrix
-					  return bb;
+					boundingBox : function(transformed) {
+
+						var g = this.g;
+
+						g._pushState();
+
+						g._rotate(this._rotateZ);
+						g._translate(this.x, this.y);
+						g._scale(this._scaleX, this._scaleY, this._scaleZ); 
+				
+						// Set font params
+						g._textFont(this._font);
+						g._textAlign(this._alignment);
+		
+							var bb = this.g._getBoundingBox(this);
+							if (transformed) {
+								bb.x += this.x;
+								bb.y += this.y;
+								bb.width *= this._scaleX;
+								bb.height *= this._scaleY
+							}
+								
+						g._popState();
+
+						return bb;
 					},
-					
+
 					/**
 					 * Returns the current width of the text (derived from the bounding box)
 					 * @returns {number} the width of the text
@@ -7586,7 +7596,7 @@
 						var metrics = this._getMetrics(rt);
 						//log('[CTX] ascent='+metrics.ascent+' descent='+metrics.descent+" h="+(metrics.ascent+metrics.descent));
 						this.ctx.restore();
-						return { x: 0, y: metrics.descent-1, width: w, height: metrics.ascent+metrics.descent+1 };
+						return { x: 0, y: -metrics.ascent-1, width: w, height: metrics.ascent+metrics.descent+1 };
 					},
 
 					_getOffset : function(elem) { // private, not in API 
@@ -10442,9 +10452,11 @@
 		// actual creation: only called from RiText.createDefaultFont();!
 		_createFont : function(fontName, fontSize, leading) { // ignores leading
 			
-			console.log("[P5] Creating font: "+fontName+"-"+fontSize+"/"+leading);
+			//console.log("[P5] Creating font: "+fontName+"-"+fontSize+"/"+leading);
 			var pfont = this.p.createFont(fontName, fontSize);                
+			
 			if (leading) pfont.leading = leading;
+
 			//console.log(pfont);
 			return pfont;
 		},
@@ -10513,14 +10525,14 @@
 		_getBoundingBox : function(rt) {
 			
 			this.p.pushStyle();
-			
+
 			var ascent  =   Math.round(this.p.textAscent()),
 				descent =   Math.round(this.p.textDescent()),
 				width   =   Math.round(this.p.textWidth(rt.text()));
 			
 			this.p.popStyle();
 			
-			return { x: 000, y: descent-1, width: width, height: (ascent+descent)+1 };
+			return { x: 0, y: -ascent-1, width: width, height: (ascent+descent)+1 };
 		},
 		
 		_type : function() {
