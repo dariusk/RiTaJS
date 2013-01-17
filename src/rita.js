@@ -2242,7 +2242,7 @@
 	RiLexicon.prototype = {
 		
 		/**
-		 * Constructs an instance of the RiLexicon class.
+		 * Constructs a (singleton) instance of the RiLexicon class.
 		 * <p> 
 		 * Note: For performance, the data for all RiLexicon instances
 		 * is shared (there is only 1 copy)
@@ -2277,8 +2277,8 @@
 		},
 	 
 		/**
-		 * Adds a word to the current lexicon (not permanent)
-		 * 
+		 * Adds a word to the current lexicon. Note: will replace the word if it already exists
+		 *
 		 * @example lexicon.addWord('abandon','ax-b ae1-n-d ax-n','vb nn vbp');
 		 * 
 		 * @param {string} word
@@ -2289,12 +2289,12 @@
 		 */
 		addWord : function(word, pronunciationData, posData) {
 			
-			RiLexicon.data[word.toLowerCase()] = [pronunciationData, posData];
+			RiLexicon.data[word.toLowerCase()] = [pronunciationData.toLowerCase(), posData.toLowerCase()];
 			return this;
 		},
 		
 		/**
-		 * Removes a word from the current lexicon (not permanent)
+		 * Removes a word from the current lexicon 
 		 * 
 		 * @example removeWord('abandon');
 		 * 
@@ -2303,10 +2303,9 @@
 		 */
 		removeWord : function(word) {
 			
-			delete RiLexicon.data[word];
+			delete RiLexicon.data[word.toLowerCase()];
 			return this;
 		},
-		
 		
 		/**
 		 * Compares the characters of the input string  (using a version of the min-edit distance algorithm)
@@ -2369,15 +2368,12 @@
 		 * @param {number}  minEditDist (optional) minimum edit distance for matches 
 		 * @returns {array} matching words 
 		 */
-		similarBySound: function(input, minEditDist) { // take options arg instead?
+		similarBySound: function(input, minEditDist) { 
 
 			minEditDist = minEditDist || 1;
 
-			var minVal = Number.MAX_VALUE,
-				entry, result = [],
-				minLen = 2,
-				phonesArr, phones = RiTa.getPhonemes(input),
-				med;
+			var minVal = Number.MAX_VALUE, entry, result = [], minLen = 2,
+				phonesArr, phones = RiTa.getPhonemes(input), med;
 
 			targetPhonesArr = phones ? phones.split('-') : [];
 
@@ -2467,25 +2463,28 @@
 		 * (useful when similarBySound() returns too large a result set)
 		 * 
 		 * @param {string} word
-		 * @param {number} minEditDist (optional) minimum edit distance for both matches 
 		 * @returns {array} matching words 
 		 */
-		similarBySoundAndLetter: function(word, minEditDist) { // take options arg instead?
+		similarBySoundAndLetter: function(word) { 
 			
 			var simSound, simLetter, result = [];
-			
-			if (undef(minEditDist)) {
-				
-				simSound = this.similarBySound(word);
-				simLetter = this.similarByLetter(word);
-			} 
-			else {
-				
-				simSound = this.similarBySound(word,minEditDist);
-				simLetter = this.similarByLetter(word,minEditDist);
-			}
 
-			if (undef(simSound) || undef(simLetter)) return result;
+			simSound = this.similarBySound(word);
+			simLetter = this.similarByLetter(word);
+			
+			// if (undef(minEditDist)) {
+				
+			// 	simSound = this.similarBySound(word);
+			// 	simLetter = this.similarByLetter(word);
+			// } 
+			// else {
+				
+			// 	simSound = this.similarBySound(word,minEditDist);
+			// 	simLetter = this.similarByLetter(word,minEditDist);
+			// }
+
+			if (undef(simSound) || undef(simLetter)) 
+				return result;
 			
 			for (var i=0; i<simSound.length; i++) {
 				
@@ -2577,7 +2576,7 @@
 		},
 
 		/**
-		 * Returns true if the word exists in the lexicon
+		 * Returns true if the word exists in the lexicon (case-insensitive)
 		 * @param {string} word
 		 * @returns {boolean} 
 		 */
@@ -4814,7 +4813,7 @@
 	// TODO: other alignments?
 	RiText.createLines = function(txt, x, y, maxW, maxH, theFont) { 
    
-		var strLines = txt, theFont = theFont || RiText._getDefaultFont();
+  		var strLines = txt, theFont = theFont || RiText._getDefaultFont();
 				 
 		if (is(txt, S)) 
 			strLines = RiText._makeLines(txt, x, y, maxW, maxH, theFont);
@@ -5193,7 +5192,7 @@
 		rts[0].font(fontObj);
 		for(var i = 0; i < rts.length; i++) {
 
-			if(fontObj) rts[i].font(fontObj); // set the font
+			//if(fontObj) rts[i].font(fontObj); // set the font
 			rts[i].y = nextHeight; // adjust y-pos
 			nextHeight += fontObj.leading;
 		}
@@ -6498,7 +6497,7 @@
 					 * @param {number} size (optional) containing the font size 
 					 * @returns {object} this RiText (set) or the current font (get)
 					 */
-					font : function(font,size) {
+					font : function(font, size) {
 						
 						var a = arguments;
 						
@@ -7614,109 +7613,49 @@
 						return div.firstChild; 
 					},
 					
-					_getMetrics : function(rt) {
+					_getMetrics : function(rt) {  // hack for font metrics in the canvas
 						
-						// if (rt._metrics) return rt._metrics; // check cache
+						// TODO: if (rt._metrics) return rt._metrics; // check cache
 
-						// make the 'text' fragment ====================== 
+						var st = '<span style="font-size: '+rt._font.size+'; font-family: '+rt._font.name+'">'+rt.text()+'</span>';
+						var dt = '<div style="display: inline-block; width: 1px; height: 0px; vertical-align: bottom; "></div>';
+						var text = this._getDivChild(st);
+						var block = this._getDivChild(dt);
+
+						// make the 'div' fragment   ====================
+						var fragment = document.createDocumentFragment(); 
+						var div = document.createElement("div");
+						fragment.appendChild( div );
 						
-			//            var fragment = document.createDocumentFragment(); 
-			//            var cdiv = document.createElement("div");
-			//            fragment.appendChild( cdiv );
-			//            cdiv.innerHTML = '<span style="font-size: '+rt._font.size+'; font-family: '+rt._font.name+'">'+rt.text()+'</span>';
-			//            cdiv.parentNode.removeChild( cdiv );            
-			//            var text = cdiv.firstChild;
-						
-						
-						// make the 'block' fragment   ====================
-			//            fragment = document.createDocumentFragment(); 
-			//            var ddiv = document.createElement("div");
-			//            fragment.appendChild( ddiv );
-			//            ddiv.innerHTML = '<div style="display: inline-block; width: 1px; height: 0px; vertical-align: bottom; "></div>';
-			//            ddiv.parentNode.removeChild( ddiv );
-			//            var block = ddiv.firstChild; 
-			//          
-			var st = '<span style="font-size: '+rt._font.size+'; font-family: '+rt._font.name+'">'+rt.text()+'</span>';
-			var dt = '<div style="display: inline-block; width: 1px; height: 0px; vertical-align: bottom; "></div>';
-			var text = this._getDivChild(st);
-			var block = this._getDivChild(dt);
-
-			// make the 'div' fragment   ====================
-			var fragment = document.createDocumentFragment(); 
-			var div = document.createElement("div");
-			fragment.appendChild( div );
-			
-			// append 'text' and 'block' to the div
-			div.appendChild(text); 
-			div.appendChild(block);
-  
-			// insert the fake 'div' in the body
-			document.body.appendChild(div);
-
-			try {
-				var result = {};
-
-				block.style.verticalAlign = 'baseline';
-				result.ascent = this._getOffset(block).top - this._getOffset(text).top + 1;
-				
-				block.style.verticalAlign = 'bottom';
-				var height = this._getOffset(block).top - this._getOffset(text).top;
-
-				result.descent = (height - result.ascent);
-				result.ascent -=  result.descent;
-
-			} 
-			finally {
-				document.body.removeChild(div);
-			}
-
-			// rt._metrics = results; // add to cache
-			
-			return result;
-			//            if (typeof $ s!= 'undefined') return this._getMetricsJQ(rt);
-					},
-					
+						// append 'text' and 'block' to the div
+						div.appendChild(text); 
+						div.appendChild(block);
 			  
-					_getMetricsJQ: function(rt) {
-
-						var fontObj = rt._font, str = rt.text();
-						
-						//log('_getMetrics:'+fontObj+","+str);
-						var text = $('<span style="font-size: '+fontObj.size+'; font-family: '+fontObj.name+'">'+str+'</span>');
-						//console.log(text);
-
-						var block = $('<div style="display: inline-block; width: 1px; height: 0px;"></div>');
-						var div = $('<div></div>');
-						div.append(text, block);
-						
-						
-						var body = $('body');
-						body.append(div);
-						
-						console.log(body);
-						console.log(block);
-
-						
+						// insert the fake 'div' in the body
+						document.body.appendChild(div);
 
 						try {
 							var result = {};
 
-							block.css({ verticalAlign: 'baseline' });
-							result.ascent = block.offset().top - text.offset().top + 1;
-
-							block.css({ verticalAlign: 'bottom' });
-							var height = block.offset().top - text.offset().top;
+							block.style.verticalAlign = 'baseline';
+							result.ascent = this._getOffset(block).top - this._getOffset(text).top + 1;
+							
+							block.style.verticalAlign = 'bottom';
+							var height = this._getOffset(block).top - this._getOffset(text).top;
 
 							result.descent = (height - result.ascent);
 							result.ascent -=  result.descent;
 
-						} finally {
-							div.remove();
+						} 
+						finally {
+							document.body.removeChild(div);
 						}
 
+						// TODO: rt._metrics = results; // add to cache
+						
 						return result;
 					},
-					
+
 					/** @private */
 					toString : function() {
 						

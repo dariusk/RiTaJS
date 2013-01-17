@@ -50644,17 +50644,19 @@ _RiTa_LTS=[
 	 * @class A probabilistic context-free grammar with literary extensions designed for text-generation
 	 * <pre> 
 		rg = new RiGrammar("mygrammar.g");
-		System.out.println(rg.expand());</pre>
-	 *
-	 *   
-	 * RiTa grammar files are JSON text files that follow the format below:
+		System.out.println(rg.expand());
+
+		</pre>
+	 * 
+	 * RiTa grammar files are JSON-formatted text files that follow the format below:
 	 *  <pre>   
 
 		  "&lt;start&gt;": "&lt;rule1&gt; | &lt;rule2&gt; | &lt;rule3&gt;"
 	
 		  "&lt;rule2&gt;": "terminal1 |  terminal2 | &lt;rule1&gt;"
 		
-		...</pre>   
+		   ...
+		</pre>   
 	 * <b>Primary methods of interest:</b>
 	 * <ul>
 	 * <li><code>expand()</code> which simply begins at the &lt;start&gt; state and 
