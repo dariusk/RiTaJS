@@ -48856,22 +48856,26 @@ _RiTa_LTS=[
 		 */
 		_fire: function(callback) {
 
-			callback = callback || window.onRiTaEvent || RiText.graphics() && RiText.graphics().onRiTaEvent; 
+			callback = callback || window.onRiTaEvent || (RiText.graphics() && RiText.graphics().onRiTaEvent); 
 																				// last is for P5
-
-			if (typeof callback === 'function') {
+			//if (typeof callback === 'function') {
+			if (is(callback,F)) {
 
 				try {
-					callback.apply(this, [this]);
+					
+					callback.apply(this, [this]); // first arg should be ??
+
 				} catch(err) {
 
-					RiTaEvent._callbacksDisabled = true;
-					warn("RiTaEvent: error calling 'onRiTaEvent' " + err);
+					RiTaEvent._callbacksDisabled = true; 
+					warn("RiTaEvent: error calling '"+callback+"': " + err);
 					throw err;
 				}
-			} else if (!RiTaEvent._callbacksDisabled) {
+			} 
+			else if (!RiTaEvent._callbacksDisabled) {
 
-				warn("RiTaEvent: no 'onRiTaEvent' callback found");
+				callback = callback || 'onRiTaEvent(e) { ... }';
+				warn("RiTaEvent: no '"+callback+"' callback found...");
 				RiTaEvent._callbacksDisabled = true;
 			}
 
@@ -48966,7 +48970,7 @@ _RiTa_LTS=[
 	RiLexicon.prototype = {
 		
 		/**
-		 * Constructs an instance of the RiLexicon class.
+		 * Constructs a (singleton) instance of the RiLexicon class.
 		 * <p> 
 		 * Note: For performance, the data for all RiLexicon instances
 		 * is shared (there is only 1 copy)
@@ -49001,8 +49005,8 @@ _RiTa_LTS=[
 		},
 	 
 		/**
-		 * Adds a word to the current lexicon (not permanent)
-		 * 
+		 * Adds a word to the current lexicon. Note: will replace the word if it already exists
+		 *
 		 * @example lexicon.addWord('abandon','ax-b ae1-n-d ax-n','vb nn vbp');
 		 * 
 		 * @param {string} word
@@ -49013,12 +49017,12 @@ _RiTa_LTS=[
 		 */
 		addWord : function(word, pronunciationData, posData) {
 			
-			RiLexicon.data[word.toLowerCase()] = [pronunciationData, posData];
+			RiLexicon.data[word.toLowerCase()] = [pronunciationData.toLowerCase(), posData.toLowerCase()];
 			return this;
 		},
 		
 		/**
-		 * Removes a word from the current lexicon (not permanent)
+		 * Removes a word from the current lexicon 
 		 * 
 		 * @example removeWord('abandon');
 		 * 
@@ -49027,10 +49031,9 @@ _RiTa_LTS=[
 		 */
 		removeWord : function(word) {
 			
-			delete RiLexicon.data[word];
+			delete RiLexicon.data[word.toLowerCase()];
 			return this;
 		},
-		
 		
 		/**
 		 * Compares the characters of the input string  (using a version of the min-edit distance algorithm)
@@ -49301,7 +49304,7 @@ _RiTa_LTS=[
 		},
 
 		/**
-		 * Returns true if the word exists in the lexicon
+		 * Returns true if the word exists in the lexicon (case-insensitive)
 		 * @param {string} word
 		 * @returns {boolean} 
 		 */
@@ -50719,7 +50722,6 @@ _RiTa_LTS=[
 	 * Set/gets the execDisabled flag. Set to true (default=false) 
 	 * if you don't want to use the exec mechanism for callbacks. Useful if you want
 	 * to include backticks or method calls as terminals in your grammar.
-	 */
 	RiGrammar._execDisabled = function(disableExec)
 	{
 		if (arguments.length==1) {
@@ -50727,6 +50729,7 @@ _RiTa_LTS=[
 		}
 		return RiGrammar._execDisabled;
 	}    
+	*/
 
 	RiGrammar.prototype = {
 
@@ -51024,7 +51027,7 @@ _RiTa_LTS=[
 		 */
 		expandFrom : function(rule) {
 			
-			//console.log("no-exec; "+this._execDisabled);
+			//log("expandFrom("+rule+")");
 			
 			if (!this.hasRule(rule)) {
 				warn("Rule not found: " + rule + "\nRules: ");
@@ -51039,7 +51042,8 @@ _RiTa_LTS=[
 				if (!next) {
 
 					//  we're done, check for back-ticked strings to eval
-					(!this._execDisabled && (rule = rule.replace(RiGrammar.EXEC_PATT, this._handleExec)));
+					(!this._execDisabled && (rule = rule.replace
+						(RiGrammar.EXEC_PATT, this._handleExec)));
 								 
 					break;
 				} 
@@ -51053,11 +51057,11 @@ _RiTa_LTS=[
 			
 		},
 			
-		// Privates (can we hide these?) ----------------
-
-		_expandRule : function(prod) { //private
+		_expandRule : function(prod) { 
 			
-			var dbug = false;
+			var dbug = false, trimSpace = true, result = [];
+			if (trimSpace) prod = prod.trim();
+
 			if (dbug) log("_expandRule(" + prod + ")");
 			
 			for ( var name in this._rules) {
@@ -51072,9 +51076,25 @@ _RiTa_LTS=[
 					var expanded = this.getRule(name);
 					var post = prod.substring(idx + name.length);
 					
+					if (trimSpace) {
+						pre = pre.trim();
+						expanded = expanded.trim();
+						post = post.trim();
+					}
+
 					if (dbug) log("  pre=" + pre+"  expanded=" + expanded+"  post=" + post+"  result=" + pre + expanded + post);
 					
-					return (pre + expanded + post);
+//					var tmp = (pre + SP + expanded + SP + post);
+
+					result.push(pre,expanded,post);
+
+					var ok = result.join(SP);
+					
+					if (dbug) console.log('Returns: '+ok);
+
+					if (trimSpace) ok = ok.trim();
+
+					return ok;
 				}
 				
 				// do the exec check here, in while loop()
@@ -51858,9 +51878,7 @@ _RiTa_LTS=[
 		
 		for ( var i = 0; i < txtArr.length; i++) {
 			
-			var rt = RiText(txtArr[i], startX, yOff, fontObj)
-log(rt._font);
-			rts.push(rt);
+			rts.push(RiText(txtArr[i], startX, yOff, fontObj));
 		}
 		
 		return (rts && rts.length > 1)  ? RiText._handleLeading(fontObj, rts, yOff) : []; 
@@ -51919,7 +51937,7 @@ log(rt._font);
 		rts[0].font(fontObj);
 		for(var i = 0; i < rts.length; i++) {
 
-			if(fontObj) rts[i].font(fontObj); // set the font
+			//if(fontObj) rts[i].font(fontObj); // set the font
 			rts[i].y = nextHeight; // adjust y-pos
 			nextHeight += fontObj.leading;
 		}
@@ -52282,54 +52300,7 @@ log(rt._font);
 			return this.colorTo([this._color.r, this._color.g, this._color.b, 0], 
 				seconds, delay, null, 'fadeOut', destroyOnComplete);
 		},
-	
-		// DH: omitting last 2 args from docs as they are private 
-		/**
-		 * Transitions to 'color' (rgba) over 'seconds' starting at 'delay' seconds in the future
-		 * 
-		 * @param {array} colors (length 1-4)  r,g,b,a (0-255)
-		 * @param {number} seconds delay 
-		 *          (optional, default=0),  # of seconds in the future that the fade will start 
-		 * @param {number} delay seconds
-		 *          time for fade
-		 * @param {function} callback the callback to be invoked when the behavior has completed
-		 *   (optional: default=onRiTaEvent(e))
-		 * @returns {number} the unique id for this behavior
-		 */
-		colorTo : function(colors, seconds, delay, callback, type, destroyOnComplete) {             
 
-			if (!is(colors,A))  err('arg#1 to colorTo() must be an array');
-			
-			//log(colors[0], g: colors[1], b: colors[2], a: colors[3], seconds);
-
-			delay = delay || 0;
-			seconds = seconds || 1.0;
-			type = type || 'colorTo';            
-			colors = parseColor.apply(this, colors);
-
-			var rt = this, id = setTimeout(function() {
-
-				new TextBehavior(rt, rt._color)
-					.to( { r: colors.r, g: colors.g, b: colors.b, a: colors.a }, seconds*1000)
-					.easing(rt._motionType)
-					.onUpdate( function () {
-					   rt._color.r = this.r;
-					   rt._color.g = this.g;
-					   rt._color.b = this.b;
-					   rt._color.a = this.a
-					})
-					//.delay(delay)
-					.onComplete( 
-						function () {
-							RiTaEvent(rt, type+'Complete')._fire(callback);    
-							if (destroyOnComplete) RiText.dispose(rt);
-						})
-					.start();
-				
-			}, delay*1000);
-			
-			return id;
-		},
 		
 		/**
 		 * Scales to 'theScale' over 'seconds' starting at 'delay' seconds in the future
@@ -52441,14 +52412,69 @@ log(rt._font);
 		
 		  // use the copy to fade out
 		  this.fadeToTextCopy = this.clone();
-		  this.fadeToTextCopy.fadeOut(seconds, 0, true);
+		  //this.fadeToTextCopy.fadeOut(seconds, 0, true);
+		  this.fadeToTextCopy.colorTo(
+		  		[this._color.r, this._color.g, this._color.b, 0], 
+				seconds, 0, null, 'silent', true);
 		  
 		  RiText.dispose(this.fadeToTextCopy.fadeToTextCopy); // no turtles
 		  
 		  // and use 'this' to fade in
 		  this.text(newText).alpha(startAlpha);
 		  
-		  return this.colorTo([c.r, c.g, c.b, endAlpha], seconds * .95, 0, 'textTo');
+		  return this.colorTo([c.r, c.g, c.b, endAlpha], seconds * .95, 0, null, 'textTo', false);
+		},
+
+
+		/**
+		 * Transitions to 'color' (rgba) over 'seconds' starting at 'delay' seconds in the future
+		 * 
+		 * @param {array} colors (length 1-4)  r,g,b,a (0-255)
+		 * @param {number} seconds delay 
+		 *          (optional, default=0),  # of seconds in the future that the fade will start 
+		 * @param {number} delay seconds
+		 *          time for fade
+		 * @param {function} callback the callback to be invoked when the behavior has completed
+		 *   (optional: default=onRiTaEvent(e))
+
+		 * @returns {number} the unique id for this behavior
+		 */
+		colorTo : function(colors, seconds, delay, callback, _type, _destroyOnComplete) {             
+
+			// DH: omitting last 2 args from docs as they are private!
+
+			if (!is(colors,A))  err('arg#1 to colorTo() must be an array');
+			
+			//log(colors[0], g: colors[1], b: colors[2], a: colors[3], seconds);
+
+			delay = delay || 0;
+			seconds = seconds || 1.0;
+			_type = _type || 'colorTo';            
+			colors = parseColor.apply(this, colors);
+
+			var rt = this, id = setTimeout(function() {
+
+				new TextBehavior(rt, rt._color)
+					.to( { r: colors.r, g: colors.g, b: colors.b, a: colors.a }, seconds*1000)
+					.easing(rt._motionType)
+					.onUpdate( function () {
+					   rt._color.r = this.r;
+					   rt._color.g = this.g;
+					   rt._color.b = this.b;
+					   rt._color.a = this.a
+					})
+					//.delay(delay)
+					.onComplete( 
+						function () {
+							if (_type != 'silent')
+								RiTaEvent(rt, _type+'Complete')._fire(callback);    
+							if (_destroyOnComplete) RiText.dispose(rt);
+						})
+					.start();
+				
+			}, delay*1000);
+			
+			return id;
 		},
 	   
 		/**
