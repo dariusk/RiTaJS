@@ -48507,6 +48507,9 @@ _RiTa_LTS=[
 
 			ok(text,S);
 
+		    if (multiplier < 1 || (!isNaN(parseInt(value,10)) && (parseFloat(value,10) == parseInt(value,10)))
+		    	err('multiplier must be an positive integer'); 
+
 			if (this.sentenceAware) 
 				return this._loadSentences(RiTa.splitSentences(text), multiplier);       
 			else        
@@ -48874,11 +48877,11 @@ _RiTa_LTS=[
 			} 
 			else if (!RiTaEvent._callbacksDisabled) {
 
+				// TODO: Consider REMOVE THIS ?
 				callback = callback || 'onRiTaEvent(e) { ... }';
 				warn("RiTaEvent: no '"+callback+"' callback found...");
 				RiTaEvent._callbacksDisabled = true;
 			}
-
 		}
 	};
 	
@@ -52395,7 +52398,8 @@ _RiTa_LTS=[
 		 * @param {number} endAlpha 
 		 *  (optional, default=255), the alpha to end on
 		 *  
-		 * @param {function} callback the callback to be invoked when the behavior has completed (optional: default=onRiTaEvent(e)
+		 * @param {function} callback the callback to be invoked when the 
+		 * behavior has completed (optional: default=onRiTaEvent(e))
 		 * 
 		 * @returns {number} - the unique id for this behavior
 		 */
@@ -52408,14 +52412,18 @@ _RiTa_LTS=[
 		  {
 			startAlpha = this.fadeToTextCopy.alpha();
 			RiText.dispose(this.fadeToTextCopy); // stop any currents
+
+		  	// WORKING HERE ON FADE BUG
+			//log('disposing fadeToTextCopy');
 		  }
 		
 		  // use the copy to fade out
 		  this.fadeToTextCopy = this.clone();
+
 		  //this.fadeToTextCopy.fadeOut(seconds, 0, true);
 		  this.fadeToTextCopy.colorTo(
 		  		[this._color.r, this._color.g, this._color.b, 0], 
-				seconds, 0, null, 'silent', true);
+				seconds, 0, null, 'silent', true); // fade-out
 		  
 		  RiText.dispose(this.fadeToTextCopy.fadeToTextCopy); // no turtles
 		  
@@ -52449,8 +52457,8 @@ _RiTa_LTS=[
 
 			delay = delay || 0;
 			seconds = seconds || 1.0;
-			_type = _type || 'colorTo';            
 			colors = parseColor.apply(this, colors);
+			_type = _type || 'colorTo';            
 
 			var rt = this, id = setTimeout(function() {
 
@@ -53218,7 +53226,7 @@ _RiTa_LTS=[
 						var c = new RiText(this.text(), this.x, this.y, this._font);
 						c.color(this._color.r, this._color.g, this._color.b, this._color.a);
 
-						for (prop in this) {
+						for (var prop in this) {
 							if (typeof this[prop] ==  F || typeof this[prop] ==  O) 
 								continue;
 							c[prop] = this[prop];
