@@ -171,7 +171,6 @@ Uses either the native canvas renderer or the Processing renderer (when included
 				</tbody>
 			</table>
 			
-
 <!-- ============================== properties summary ===================== -->
 			
 				
@@ -331,7 +330,7 @@ Can be modified directly or through API methods.</div>
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/RiText.html#colorTo">colorTo</a></b>(colors, seconds, delay, callback, type, destroyOnComplete)
+								<div class="fixedFont"><b><a href="../symbols/RiText.html#colorTo">colorTo</a></b>(colors, seconds, delay, callback, _type, _destroyOnComplete)
 								</div>
 								<div class="description">Transitions to 'color' (rgba) over 'seconds' starting at 'delay' seconds in the future</div>
 							</td>
@@ -1780,7 +1779,7 @@ Can be modified directly or through API methods.
 					<div class="fixedFont">
 					
 					<span class="light">{number}</span>
-					<b>colorTo</b>(colors, seconds, delay, callback, type, destroyOnComplete)
+					<b>colorTo</b>(colors, seconds, delay, callback, _type, _destroyOnComplete)
 					
 					</div>
 					<div class="description">
@@ -1823,13 +1822,13 @@ Can be modified directly or through API methods.
   (optional: default=onRiTaEvent(e))</dd>
 							
 								<dt>
-									<b>type</b>
+									<b>_type</b>
 									
 								</dt>
 								<dd></dd>
 							
 								<dt>
-									<b>destroyOnComplete</b>
+									<b>_destroyOnComplete</b>
 									
 								</dt>
 								<dd></dd>
@@ -5617,7 +5616,8 @@ current text to be that string.
 									<span class="light fixedFont">{function}</span> <b>callback</b>
 									
 								</dt>
-								<dd>the callback to be invoked when the behavior has completed (optional: default=onRiTaEvent(e)</dd>
+								<dd>the callback to be invoked when the 
+behavior has completed (optional: default=onRiTaEvent(e))</dd>
 							
 							</dl>
 						
@@ -6038,18 +6038,6 @@ seconds
 		</div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 	</div>
 	        </div>
 	       
@@ -6058,11 +6046,6 @@ seconds
 <!-- ============================== footer ================================= -->
 
 
-	 <div class="footer">
-	       <p> <br />
-	      by Daniel C. Howe <br />
-	      <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/us/" rel="license"> <img src="http://i.creativecommons.org/l/by-nc-sa/3.0/us/88x31.png" style="border-width:0" alt="Creative Commons License" /> </a></p>
-	     </div>
 	    </div>
 	            <a href="https://github.com/dhowe/RiTaJS/">
 	      <img style="position: absolute; top: 0; right: 0; border: 0;" src="../../img/forkme-right-orange.png" alt="Fork me on GitHub">

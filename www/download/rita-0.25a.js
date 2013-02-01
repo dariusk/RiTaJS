@@ -1,5 +1,5 @@
 _RiTa_DICT={
-'a': ['ey1','dt vb vbn nnp fw jj ls nn'],
+'a': ['ey1','dt'],
 'aback': ['ax-b ae1-k','rb'],
 'abalone': ['ae1-b ax-l ow1-n iy','nn'],
 'abandon': ['ax-b ae1-n-d ax-n','vb nn vbp'],
@@ -12915,6 +12915,7 @@ _RiTa_DICT={
 'goofed': ['g-uw1-f-t','vbd'],
 'goofing': ['g-uw1-f ih-ng','vbg'],
 'goofy': ['g-uw1-f iy','jj'],
+'google': ['g-uw1-g ax-l','nn jj vb'],
 'goons': ['g-uw1-n-z','nns'],
 'goose': ['g-uw1-s','nn'],
 'gooseberry': ['g-uw1-s b-eh1-r iy','nn'],
@@ -30105,7 +30106,7 @@ _RiTa_DICT={
 'thawed': ['th-ao1-d','vbn'],
 'thawing': ['th-ao1 ih-ng','vbg'],
 'thaws': ['th-ao1-z','nns'],
-'the': ['dh-ax','dt vbd vbp nn in jj nnp pdt'],
+'the': ['dh-ax','dt'],
 'theater': ['th-iy1 ax-t er','nn'],
 'theatergoers': ['th-iy1-t er-g ow er-z','nns'],
 'theaters': ['th-iy1 ax-t er-z','nns vbd'],
@@ -47236,6 +47237,22 @@ _RiTa_LTS=[
 		PLURAL : 8,
 
 		NORMAL : 9,
+
+		FEATURE_DELIM : ':',
+	
+		STRESSED : '1',
+	
+		UNSTRESSED : '0',
+	
+		PHONEME_BOUNDARY : '-', 
+	
+		WORD_BOUNDARY : " ", 
+	
+		SYLLABLE_BOUNDARY : "/", 
+	
+		SENTENCE_BOUNDARY : "|",
+	
+		VOWELS : "aeiou",
 		
 		ABBREVIATIONS : [   "Adm." ,"Capt." ,"Cmdr." ,"Col." ,"Dr." ,"Gen." ,"Gov." ,"Lt." ,"Maj." ,"Messrs." ,"Mr.","Mrs." ,"Ms." ,"Prof." ,"Rep." ,"Reps." ,"Rev." ,"Sen." ,"Sens." ,"Sgt." ,"Sr." ,"St.","a.k.a." ,"c.f." ,"i.e." ,"e.g." ,"vs." ,"v.", "Jan." ,"Feb." ,"Mar." ,"Apr." ,"Mar." ,"Jun." ,"Jul." ,"Aug." ,"Sept." ,"Oct." ,"Nov." ,"Dec." ],
 
@@ -47407,7 +47424,7 @@ _RiTa_LTS=[
 				}
 				return posArr;  
 			}
-			return []; 
+			return EA; 
 		},
 
 		//TODO: example
@@ -48069,9 +48086,7 @@ _RiTa_LTS=[
 				RiText.prototype.fadeColor  = RiText.prototype.colorTo;
 				RiText.prototype.fadeToText = RiText.prototype.textTo;
 				RiText.prototype.setColor   = RiText.prototype.color;
-				
-				RiTa.makeClass = makeClass; // TODO: remove
-
+	
 				// alias for RiTa-java static functions
 				RiText.setDefaultFont = RiText.defaultFont;
 				RiText.setDefaultColor = RiText.defaultColor;
@@ -48112,8 +48127,6 @@ _RiTa_LTS=[
 				delete RiText.setDefaultColor;
 				delete RiText.setDefaultAlignment;
 				delete RiText.setCallbackTimer;
-
-				delete RiTa.makeClass = makeClass; // TODO: remove
 
 				if (typeof window != 'undefined' && window && !hasProcessing)  {
 					
@@ -48954,23 +48967,6 @@ _RiTa_LTS=[
 	// Static variables
 	// ////////////////////////////////////////////////////////////
    
-	// TODO: these need comments
-	
-	RiLexicon.FEATURE_DELIM = ':';
-	
-	RiLexicon.STRESSED = '1'; 
-	
-	RiLexicon.UNSTRESSED = '0';
-	
-	RiLexicon.PHONEME_BOUNDARY = '-'; 
-	
-	RiLexicon.WORD_BOUNDARY = " "; 
-	
-	RiLexicon.SYLLABLE_BOUNDARY = "/"; 
-	
-	RiLexicon.SENTENCE_BOUNDARY = "|";
-	
-	RiLexicon.VOWELS = "aeiou";
 	
 	/** @private */
 	RiLexicon.data = undefined; // shared static var
@@ -49063,7 +49059,7 @@ _RiTa_LTS=[
 				minLen = 2,
 				result = [];
 
-			if (!(input && input.length)) return [];
+			if (!(input && input.length)) return EA;
 
 			input = input.toLowerCase();
 			minAllowedDist = minAllowedDist || 1;
@@ -49117,7 +49113,7 @@ _RiTa_LTS=[
 
 			targetPhonesArr = phones ? phones.split('-') : [];
 
-			if(!targetPhonesArr[0] || !(input && input.length)) return [];
+			if(!targetPhonesArr[0] || !(input && input.length)) return EA;
 
 			for(entry in RiLexicon.data) {
 
@@ -49132,7 +49128,7 @@ _RiTa_LTS=[
 				if(!phones.length) {
 
 					phones = RiString._syllabify(LetterToSound().getPhones(entry));
-					if(!phones) return [];
+					if(!phones) return EA;
 				}
 
 				phonesArr = phones.replace(/1/g, "").replace(/ /g, "-").split('-');
@@ -49301,7 +49297,7 @@ _RiTa_LTS=[
 		 */
 		_isVowel : function(c) {
 
-			return (strOk(c) && RiLexicon.VOWELS.indexOf(c) > -1);
+			return (strOk(c) && RiTa.VOWELS.indexOf(c) > -1);
 		},
 
 		/**
@@ -49312,7 +49308,7 @@ _RiTa_LTS=[
 		_isConsonant : function(p) {
 
 			return (typeof p == S && p.length==1 && 
-				RiLexicon.VOWELS.indexOf(p) < 0 && /^[a-z\u00C0-\u00ff]+$/.test(p));  
+				RiTa.VOWELS.indexOf(p) < 0 && /^[a-z\u00C0-\u00ff]+$/.test(p));  
 		},
 
 		/**
@@ -49374,10 +49370,10 @@ _RiTa_LTS=[
 						results.push(entry);
 					}
 				}
-				return (results.length > 0) ? results : []; 
+				return (results.length > 0) ? results : EA; 
 			}
 			
-			return []; 
+			return EA; 
 		},
 
 		/**
@@ -49401,9 +49397,9 @@ _RiTa_LTS=[
 						results.push(entry);
 					}
 				}
-				return (results.length > 0) ? results : []; // return null?
+				return (results.length > 0) ? results : EA; 
 			}
-			return [];
+			return EA;
 		},
 
 		/**
@@ -49438,7 +49434,7 @@ _RiTa_LTS=[
 
 			if (!strOk(raw)) return E; // return null?
 			
-			idx = raw.indexOf(RiLexicon.STRESSED);
+			idx = raw.indexOf(RiTa.STRESSED);
 
 			if (idx < 0) return E; // no stresses... return null?
 			
@@ -49611,8 +49607,8 @@ _RiTa_LTS=[
 					phones = raw[i].split(SP);
 					for (var j = 0; j < phones.length; j++) {
 
-						var isStress = (phones[j].indexOf(RiLexicon.STRESSED) > -1) 
-							? RiLexicon.STRESSED : RiLexicon.UNSTRESSED;
+						var isStress = (phones[j].indexOf(RiTa.STRESSED) > -1) 
+							? RiTa.STRESSED : RiTa.UNSTRESSED;
 						
 						if (j > 0) isStress = "/" + isStress;
 
@@ -49683,17 +49679,25 @@ _RiTa_LTS=[
 			
 			var pl = this._getPosData(word);
 			
-			if (!strOk(pl)) return [];
+			if (!strOk(pl)) return EA;
 			
 			return pl.split(SP);  
 		},
+
+		_getBestPos : function(word) { 
+			
+			var pl = this._getPosArr(word);
+			
+			return (pl.length > 0) ? pl[0] : [];
+		},
+
 
 		
 		_firstConsonant : function(rawPhones) {
 
 			if (!strOk(rawPhones)) return E; 
 			
-			var phones = rawPhones.split(RiLexicon.PHONEME_BOUNDARY);
+			var phones = rawPhones.split(RiTa.PHONEME_BOUNDARY);
 			// var phones = rawPhones.split(PHONEME_BOUNDARY);
 			
 			if (!undef(phones)) {
@@ -49716,7 +49720,7 @@ _RiTa_LTS=[
 
 			if (!strOk(raw)) return E; // return null?
 			
-			idx = raw.lastIndexOf(RiLexicon.STRESSED);
+			idx = raw.lastIndexOf(RiTa.STRESSED);
 			
 			if (idx < 0) return E; // return null?
 			
@@ -50067,8 +50071,8 @@ _RiTa_LTS=[
 
 					if (!stressyls[j].length) continue;
 					
-					stresses += (stressyls[j].indexOf(RiLexicon.STRESSED) > -1) 
-						? RiLexicon.STRESSED : RiLexicon.UNSTRESSED;
+					stresses += (stressyls[j].indexOf(RiTa.STRESSED) > -1) 
+						? RiTa.STRESSED : RiTa.UNSTRESSED;
 					
 					if (j < stressyls.length-1) stresses += slash;      
 				}
@@ -51579,7 +51583,7 @@ _RiTa_LTS=[
 		// lay out the lines
 		var rts = RiText._createLinesByCharCountFromArray(strLines, x, y, theFont);
 		
-		if (!rts || rts.length < 1) return [];
+		if (!rts || rts.length < 1) return EA;
 
 		// set the paragraph spacing
 		if (RiText.defaults.paragraphLeading > 0)  {
@@ -51856,12 +51860,12 @@ _RiTa_LTS=[
 	
 	RiText._createRiTexts = function(txt, x, y, w, h, fontObj, splitFun) {  
 
-		if (!txt || !txt.length) return [];
+		if (!txt || !txt.length) return EA;
 
 		fontObj = fontObj || RiText._getDefaultFont();
 
 		var rlines = RiText.createLines(txt, x, y, w, h, fontObj);
-		if (!rlines) return [];
+		if (!rlines) return EA;
 
 		var result = [];
 		for (var i = 0; i < rlines.length; i++) {
@@ -54650,7 +54654,7 @@ _RiTa_LTS=[
 
 					childNodes : function(regex) {
 						
-						if (!this.children) return [];
+						if (!this.children) return EA;
 						
 						regex = is(regex,S) ? new RegExp(regex) : regex;
 						
@@ -57270,7 +57274,7 @@ log('tag='+tag+' count='+this.TAGS.length);
 	
 	var ONLY_PUNCT = /^[^0-9A-Za-z\s]*$/, RiTextCallbacksDisabled = false;
 	
-	var ALL_PUNCT = /^[-[\]{}()*+!?%&.,\\^$|#@<>|+=;:]+$/g, DeLiM = ':DeLiM:';
+	var ALL_PUNCT = /^[-[\]{}()*+!?%&.,\\^$|#@<>|+=;:]+$/g, DeLiM = ':DeLiM:', EA = new Array();
 	
 	var SP = ' ', E = '', N = Type.N, S = Type.S, O = Type.O, A = Type.A, B = Type.B, R = Type.R, F = Type.F;
 	

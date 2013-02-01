@@ -50650,89 +50650,6 @@ _RiTa_LTS=[
 
 	}
 
-	var RiTest = makeClass();
-	
-	RiTest._callbacksDisabled = false;
-	
-	RiTest.prototype = {
-
-		init : function() {
-			log("RiTest.init");
-		},
-		toString : function() {
-			return 'RiTest';
-		}
-	}
-	
-	var _Reader = makeClass();
-
-	_Reader.protoype = {
-
-		init : function(g, rx, ry) {
-
-			console.log("INITT***********");
-
-			if(!g) console.error("No grid supplied to reader ...");
-
-			this.grid = g;
-			this.x = rx || 0;
-			this.y = ry || 0;
-			this.speed = 500;
-			this.neighborhood = new Array();	
-			this.current = g.cellAt(this.x , this.y) || g.cellAt(0, 0);
-			//setInterval( function() { this.step(); }, this.speed);
-		},
-
-		onEnterCell : function(curr) {
-			curr.showBoundingBox(false);
-			curr.fill(255, 0, 0);
-			this.neighborhood = grid.neighborhood(curr);
-			for(var i = 0; i < this.neighborhood.length; i++) {
-				if(this.neighborhood[i]) {
-					this.neighborhood[i].showBoundingBox(b);
-				}
-			}
-		},
-
-		step : function() {
-			this.onExitCell(this.current);
-			this.current = this.selectNext();
-			this.sendUpdate(this.textForServer());
-			this.onEnterCell(this.current);
-		},
-
-		selectNext : function() {
-			//return /*reverse ? grid.previousCell(currentCell) :*/
-			return grid.nextCell(this.current);
-		},
-
-		sendUpdate : function(text) {
-			return false; // TODO: if sending to server
-		},
-
-		textForServer : function() {
-			return this.current.text();
-		},
-
-		boundingBoxes : function(rts, b) {
-			for(var i = 0; i < rts.length; i++) {
-				if(rts[i] != null) {
-					rts[i].showBoundingBox(b);
-				}
-			}
-		},
-
-		onExitCell : function(curr) {
-			if (this.neighborhood) {
-				this.boundingBoxes(this.neighborhood, false);
-			}
-			if (curr) {
-				curr.showBoundingBox(false);
-				curr.fill(0);
-			}
-		}
-	}
-	
 	// ////////////////////////////////////////////////////////////
 	// RiGrammar
 	// ////////////////////////////////////////////////////////////
@@ -58251,7 +58168,7 @@ log('tag='+tag+' count='+this.TAGS.length);
 	}
 
 	function makeClass() { // By John Resig (MIT Licensed)
-		console.log('makeClass:'+this+"\n"+arguments+"\n");
+
 		return function(args) {
 			
 			if (this instanceof arguments.callee) {
@@ -58409,9 +58326,6 @@ log('tag='+tag+' count='+this.TAGS.length);
 		window['RiMarkov'] = RiMarkov;
 		window['RiTaEvent'] = RiTaEvent;
 		window['RiTa'] = RiTa;
-
-		window['_Reader'] = _Reader; // TODO: remove
-	window['RiTest'] = RiTest; // TODO: remove
 	}
 	
 	if (typeof module != 'undefined' && module.exports) { // for node

@@ -4793,7 +4793,7 @@
 	 * you should generally use it as follows:
 	 * 
 	 * @example
-	 *   var rts = RiText.getPicked(mx, my);
+	 *   var rts = RiText.picked(mx, my);
 	 *   if (rts.length) {
 	 *      rts[0].doSomething();
 	 *   }
@@ -6489,7 +6489,9 @@
 					 */
 					contains : function(mx, my) {
 									
-					   var bb = this.g._getBoundingBox(this);
+
+					   var bb = this.boundingBox(true);
+					   log('contains('+mx+','+my+') '+ bb.x + ","+bb.width+","+bb.y + ","+(bb.height));
 					   
 						//           // TODO: need to test this with point
 						//           if (!my && Type.get(mx.x) == 'Number' && Type.get(mx.y) == 'Number') {
@@ -6500,7 +6502,7 @@
 					   bb.x += this.x;
 					   bb.y += this.y;
 					   
-					   return (!(mx<bb.x || mx > bb.x+bb.width || my > bb.y || my < bb.y-bb.height));
+					   return (!(mx<bb.x || mx > bb.x+bb.width || my < bb.y || my > bb.y+bb.height));
 					},
 					
 					/**
