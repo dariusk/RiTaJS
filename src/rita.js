@@ -4754,7 +4754,7 @@
 	 * @param {MouseEvent} e mouseEvent
 	 * @returns {object} mouse position with x,y properties
 	 */
-	RiText.mouse = function(e) {
+	RiText.mouse = function(e) { // TODO: broken for canvas (see contains-test) [replace]
 		
 		var posX = -1,posY = -1;
 		
@@ -6490,7 +6490,7 @@
 					contains : function(mx, my) {
 									
 
-					   var bb = this.boundingBox(true);
+					   var bb = this.boundingBox(false);
 					   log('contains('+mx+','+my+') '+ bb.x + ","+bb.width+","+bb.y + ","+(bb.height));
 					   
 						//           // TODO: need to test this with point
