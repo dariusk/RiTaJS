@@ -48070,6 +48070,8 @@ _RiTa_LTS=[
 				RiText.prototype.fadeToText = RiText.prototype.textTo;
 				RiText.prototype.setColor   = RiText.prototype.color;
 				
+				RiTa.makeClass = makeClass; // TODO: remove
+
 				// alias for RiTa-java static functions
 				RiText.setDefaultFont = RiText.defaultFont;
 				RiText.setDefaultColor = RiText.defaultColor;
@@ -48110,7 +48112,9 @@ _RiTa_LTS=[
 				delete RiText.setDefaultColor;
 				delete RiText.setDefaultAlignment;
 				delete RiText.setCallbackTimer;
-				
+
+				delete RiTa.makeClass = makeClass; // TODO: remove
+
 				if (typeof window != 'undefined' && window && !hasProcessing)  {
 					
 					// are these checks needed?
@@ -48187,7 +48191,7 @@ _RiTa_LTS=[
 	 * and/or excessive memory use.
 	 */
 	var RiMarkov = makeClass();
-			
+
 	RiMarkov.prototype = {
 
 		/**
@@ -48479,7 +48483,7 @@ _RiTa_LTS=[
 		 * Returns the number of tokens currently in the model
 		 * @returns {number}
 		 */
-		numTokens : function() {
+		size : function() {
 			
 			return this.root.count;
 		},
@@ -48507,8 +48511,10 @@ _RiTa_LTS=[
 
 			ok(text,S);
 
-		    if (multiplier < 1 || (!isNaN(parseInt(multiplier,10)) && (parseFloat(multiplier,10) == parseInt(multiplier,10)))
-		    	err('multiplier must be an positive integer'); 
+			multiplier = multiplier || 1;
+
+			if (multiplier < 1 || multiplier != Math.floor(multiplier))
+		    	err('multiplier must be an positive integer, found: '+multiplier); 
 
 			if (this.sentenceAware) 
 				return this._loadSentences(RiTa.splitSentences(text), multiplier);       
@@ -48528,6 +48534,9 @@ _RiTa_LTS=[
 		loadTokens: function(tokens, multiplier) {
 
 			multiplier = multiplier || 1;
+
+			if (multiplier < 1 || multiplier != Math.floor(multiplier))
+		    	err('multiplier must be an positive integer, found: '+multiplier); 
 
 			this.root.count += tokens.length; // here?
 			for(var toAdd, k = 0; k < tokens.length; k++) {
@@ -48782,7 +48791,7 @@ _RiTa_LTS=[
 			// Now select the next node
 			return node ? node.selectChild(null, true) : null;
 		}
-	};
+	}
 	
 	///////////////////////////////////////////////////////////////////////////
 	// RiTaEvent class 
@@ -48883,7 +48892,7 @@ _RiTa_LTS=[
 				RiTaEvent._callbacksDisabled = true;
 			}
 		}
-	};
+	}
 	
 	
 	// ////////////////////////////////////////////////////////////
@@ -50640,8 +50649,7 @@ _RiTa_LTS=[
 		}
 
 	}
-	
-	
+
 	// ////////////////////////////////////////////////////////////
 	// RiGrammar
 	// ////////////////////////////////////////////////////////////
@@ -50719,7 +50727,7 @@ _RiTa_LTS=[
 	RiGrammar.PROB_PATT = /(.*[^\s])\s*\[([0-9.]+)\](.*)/;
 	RiGrammar.OR_PATT = /\s*\|\s*/;
 	RiGrammar.EXEC_PATT = /`[^`]+`/g;
-	RiGrammar.STRIP_TICKS = /`([^`]*)`/g
+	RiGrammar.STRIP_TICKS = /`([^`]*)`/g;
 	
 	/**
 	 * Set/gets the execDisabled flag. Set to true (default=false) 
@@ -50744,7 +50752,6 @@ _RiTa_LTS=[
 		init : function(grammar) {
 			
 			(arguments.length == 0 || is(grammar,S) || ok(grammar, O)); 
-			
 			this._rules = {};
 			this._execDisabled = false;
 			grammar && this.setGrammar(grammar);  
@@ -56859,7 +56866,7 @@ log('tag='+tag+' count='+this.TAGS.length);
 		}
 		
 	}
-	
+
 	//////////////////////////////////////////////////////////////////
 	//////// RE 
 	////////////////////////////////////////////////////////////////
@@ -57253,7 +57260,7 @@ log('tag='+tag+' count='+this.TAGS.length);
 	
 	////////////////////////////////// End Classes ///////////////////////////////////
 
-	// TODO: clean this mess up... wrap in Constants
+	// TODO: clean this mess up... wrap in Constants?
 	
 	var QUESTION_STARTS = ["Was", "What", "When", "Where", "How", "Which", "If", "Who", "Is", "Could", "Might", "Will", "Does", "Why", "Are" ];    
 	
@@ -58165,7 +58172,7 @@ log('tag='+tag+' count='+this.TAGS.length);
 		return function(args) {
 			
 			if (this instanceof arguments.callee) {
-				
+
 				if (typeof this.init == "function") {
 					
 					this.init.apply(this, args && args.callee ? args : arguments);
@@ -58330,12 +58337,12 @@ log('tag='+tag+' count='+this.TAGS.length);
 		module.exports['RiMarkov'] = RiMarkov;
 		module.exports['RiTaEvent'] = RiTaEvent;
 		module.exports['RiTa'] = RiTa;
-		
+
 		module.vm = require("vm"); // TODO: reconsider, use deps?
 		module.vm && (RiTa._eval = module.vm.runInThisContext);
 	}
 	
 
-	RiTa.p5Compatible(hasProcessing); // TODO: whats the default? false, for now
+	RiTa.p5Compatible(hasProcessing); // TODO: whats the no-P5 default? false, for now
 
 })(typeof window !== 'undefined' ? window : null);

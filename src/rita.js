@@ -512,6 +512,22 @@
 		PLURAL : 8,
 
 		NORMAL : 9,
+
+		FEATURE_DELIM : ':',
+	
+		STRESSED : '1',
+	
+		UNSTRESSED : '0',
+	
+		PHONEME_BOUNDARY : '-', 
+	
+		WORD_BOUNDARY : " ", 
+	
+		SYLLABLE_BOUNDARY : "/", 
+	
+		SENTENCE_BOUNDARY : "|",
+	
+		VOWELS : "aeiou",
 		
 		ABBREVIATIONS : [   "Adm." ,"Capt." ,"Cmdr." ,"Col." ,"Dr." ,"Gen." ,"Gov." ,"Lt." ,"Maj." ,"Messrs." ,"Mr.","Mrs." ,"Ms." ,"Prof." ,"Rep." ,"Reps." ,"Rev." ,"Sen." ,"Sens." ,"Sgt." ,"Sr." ,"St.","a.k.a." ,"c.f." ,"i.e." ,"e.g." ,"vs." ,"v.", "Jan." ,"Feb." ,"Mar." ,"Apr." ,"Mar." ,"Jun." ,"Jul." ,"Aug." ,"Sept." ,"Oct." ,"Nov." ,"Dec." ],
 
@@ -683,7 +699,7 @@
 				}
 				return posArr;  
 			}
-			return []; 
+			return EA; 
 		},
 
 		//TODO: example
@@ -1345,7 +1361,7 @@
 				RiText.prototype.fadeColor  = RiText.prototype.colorTo;
 				RiText.prototype.fadeToText = RiText.prototype.textTo;
 				RiText.prototype.setColor   = RiText.prototype.color;
-				
+	
 				// alias for RiTa-java static functions
 				RiText.setDefaultFont = RiText.defaultFont;
 				RiText.setDefaultColor = RiText.defaultColor;
@@ -1386,7 +1402,7 @@
 				delete RiText.setDefaultColor;
 				delete RiText.setDefaultAlignment;
 				delete RiText.setCallbackTimer;
-				
+
 				if (typeof window != 'undefined' && window && !hasProcessing)  {
 					
 					// are these checks needed?
@@ -1463,7 +1479,7 @@
 	 * and/or excessive memory use.
 	 */
 	var RiMarkov = makeClass();
-			
+
 	RiMarkov.prototype = {
 
 		/**
@@ -2063,7 +2079,7 @@
 			// Now select the next node
 			return node ? node.selectChild(null, true) : null;
 		}
-	};
+	}
 	
 	///////////////////////////////////////////////////////////////////////////
 	// RiTaEvent class 
@@ -2164,7 +2180,7 @@
 				RiTaEvent._callbacksDisabled = true;
 			}
 		}
-	};
+	}
 	
 	
 	// ////////////////////////////////////////////////////////////
@@ -2226,23 +2242,6 @@
 	// Static variables
 	// ////////////////////////////////////////////////////////////
    
-	// TODO: these need comments
-	
-	RiLexicon.FEATURE_DELIM = ':';
-	
-	RiLexicon.STRESSED = '1'; 
-	
-	RiLexicon.UNSTRESSED = '0';
-	
-	RiLexicon.PHONEME_BOUNDARY = '-'; 
-	
-	RiLexicon.WORD_BOUNDARY = " "; 
-	
-	RiLexicon.SYLLABLE_BOUNDARY = "/"; 
-	
-	RiLexicon.SENTENCE_BOUNDARY = "|";
-	
-	RiLexicon.VOWELS = "aeiou";
 	
 	/** @private */
 	RiLexicon.data = undefined; // shared static var
@@ -2335,7 +2334,7 @@
 				minLen = 2,
 				result = [];
 
-			if (!(input && input.length)) return [];
+			if (!(input && input.length)) return EA;
 
 			input = input.toLowerCase();
 			minAllowedDist = minAllowedDist || 1;
@@ -2389,7 +2388,7 @@
 
 			targetPhonesArr = phones ? phones.split('-') : [];
 
-			if(!targetPhonesArr[0] || !(input && input.length)) return [];
+			if(!targetPhonesArr[0] || !(input && input.length)) return EA;
 
 			for(entry in RiLexicon.data) {
 
@@ -2404,7 +2403,7 @@
 				if(!phones.length) {
 
 					phones = RiString._syllabify(LetterToSound().getPhones(entry));
-					if(!phones) return [];
+					if(!phones) return EA;
 				}
 
 				phonesArr = phones.replace(/1/g, "").replace(/ /g, "-").split('-');
@@ -2573,7 +2572,7 @@
 		 */
 		_isVowel : function(c) {
 
-			return (strOk(c) && RiLexicon.VOWELS.indexOf(c) > -1);
+			return (strOk(c) && RiTa.VOWELS.indexOf(c) > -1);
 		},
 
 		/**
@@ -2584,7 +2583,7 @@
 		_isConsonant : function(p) {
 
 			return (typeof p == S && p.length==1 && 
-				RiLexicon.VOWELS.indexOf(p) < 0 && /^[a-z\u00C0-\u00ff]+$/.test(p));  
+				RiTa.VOWELS.indexOf(p) < 0 && /^[a-z\u00C0-\u00ff]+$/.test(p));  
 		},
 
 		/**
@@ -2646,10 +2645,10 @@
 						results.push(entry);
 					}
 				}
-				return (results.length > 0) ? results : []; 
+				return (results.length > 0) ? results : EA; 
 			}
 			
-			return []; 
+			return EA; 
 		},
 
 		/**
@@ -2673,9 +2672,9 @@
 						results.push(entry);
 					}
 				}
-				return (results.length > 0) ? results : []; // return null?
+				return (results.length > 0) ? results : EA; 
 			}
-			return [];
+			return EA;
 		},
 
 		/**
@@ -2710,7 +2709,7 @@
 
 			if (!strOk(raw)) return E; // return null?
 			
-			idx = raw.indexOf(RiLexicon.STRESSED);
+			idx = raw.indexOf(RiTa.STRESSED);
 
 			if (idx < 0) return E; // no stresses... return null?
 			
@@ -2883,8 +2882,8 @@
 					phones = raw[i].split(SP);
 					for (var j = 0; j < phones.length; j++) {
 
-						var isStress = (phones[j].indexOf(RiLexicon.STRESSED) > -1) 
-							? RiLexicon.STRESSED : RiLexicon.UNSTRESSED;
+						var isStress = (phones[j].indexOf(RiTa.STRESSED) > -1) 
+							? RiTa.STRESSED : RiTa.UNSTRESSED;
 						
 						if (j > 0) isStress = "/" + isStress;
 
@@ -2955,17 +2954,25 @@
 			
 			var pl = this._getPosData(word);
 			
-			if (!strOk(pl)) return [];
+			if (!strOk(pl)) return EA;
 			
 			return pl.split(SP);  
 		},
+
+		_getBestPos : function(word) { 
+			
+			var pl = this._getPosArr(word);
+			
+			return (pl.length > 0) ? pl[0] : [];
+		},
+
 
 		
 		_firstConsonant : function(rawPhones) {
 
 			if (!strOk(rawPhones)) return E; 
 			
-			var phones = rawPhones.split(RiLexicon.PHONEME_BOUNDARY);
+			var phones = rawPhones.split(RiTa.PHONEME_BOUNDARY);
 			// var phones = rawPhones.split(PHONEME_BOUNDARY);
 			
 			if (!undef(phones)) {
@@ -2988,7 +2995,7 @@
 
 			if (!strOk(raw)) return E; // return null?
 			
-			idx = raw.lastIndexOf(RiLexicon.STRESSED);
+			idx = raw.lastIndexOf(RiTa.STRESSED);
 			
 			if (idx < 0) return E; // return null?
 			
@@ -3339,8 +3346,8 @@
 
 					if (!stressyls[j].length) continue;
 					
-					stresses += (stressyls[j].indexOf(RiLexicon.STRESSED) > -1) 
-						? RiLexicon.STRESSED : RiLexicon.UNSTRESSED;
+					stresses += (stressyls[j].indexOf(RiTa.STRESSED) > -1) 
+						? RiTa.STRESSED : RiTa.UNSTRESSED;
 					
 					if (j < stressyls.length-1) stresses += slash;      
 				}
@@ -3921,8 +3928,7 @@
 		}
 
 	}
-	
-	
+
 	// ////////////////////////////////////////////////////////////
 	// RiGrammar
 	// ////////////////////////////////////////////////////////////
@@ -4000,7 +4006,7 @@
 	RiGrammar.PROB_PATT = /(.*[^\s])\s*\[([0-9.]+)\](.*)/;
 	RiGrammar.OR_PATT = /\s*\|\s*/;
 	RiGrammar.EXEC_PATT = /`[^`]+`/g;
-	RiGrammar.STRIP_TICKS = /`([^`]*)`/g
+	RiGrammar.STRIP_TICKS = /`([^`]*)`/g;
 	
 	/**
 	 * Set/gets the execDisabled flag. Set to true (default=false) 
@@ -4025,7 +4031,6 @@
 		init : function(grammar) {
 			
 			(arguments.length == 0 || is(grammar,S) || ok(grammar, O)); 
-			
 			this._rules = {};
 			this._execDisabled = false;
 			grammar && this.setGrammar(grammar);  
@@ -4853,7 +4858,7 @@
 		// lay out the lines
 		var rts = RiText._createLinesByCharCountFromArray(strLines, x, y, theFont);
 		
-		if (!rts || rts.length < 1) return [];
+		if (!rts || rts.length < 1) return EA;
 
 		// set the paragraph spacing
 		if (RiText.defaults.paragraphLeading > 0)  {
@@ -5130,12 +5135,12 @@
 	
 	RiText._createRiTexts = function(txt, x, y, w, h, fontObj, splitFun) {  
 
-		if (!txt || !txt.length) return [];
+		if (!txt || !txt.length) return EA;
 
 		fontObj = fontObj || RiText._getDefaultFont();
 
 		var rlines = RiText.createLines(txt, x, y, w, h, fontObj);
-		if (!rlines) return [];
+		if (!rlines) return EA;
 
 		var result = [];
 		for (var i = 0; i < rlines.length; i++) {
@@ -7924,7 +7929,7 @@
 
 					childNodes : function(regex) {
 						
-						if (!this.children) return [];
+						if (!this.children) return EA;
 						
 						regex = is(regex,S) ? new RegExp(regex) : regex;
 						
@@ -10140,7 +10145,7 @@ log('tag='+tag+' count='+this.TAGS.length);
 		}
 		
 	}
-	
+
 	//////////////////////////////////////////////////////////////////
 	//////// RE 
 	////////////////////////////////////////////////////////////////
@@ -10534,7 +10539,7 @@ log('tag='+tag+' count='+this.TAGS.length);
 	
 	////////////////////////////////// End Classes ///////////////////////////////////
 
-	// TODO: clean this mess up... wrap in Constants
+	// TODO: clean this mess up... wrap in Constants?
 	
 	var QUESTION_STARTS = ["Was", "What", "When", "Where", "How", "Which", "If", "Who", "Is", "Could", "Might", "Will", "Does", "Why", "Are" ];    
 	
@@ -10544,7 +10549,7 @@ log('tag='+tag+' count='+this.TAGS.length);
 	
 	var ONLY_PUNCT = /^[^0-9A-Za-z\s]*$/, RiTextCallbacksDisabled = false;
 	
-	var ALL_PUNCT = /^[-[\]{}()*+!?%&.,\\^$|#@<>|+=;:]+$/g, DeLiM = ':DeLiM:';
+	var ALL_PUNCT = /^[-[\]{}()*+!?%&.,\\^$|#@<>|+=;:]+$/g, DeLiM = ':DeLiM:', EA = new Array();
 	
 	var SP = ' ', E = '', N = Type.N, S = Type.S, O = Type.O, A = Type.A, B = Type.B, R = Type.R, F = Type.F;
 	
@@ -11446,7 +11451,7 @@ log('tag='+tag+' count='+this.TAGS.length);
 		return function(args) {
 			
 			if (this instanceof arguments.callee) {
-				
+
 				if (typeof this.init == "function") {
 					
 					this.init.apply(this, args && args.callee ? args : arguments);
@@ -11611,12 +11616,12 @@ log('tag='+tag+' count='+this.TAGS.length);
 		module.exports['RiMarkov'] = RiMarkov;
 		module.exports['RiTaEvent'] = RiTaEvent;
 		module.exports['RiTa'] = RiTa;
-		
+
 		module.vm = require("vm"); // TODO: reconsider, use deps?
 		module.vm && (RiTa._eval = module.vm.runInThisContext);
 	}
 	
 
-	RiTa.p5Compatible(hasProcessing); // TODO: whats the default? false, for now
+	RiTa.p5Compatible(hasProcessing); // TODO: whats the no-P5 default? false, for now
 
 })(typeof window !== 'undefined' ? window : null);

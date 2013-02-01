@@ -48070,6 +48070,8 @@ _RiTa_LTS=[
 				RiText.prototype.fadeToText = RiText.prototype.textTo;
 				RiText.prototype.setColor   = RiText.prototype.color;
 				
+				RiTa.makeClass = makeClass; // TODO: remove
+
 				// alias for RiTa-java static functions
 				RiText.setDefaultFont = RiText.defaultFont;
 				RiText.setDefaultColor = RiText.defaultColor;
@@ -48110,7 +48112,9 @@ _RiTa_LTS=[
 				delete RiText.setDefaultColor;
 				delete RiText.setDefaultAlignment;
 				delete RiText.setCallbackTimer;
-				
+
+				delete RiTa.makeClass = makeClass; // TODO: remove
+
 				if (typeof window != 'undefined' && window && !hasProcessing)  {
 					
 					// are these checks needed?
@@ -48187,7 +48191,7 @@ _RiTa_LTS=[
 	 * and/or excessive memory use.
 	 */
 	var RiMarkov = makeClass();
-			
+
 	RiMarkov.prototype = {
 
 		/**
@@ -48479,7 +48483,7 @@ _RiTa_LTS=[
 		 * Returns the number of tokens currently in the model
 		 * @returns {number}
 		 */
-		numTokens : function() {
+		size : function() {
 			
 			return this.root.count;
 		},
@@ -48507,8 +48511,10 @@ _RiTa_LTS=[
 
 			ok(text,S);
 
-		    if (multiplier < 1 || (!isNaN(parseInt(value,10)) && (parseFloat(value,10) == parseInt(value,10)))
-		    	err('multiplier must be an positive integer'); 
+			multiplier = multiplier || 1;
+
+			if (multiplier < 1 || multiplier != Math.floor(multiplier))
+		    	err('multiplier must be an positive integer, found: '+multiplier); 
 
 			if (this.sentenceAware) 
 				return this._loadSentences(RiTa.splitSentences(text), multiplier);       
@@ -48528,6 +48534,9 @@ _RiTa_LTS=[
 		loadTokens: function(tokens, multiplier) {
 
 			multiplier = multiplier || 1;
+
+			if (multiplier < 1 || multiplier != Math.floor(multiplier))
+		    	err('multiplier must be an positive integer, found: '+multiplier); 
 
 			this.root.count += tokens.length; // here?
 			for(var toAdd, k = 0; k < tokens.length; k++) {
@@ -48782,7 +48791,7 @@ _RiTa_LTS=[
 			// Now select the next node
 			return node ? node.selectChild(null, true) : null;
 		}
-	};
+	}
 	
 	///////////////////////////////////////////////////////////////////////////
 	// RiTaEvent class 
@@ -48883,7 +48892,7 @@ _RiTa_LTS=[
 				RiTaEvent._callbacksDisabled = true;
 			}
 		}
-	};
+	}
 	
 	
 	// ////////////////////////////////////////////////////////////
@@ -50640,7 +50649,89 @@ _RiTa_LTS=[
 		}
 
 	}
+
+	var RiTest = makeClass();
 	
+	RiTest._callbacksDisabled = false;
+	
+	RiTest.prototype = {
+
+		init : function() {
+			log("RiTest.init");
+		},
+		toString : function() {
+			return 'RiTest';
+		}
+	}
+	
+	var _Reader = makeClass();
+
+	_Reader.protoype = {
+
+		init : function(g, rx, ry) {
+
+			console.log("INITT***********");
+
+			if(!g) console.error("No grid supplied to reader ...");
+
+			this.grid = g;
+			this.x = rx || 0;
+			this.y = ry || 0;
+			this.speed = 500;
+			this.neighborhood = new Array();	
+			this.current = g.cellAt(this.x , this.y) || g.cellAt(0, 0);
+			//setInterval( function() { this.step(); }, this.speed);
+		},
+
+		onEnterCell : function(curr) {
+			curr.showBoundingBox(false);
+			curr.fill(255, 0, 0);
+			this.neighborhood = grid.neighborhood(curr);
+			for(var i = 0; i < this.neighborhood.length; i++) {
+				if(this.neighborhood[i]) {
+					this.neighborhood[i].showBoundingBox(b);
+				}
+			}
+		},
+
+		step : function() {
+			this.onExitCell(this.current);
+			this.current = this.selectNext();
+			this.sendUpdate(this.textForServer());
+			this.onEnterCell(this.current);
+		},
+
+		selectNext : function() {
+			//return /*reverse ? grid.previousCell(currentCell) :*/
+			return grid.nextCell(this.current);
+		},
+
+		sendUpdate : function(text) {
+			return false; // TODO: if sending to server
+		},
+
+		textForServer : function() {
+			return this.current.text();
+		},
+
+		boundingBoxes : function(rts, b) {
+			for(var i = 0; i < rts.length; i++) {
+				if(rts[i] != null) {
+					rts[i].showBoundingBox(b);
+				}
+			}
+		},
+
+		onExitCell : function(curr) {
+			if (this.neighborhood) {
+				this.boundingBoxes(this.neighborhood, false);
+			}
+			if (curr) {
+				curr.showBoundingBox(false);
+				curr.fill(0);
+			}
+		}
+	}
 	
 	// ////////////////////////////////////////////////////////////
 	// RiGrammar
@@ -50719,7 +50810,7 @@ _RiTa_LTS=[
 	RiGrammar.PROB_PATT = /(.*[^\s])\s*\[([0-9.]+)\](.*)/;
 	RiGrammar.OR_PATT = /\s*\|\s*/;
 	RiGrammar.EXEC_PATT = /`[^`]+`/g;
-	RiGrammar.STRIP_TICKS = /`([^`]*)`/g
+	RiGrammar.STRIP_TICKS = /`([^`]*)`/g;
 	
 	/**
 	 * Set/gets the execDisabled flag. Set to true (default=false) 
@@ -50744,7 +50835,6 @@ _RiTa_LTS=[
 		init : function(grammar) {
 			
 			(arguments.length == 0 || is(grammar,S) || ok(grammar, O)); 
-			
 			this._rules = {};
 			this._execDisabled = false;
 			grammar && this.setGrammar(grammar);  
@@ -56859,7 +56949,7 @@ log('tag='+tag+' count='+this.TAGS.length);
 		}
 		
 	}
-	
+
 	//////////////////////////////////////////////////////////////////
 	//////// RE 
 	////////////////////////////////////////////////////////////////
@@ -57253,7 +57343,7 @@ log('tag='+tag+' count='+this.TAGS.length);
 	
 	////////////////////////////////// End Classes ///////////////////////////////////
 
-	// TODO: clean this mess up... wrap in Constants
+	// TODO: clean this mess up... wrap in Constants?
 	
 	var QUESTION_STARTS = ["Was", "What", "When", "Where", "How", "Which", "If", "Who", "Is", "Could", "Might", "Will", "Does", "Why", "Are" ];    
 	
@@ -58161,11 +58251,11 @@ log('tag='+tag+' count='+this.TAGS.length);
 	}
 
 	function makeClass() { // By John Resig (MIT Licensed)
-
+		console.log('makeClass:'+this+"\n"+arguments+"\n");
 		return function(args) {
 			
 			if (this instanceof arguments.callee) {
-				
+
 				if (typeof this.init == "function") {
 					
 					this.init.apply(this, args && args.callee ? args : arguments);
@@ -58319,6 +58409,9 @@ log('tag='+tag+' count='+this.TAGS.length);
 		window['RiMarkov'] = RiMarkov;
 		window['RiTaEvent'] = RiTaEvent;
 		window['RiTa'] = RiTa;
+
+		window['_Reader'] = _Reader; // TODO: remove
+	window['RiTest'] = RiTest; // TODO: remove
 	}
 	
 	if (typeof module != 'undefined' && module.exports) { // for node
@@ -58330,12 +58423,12 @@ log('tag='+tag+' count='+this.TAGS.length);
 		module.exports['RiMarkov'] = RiMarkov;
 		module.exports['RiTaEvent'] = RiTaEvent;
 		module.exports['RiTa'] = RiTa;
-		
+
 		module.vm = require("vm"); // TODO: reconsider, use deps?
 		module.vm && (RiTa._eval = module.vm.runInThisContext);
 	}
 	
 
-	RiTa.p5Compatible(hasProcessing); // TODO: whats the default? false, for now
+	RiTa.p5Compatible(hasProcessing); // TODO: whats the no-P5 default? false, for now
 
 })(typeof window !== 'undefined' ? window : null);

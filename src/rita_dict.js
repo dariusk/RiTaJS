@@ -1,5 +1,5 @@
 _RiTa_DICT={
-'a': ['ey1','dt vb vbn nnp fw jj ls nn'],
+'a': ['ey1','dt'],
 'aback': ['ax-b ae1-k','rb'],
 'abalone': ['ae1-b ax-l ow1-n iy','nn'],
 'abandon': ['ax-b ae1-n-d ax-n','vb nn vbp'],
@@ -12915,6 +12915,7 @@ _RiTa_DICT={
 'goofed': ['g-uw1-f-t','vbd'],
 'goofing': ['g-uw1-f ih-ng','vbg'],
 'goofy': ['g-uw1-f iy','jj'],
+'google': ['g-uw1-g ax-l','nn jj vb'],
 'goons': ['g-uw1-n-z','nns'],
 'goose': ['g-uw1-s','nn'],
 'gooseberry': ['g-uw1-s b-eh1-r iy','nn'],
@@ -30105,7 +30106,7 @@ _RiTa_DICT={
 'thawed': ['th-ao1-d','vbn'],
 'thawing': ['th-ao1 ih-ng','vbg'],
 'thaws': ['th-ao1-z','nns'],
-'the': ['dh-ax','dt vbd vbp nn in jj nnp pdt'],
+'the': ['dh-ax','dt'],
 'theater': ['th-iy1 ax-t er','nn'],
 'theatergoers': ['th-iy1-t er-g ow er-z','nns'],
 'theaters': ['th-iy1 ax-t er-z','nns vbd'],
