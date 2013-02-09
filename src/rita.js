@@ -3293,6 +3293,15 @@
 			this._features = undefined;
 		},
 		
+		copy : function() {
+			var rs = RiString(this._text), feats = this.features();
+			rs._features = {};
+			for(var prop in feats) {
+    			rs._features[prop] = feats[prop];
+			}
+			return rs;
+		},
+			
 		/**
 		 * Returns the full feature set for this object, first computing the default
 		 * features if necessary
@@ -6509,7 +6518,7 @@
 					 * Creates and returns a new (copy) of this RiText
 					 * @returns {object} RiText
 					 */
-					clone : function() {
+					copy : function() {
 
 						var c = new RiText(this.text(), this.x, this.y, this._font);
 						c.color(this._color.r, this._color.g, this._color.b, this._color.a);
@@ -7143,8 +7152,10 @@
 						startIndex = this.letterIndex[c];
 						
 						// must check for null here, not 0
-						if (startIndex==null) throw Error("No LTS index for character: '"+
-							c + "', isDigit=" + isNum(c) + ", isPunct=" + RiTa.isPunctuation(c));
+						if (startIndex==null) {
+							warn("Unable to generate LTS for '"+word+"'\nNo LTS index for character: '"+c + "', isDigit=" + isNum(c) + ", isPunct=" + RiTa.isPunctuation(c));
+							return null;
+						}
 
 						stateIndex = parseInt(startIndex);
 						
