@@ -3294,9 +3294,13 @@
 		},
 		
 		copy : function() {
+
 			var rs = RiString(this._text), feats = this.features();
+
 			rs._features = {};
+
 			for(var prop in feats) {
+
     			rs._features[prop] = feats[prop];
 			}
 			return rs;
