@@ -50821,7 +50821,7 @@ _RiTa_LTS=[
 			
 		},
 
-		_copy: function() {  // NIAPI
+		_clone: function() {  // NIAPI
 			var tmp = RiGrammar();
 			for(var name in this._rules) {
 				tmp._rules[name] = this._rules[name];
@@ -50974,7 +50974,7 @@ _RiTa_LTS=[
 		 */
 		expandWith : function(literal, symbol) { // TODO: finish 
 
-			var gr = this._copy();
+			var gr = this._clone();
 			
 			var match = false;
 			for ( var name in gr._rules) {
@@ -52437,7 +52437,7 @@ _RiTa_LTS=[
 		  if (this.fadeToTextCopy) 
 		  {
 			startAlpha = this.fadeToTextCopy.alpha();
-			//RiText.dispose(this.fadeToTextCopy); // TODO: do we need this?
+			RiText.dispose(this.fadeToTextCopy); // stop any currents
 		  }
 		
 		  // use the copy to fade out
@@ -53180,7 +53180,7 @@ _RiTa_LTS=[
 	
 			for ( var i = 0; i < words.length; i++) {
 				if (words[i].length < 1) continue;
-				var tmp = this.copy();
+				var tmp = this.clone();
 				tmp.text(words[i]);
 				var mx = RiText._wordOffsetFor(this, words, i);
 				tmp.position(mx, this.y);
@@ -53206,7 +53206,7 @@ _RiTa_LTS=[
 	
 			for ( var i = 0; i < chars.length; i++) {
 				if (chars[i] == ' ') continue;
-				var tmp = this.copy();
+				var tmp = this.clone();
 				tmp.text(chars[i]);
 				var mx = this.charOffset(i);
 				tmp.position(mx, this.y);

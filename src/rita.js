@@ -4096,7 +4096,7 @@
 			
 		},
 
-		_clone: function() {  // NIAPI
+		_copy: function() {  // NIAPI
 			var tmp = RiGrammar();
 			for(var name in this._rules) {
 				tmp._rules[name] = this._rules[name];
@@ -4249,7 +4249,7 @@
 		 */
 		expandWith : function(literal, symbol) { // TODO: finish 
 
-			var gr = this._clone();
+			var gr = this._copy();
 			
 			var match = false;
 			for ( var name in gr._rules) {
@@ -6455,7 +6455,7 @@
 	
 			for ( var i = 0; i < words.length; i++) {
 				if (words[i].length < 1) continue;
-				var tmp = this.clone();
+				var tmp = this.copy();
 				tmp.text(words[i]);
 				var mx = RiText._wordOffsetFor(this, words, i);
 				tmp.position(mx, this.y);
@@ -6481,7 +6481,7 @@
 	
 			for ( var i = 0; i < chars.length; i++) {
 				if (chars[i] == ' ') continue;
-				var tmp = this.clone();
+				var tmp = this.copy();
 				tmp.text(chars[i]);
 				var mx = this.charOffset(i);
 				tmp.position(mx, this.y);
