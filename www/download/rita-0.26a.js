@@ -46726,7 +46726,7 @@ _RiTa_LTS=[
 
 (function(window, undefined) {
 	
-	var _VERSION_ = '0.25';
+	var _VERSION_ = '0.26';
 	// also update /RiTaLibraryJS/www/download/index.html (TODO: should be automatic)
 
 	/**  @private Simple type-checking functions */ 
@@ -47124,7 +47124,7 @@ _RiTa_LTS=[
 	
 				var v0 = ( p2 - p0 ) * 0.5, v1 = ( p3 - p1 ) * 0.5, t2 = t * t, t3 = t * t2;
 				return ( 2 * p1 - 2 * p2 + v0 + v1 ) * t3 + ( - 3 * p1 + 3 * p2 - 2 * v0 - v1 ) * t2 + v0 * t + p1;
-	
+
 			}
 		}
 	};
@@ -47137,10 +47137,10 @@ _RiTa_LTS=[
 	 * @namespace A collection of static variables and functions for the RiTa library
 	 */
 	RiTa = {
+		
 		// RiTa constants =================================
 		
 		/** The current version of the RiTa tools */
-
 		VERSION : _VERSION_,
 
 		/** 
@@ -50018,6 +50018,19 @@ _RiTa_LTS=[
 			this._features = undefined;
 		},
 		
+		copy : function() {
+
+			var rs = RiString(this._text), feats = this.features();
+
+			rs._features = {};
+
+			for(var prop in feats) {
+
+    			rs._features[prop] = feats[prop];
+			}
+			return rs;
+		},
+			
 		/**
 		 * Returns the full feature set for this object, first computing the default
 		 * features if necessary
@@ -51479,7 +51492,7 @@ _RiTa_LTS=[
 	 * @param {MouseEvent} e mouseEvent
 	 * @returns {object} mouse position with x,y properties
 	 */
-	RiText.mouse = function(e) {
+	RiText.mouse = function(e) { // TODO: broken for canvas (see contains-test) [replace]
 		
 		var posX = -1,posY = -1;
 		
@@ -51518,7 +51531,7 @@ _RiTa_LTS=[
 	 * you should generally use it as follows:
 	 * 
 	 * @example
-	 *   var rts = RiText.getPicked(mx, my);
+	 *   var rts = RiText.picked(mx, my);
 	 *   if (rts.length) {
 	 *      rts[0].doSomething();
 	 *   }
@@ -52175,7 +52188,7 @@ _RiTa_LTS=[
 			 
 				// Set color
 				g._fill(this._color.r, this._color.g, this._color.b, this._color.a);
-	  
+
 				// Set font params
 				g._textFont(this._font);
 				g._textAlign(this._alignment);
@@ -52185,6 +52198,8 @@ _RiTa_LTS=[
 		
 				// And the bounding box
 				if (this._boundingBoxVisible) {
+					
+					//	console.log(this.text()+".bb="+this._boundingBoxVisible);
 					
 					g._fill(this._boundingBoxFill.r, this._boundingBoxFill.g, 
 						this._boundingBoxFill.b, this._boundingBoxFill.a);
@@ -52423,13 +52438,10 @@ _RiTa_LTS=[
 		  {
 			startAlpha = this.fadeToTextCopy.alpha();
 			RiText.dispose(this.fadeToTextCopy); // stop any currents
-
-		  	// WORKING HERE ON FADE BUG
-			//log('disposing fadeToTextCopy');
 		  }
 		
 		  // use the copy to fade out
-		  this.fadeToTextCopy = this.clone();
+		  this.fadeToTextCopy = this.copy();
 
 		  //this.fadeToTextCopy.fadeOut(seconds, 0, true);
 		  this.fadeToTextCopy.colorTo(
@@ -52911,2006 +52923,2017 @@ _RiTa_LTS=[
 						this._rs.insertWord(wordIdx, newWord);
 						return this;
 					},
-					
-					   
-					 /**
-					 * Replaces the word at 'wordIdx' with 'newWord'
-					 * 
-					 * @param {number} wordIdx the index
-					 * @param {string} newWord the replacement
-					 * 
-					 * @returns {object} this RiText
-					 */
-					replaceWord : function(wordIdx, newWord) {
-						
-						// var words = this.words();
-						 
-						// if (wordIdx >= 0 && wordIdx < words.length) {
-							
-							// words[wordIdx] = newWord;
-							 
-							// this._rs.text(RiTa.untokenize(words));
-						// }
-						
-						this._rs.replaceWord(wordIdx, newWord);
-						
-						return this; // TODO: check that all RiText methods use the delegate 
-									//  (like above) for methods that exist in RiString
-					},
-					
-					/**
-					 * Removes the word at 'wordIdx'.
-					 * 
-					 * @param {number} wordIdx the index
-					 * 
-					 * @returns {object} this RiText
-					 */
-					removeWord : function(wordIdx) {
-						
-						this._rs.removeWord(wordIdx,E);
-						return this;
-					},  
-					
-					 /**
-					 * Extracts a part of a string from this RiText
-					 * 
-					 * @param {number} begin (Required) The index where to begin the extraction. First character is at
-					 *        index 0
-					 * @param {number} end (Optional) Where to end the extraction. If omitted, slice() selects all
-					 *        characters from the begin position to the end of the string
-					 * @returns {object} this RiText
-					 */
-					slice : function(begin, end) {
-						
-						var res = this._rs._text.slice(begin, end) || E;
-						return this._rs.text(res);
-						 
-					},
-					
-					/**
-					 * Split a RiText into an array of sub-RiText and return the new array.
-					 * 
-					 * If an empty string ("") is used as the separator, the string is split between each character.
-					 * 
-					 * @param {string} separator (Optional) Specifies the character to use for splitting the string. If
-					 *        omitted, the entire string will be returned. If an empty string ("") is used as the separator, 
-					 *        the string is split between each character.
-					 *        
-					 * @param {number} limit (Optional) An integer that specifies the number of splits
-					 * 
-					 * @returns {array} RiText
-					 */
-					split : function(separator, limit) {
-						
-						var parts = this._rs._text.split(separator, limit);
-						var rs = [];
-						for ( var i = 0; i < parts.length; i++) {
-							if (!undef(parts[i]))
-								rs.push(new RiText(parts[i]));
-						}
-						return rs;
-						
-					},
-					
-					 /**
-					 * Tests if this string starts with the specified prefix.
-					 * 
-					 * @param {string} substr string the prefix
-					 * @returns {boolean} true if the character sequence represented by the argument is a prefix of
-					 *         the character sequence represented by this string; false otherwise. Note also
-					 *         that true will be returned if the argument is an empty string or is equal to this
-					 *         RiText object as determined by the equals() method.
-					 */
-					startsWith : function(substr) {
-						
-						return this._rs.indexOf(substr) == 0;
-						
-					},
-					
-					 /**
-					 * Extracts the characters from a string, between two specified indices, and sets the
-					 * current text to be that string. 
-					 * 
-					 * @param {number} from  The index where to start the extraction. First character is at
-					 *        index 0
-					 * @param {number} to (optional) The index where to stop the extraction. If omitted, it extracts the
-					 *        rest of the string
-					 * @returns {object} this RiText
-					 */
-					substring : function(from, to) {
-
-						return this._rs.text(this._rs._text.substring(from, to));
-						
-					},
-
-					
-					 /**
-					 * Extracts the characters from this objects contained string, beginning at 'start' and
-					 * continuing through the specified number of characters, and sets the current text to be
-					 * that string. (from Javascript String)
-					 * 
-					 * @param {number} start  The index where to start the extraction. First character is at
-					 *        index 0
-					 * @param {number} length (optional) The index where to stop the extraction. If omitted, it extracts the
-					 *        rest of the string
-					 * @returns {object} this RiText
-					 */
-					substr : function(start, length) {
-						
-						var res = this._rs._text.substr(start, length);
-						return this._rs.text(res);
-						
-					},
-					
-					/**
-					 * Converts this object to an array of RiText objects, one per character
-					 * 
-					 * @returns {array} RiTexts with each letter as its own RiText element
-					 */
-					toCharArray : function() {
-						var parts = this._rs._text.split(E);
-						var rs = [];
-						for ( var i = 0; i < parts.length; i++) {
-							if (!undef(parts[i]))
-								rs.push(parts[i]);
-						}
-						return rs;
-					},
-					
-					 /**
-					 * Converts all of the characters in this RiText to lower case
-					 * 
-					 * @returns {object} this RiText
-					 */
-					toLowerCase : function() {
-						
-						return this._rs.text(this._rs._text.toLowerCase());
-						
-					 },
-					 
-					 /**
-					 * Converts all of the characters in this RiText to upper case
-					 * 
-					 * @returns {object} this RiText
-					 */
-					toUpperCase : function() {
-						
-						return this._rs.text(this._rs._text.toUpperCase());
-						
-					},
-					
-					/**
-					 * Returns a copy of the string, with leading and trailing whitespace omitted.
-					 * 
-					 * @returns {object} this RiText
-					 */
-					trim : function() {
-						
-						return this._rs.text(trim(this._rs._text));
-						
-					},
-					
-							/**
-					 * Returns the word at 'index', according to RiTa.tokenize()
-					 * 
-					 * @param {number} index the word index
-					 * @returns {string} the word
-					 */
-					wordAt : function(index) {
-						
-						var words = RiTa.tokenize((this._rs._text));
-						if (index < 0 || index >= words.length)
-							return E;
-						return words[index];
-						
-					},
-					
-					 /**
-					 * Returns the number of words in the object, according to RiTa.tokenize().
-					 * 
-					 * @returns {number} number of words
-					 */
-					wordCount : function() {
-						
-						if (!this._rs._text.length) return 0;
-						return this.words().length;
-						
-					},
-					
-					/**
-					 * Returns the array of words in the object, via a call to RiTa.tokenize().
-					 * 
-					 * @returns {array} strings, one per word
-					 */
-					words : function() { //TODO: change to words()
-						
-						return RiTa.tokenize(this._rs._text);
-						
-					},
-
-
-					/**
-					 * Returns the distance between the center points of this and another RiText
-					 * @returns {number} the distance
-					 */
-					distanceTo : function(riText)
-					{
-					  var p1 = this.center(), p2 = riText.center();
-					  return RiTa.distance( p1.x,  p1.y,  p2.x,  p2.y);
-					},
-				  
-					/**
-					 * Returns the center point of this RiText as derived from its bounding box
-					 * @returns {object} { x, y }
-					 */
-					center : function() {
-						
-						var bb = this.boundingBox();
-						return { x: bb.x+bb.width/2, y: bb.y - bb.height/2 };
-					},
-					
-					/**
-					 * Splits the object into an array of RiTexts, one per word
-					 * tokenized with the supplied regex.
-					 * 
-					 * @param {regex | string} to split
-					 * @returns {array} RiTexts
-					 */
-					splitWords : function(regex) {
-						
-						regex = regex || ' ';
-						
-						(typeof regex == S) && (regex = new RegExp(regex));  
-						
-						var l = [];
-						var txt = this._rs._text;
-						var words = txt.split(regex);
-				
-						for ( var i = 0; i < words.length; i++) {
-							if (words[i].length < 1) continue;
-							var tmp = this.clone();
-							tmp.text(words[i]);
-							var mx = RiText._wordOffsetFor(this, words, i);
-							tmp.position(mx, this.y);
-							l.push(tmp);
-						}
-				
-						return l;
-					},
-				
-					/**
-					 * Splits the object into an array of RiTexts, one per letter.
-					 * @returns {array} RiTexts
-					 */
-					splitLetters : function() {
-				
-						var l = [];
-						var chars = [];
-						var txt = this.text();
-						var len = txt.length;
-						for (var t = 0; t < len; t++) {
-							chars[t] = txt.charAt(t);
-						}
-				
-						for ( var i = 0; i < chars.length; i++) {
-							if (chars[i] == ' ') continue;
-							var tmp = this.clone();
-							tmp.text(chars[i]);
-							var mx = this.charOffset(i);
-							tmp.position(mx, this.y);
-				
-							l.push(tmp);
-						}
-				
-						return l;
-					},
-					
-					/**
-					 * Returns true if the bounding box for this RiText contains the point mx/my
-					 * 
-					 * @param {number} mx
-					 * @param {number} my
-					 * @returns {boolean}
-					 */
-					contains : function(mx, my) {
-									
-					   var bb = this.g._getBoundingBox(this);
-					   
-						//           // TODO: need to test this with point
-						//           if (!my && Type.get(mx.x) == 'Number' && Type.get(mx.y) == 'Number') {
-						//               mx = mx.x;
-						//               my = mx.y;
-						//           }
-						//           
-					   bb.x += this.x;
-					   bb.y += this.y;
-					   
-					   return (!(mx<bb.x || mx > bb.x+bb.width || my > bb.y || my < bb.y-bb.height));
-					},
-					
-					/**
-					 * Creates and returns a new (copy) of this RiText
-					 * @returns {object} RiText
-					 */
-					clone : function() {
-
-						var c = new RiText(this.text(), this.x, this.y, this._font);
-						c.color(this._color.r, this._color.g, this._color.b, this._color.a);
-
-						for (var prop in this) {
-							if (typeof this[prop] ==  F || typeof this[prop] ==  O) 
-								continue;
-							c[prop] = this[prop];
-						}
-
-						return c;
-					},
-					
-					/**
-					 * Set/gets the alignment for this RiText (RiTa.LEFT || RiTa.CENTER || RiTa.RIGHT)
-					 * 
-					 * @param {object} align (optional) the alignment 
-					 * @returns {object} this RiText (set) or the current font (get)
-					 */
-					align : function(align) {
-						if (arguments.length) {
-							this._alignment = align;
-							return this;
-						}
-						return this._alignment;
-					},
-
-					
-					/**
-					 * Set/gets the font for this RiText
-					 * 
-					 * @param {object} font (optional) containing the font data OR
-					 * @param {string} font containing the font name AND
-					 * @param {number} size (optional) containing the font size 
-					 * @returns {object} this RiText (set) or the current font (get)
-					 */
-					font : function(font, size) {
-						
-						var a = arguments;
-						
-						if (a.length == 1) {
-
-							this._font = font || RiText._getDefaultFont();
-							this._font.size = this._font.size || RiText.defaults.fontSize;
-							this._font.leading = this._font.leading || this._font.size * RiText.defaults.leadingFactor;
-							return this;
-						}
-						else if (a.length == 2) {
-							
-							return this.font( RiText.createFont(a[0], a[1]) );
-						}
-
-						return this._font;
-					},    
-					
-
-					/**
-					 * Set/gets the boundingbox visibility for this RiText
-					 * 
-					 * @param {boolean} trueOrFalse (optional) true or false 
-					 * @returns {object | boolean}this RiText (set) or the current boolean value (get)
-					 */
-					showBoundingBox : function(trueOrFalse) {
-					   if (arguments.length == 1) {
-						   this._boundingBoxVisible = trueOrFalse;
-						   return this;
-					   }
-					   return this._boundingBoxVisible;
-					},
-
-					/**
-					 * Set/gets the color for this RiText
-					 * 
-					 * @param {number | array} cr takes 1-4 number values for rgba, or an array of size 1-4
-					 * @param {number} cg
-					 * @param {number} cb
-					 * @param {number} ca
-					 * 
-					 * @returns {object} either this RiText (for sets) or the current color object (for gets)
-					 */
-					color : function(cr, cg, cb, ca) {
-						
-						if (arguments.length == 0) 
-							return this._color;
-						this._color = parseColor.apply(this, arguments);
-						return this;
-					},
-				
-					/**
-					 * Returns false if the alpha value of this object is &lt;= 0, else true
-					 * @returns {boolean} 
-					 */
-					isVisible : function(b) { 
-						
-						if (arguments.length)
-							 err('visible() takes no arguments');
-						
-						return this._color.a > 0;
-					},
-					
-					/**
-					 * Set/gets the alpha (transparency) for this RiText
-					 *
-					 * @param {number} a (optional) input (0-255) 
-					 * @returns {object | number} either this RiText (for set) or the current alpha value (for get)
-					 */
-					alpha : function(a) {
-						if (arguments.length==1) {
-							this._color.a = a;
-							return this;
-						}
-						else return this._color.a;
-					},
-				
-					/**
-					 * Set/gets the position for this RiText
-					 * 
-					 * @param {number} x (optional) X coordinate
-					 * @param {number} y (optional) Y coordinate
-					 * 
-					 * @returns {object} either this RiText (for sets) or object {x, y} (for gets)
-					 */
-					position : function(x, y) {
-						
-						//TODO: add Z
-						 
-						if (!arguments.length) 
-							return { x: this.x, y: this.y };
-						this.x = x;
-						this.y = y;
-						return this;
-					},
-				 
-					/**
-					 * Sets/gets the 2d rotation for this RiText
-					 * 
-					 * @param {number} rotate degree to rotate
-					 * 
-					 * @returns {object} either this RiText (for sets) or the current degree of rotation (for gets)
-					 */
-					rotate : function(rotate) {
-						
-						//TODO: add X,Y ??
-					  if (!arguments.length) 
-						  return this._rotateZ
-					  this._rotateZ = rotate;
-					  return this;
-					},
-				
-					/**
-					 * Sets/gets the scale factor for this RiText (takes 0-2 arguments) 
-					 * 
-					 * @param {number} theScaleX the ScaleX ratio
-					 * @param {number} theScaleY (optional) the ScaleY ratio 
-					 * 
-					 @returns { object } either this RiText (for sets) or the current scales (for gets)
-					 */
-					scale : function(theScaleX, theScaleY) {
-						
-						if (!arguments.length) return { x:this._scaleX, y:this._scaleY }; //TODO: add Z
-							
-						if (arguments.length == 1) theScaleY = theScaleX;
-						
-						this._scaleX = theScaleX;
-						this._scaleY = theScaleY;
-						
-						return this;
-					},
-				
-					/**
-					 * Returns the pixel x-offset for the character at 'charIdx'
-					 * 
-					 * @param {number} charIdx
-					 * @returns {number} the pixel x-offset
-					 */
-					charOffset : function(charIdx) {
-				
-						var theX = this.x;
-				
-						if (charIdx > 0) {
-				
-							var txt = this.text();
-				
-							var len = txt.length;
-							if (charIdx > len) // -1?
-							charIdx = len;
-				
-							var sub = txt.substring(0, charIdx);
-							theX = this.x + this.g._textWidth(this._font, sub);
-						}
-
-						return theX;
-					},
-					
-					/**
-					 * Returns the pixel x-offset for the word at 'wordIdx'
-					 * @param {number} wordIdx
-					 * @returns {number} the pixel x-offset
-					 */
-					wordOffset : function(wordIdx) { 
-						
-						var words =  this.text().split(' ');
-						return RiText._wordOffsetFor(this, words, wordIdx);
-					},
-
-					/**
-					 * Returns the relative bounding box for the current text
-					 * @param {boolean} (optional, default=false) 
-					 * 	if true, bounding box is first transformed (rotate,translate,scale) 
-					 * @returns {object} x,y,width,height 
-					 */
-					boundingBox : function(transformed) {
-
-						var g = this.g;
-
-						g._pushState();
-
-						g._rotate(this._rotateZ);
-						g._translate(this.x, this.y);
-						g._scale(this._scaleX, this._scaleY, this._scaleZ); 
-				
-						// Set font params
-						g._textFont(this._font);
-						g._textAlign(this._alignment);
 		
-							var bb = this.g._getBoundingBox(this);
-							if (transformed) {
-								bb.x += this.x;
-								bb.y += this.y;
-								bb.width *= this._scaleX;
-								bb.height *= this._scaleY
-							}
-								
-						g._popState();
-
-						return bb;
-					},
-
-					/**
-					 * Returns the current width of the text (derived from the bounding box)
-					 * @returns {number} the width of the text
-					 */
-					//@param {boolean} (optional, default=false) if true, width is first scaled
-					textWidth : function() { 
-						
-						return this.g._textWidth(this._font,this._rs._text);
-					},
-					
-					/**
-					 * Returns the current height of the text (derived from the bounding box)
-					 * @returns {number} the current height of the text
-					 */
-					// * @param {boolean} (optional, default=false) if true, height is first scaled
-					textHeight : function() { 
-						
-						return this.g._textHeight(this);
-					},
-					
-					/**
-					 * Sets/gets the size of the current font. Note: this method only
-					 * effects only scaleX/Y, not the font's internal properties 
-					 * 
-					 * @param {number} sz (optional) font size 
-					 * 
-					 * @returns {object | number} either this RiText (for set) or the current font size (for get)
-					 */
-					fontSize : function(sz) {
+		   
+		 /**
+		 * Replaces the word at 'wordIdx' with 'newWord'
+		 * 
+		 * @param {number} wordIdx the index
+		 * @param {string} newWord the replacement
+		 * 
+		 * @returns {object} this RiText
+		 */
+		replaceWord : function(wordIdx, newWord) {
+			
+			// var words = this.words();
 			 
-						// TODO: what to do if scaleX and scaleY are different?
-						
-						return (arguments.length) ? this.scale( sz / this._font.size) 
-							: (this._font.size * this._scaleX);
-					},
-					
-					/**
-					 * Returns the ascent of the current font 
-					 * @returns {number} the ascent of the current font
-					 */
-					textAscent : function() { 
-						
-						return this.g._textAscent(this);
-					},
-					
-					/**
-					 * Returns the descent of the current font 
-					 * @returns {number} the descent of the current font 
-					 */
-					textDescent : function() { 
-						
-						return this.g._textDescent(this);
-					},
-					 
-					/**
-					 * Adds a new text behavior to the object  
-					 * @returns {array} 
-					 */
-					_addBehavior: function ( behavior ) {
-
-						this._behaviors.push( behavior );
-
-					},
-					
-					/**
-					 * Returns the specified text behavior  
-					 * @param {number} the behavior id
-					 */
-					_getBehavior: function ( id ) {
-
-						for (var i = 0; i < this._behaviors.length; i++) {
-							if (this._behaviors[i].id == id)
-								return this._behaviors[i].id;
-						}
-						
-						return null;
-					},
-					
-					/**
-					 * Removes the specified text behavior for the object  
-					 * 
-					 * @param {number} the behavior id
-					 * @returns {object} this RiText
-					 */
-					stopBehavior: function ( id ) {
-
-						var behavior = this._getBehavior(id);
-						
-						if (behavior) {
-							var i = this._behaviors.indexOf(behavior);
-							if ( i !== -1 ) {
+			// if (wordIdx >= 0 && wordIdx < words.length) {
 				
-								this._behaviors.splice( i, 1 );
-				
-							}
-						}
-						return this;
-					},
-					
-					/**
-					 * Removes all text behaviors for the object  
-					 * 
-					 * @returns {object} this RiText 
-					 */
-					stopBehaviors: function () {
+				// words[wordIdx] = newWord;
+				 
+				// this._rs.text(RiTa.untokenize(words));
+			// }
+			
+			this._rs.replaceWord(wordIdx, newWord);
+			
+			return this; // TODO: check that all RiText methods use the delegate 
+						//  (like above) for methods that exist in RiString
+		},
+		
+		/**
+		 * Removes the word at 'wordIdx'.
+		 * 
+		 * @param {number} wordIdx the index
+		 * 
+		 * @returns {object} this RiText
+		 */
+		removeWord : function(wordIdx) {
+			
+			this._rs.removeWord(wordIdx,E);
+			return this;
+		},  
+		
+		 /**
+		 * Extracts a part of a string from this RiText
+		 * 
+		 * @param {number} begin (Required) The index where to begin the extraction. First character is at
+		 *        index 0
+		 * @param {number} end (Optional) Where to end the extraction. If omitted, slice() selects all
+		 *        characters from the begin position to the end of the string
+		 * @returns {object} this RiText
+		 */
+		slice : function(begin, end) {
+			
+			var res = this._rs._text.slice(begin, end) || E;
+			return this._rs.text(res);
+			 
+		},
+		
+		/**
+		 * Split a RiText into an array of sub-RiText and return the new array.
+		 * 
+		 * If an empty string ("") is used as the separator, the string is split between each character.
+		 * 
+		 * @param {string} separator (Optional) Specifies the character to use for splitting the string. If
+		 *        omitted, the entire string will be returned. If an empty string ("") is used as the separator, 
+		 *        the string is split between each character.
+		 *        
+		 * @param {number} limit (Optional) An integer that specifies the number of splits
+		 * 
+		 * @returns {array} RiText
+		 */
+		split : function(separator, limit) {
+			
+			var parts = this._rs._text.split(separator, limit);
+			var rs = [];
+			for ( var i = 0; i < parts.length; i++) {
+				if (!undef(parts[i]))
+					rs.push(new RiText(parts[i]));
+			}
+			return rs;
+			
+		},
+		
+		 /**
+		 * Tests if this string starts with the specified prefix.
+		 * 
+		 * @param {string} substr string the prefix
+		 * @returns {boolean} true if the character sequence represented by the argument is a prefix of
+		 *         the character sequence represented by this string; false otherwise. Note also
+		 *         that true will be returned if the argument is an empty string or is equal to this
+		 *         RiText object as determined by the equals() method.
+		 */
+		startsWith : function(substr) {
+			
+			return this._rs.indexOf(substr) == 0;
+			
+		},
+		
+		 /**
+		 * Extracts the characters from a string, between two specified indices, and sets the
+		 * current text to be that string. 
+		 * 
+		 * @param {number} from  The index where to start the extraction. First character is at
+		 *        index 0
+		 * @param {number} to (optional) The index where to stop the extraction. If omitted, it extracts the
+		 *        rest of the string
+		 * @returns {object} this RiText
+		 */
+		substring : function(from, to) {
 
-						this._behaviors = [];
-						return this;
-					},
-					
-					/**
-					 * Updates existing text behaviors for the object 
-					 * @param {string} the behaviors
-					 */
-					_updateBehaviors: function (time) {
+			return this._rs.text(this._rs._text.substring(from, to));
+			
+		},
 
-						var i = 0;
-						var num = this._behaviors.length;
-						var time = time || Date.now();
+		
+		 /**
+		 * Extracts the characters from this objects contained string, beginning at 'start' and
+		 * continuing through the specified number of characters, and sets the current text to be
+		 * that string. (from Javascript String)
+		 * 
+		 * @param {number} start  The index where to start the extraction. First character is at
+		 *        index 0
+		 * @param {number} length (optional) The index where to stop the extraction. If omitted, it extracts the
+		 *        rest of the string
+		 * @returns {object} this RiText
+		 */
+		substr : function(start, length) {
+			
+			var res = this._rs._text.substr(start, length);
+			return this._rs.text(res);
+			
+		},
+		
+		/**
+		 * Converts this object to an array of RiText objects, one per character
+		 * 
+		 * @returns {array} RiTexts with each letter as its own RiText element
+		 */
+		toCharArray : function() {
+			var parts = this._rs._text.split(E);
+			var rs = [];
+			for ( var i = 0; i < parts.length; i++) {
+				if (!undef(parts[i]))
+					rs.push(parts[i]);
+			}
+			return rs;
+		},
+		
+		/**
+		 * Converts all of the characters in this RiText to lower case
+		 * 
+		 * @returns {object} this RiText
+		 */
+		toLowerCase : function() {
+			
+			return this._rs.text(this._rs._text.toLowerCase());
+			
+		},
+		 
+		/**
+		 * Converts all of the characters in this RiText to upper case
+		 * 
+		 * @returns {object} this RiText
+		 */
+		toUpperCase : function() {
+			
+			return this._rs.text(this._rs._text.toUpperCase());
+			
+		},
+		
+		/**
+		 * Returns a copy of the string, with leading and trailing whitespace omitted.
+		 * 
+		 * @returns {object} this RiText
+		 */
+		trim : function() {
+			
+			return this._rs.text(trim(this._rs._text));
+			
+		},
+		
+		/**
+		 * Returns the word at 'index', according to RiTa.tokenize()
+		 * 
+		 * @param {number} index the word index
+		 * @returns {string} the word
+		 */
+		wordAt : function(index) {
+			
+			var words = RiTa.tokenize((this._rs._text));
+			if (index < 0 || index >= words.length)
+				return E;
+			return words[index];
+			
+		},
+		
+		/**
+		 * Returns the number of words in the object, according to RiTa.tokenize().
+		 * 
+		 * @returns {number} number of words
+		 */
+		wordCount : function() {
+			
+			if (!this._rs._text.length) return 0;
+			return this.words().length;
+			
+		},
+		
+		/**
+		 * Returns the array of words in the object, via a call to RiTa.tokenize().
+		 * 
+		 * @returns {array} strings, one per word
+		 */
+		words : function() { //TODO: change to words()
+			
+			return RiTa.tokenize(this._rs._text);
+			
+		},
 
-						while ( i < num ) {
 
-							if (this._behaviors[ i ].update(time) ) {
-								i++;
-
-							} else {
-
-								this._behaviors.splice(i, 1);
-								num --;
-
-							}
-						}
-					},
-					
-					/** @private */
-					toString : function() {
+		/**
+		 * Returns the distance between the center points of this and another RiText
+		 * @returns {number} the distance
+		 */
+		distanceTo : function(riText)
+		{
+		  var p1 = this.center(), p2 = riText.center();
+		  return RiTa.distance( p1.x,  p1.y,  p2.x,  p2.y);
+		},
+	  
+		/**
+		 * Returns the center point of this RiText as derived from its bounding box
+		 * @returns {object} { x, y }
+		 */
+		center : function() {
+			
+			var bb = this.boundingBox();
+			return { x: bb.x+bb.width/2, y: bb.y - bb.height/2 };
+		},
+		
+		/**
+		 * Splits the object into an array of RiTexts, one per word
+		 * tokenized with the supplied regex.
+		 * 
+		 * @param {regex | string} to split
+		 * @returns {array} RiTexts
+		 */
+		splitWords : function(regex) {
+			
+			regex = regex || ' ';
+			
+			(typeof regex == S) && (regex = new RegExp(regex));  
+			
+			var l = [];
+			var txt = this._rs._text;
+			var words = txt.split(regex);
+	
+			for ( var i = 0; i < words.length; i++) {
+				if (words[i].length < 1) continue;
+				var tmp = this.clone();
+				tmp.text(words[i]);
+				var mx = RiText._wordOffsetFor(this, words, i);
+				tmp.position(mx, this.y);
+				l.push(tmp);
+			}
+	
+			return l;
+		},
+	
+		/**
+		 * Splits the object into an array of RiTexts, one per letter.
+		 * @returns {array} RiTexts
+		 */
+		splitLetters : function() {
+	
+			var l = [];
+			var chars = [];
+			var txt = this.text();
+			var len = txt.length;
+			for (var t = 0; t < len; t++) {
+				chars[t] = txt.charAt(t);
+			}
+	
+			for ( var i = 0; i < chars.length; i++) {
+				if (chars[i] == ' ') continue;
+				var tmp = this.clone();
+				tmp.text(chars[i]);
+				var mx = this.charOffset(i);
+				tmp.position(mx, this.y);
+	
+				l.push(tmp);
+			}
+	
+			return l;
+		},
+		
+		/**
+		 * Returns true if the bounding box for this RiText contains the point mx/my
+		 * 
+		 * @param {number} mx
+		 * @param {number} my
+		 * @returns {boolean}
+		 */
+		contains : function(mx, my) {
 						
-						var s =  (this._rs && this._rs._text) || 'undefined';
-						return '['+Math.round(this.x)+","+Math.round(this.y)+",'"+s+"']";
-					}
 
-					//        updateMousePosition : function(curElement, event) {
-					//            var offset = calculateOffset(window, event);
-					//            p.mouseX = event.pageX - offset.X;
-					//            p.mouseY = event.pageY - offset.Y
-					//        }
+		   var bb = this.boundingBox(false);
+		   log('contains('+mx+','+my+') '+ bb.x + ","+bb.width+","+bb.y + ","+(bb.height));
+		   
+			//           // TODO: need to test this with point
+			//           if (!my && Type.get(mx.x) == 'Number' && Type.get(mx.y) == 'Number') {
+			//               mx = mx.x;
+			//               my = mx.y;
+			//           }
+			//           
+		   bb.x += this.x;
+		   bb.y += this.y;
+		   
+		   return (!(mx<bb.x || mx > bb.x+bb.width || my < bb.y || my > bb.y+bb.height));
+		},
+		
+		/**
+		 * Creates and returns a new (copy) of this RiText
+		 * @returns {object} RiText
+		 */
+		copy : function() {
+
+			var c = new RiText(this.text(), this.x, this.y, this._font);
+			c.color(this._color.r, this._color.g, this._color.b, this._color.a);
+
+			for (var prop in this) {
+				if (typeof this[prop] ==  F || typeof this[prop] ==  O) 
+					continue;
+				c[prop] = this[prop];
+			}
+
+			return c;
+		},
+		
+		/**
+		 * Set/gets the alignment for this RiText (RiTa.LEFT || RiTa.CENTER || RiTa.RIGHT)
+		 * 
+		 * @param {object} align (optional) the alignment 
+		 * @returns {object} this RiText (set) or the current font (get)
+		 */
+		align : function(align) {
+			if (arguments.length) {
+				this._alignment = align;
+				return this;
+			}
+			return this._alignment;
+		},
+
+		
+		/**
+		 * Set/gets the font for this RiText
+		 * 
+		 * @param {object} font (optional) containing the font data OR
+		 * @param {string} font containing the font name AND
+		 * @param {number} size (optional) containing the font size 
+		 * @returns {object} this RiText (set) or the current font (get)
+		 */
+		font : function(font, size) {
+			
+			var a = arguments;
+			
+			if (a.length == 1) {
+
+				this._font = font || RiText._getDefaultFont();
+				this._font.size = this._font.size || RiText.defaults.fontSize;
+				this._font.leading = this._font.leading || this._font.size * RiText.defaults.leadingFactor;
+				return this;
+			}
+			else if (a.length == 2) {
+				
+				return this.font( RiText.createFont(a[0], a[1]) );
+			}
+
+			return this._font;
+		},    
+		
+
+		/**
+		 * Set/gets the boundingbox visibility for this RiText
+		 * 
+		 * @param {boolean} trueOrFalse (optional) true or false 
+		 * @returns {object | boolean}this RiText (set) or the current boolean value (get)
+		 */
+		showBoundingBox : function(trueOrFalse) {
+		   if (arguments.length == 1) {
+			   this._boundingBoxVisible = trueOrFalse;
+			   return this;
+		   }
+		   return this._boundingBoxVisible;
+		},
+
+		/**
+		 * Set/gets the color for this RiText
+		 * 
+		 * @param {number | array} cr takes 1-4 number values for rgba, or an array of size 1-4
+		 * @param {number} cg
+		 * @param {number} cb
+		 * @param {number} ca
+		 * 
+		 * @returns {object} either this RiText (for sets) or the current color object (for gets)
+		 */
+		color : function(cr, cg, cb, ca) {
+			
+			if (arguments.length == 0) 
+				return this._color;
+			this._color = parseColor.apply(this, arguments);
+			return this;
+		},
+	
+		/**
+		 * Returns false if the alpha value of this object is &lt;= 0, else true
+		 * @returns {boolean} 
+		 */
+		isVisible : function(b) { 
+			
+			if (arguments.length)
+				 err('visible() takes no arguments');
+			
+			return this._color.a > 0;
+		},
+		
+		/**
+		 * Set/gets the alpha (transparency) for this RiText
+		 *
+		 * @param {number} a (optional) input (0-255) 
+		 * @returns {object | number} either this RiText (for set) or the current alpha value (for get)
+		 */
+		alpha : function(a) {
+			if (arguments.length==1) {
+				this._color.a = a;
+				return this;
+			}
+			else return this._color.a;
+		},
+	
+		/**
+		 * Set/gets the position for this RiText
+		 * 
+		 * @param {number} x (optional) X coordinate
+		 * @param {number} y (optional) Y coordinate
+		 * 
+		 * @returns {object} either this RiText (for sets) or object {x, y} (for gets)
+		 */
+		position : function(x, y) {
+			
+			//TODO: add Z
+			 
+			if (!arguments.length) 
+				return { x: this.x, y: this.y };
+			this.x = x;
+			this.y = y;
+			return this;
+		},
+	 
+		/**
+		 * Sets/gets the 2d rotation for this RiText
+		 * 
+		 * @param {number} rotate degree to rotate
+		 * 
+		 * @returns {object} either this RiText (for sets) or the current degree of rotation (for gets)
+		 */
+		rotate : function(rotate) {
+			
+			//TODO: add X,Y ??
+		  if (!arguments.length) 
+			  return this._rotateZ
+		  this._rotateZ = rotate;
+		  return this;
+		},
+	
+		/**
+		 * Sets/gets the scale factor for this RiText (takes 0-2 arguments) 
+		 * 
+		 * @param {number} theScaleX the ScaleX ratio
+		 * @param {number} theScaleY (optional) the ScaleY ratio 
+		 * 
+		 @returns { object } either this RiText (for sets) or the current scales (for gets)
+		 */
+		scale : function(theScaleX, theScaleY) {
+			
+			if (!arguments.length) return { x:this._scaleX, y:this._scaleY }; //TODO: add Z
+				
+			if (arguments.length == 1) theScaleY = theScaleX;
+			
+			this._scaleX = theScaleX;
+			this._scaleY = theScaleY;
+			
+			return this;
+		},
+	
+		/**
+		 * Returns the pixel x-offset for the character at 'charIdx'
+		 * 
+		 * @param {number} charIdx
+		 * @returns {number} the pixel x-offset
+		 */
+		charOffset : function(charIdx) {
+	
+			var theX = this.x;
+	
+			if (charIdx > 0) {
+	
+				var txt = this.text();
+	
+				var len = txt.length;
+				if (charIdx > len) // -1?
+				charIdx = len;
+	
+				var sub = txt.substring(0, charIdx);
+				theX = this.x + this.g._textWidth(this._font, sub);
+			}
+
+			return theX;
+		},
+		
+		/**
+		 * Returns the pixel x-offset for the word at 'wordIdx'
+		 * @param {number} wordIdx
+		 * @returns {number} the pixel x-offset
+		 */
+		wordOffset : function(wordIdx) { 
+			
+			var words =  this.text().split(' ');
+			return RiText._wordOffsetFor(this, words, wordIdx);
+		},
+
+		/**
+		 * Returns the relative bounding box for the current text
+		 * @param {boolean} (optional, default=false) 
+		 * 	if true, bounding box is first transformed (rotate,translate,scale) 
+		 * @returns {object} x,y,width,height 
+		 */
+		boundingBox : function(transformed) {
+
+			var g = this.g;
+
+			g._pushState();
+
+			g._rotate(this._rotateZ);
+			g._translate(this.x, this.y);
+			g._scale(this._scaleX, this._scaleY, this._scaleZ); 
+	
+			// Set font params
+			g._textFont(this._font);
+			g._textAlign(this._alignment);
+
+				var bb = this.g._getBoundingBox(this);
+				if (transformed) {
+					bb.x += this.x;
+					bb.y += this.y;
+					bb.width *= this._scaleX;
+					bb.height *= this._scaleY
 				}
-				
-				/////////////////////////////////////////////////////////////////////////
-				// RiLetterToSound (adapted from FreeTTS text-to-speech)
-				/////////////////////////////////////////////////////////////////////////
-				
-				var LetterToSound = makeClass();
-				
-				/**
-				 * Entry in file represents the total number of states in the file. This
-				 * should be at the top of the file. The format should be "TOTAL n" where n is
-				 * an integer value.
-				 */
-				LetterToSound.TOTAL = "TOTAL";
-				
-				/**
-				 * Entry in file represents the beginning of a new letter index. This should
-				 * appear before the list of a new set of states for a particular letter. The
-				 * format should be "INDEX n c" where n is the index into the state machine
-				 * array and c is the character.
-				 */
-				LetterToSound.INDEX = "INDEX";
-				
-				/**
-				 * Entry in file represents a state. The format should be "STATE i c t f"
-				 * where 'i' represents an index to look at in the decision string, c is the
-				 * character that should match, t is the index of the state to go to if there
-				 * is a match, and f is the of the state to go to if there isn't a match.
-				 */
-				LetterToSound.STATE = "STATE";
-				
-				/**
-				 * Entry in file represents a final state. The format should be "PHONE p"
-				 * where p represents a phone string that comes from the phone table.
-				 */
-				LetterToSound.PHONE = "PHONE";
-				
-				/**
-				 * If true, the state string is tokenized when it is first read. The side
-				 * effects of this are quicker lookups, but more memory usage and a longer
-				 * startup time.
-				 */
-				LetterToSound.tokenizeOnLoad = true;
-				
-				/**
-				 * If true, the state string is tokenized the first time it is referenced. The
-				 * side effects of this are quicker lookups, but more memory usage.
-				 */
-				LetterToSound.tokenizeOnLookup = false;
+					
+			g._popState();
 
-				/**
-				 * The 'window size' of the LTS rules.
-				 */
-				LetterToSound.WINDOW_SIZE = 4;
+			return bb;
+		},
 
-				/** The list of phones that can be returned by the LTS rules.
-				LetterToSound.phonemeTable = null;  */
-				
-				LetterToSound.prototype = {
-					
-					/**
-					 * @private
-					 */
-					init : function() {
-						
-						/**
-						 * The indices of the starting points for letters in the state machine.
-						 */
-						this.letterIndex = {};
-						
-						/**
-						 * An array of characters to hold a string for checking against a rule. This
-						 * will be reused over and over again, so the goal was just to have a single
-						 * area instead of new'ing up a new one for every word. The name choice is to
-						 * match that in Flite's <code>cst_lts.c</code>.
-						 */
-					   this.fval_buff = [];
-				
-						/**
-						 * The LTS state machine. Entries can be String or State. An ArrayList could
-						 * be used here -- I chose not to because I thought it might be quicker to
-						 * avoid dealing with the dynamic resizing.
-						 */
-						this.stateMachine = null;
-				
-						/**
-						 * The number of states in the state machine.
-						 */
-						this.numStates = 0;
-						
-						// verify that the lts rules are included
-						if (!LetterToSound.RULES) LetterToSound.RULES = _RiTa_LTS;
-						
-						if (!LetterToSound.RULES.length) 
-							throw Error("No LTS-rules found!");
-						
-						// add the rules to the object (static?)
-						for ( var i = 0; i < LetterToSound.RULES.length; i++) {
-							
-							this.parseAndAdd(LetterToSound.RULES[i]);
-						}
-					},
-					
-					_createState : function(type, tokenizer) {
-					 
-						if (type === LetterToSound.STATE)
-						{
-						  var index = parseInt(tokenizer.nextToken());
-						  var c = tokenizer.nextToken();
-						  var qtrue = parseInt(tokenizer.nextToken());
-						  var qfalse = parseInt(tokenizer.nextToken());
-						  
-						  return new DecisionState(index, c.charAt(0), qtrue, qfalse);
-						}
-						else if (type === LetterToSound.PHONE)
-						{
-						  return new FinalState(tokenizer.nextToken());
-						}
-						
-						throw Error("Unexpected type: "+type);
-					},
-					
-					/**
-					 * Creates a word from the given input line and add it to the state machine.
-					 * It expects the TOTAL line to come before any of the states.
-					 * 
-					 * @param line the line of text from the input file
-					 */
-					 parseAndAdd : function(line) {
-						 
-					  var tokenizer = new StringTokenizer(line, SP);
-					  var type = tokenizer.nextToken();
+		/**
+		 * Returns the current width of the text (derived from the bounding box)
+		 * @returns {number} the width of the text
+		 */
+		//@param {boolean} (optional, default=false) if true, width is first scaled
+		textWidth : function() { 
+			
+			return this.g._textWidth(this._font,this._rs._text);
+		},
+		
+		/**
+		 * Returns the current height of the text (derived from the bounding box)
+		 * @returns {number} the current height of the text
+		 */
+		// * @param {boolean} (optional, default=false) if true, height is first scaled
+		textHeight : function() { 
+			
+			return this.g._textHeight(this);
+		},
+		
+		/**
+		 * Sets/gets the size of the current font. Note: this method only
+		 * effects only scaleX/Y, not the font's internal properties 
+		 * 
+		 * @param {number} sz (optional) font size 
+		 * 
+		 * @returns {object | number} either this RiText (for set) or the current font size (for get)
+		 */
+		fontSize : function(sz) {
+ 
+			// TODO: what to do if scaleX and scaleY are different?
+			
+			return (arguments.length) ? this.scale( sz / this._font.size) 
+				: (this._font.size * this._scaleX);
+		},
+		
+		/**
+		 * Returns the ascent of the current font 
+		 * @returns {number} the ascent of the current font
+		 */
+		textAscent : function() { 
+			
+			return this.g._textAscent(this);
+		},
+		
+		/**
+		 * Returns the descent of the current font 
+		 * @returns {number} the descent of the current font 
+		 */
+		textDescent : function() { 
+			
+			return this.g._textDescent(this);
+		},
+		 
+		/**
+		 * Adds a new text behavior to the object  
+		 * @returns {array} 
+		 */
+		_addBehavior: function ( behavior ) {
 
-					  if (type == LetterToSound.STATE || type == LetterToSound.PHONE)
-					  {
-						if (LetterToSound.tokenizeOnLoad)
-						{
-						  this.stateMachine[this.numStates] = this._createState(type, tokenizer);
-						} 
-						else
-						{
-						  this.stateMachine[this.numStates] = line;
-						}
-						this.numStates++;
-					  } 
-					  else if (type==LetterToSound.INDEX)
-					  {
-						var index = parseInt(tokenizer.nextToken());
-						if (index != this.numStates)
-						{
-						  throw Error("Bad INDEX in file.");
-						} 
-						else
-						{
-						  var c = tokenizer.nextToken();
-						  this.letterIndex[c] = index;
-						  
-						}
-						//console.log(type+" : "+c+" : "+index + " "+this.letterIndex[c]);
-					  } 
-					  else if (type==LetterToSound.TOTAL)
-					  {
-						this.stateMachine = [];
-						this.stateMachineSize = parseInt(tokenizer.nextToken());
-					  }
-					},
-					
-					/**
-					 * Calculates the phone list for a given word. If a phone list cannot be
-					 * determined, <code>[]</code> is returned. 
-					 * 
-					 * @param {string | array } input the word or words to find
-					 * 
-					 * @return {string} phones for word, separated by delim,
-					 *   or <code>empty string</code>
-					 */
-					getPhones : function(input, delim) {
-						
-						var ph, result = []; 
-						
-						delim = delim || '-';
-						
-						if (is(input, S)) {
-							
-							if (!input.length) return E; 
-							
-							input = RiTa.tokenize(input);
-						}
+			this._behaviors.push( behavior );
+
+		},
+		
+		/**
+		 * Returns the specified text behavior  
+		 * @param {number} the behavior id
+		 */
+		_getBehavior: function ( id ) {
+
+			for (var i = 0; i < this._behaviors.length; i++) {
+				if (this._behaviors[i].id == id)
+					return this._behaviors[i].id;
+			}
+			
+			return null;
+		},
+		
+		/**
+		 * Removes the specified text behavior for the object  
+		 * 
+		 * @param {number} the behavior id
+		 * @returns {object} this RiText
+		 */
+		stopBehavior: function ( id ) {
+
+			var behavior = this._getBehavior(id);
+			
+			if (behavior) {
+				var i = this._behaviors.indexOf(behavior);
+				if ( i !== -1 ) {
+	
+					this._behaviors.splice( i, 1 );
+	
+				}
+			}
+			return this;
+		},
+		
+		/**
+		 * Removes all text behaviors for the object  
+		 * 
+		 * @returns {object} this RiText 
+		 */
+		stopBehaviors: function () {
+
+			this._behaviors = [];
+			return this;
+		},
+		
+		/**
+		 * Updates existing text behaviors for the object 
+		 * @param {string} the behaviors
+		 */
+		_updateBehaviors: function (time) {
+
+			var i = 0;
+			var num = this._behaviors.length;
+			var time = time || Date.now();
+
+			while ( i < num ) {
+
+				if (this._behaviors[ i ].update(time) ) {
+					i++;
+
+				} else {
+
+					this._behaviors.splice(i, 1);
+					num --;
+
+				}
+			}
+		},
+		
+		/** @private */
+		toString : function() {
+			
+			var s =  (this._rs && this._rs._text) || 'undefined';
+			return '['+Math.round(this.x)+","+Math.round(this.y)+",'"+s+"']";
+		}
+
+		//        updateMousePosition : function(curElement, event) {
+		//            var offset = calculateOffset(window, event);
+		//            p.mouseX = event.pageX - offset.X;
+		//            p.mouseY = event.pageY - offset.Y
+		//        }
+	}
+	
+	/////////////////////////////////////////////////////////////////////////
+	// RiLetterToSound (adapted from FreeTTS text-to-speech)
+	/////////////////////////////////////////////////////////////////////////
+	
+	var LetterToSound = makeClass();
+	
+	/**
+	 * Entry in file represents the total number of states in the file. This
+	 * should be at the top of the file. The format should be "TOTAL n" where n is
+	 * an integer value.
+	 */
+	LetterToSound.TOTAL = "TOTAL";
+	
+	/**
+	 * Entry in file represents the beginning of a new letter index. This should
+	 * appear before the list of a new set of states for a particular letter. The
+	 * format should be "INDEX n c" where n is the index into the state machine
+	 * array and c is the character.
+	 */
+	LetterToSound.INDEX = "INDEX";
+	
+	/**
+	 * Entry in file represents a state. The format should be "STATE i c t f"
+	 * where 'i' represents an index to look at in the decision string, c is the
+	 * character that should match, t is the index of the state to go to if there
+	 * is a match, and f is the of the state to go to if there isn't a match.
+	 */
+	LetterToSound.STATE = "STATE";
+	
+	/**
+	 * Entry in file represents a final state. The format should be "PHONE p"
+	 * where p represents a phone string that comes from the phone table.
+	 */
+	LetterToSound.PHONE = "PHONE";
+	
+	/**
+	 * If true, the state string is tokenized when it is first read. The side
+	 * effects of this are quicker lookups, but more memory usage and a longer
+	 * startup time.
+	 */
+	LetterToSound.tokenizeOnLoad = true;
+	
+	/**
+	 * If true, the state string is tokenized the first time it is referenced. The
+	 * side effects of this are quicker lookups, but more memory usage.
+	 */
+	LetterToSound.tokenizeOnLookup = false;
+
+	/**
+	 * The 'window size' of the LTS rules.
+	 */
+	LetterToSound.WINDOW_SIZE = 4;
+
+	/** The list of phones that can be returned by the LTS rules.
+	LetterToSound.phonemeTable = null;  */
+	
+	LetterToSound.prototype = {
+		
+		/**
+		 * @private
+		 */
+		init : function() {
+			
+			/**
+			 * The indices of the starting points for letters in the state machine.
+			 */
+			this.letterIndex = {};
+			
+			/**
+			 * An array of characters to hold a string for checking against a rule. This
+			 * will be reused over and over again, so the goal was just to have a single
+			 * area instead of new'ing up a new one for every word. The name choice is to
+			 * match that in Flite's <code>cst_lts.c</code>.
+			 */
+		   this.fval_buff = [];
+	
+			/**
+			 * The LTS state machine. Entries can be String or State. An ArrayList could
+			 * be used here -- I chose not to because I thought it might be quicker to
+			 * avoid dealing with the dynamic resizing.
+			 */
+			this.stateMachine = null;
+	
+			/**
+			 * The number of states in the state machine.
+			 */
+			this.numStates = 0;
+			
+			// verify that the lts rules are included
+			if (!LetterToSound.RULES) LetterToSound.RULES = _RiTa_LTS;
+			
+			if (!LetterToSound.RULES.length) 
+				throw Error("No LTS-rules found!");
+			
+			// add the rules to the object (static?)
+			for ( var i = 0; i < LetterToSound.RULES.length; i++) {
+				
+				this.parseAndAdd(LetterToSound.RULES[i]);
+			}
+		},
+		
+		_createState : function(type, tokenizer) {
+		 
+			if (type === LetterToSound.STATE)
+			{
+			  var index = parseInt(tokenizer.nextToken());
+			  var c = tokenizer.nextToken();
+			  var qtrue = parseInt(tokenizer.nextToken());
+			  var qfalse = parseInt(tokenizer.nextToken());
 			  
-						for (var i = 0; i < input.length; i++) {
-							
-							ph = this._computePhones(input[i]);
-							result[i] = ph ? ph.join(delim) : E;
-						}
-						
-						return result.join(delim);  
-					},
+			  return new DecisionState(index, c.charAt(0), qtrue, qfalse);
+			}
+			else if (type === LetterToSound.PHONE)
+			{
+			  return new FinalState(tokenizer.nextToken());
+			}
+			
+			throw Error("Unexpected type: "+type);
+		},
+		
+		/**
+		 * Creates a word from the given input line and add it to the state machine.
+		 * It expects the TOTAL line to come before any of the states.
+		 * 
+		 * @param line the line of text from the input file
+		 */
+		 parseAndAdd : function(line) {
+			 
+		  var tokenizer = new StringTokenizer(line, SP);
+		  var type = tokenizer.nextToken();
 
-					/**
-					 * Calculates the phone list for a given word. If a phone list cannot be
-					 * determined, <code>null</code> is returned. 
-					 * 
-					 * @param word the word or words to find
-					 * 
-					 * @return array of phones for word or <code>null</code>
-					 */
-					_computePhones : function(word) {
-						
-					  var dig, phoneList = [], full_buff, tmp, currentState, startIndex, stateIndex, c;
-					  
-					  if (!word || !word.length || RiTa.isPunctuation(word))
-						  return null;
-					  
-					  word = word.toLowerCase();
-					  
-					  if (isNum(word)) {
-						  
-						  word = (word.length>1) ? word.split(E) : [word];
-						  
-						  for (var i = 0; i < word.length; i++) {
-							  
-							  dig = parseInt(word[i]);
-							  if (dig < 0 || dig > 9)
-								  throw Error("Attempt to pass multi-digit number to LTS: '"+word+"'");
-							  
-							  phoneList.push(Phones.digits[dig]);
-						  }
-						  
-						  return phoneList;
-					  }
+		  if (type == LetterToSound.STATE || type == LetterToSound.PHONE)
+		  {
+			if (LetterToSound.tokenizeOnLoad)
+			{
+			  this.stateMachine[this.numStates] = this._createState(type, tokenizer);
+			} 
+			else
+			{
+			  this.stateMachine[this.numStates] = line;
+			}
+			this.numStates++;
+		  } 
+		  else if (type==LetterToSound.INDEX)
+		  {
+			var index = parseInt(tokenizer.nextToken());
+			if (index != this.numStates)
+			{
+			  throw Error("Bad INDEX in file.");
+			} 
+			else
+			{
+			  var c = tokenizer.nextToken();
+			  this.letterIndex[c] = index;
+			  
+			}
+			//console.log(type+" : "+c+" : "+index + " "+this.letterIndex[c]);
+		  } 
+		  else if (type==LetterToSound.TOTAL)
+		  {
+			this.stateMachine = [];
+			this.stateMachineSize = parseInt(tokenizer.nextToken());
+		  }
+		},
+		
+		/**
+		 * Calculates the phone list for a given word. If a phone list cannot be
+		 * determined, <code>[]</code> is returned. 
+		 * 
+		 * @param {string | array } input the word or words to find
+		 * 
+		 * @return {string} phones for word, separated by delim,
+		 *   or <code>empty string</code>
+		 */
+		getPhones : function(input, delim) {
+			
+			var ph, result = []; 
+			
+			delim = delim || '-';
+			
+			if (is(input, S)) {
 				
-					  // Create "000#word#000"
-					  tmp = "000#"+word.trim()+"#000", full_buff = tmp.split("");
-					  
-					  // For each character in the word, create a WINDOW_SIZE
-					  // context on each size of the character, and then ask the
-					  // state machine what's next. Its magic
-					  for (var pos = 0; pos < word.length; pos++) {
-						  
-						for (var i = 0; i < LetterToSound.WINDOW_SIZE; i++) {
-							
-						  this.fval_buff[i] = full_buff[pos + i];
-						  this.fval_buff[i + LetterToSound.WINDOW_SIZE] = full_buff[i + pos + 1 + LetterToSound.WINDOW_SIZE];
-						}
-						
-						c = word.charAt(pos);
-						startIndex = this.letterIndex[c];
-						
-						// must check for null here, not 0
-						if (startIndex==null) throw Error("No LTS index for character: '"+
-							c + "', isDigit=" + isNum(c) + ", isPunct=" + RiTa.isPunctuation(c));
+				if (!input.length) return E; 
+				
+				input = RiTa.tokenize(input);
+			}
+  
+			for (var i = 0; i < input.length; i++) {
+				
+				ph = this._computePhones(input[i]);
+				result[i] = ph ? ph.join(delim) : E;
+			}
+			
+			return result.join(delim);  
+		},
 
-						stateIndex = parseInt(startIndex);
-						
-						currentState = this.getState(stateIndex);
-						
-						while (! (currentState instanceof FinalState) ) {
-							
-						  stateIndex = currentState.getNextState(this.fval_buff);
-						  currentState = this.getState(stateIndex);
-						}
-						
-						currentState.append(phoneList);
-					  }
-					  
-					  return phoneList;
-					},
-					
-					getState : function(i) {
-
-						if (is(i,N)) {
-							
-							var state = null;
-							
-							// WORKING HERE: this check should fail :: see java
-							if (is(this.stateMachine[i],S)) {
-								
-							  state = this.getState(this.stateMachine[i]);
-							  if (LetterToSound.tokenizeOnLookup)
-								  this.stateMachine[i] = state;
-							} 
-							else
-							  state = this.stateMachine[i];
-					 
-							return state;
-						}
-						else {
-							
-							var tokenizer = new StringTokenizer(i, " ");
-							return this.getState(tokenizer.nextToken(), tokenizer);
-						}
-					}   
-				}
-				
-				/////////////////////////////////////////////////////////////////////////
-				// DecisionState
-				/////////////////////////////////////////////////////////////////////////
-				
-				var DecisionState = makeClass();
-				
-				DecisionState.TYPE = 1;
-				
-				DecisionState.prototype = {
-				
-					/**
-					 * Class constructor.
-					 * 
-					 * @param index
-					 *          the index into a string for comparison to c
-					 * @param c
-					 *          the character to match in a string at index
-					 * @param qtrue
-					 *          the state to go to in the state machine on a match
-					 * @param qfalse
-					 *          the state to go to in the state machine on no match
-					 */
-					//    char c, var index, var qtrue, var qfalse;
-					init : function(index, c, qtrue, qfalse) {
-						
-						this.c = c;
-						this.index = index;
-						this.qtrue = qtrue;
-						this.qfalse = qfalse;
-					},
-					
-					type : function() {
-						
-						return "DecisionState";
-					},
-				
-					/**
-					 * Gets the next state to go to based upon the given character sequence.
-					 * 
-					 * @param chars the characters for comparison
-					 * 
-					 * @returns an index into the state machine.
-					 */
-					//public var getNextState(char[] chars)
-					getNextState : function(chars) {
-						
-					  return (chars[this.index] == this.c) ? this.qtrue : this.qfalse;
-					},
-				
-					/**
-					 * Outputs this <code>State</code> as though it came from the text input
-					 * file. 
-					 */
-					toString : function() {
-					  return this.STATE + " " + this.index + " " + this.c + " " + this.qtrue + " " + this.qfalse;
-					}, 
-				
-					/**
-					 * Writes this <code>State</code> to the given output stream.
-					 * 
-					 * @param dos
-					 *          the data output stream
-					 * 
-					 * @throws IOException
-					 *           if an error occurs
-				
-					writeBinary : function(dos)
-					{
-				//      dos.writeInt(TYPE);
-				//      dos.writeInt(index);
-				//      dos.writeChar(c);
-				//      dos.writeInt(qtrue);
-				//      dos.writeInt(qfalse);
-					}     */
-				
-					/**
-					 * Loads a <code>DecisionState</code> object from the given input stream.
-					 * 
-					 * @param dis
-					 *          the data input stream
-					 * @return a newly constructed decision state
-					 * 
-					 * @throws IOException
-					 *           if an error occurs
-					 
-					public static State loadBinary(DataInputStream dis) throws IOException
-					{
-					  var index = dis.readInt();
-					  char c = dis.readChar();
-					  var qtrue = dis.readInt();
-					  var qfalse = dis.readInt();
-					  return new DecisionState(index, c, qtrue, qfalse);
-					}*/
-				
-					/**
-					 * Compares this state to another state for debugging purposes.
-					 * 
-					 * @param other
-					 *          the other state to compare against
-					 * 
-					 * @return true if the states are equivalent
-					 */
-					compare : function(other) {
-						
-					  if (other instanceof DecisionState)
-					  {
-						var otherState = other;
-						return index == otherState.index && c == otherState.c
-							&& qtrue == otherState.qtrue && qfalse == otherState.qfalse;
-					  }
-					  return false;
-					}
-					
-				}// end DecisionState
-				
-				// ///////////////////////////////////////////////////////////////////////
-				// FinalState
-				// ///////////////////////////////////////////////////////////////////////
-				
-				var FinalState = makeClass();
-				
-				FinalState.TYPE = 2;
-				
-				FinalState.prototype = {
-					
-					/**
-					 * Class constructor. The string "epsilon" is used to indicate an empty list.
-					 * @param {} phones the phones for this state
-					 */
-					init : function(phones) {
-						
-						this.phoneList = [];
-						
-						if (phones===("epsilon"))
-						{
-							this.phoneList = null;
-						} 
-						else if (is(phones,A)) {
-							
-							this.phoneList = phones;
-						}
-						else
-						{
-						  var i = phones.indexOf('-');
-						  if (i != -1)
-						  {
-							  this.phoneList[0] = phones.substring(0, i); 
-							  this.phoneList[1] = phones.substring(i + 1);
-						  } 
-						  else
-						  {
-							  this.phoneList[0] = phones;
-						  }
-						}
-					},
-					
-					type : function() {
-						
-						return "FinalState";
-					},
-				
-					/**
-					 * Appends the phone list for this state to the given <code>ArrayList</code>.
-					 * @param {array} array the array to append to
-					 */
-					append : function(array) {
-						
-						if (!this.phoneList) return;
-				
-						for (var i = 0; i < this.phoneList.length; i++)
-							array.push(this.phoneList[i]);
-					},
-				
-					/**
-					 * Outputs this <code>State</code> as though it came from the text input
-					 * file. The string "epsilon" is used to indicate an empty list.
-					 * 
-					 * @return a <code>String</code> describing this <code>State</code>
-					 */
-					toString : function() {
-						
-					  if (!this.phoneList)
-					  {
-						return LetterToSound.PHONE + " epsilon";
-					  } 
-					  else if (this.phoneList.length == 1)
-					  {
-						return LetterToSound.PHONE + " " + this.phoneList[0];
-					  } 
-					  else
-					  {
-						return LetterToSound.PHONE + " " + this.phoneList[0] + "-" + this.phoneList[1];
-					  }
-					},
-				
-					/**
-					 * Compares this state to another state for debugging purposes.
-					 * 
-					 * @param other
-					 *          the other state to compare against
-					 * 
-					 * @return <code>true</code> if the states are equivalent
-					 */
-					compare : function(other)
-					{
-					  if (other instanceof FinalState)
-					  {
-						var otherState = other;
-						if (!phoneList)
-						{
-						  return (otherState.phoneList == null);
-						} 
-						else
-						{
-						  for (var i = 0; i < phoneList.length; i++)
-						  {
-							if (!phoneList[i].equals(otherState.phoneList[i]))
-							{
-							  return false;
-							}
-						  }
-						  return true;
-						}
-					  }
-					  return false;
-					}
-				}
-				
-				/////////////////////////////////////////////////////////////////////////
-				//StringTokenizer
-				/////////////////////////////////////////////////////////////////////////
-				
-				var StringTokenizer = makeClass();  
-				
-				StringTokenizer.prototype = {
-				
-					init : function(str, delim) {
-						
-						this.idx = 0;
-						this.text = str;
-						this.delim = delim || " ";
-						this.tokens = str.split(delim);
-					},
-					
-					nextToken : function() {
-						
-						return (this.idx < this.tokens.length) ? this.tokens[this.idx++] : null;
-					}
-				}
-				
-				////////////////////////// PRIVATE CLASSES ///////////////////////////////
-
-				
-				// ///////////////////////////////////////////////////////////////////////
-				// RiText_Canvas 2D-Renderer
-				// ///////////////////////////////////////////////////////////////////////
-				
-				/**
-				 * @name RiText_Canvas
-				 * @class
-				 * @private
-				 */
-				var RiText_Canvas = makeClass();
-				
-				RiText_Canvas.prototype = {
-
-					init : function(ctx) {
-						this.ctx = ctx;
-					},
-					
-					_getGraphics : function() {
-						return this.ctx;
-					},
-					
-					_pushState : function() {
-						this.ctx.save();
-						return this;
-					},
-					
-					_popState : function() {
-						this.ctx.restore();
-						return this;
-					},
-					
-					_background : function(r,g,b,a) {
-						this._fill(r,g,b,a);
-						this.ctx.fillRect(0,0,this.ctx.canvas.width,this.ctx.canvas.height);
-					},
-
-					_scale : function(sx, sy) {
-						this.ctx.scale(sx, sy, 1);
-					},
-					
-					_translate : function(tx, ty) {
-						this.ctx.translate(tx, ty, 0);
-					},
-					
-					_rotate : function(zRot) {
-						this.ctx.rotate(0,0,zRot);
-					},
-					
-					_line : function(x1,y1,x2,y2,lw) {
-						
+		/**
+		 * Calculates the phone list for a given word. If a phone list cannot be
+		 * determined, <code>null</code> is returned. 
+		 * 
+		 * @param word the word or words to find
+		 * 
+		 * @return array of phones for word or <code>null</code>
+		 */
+		_computePhones : function(word) {
+			
+		  var dig, phoneList = [], full_buff, tmp, currentState, startIndex, stateIndex, c;
+		  
+		  if (!word || !word.length || RiTa.isPunctuation(word))
+			  return null;
+		  
+		  word = word.toLowerCase();
+		  
+		  if (isNum(word)) {
+			  
+			  word = (word.length>1) ? word.split(E) : [word];
+			  
+			  for (var i = 0; i < word.length; i++) {
 				  
-						lw = lw || 1; // canvas hack for crisp lines
-						x1 = Math.round(x1), x2 = Math.round(x2);
-						y1 = Math.round(y1), y2 = Math.round(y2);
-						
-						//log('line: ('+(x1)+","+(y1)+","+(x2)+","+(y2)+")");
-						
-						this.ctx.save();
-						
-						if (x1 === x2) {
-							if (y1 > y2) {
-								var swap = y1;
-								y1 = y2;
-								y2 = swap;
-							}
-							y2++;
-							if (lw % 2 === 1)
-								this.ctx.translate(0.5, 0);
-						} 
-						else if (y1 === y2) {
-							if (x1 > x2) {
-								var swap = x1;
-								x1 = x2;
-								x2 = swap;
-							}
-							x2++;
-							if (lw % 2 === 1) 
-								this.ctx.translate(0, 0.5);
-						}
-						
-						
-						this.ctx.beginPath();
-						this.ctx.moveTo(x1 || 0, y1 || 0);
-						this.ctx.lineTo(x2 || 0, y2 || 0);
-						this.ctx.lineWidth = lw;
-						this.ctx.stroke();
-						
-						this.ctx.restore();
-					},
-					
-					_rect : function(x,y,w,h) {
+				  dig = parseInt(word[i]);
+				  if (dig < 0 || dig > 9)
+					  throw Error("Attempt to pass multi-digit number to LTS: '"+word+"'");
+				  
+				  phoneList.push(Phones.digits[dig]);
+			  }
 			  
-						this._line(x,y,x+w,y);
-						this._line(x,y+h,x+w,y+h);
-						this._line(x,y,x,y+h);
-						this._line(x+w,y,x+w,y+h)
-
-						// TODO: add test with filled bounding boxes and check
-						this.ctx.fillRect(x+1,y+1,w-1,h-1); // [hack] 
-					},
-					
-					_size : function(w, h, renderer) {
-						
-						
-						this.ctx.canvas.width = w;
-						this.ctx.canvas.height = h;
-						if (renderer) console.warn("Renderer arg ignored");
-					},
-					
-					_createFont : function(fontName, fontSize, leading) {
-						
-						var font = {
-							name:       fontName, 
-							size:       fontSize || RiText.defaults.font.size, 
-							leading:    leading || (fontSize * RiText.defaults.leadingFactor) 
-						};
-						return font;
-					},
-					
-					_width : function() {
-						
-						return this.ctx.canvas.width || 200;
-					},
-					
-					_height : function() {
-						
-						return this.ctx.canvas.height || 200;
-					},
-					
-					_fill : function(r,g,b,a) {
-						
-						this.ctx.fillStyle="rgba("+Math.round(r)+","+Math.round(g)+","+Math.round(b)+","+(a/255)+")";
-					},
-					
-					_stroke : function(r,g,b,a) {
-						
-						this.ctx.strokeStyle = is(r,S) ? r : "rgba("+Math.round(r)
-							+","+Math.round(g)+","+Math.round(b)+","+(a/255)+")";
-					},
-					
-					_textAlign : function(align) {
-						
-						switch (align) {
-							case RiTa.LEFT:
-								this.ctx.textAlign = 'left';
-								break;
-							case RiTa.CENTER:
-								this.ctx.textAlign = 'center';
-								break;
-							case RiTa.RIGHT:
-								this.ctx.textAlign = 'right';
-								break;
-						}
-					},
-					
-					_type : function() { return "Canvas"; },
-					
-					// only applies the font to the context!
-					_textFont : function(fontObj) {
-						if (!is(fontObj,O))
-							err("_textFont expects object, but got: "+fontObj);
-						this.ctx.font = "normal "+fontObj.size+"px "+fontObj.name;
-					},
-					
-					_textAscent : function(rt) {
-						return this._getMetrics(rt).ascent;
-					},
-					
-					_textDescent : function(rt) {
-						return this._getMetrics(rt).descent;
-
-					},
-
-					// should operate on the RiText itself (take rt as arg?)
-					_text : function(str, x, y) {
-						//log("text: "+str+","+x+","+y+","+this.ctx.textAlign);
-						this.ctx.baseline = 'alphabetic';
-						this.ctx.fillText(str, x, y);
-						//this.ctx.strokeText(str, x, y);
-					},
-
-					_textWidth : function(fontObj, str) {
-						this.ctx.save();
-						this._textFont(fontObj);
-						var tw = this.ctx.measureText(str).width;
-						this.ctx.restore();
-						return tw;
-					},
-
-					_textHeight : function(rt) {
-						return this._getBoundingBox(rt).height;
-					},
-					
-					//  hack to deal with lack of metrics in the canvas
-					_getBoundingBox : function(rt) {
-
-						this.ctx.save();
-						this._textFont(rt._font);
-						var w = this.ctx.measureText(rt.text()).width;
-						// this must be cached...
-						var metrics = this._getMetrics(rt);
-						//log('[CTX] ascent='+metrics.ascent+' descent='+metrics.descent+" h="+(metrics.ascent+metrics.descent));
-						this.ctx.restore();
-						return { x: 0, y: -metrics.ascent-1, width: w, height: metrics.ascent+metrics.descent+1 };
-					},
-
-					_getOffset : function(elem) { // private, not in API 
-						var box = elem.getBoundingClientRect();
-						return { top: box.top, left: box.left };
-					},
-					
-					_getDivChild : function(html) { // private, not in API 
-						
-						var frag = document.createDocumentFragment(); 
-						var div = document.createElement("div");
-						frag.appendChild( div );
-						div.innerHTML = html;
-						div.parentNode.removeChild( div );            
-						return div.firstChild; 
-					},
-					
-					_getMetrics : function(rt) {  // hack for font metrics in the canvas
-						
-						// TODO: if (rt._metrics) return rt._metrics; // check cache
-
-						var st = '<span style="font-size: '+rt._font.size+'; font-family: '+rt._font.name+'">'+rt.text()+'</span>';
-						var dt = '<div style="display: inline-block; width: 1px; height: 0px; vertical-align: bottom; "></div>';
-						var text = this._getDivChild(st);
-						var block = this._getDivChild(dt);
-
-						// make the 'div' fragment   ====================
-						var fragment = document.createDocumentFragment(); 
-						var div = document.createElement("div");
-						fragment.appendChild( div );
-						
-						// append 'text' and 'block' to the div
-						div.appendChild(text); 
-						div.appendChild(block);
+			  return phoneList;
+		  }
+	
+		  // Create "000#word#000"
+		  tmp = "000#"+word.trim()+"#000", full_buff = tmp.split("");
+		  
+		  // For each character in the word, create a WINDOW_SIZE
+		  // context on each size of the character, and then ask the
+		  // state machine what's next. Its magic
+		  for (var pos = 0; pos < word.length; pos++) {
 			  
-						// insert the fake 'div' in the body
-						document.body.appendChild(div);
-
-						try {
-							var result = {};
-
-							block.style.verticalAlign = 'baseline';
-							result.ascent = this._getOffset(block).top - this._getOffset(text).top + 1;
-							
-							block.style.verticalAlign = 'bottom';
-							var height = this._getOffset(block).top - this._getOffset(text).top;
-
-							result.descent = (height - result.ascent);
-							result.ascent -=  result.descent;
-
-						} 
-						finally {
-							document.body.removeChild(div);
-						}
-
-						// TODO: rt._metrics = results; // add to cache
-						
-						return result;
-					},
-
-					/** @private */
-					toString : function() {
-						
-						return "RiText_"+this._type;
-					}
-					
-				}        
+			for (var i = 0; i < LetterToSound.WINDOW_SIZE; i++) {
 				
-				// ////////////////////////////////////////////////////////////
-				// Timer
-				// ////////////////////////////////////////////////////////////
+			  this.fval_buff[i] = full_buff[pos + i];
+			  this.fval_buff[i + LetterToSound.WINDOW_SIZE] = full_buff[i + pos + 1 + LetterToSound.WINDOW_SIZE];
+			}
+			
+			c = word.charAt(pos);
+			startIndex = this.letterIndex[c];
+			
+			// must check for null here, not 0
+			if (startIndex==null) {
+				warn("Unable to generate LTS for '"+word+"'\nNo LTS index for character: '"+c + "', isDigit=" + isNum(c) + ", isPunct=" + RiTa.isPunctuation(c));
+				return null;
+			}
+
+			stateIndex = parseInt(startIndex);
+			
+			currentState = this.getState(stateIndex);
+			
+			while (! (currentState instanceof FinalState) ) {
 				
-				var timers = new Object(); // static
+			  stateIndex = currentState.getNextState(this.fval_buff);
+			  currentState = this.getState(stateIndex);
+			}
+			
+			currentState.append(phoneList);
+		  }
+		  
+		  return phoneList;
+		},
+		
+		getState : function(i) {
 
-				/**
-				 * @name Timer - modified from Resig's JQuery-Timer
-				 * @class
-				 * @private
-				 */
-				var Timer = function(func, time, autostart) {
-						
-					this.set = function(func, time, autostart) {
-						
-						this.init = true;
-						if (typeof func == 'function') this.action = func;
-						if (!isNaN(time)) this.intervalTime = time;
-						if (autostart && !this.isActive) {
-							this.isActive = true;
-							this.setTimer();
-						}
-						return this;
-					};
-					
-					this.once = function(time) {
-						
-						var timer = this;
-						if (isNaN(time)) time = 0;
-						window.setTimeout(function() {timer.action();}, time);
-						return this;
-					};
-					
-					this.play = function(reset) {
-						
-						if (!this.isActive) {
-							if (reset) this.setTimer();
-							else this.setTimer(this.remaining);
-							this.isActive = true;
-						}
-						return this;
-					};
-					
-					this.pause = function() {
-						
-						if (this.isActive) {
-							this.isActive = false;
-							this.remaining -= new Date() - this.last;
-							this.clearTimer();
-						}
-						return this;
-					};
-					
-					this.stop = function() {
-						
-						this.isActive = false;
-						this.remaining = this.intervalTime;
-						this.clearTimer();
-						return this;
-					};
-					
-					this.toggle = function(reset) {
-						
-						if (this.isActive) this.pause();
-						else if (reset) this.play(true);
-						else this.play();
-						return this;
-					};
-					
-					this.reset = function() {
-						
-						this.isActive = false;
-						this.play(true);
-						return this;
-					};
-					
-					this.id = function() {
-						return this.timeoutObject;
-					};
-						
-					this.clearTimer = function() { // private
-						window.clearTimeout(this.timeoutObject);
-					};
-					
-					this.setTimer = function(time) {
-						
-						var timer = this;
-						if (typeof this.action != 'function') return;
-						if (isNaN(time)) time = this.intervalTime;
-						this.remaining = time;
-						this.last = new Date();
-						this.clearTimer();
-						this.timeoutObject = window.setTimeout
-							(function() { timer.go(); }, time);
-					};
-					
-					this.go = function() {
-						if (this.isActive) {
-							this.action();
-							this.setTimer();
-						}
-					};
-					
-					if (this.init) {
-						return new Timer(func, time, autostart);
-					} else {
-						this.set(func, time, autostart);
-						return this;
-					}
-				};
-					
-				// ////////////////////////////////////////////////////////////
-				// TextNode
-				// ////////////////////////////////////////////////////////////
+			if (is(i,N)) {
 				
-				/**
-				 * @name TextNode
-				 * @class
-				 * @private
-				 */
-				var TextNode = makeClass();
+				var state = null;
 				
-				//TextNode.ignoreCase = true;
+				// WORKING HERE: this check should fail :: see java
+				if (is(this.stateMachine[i],S)) {
+					
+				  state = this.getState(this.stateMachine[i]);
+				  if (LetterToSound.tokenizeOnLookup)
+					  this.stateMachine[i] = state;
+				} 
+				else
+				  state = this.stateMachine[i];
+		 
+				return state;
+			}
+			else {
 				
-				TextNode.prototype = {
-
-					init : function(parent, token) {
-						
-						this.count = 0;
-						this.children = {};
-						this.parent = parent;
-						this.token = token;
-					},
-					
-					selectChild : function(regex, probabalisticSelect) {
-						
-						var ps = probabalisticSelect || true;
-						return this.children ? this._select(this.childNodes(regex), ps) : null;
-					},
-					
-					_select : function (arr, probabalisticSelect) {
-						
-						if (!arr) throw TypeError("bad arg to '_select()'");
-						
-						probabalisticSelect = probabalisticSelect || false;
-						
-						return (probabalisticSelect ? this._probabalisticSelect(arr) 
-							: arr[Math.floor((Math.random()*arr.length))]);    
-					},
-					
-					_probabalisticSelect : function(arr)  {    
-						
-						if (!arr) throw TypeError("bad arg to '_probabalisticSelect()'");
-						
-						//L("RiTa.probabalisticSelect("+c+", size="+c.size()+")");
-						if (!arr.length) return null;
-						if (arr.length == 1) return arr[0];
-
-						// select from multiple options based on frequency
-						var pTotal = 0, selector = Math.random();
-						for ( var i = 0; i < arr.length; i++) {
-							
-							pTotal += arr[i].probability();
-							if (selector < pTotal)
-								return arr[i];
-						}
-						err("Invalid State in RiTa.probabalisticSelect()");   
-					},
-
-					addChild : function(newToken, initialCount) {
-
-					  initialCount = initialCount || 1;
-
-					  var key = this._key(newToken), node = this.children[key];
-
-					  //  add first instance of this token 
-					  if (!node) {
-						node = new TextNode(this, newToken);
-						node.count = initialCount;
-						this.children[key] = node;   
-					  }
-					  else {         
-						node.count++;
-					  }
-					  
-					  return node;
-					},
-					
-					asTree : function(sort) {
-						
-					  var s = this.token+" ";
-					  if (!this.isRoot()) 
-						s+= "("+this.count+")->"; 
-					  s += "{";
-					  if (!this.isLeaf())
-						return this.childrenToString(this, s, 1, sort);
-					  return s + "}";
-					},
-					
-					isRoot : function() {
-						
-						return undef(this.parent);
-					},
-					
-					isLeaf : function() {
-						
-						return this.childCount() == 0;
-					},
-					
-					probability : function() {
-						
-						//log('probability: '+ this.count+'/'+this.siblingCount());
-						return this.count/this.siblingCount();
-					},
-					
-
-					childNodes : function(regex) {
-						
-						if (!this.children) return EA;
-						
-						regex = is(regex,S) ? new RegExp(regex) : regex;
-						
-						var res = [];
-						for (var k in this.children)  {
-							var node = this.children[k];
-							if (!regex || (node && node.token && node.token.search(regex)>-1)) {
-								res.push(node);
-							}
-						}
-						
-						return res;
-					},        
-					
-					/**
-					 * Returns the number of siblings for this node (Note: is case-sensitive)
-					 */
-					siblingCount : function() {
-						
-					  if (this.isRoot()) err("Illegal siblingCount on ROOT!");
-					  
-					  if (!this.parent) err("Null parent for: "+this.token);
-					  
-					  return this.parent.childCount();
-					},
-					
-					/**
-					 * Returns the number of unique children (Note: is case-sensitive)
-					 */
-					uniqueCount : function() {
-					
-						var sum = 0;
-						for (var k in this.children) sum++;
-						return sum;
-					},
-					
-					 /**
-					 * Returns the number of children for this node (Note: is case-sensitive)
-					 */
-					childCount : function() {
-						
-						//return this.childNodes().length;
-						
-						if (!this.children) return 0;
-						
-						var sum = 0;
-						for (var k in this.children) {
-							if (k && this.children[k])
-								sum += this.children[k].count;
-						}
-						
-						return sum;
-					},        
-					
-					
-					/*
-					 * takes node or string, returns node
-					 */
-					lookup : function(obj) {   
-						
-					  if (!obj) return null;
-					  
-					  obj = (typeof obj != S && obj.token) ? obj.token : obj;
-					  
-					  //log(this.token+".lookup("+this._key(obj)+")");
-					  
-					  return obj ? this.children[this._key(obj)] : null; 
-					},
-					
+				var tokenizer = new StringTokenizer(i, " ");
+				return this.getState(tokenizer.nextToken(), tokenizer);
+			}
+		}   
+	}
+	
+	/////////////////////////////////////////////////////////////////////////
+	// DecisionState
+	/////////////////////////////////////////////////////////////////////////
+	
+	var DecisionState = makeClass();
+	
+	DecisionState.TYPE = 1;
+	
+	DecisionState.prototype = {
+	
+		/**
+		 * Class constructor.
+		 * 
+		 * @param index
+		 *          the index into a string for comparison to c
+		 * @param c
+		 *          the character to match in a string at index
+		 * @param qtrue
+		 *          the state to go to in the state machine on a match
+		 * @param qfalse
+		 *          the state to go to in the state machine on no match
+		 */
+		//    char c, var index, var qtrue, var qfalse;
+		init : function(index, c, qtrue, qfalse) {
+			
+			this.c = c;
+			this.index = index;
+			this.qtrue = qtrue;
+			this.qfalse = qfalse;
+		},
+		
+		type : function() {
+			
+			return "DecisionState";
+		},
+	
+		/**
+		 * Gets the next state to go to based upon the given character sequence.
+		 * 
+		 * @param chars the characters for comparison
+		 * 
+		 * @returns an index into the state machine.
+		 */
+		//public var getNextState(char[] chars)
+		getNextState : function(chars) {
+			
+		  return (chars[this.index] == this.c) ? this.qtrue : this.qfalse;
+		},
+	
+		/**
+		 * Outputs this <code>State</code> as though it came from the text input
+		 * file. 
+		 */
+		toString : function() {
+		  return this.STATE + " " + this.index + " " + this.c + " " + this.qtrue + " " + this.qfalse;
+		}, 
+	
+		/**
+		 * Writes this <code>State</code> to the given output stream.
+		 * 
+		 * @param dos
+		 *          the data output stream
+		 * 
+		 * @throws IOException
+		 *           if an error occurs
+	
+		writeBinary : function(dos)
+		{
+	//      dos.writeInt(TYPE);
+	//      dos.writeInt(index);
+	//      dos.writeChar(c);
+	//      dos.writeInt(qtrue);
+	//      dos.writeInt(qfalse);
+		}     */
+	
+		/**
+		 * Loads a <code>DecisionState</code> object from the given input stream.
+		 * 
+		 * @param dis
+		 *          the data input stream
+		 * @return a newly constructed decision state
+		 * 
+		 * @throws IOException
+		 *           if an error occurs
+		 
+		public static State loadBinary(DataInputStream dis) throws IOException
+		{
+		  var index = dis.readInt();
+		  char c = dis.readChar();
+		  var qtrue = dis.readInt();
+		  var qfalse = dis.readInt();
+		  return new DecisionState(index, c, qtrue, qfalse);
+		}*/
+	
+		/**
+		 * Compares this state to another state for debugging purposes.
+		 * 
+		 * @param other
+		 *          the other state to compare against
+		 * 
+		 * @return true if the states are equivalent
+		 */
+		compare : function(other) {
+			
+		  if (other instanceof DecisionState)
+		  {
+			var otherState = other;
+			return index == otherState.index && c == otherState.c
+				&& qtrue == otherState.qtrue && qfalse == otherState.qfalse;
+		  }
+		  return false;
+		}
+		
+	}// end DecisionState
+	
+	// ///////////////////////////////////////////////////////////////////////
+	// FinalState
+	// ///////////////////////////////////////////////////////////////////////
+	
+	var FinalState = makeClass();
+	
+	FinalState.TYPE = 2;
+	
+	FinalState.prototype = {
+		
+		/**
+		 * Class constructor. The string "epsilon" is used to indicate an empty list.
+		 * @param {} phones the phones for this state
+		 */
+		init : function(phones) {
+			
+			this.phoneList = [];
+			
+			if (phones===("epsilon"))
+			{
+				this.phoneList = null;
+			} 
+			else if (is(phones,A)) {
 				
-					_key : function(str) {
-
-						return str;//(str && TextNode.ignoreCase) ? str.toLowerCase() : str;
-					},
-
-					childrenToString : function(textNode, str, depth, sort)  {
-
-					  var mn = textNode, l = [], node = null, indent = "\n";
-					  
-					  sort = sort || false;
-					  
-					  for (var k in textNode.children) {
-						  l.push(textNode.children[k]);
-					  }
-					  
-					  if (!l.length) return str;
-					  
-					  if (sort) l.sort();
-								
-					  for (var j = 0; j < depth; j++) 
-						indent += "  ";
-					  
-					  for (var i = 0; i < l.length; i++) {
-						  
-						node = l[i];
-						
-						if (!node) break;
-						
-						var tok = node.token;      
-						if (tok) {         
-						  (tok == "\n") && (tok = "\\n");
-						  (tok == "\r") && (tok = "\\r");
-						  (tok == "\t") && (tok = "\\t");
-						  (tok == "\r\n") && (tok = "\\r\\n");
-						}
-						
-						str += indent +"'"+tok+"'";
-						
-						if (!node.count) 
-						  err("ILLEGAL FREQ: "+node.count+" -> "+mn.token+","+node.token);
-						
-						if (!node.isRoot())
-						  str += " ["+node.count + ",p=" +//formatter.format
-							(node.probability().toFixed(3)) + "]->{"; 
-						
-						if (node.children)
-						  str = this.childrenToString(node, str, depth+1, sort);  
-						else 
-							str += "}";
-					  }
-					  
-					  indent = "\n";
-					  for (var j = 0; j < depth-1; j++) 
-						indent += "  ";
-					  
-					  return str + indent + "}";
-					},
-					
-					toString : function() {
-						return '[ '+this.token+" ("+this.count+'/'+this.probability().toFixed(3)+'%)]';
-					} 
+				this.phoneList = phones;
+			}
+			else
+			{
+			  var i = phones.indexOf('-');
+			  if (i != -1)
+			  {
+				  this.phoneList[0] = phones.substring(0, i); 
+				  this.phoneList[1] = phones.substring(i + 1);
+			  } 
+			  else
+			  {
+				  this.phoneList[0] = phones;
+			  }
+			}
+		},
+		
+		type : function() {
+			
+			return "FinalState";
+		},
+	
+		/**
+		 * Appends the phone list for this state to the given <code>ArrayList</code>.
+		 * @param {array} array the array to append to
+		 */
+		append : function(array) {
+			
+			if (!this.phoneList) return;
+	
+			for (var i = 0; i < this.phoneList.length; i++)
+				array.push(this.phoneList[i]);
+		},
+	
+		/**
+		 * Outputs this <code>State</code> as though it came from the text input
+		 * file. The string "epsilon" is used to indicate an empty list.
+		 * 
+		 * @return a <code>String</code> describing this <code>State</code>
+		 */
+		toString : function() {
+			
+		  if (!this.phoneList)
+		  {
+			return LetterToSound.PHONE + " epsilon";
+		  } 
+		  else if (this.phoneList.length == 1)
+		  {
+			return LetterToSound.PHONE + " " + this.phoneList[0];
+		  } 
+		  else
+		  {
+			return LetterToSound.PHONE + " " + this.phoneList[0] + "-" + this.phoneList[1];
+		  }
+		},
+	
+		/**
+		 * Compares this state to another state for debugging purposes.
+		 * 
+		 * @param other
+		 *          the other state to compare against
+		 * 
+		 * @return <code>true</code> if the states are equivalent
+		 */
+		compare : function(other)
+		{
+		  if (other instanceof FinalState)
+		  {
+			var otherState = other;
+			if (!phoneList)
+			{
+			  return (otherState.phoneList == null);
+			} 
+			else
+			{
+			  for (var i = 0; i < phoneList.length; i++)
+			  {
+				if (!phoneList[i].equals(otherState.phoneList[i]))
+				{
+				  return false;
 				}
+			  }
+			  return true;
+			}
+		  }
+		  return false;
+		}
+	}
+	
+	/////////////////////////////////////////////////////////////////////////
+	//StringTokenizer
+	/////////////////////////////////////////////////////////////////////////
+	
+	var StringTokenizer = makeClass();  
+	
+	StringTokenizer.prototype = {
+	
+		init : function(str, delim) {
+			
+			this.idx = 0;
+			this.text = str;
+			this.delim = delim || " ";
+			this.tokens = str.split(delim);
+		},
+		
+		nextToken : function() {
+			
+			return (this.idx < this.tokens.length) ? this.tokens[this.idx++] : null;
+		}
+	}
+	
+	////////////////////////// PRIVATE CLASSES ///////////////////////////////
 
-				// ////////////////////////////////////////////////////////////
-				// Conjugator
-				// ////////////////////////////////////////////////////////////
+	
+	// ///////////////////////////////////////////////////////////////////////
+	// RiText_Canvas 2D-Renderer
+	// ///////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * @name RiText_Canvas
+	 * @class
+	 * @private
+	 */
+	var RiText_Canvas = makeClass();
+	
+	RiText_Canvas.prototype = {
+
+		init : function(ctx) {
+			this.ctx = ctx;
+		},
+		
+		_getGraphics : function() {
+			return this.ctx;
+		},
+		
+		_pushState : function() {
+			this.ctx.save();
+			return this;
+		},
+		
+		_popState : function() {
+			this.ctx.restore();
+			return this;
+		},
+		
+		_background : function(r,g,b,a) {
+			this._fill(r,g,b,a);
+			this.ctx.fillRect(0,0,this.ctx.canvas.width,this.ctx.canvas.height);
+		},
+
+		_scale : function(sx, sy) {
+			this.ctx.scale(sx, sy, 1);
+		},
+		
+		_translate : function(tx, ty) {
+			this.ctx.translate(tx, ty, 0);
+		},
+		
+		_rotate : function(zRot) {
+			this.ctx.rotate(0,0,zRot);
+		},
+		
+		_line : function(x1,y1,x2,y2,lw) {
+			
+	  
+			lw = lw || 1; // canvas hack for crisp lines
+			x1 = Math.round(x1), x2 = Math.round(x2);
+			y1 = Math.round(y1), y2 = Math.round(y2);
+			
+			//log('line: ('+(x1)+","+(y1)+","+(x2)+","+(y2)+")");
+			
+			this.ctx.save();
+			
+			if (x1 === x2) {
+				if (y1 > y2) {
+					var swap = y1;
+					y1 = y2;
+					y2 = swap;
+				}
+				y2++;
+				if (lw % 2 === 1)
+					this.ctx.translate(0.5, 0);
+			} 
+			else if (y1 === y2) {
+				if (x1 > x2) {
+					var swap = x1;
+					x1 = x2;
+					x2 = swap;
+				}
+				x2++;
+				if (lw % 2 === 1) 
+					this.ctx.translate(0, 0.5);
+			}
+			
+			
+			this.ctx.beginPath();
+			this.ctx.moveTo(x1 || 0, y1 || 0);
+			this.ctx.lineTo(x2 || 0, y2 || 0);
+			this.ctx.lineWidth = lw;
+			this.ctx.stroke();
+			
+			this.ctx.restore();
+		},
+		
+		_rect : function(x,y,w,h) {
+  
+			this._line(x,y,x+w,y);
+			this._line(x,y+h,x+w,y+h);
+			this._line(x,y,x,y+h);
+			this._line(x+w,y,x+w,y+h)
+
+			// TODO: add test with filled bounding boxes and check
+			this.ctx.fillRect(x+1,y+1,w-1,h-1); // [hack] 
+		},
+		
+		_size : function(w, h, renderer) {
+			
+			
+			this.ctx.canvas.width = w;
+			this.ctx.canvas.height = h;
+			if (renderer) console.warn("Renderer arg ignored");
+		},
+		
+		_createFont : function(fontName, fontSize, leading) {
+			
+			var font = {
+				name:       fontName, 
+				size:       fontSize || RiText.defaults.font.size, 
+				leading:    leading || (fontSize * RiText.defaults.leadingFactor) 
+			};
+			return font;
+		},
+		
+		_width : function() {
+			
+			return this.ctx.canvas.width || 200;
+		},
+		
+		_height : function() {
+			
+			return this.ctx.canvas.height || 200;
+		},
+		
+		_fill : function(r,g,b,a) {
+			
+			this.ctx.fillStyle="rgba("+Math.round(r)+","+Math.round(g)+","+Math.round(b)+","+(a/255)+")";
+		},
+		
+		_stroke : function(r,g,b,a) {
+			
+			this.ctx.strokeStyle = is(r,S) ? r : "rgba("+Math.round(r)
+				+","+Math.round(g)+","+Math.round(b)+","+(a/255)+")";
+		},
+		
+		_textAlign : function(align) {
+			
+			switch (align) {
+				case RiTa.LEFT:
+					this.ctx.textAlign = 'left';
+					break;
+				case RiTa.CENTER:
+					this.ctx.textAlign = 'center';
+					break;
+				case RiTa.RIGHT:
+					this.ctx.textAlign = 'right';
+					break;
+			}
+		},
+		
+		_type : function() { return "Canvas"; },
+		
+		// only applies the font to the context!
+		_textFont : function(fontObj) {
+			if (!is(fontObj,O))
+				err("_textFont expects object, but got: "+fontObj);
+			this.ctx.font = "normal "+fontObj.size+"px "+fontObj.name;
+		},
+		
+		_textAscent : function(rt) {
+			return this._getMetrics(rt).ascent;
+		},
+		
+		_textDescent : function(rt) {
+			return this._getMetrics(rt).descent;
+		},
+
+		// should operate on the RiText itself (take rt as arg?)
+		_text : function(str, x, y) {
+			//log("text: "+str+","+x+","+y+","+this.ctx.textAlign);
+			this.ctx.baseline = 'alphabetic';
+			this.ctx.fillText(str, x, y);
+			//this.ctx.strokeText(str, x, y);
+		},
+
+		_textWidth : function(fontObj, str) {
+			this.ctx.save();
+			this._textFont(fontObj);
+			var tw = this.ctx.measureText(str).width;
+			this.ctx.restore();
+			return tw;
+		},
+
+		_textHeight : function(rt) {
+			this.ctx.save();
+			var h = this._getBoundingBox(rt).height;
+			this.ctx.restore();
+			return h;
+		},
+		
+		//  hack to deal with lack of metrics in the canvas
+		_getBoundingBox : function(rt) {
+
+			//this.ctx.save();
+			
+			this._textFont(rt._font);
+			var w = this.ctx.measureText(rt.text()).width;
+			// this must be cached...
+			var metrics = this._getMetrics(rt);
+			
+			//log('[CTX] ascent='+metrics.ascent+' descent='+metrics.descent+" h="+(metrics.ascent+metrics.descent));
+			//this.ctx.restore();
+			
+			return { x: 0, y: -metrics.ascent-1, width: w, height: metrics.ascent+metrics.descent+1 };
+		},
+
+		_getOffset : function(elem) { // private, not in API 
+			var box = elem.getBoundingClientRect();
+			return { top: box.top, left: box.left };
+		},
+		
+		_getDivChild : function(html) { // private, not in API 
+			
+			var frag = document.createDocumentFragment(); 
+			var div = document.createElement("div");
+			frag.appendChild( div );
+			div.innerHTML = html;
+			div.parentNode.removeChild( div );            
+			return div.firstChild; 
+		},
+		
+		_getMetrics : function(rt) {  // hack for font metrics in the canvas
+			
+			// TODO: if (rt._metrics) return rt._metrics; // check cache (invalidate on any change of font or size or...)
+
+			var st = '<span style="font-size: '+rt._font.size+'; font-family: '+rt._font.name+'">'+rt.text()+'</span>';
+			var dt = '<div style="display: inline-block; width: 1px; height: 0px; vertical-align: bottom; "></div>';
+			var text = this._getDivChild(st);
+			var block = this._getDivChild(dt);
+
+			// make the 'div' fragment   ====================
+			var fragment = document.createDocumentFragment(); 
+			var div = document.createElement("div");
+			fragment.appendChild( div );
+			
+			// append 'text' and 'block' to the div
+			div.appendChild(text); 
+			div.appendChild(block);
+  
+			// insert the fake 'div' in the body
+			document.body.appendChild(div);
+
+			try {
+				var result = {};
+
+				block.style.verticalAlign = 'baseline';
+				result.ascent = this._getOffset(block).top - this._getOffset(text).top + 1;
 				
+				block.style.verticalAlign = 'bottom';
+				var height = this._getOffset(block).top - this._getOffset(text).top;
 
-				/**
-				 * @name Conjugator
-				 * @class
-				 * @private
-				 */
-				var Conjugator = makeClass();
+				result.descent = (height - result.ascent);
+				result.ascent -=  result.descent;
+			} 
+			finally {
+				document.body.removeChild(div);
+				div.removeChild(text);
+				div.removeChild(block);
+				// fragment.removeChild(div);
+			}
+
+			// TODO: rt._metrics = results; // add to cache
+			
+			return result;
+		},
+
+		/** @private */
+		toString : function() {
+			
+			return "RiText_"+this._type;
+		}
+		
+	}        
+	
+	// ////////////////////////////////////////////////////////////
+	// Timer
+	// ////////////////////////////////////////////////////////////
+	
+	var timers = new Object(); // static
+
+	/**
+	 * @name Timer - modified from Resig's JQuery-Timer
+	 * @class
+	 * @private
+	 */
+	var Timer = function(func, time, autostart) {
+			
+		this.set = function(func, time, autostart) {
+			
+			this.init = true;
+			if (typeof func == 'function') this.action = func;
+			if (!isNaN(time)) this.intervalTime = time;
+			if (autostart && !this.isActive) {
+				this.isActive = true;
+				this.setTimer();
+			}
+			return this;
+		};
+		
+		this.once = function(time) {
+			
+			var timer = this;
+			if (isNaN(time)) time = 0;
+			window.setTimeout(function() {timer.action();}, time);
+			return this;
+		};
+		
+		this.play = function(reset) {
+			
+			if (!this.isActive) {
+				if (reset) this.setTimer();
+				else this.setTimer(this.remaining);
+				this.isActive = true;
+			}
+			return this;
+		};
+		
+		this.pause = function() {
+			
+			if (this.isActive) {
+				this.isActive = false;
+				this.remaining -= new Date() - this.last;
+				this.clearTimer();
+			}
+			return this;
+		};
+		
+		this.stop = function() {
+			
+			this.isActive = false;
+			this.remaining = this.intervalTime;
+			this.clearTimer();
+			return this;
+		};
+		
+		this.toggle = function(reset) {
+			
+			if (this.isActive) this.pause();
+			else if (reset) this.play(true);
+			else this.play();
+			return this;
+		};
+		
+		this.reset = function() {
+			
+			this.isActive = false;
+			this.play(true);
+			return this;
+		};
+		
+		this.id = function() {
+			return this.timeoutObject;
+		};
+			
+		this.clearTimer = function() { // private
+			window.clearTimeout(this.timeoutObject);
+		};
+		
+		this.setTimer = function(time) {
+			
+			var timer = this;
+			if (typeof this.action != 'function') return;
+			if (isNaN(time)) time = this.intervalTime;
+			this.remaining = time;
+			this.last = new Date();
+			this.clearTimer();
+			this.timeoutObject = window.setTimeout
+				(function() { timer.go(); }, time);
+		};
+		
+		this.go = function() {
+			if (this.isActive) {
+				this.action();
+				this.setTimer();
+			}
+		};
+		
+		if (this.init) {
+			return new Timer(func, time, autostart);
+		} else {
+			this.set(func, time, autostart);
+			return this;
+		}
+	};
+		
+	// ////////////////////////////////////////////////////////////
+	// TextNode
+	// ////////////////////////////////////////////////////////////
+	
+	/**
+	 * @name TextNode
+	 * @class
+	 * @private
+	 */
+	var TextNode = makeClass();
+	
+	//TextNode.ignoreCase = true;
+	
+	TextNode.prototype = {
+
+		init : function(parent, token) {
+			
+			this.count = 0;
+			this.children = {};
+			this.parent = parent;
+			this.token = token;
+		},
+		
+		selectChild : function(regex, probabalisticSelect) {
+			
+			var ps = probabalisticSelect || true;
+			return this.children ? this._select(this.childNodes(regex), ps) : null;
+		},
+		
+		_select : function (arr, probabalisticSelect) {
+			
+			if (!arr) throw TypeError("bad arg to '_select()'");
+			
+			probabalisticSelect = probabalisticSelect || false;
+			
+			return (probabalisticSelect ? this._probabalisticSelect(arr) 
+				: arr[Math.floor((Math.random()*arr.length))]);    
+		},
+		
+		_probabalisticSelect : function(arr)  {    
+			
+			if (!arr) throw TypeError("bad arg to '_probabalisticSelect()'");
+			
+			//L("RiTa.probabalisticSelect("+c+", size="+c.size()+")");
+			if (!arr.length) return null;
+			if (arr.length == 1) return arr[0];
+
+			// select from multiple options based on frequency
+			var pTotal = 0, selector = Math.random();
+			for ( var i = 0; i < arr.length; i++) {
 				
-				Conjugator.prototype = {
+				pTotal += arr[i].probability();
+				if (selector < pTotal)
+					return arr[i];
+			}
+			err("Invalid State in RiTa.probabalisticSelect()");   
+		},
 
-					init : function() {
-						
-						// TODO: get rid of these and make static method ?
-						
-						this.perfect = this.progressive = this.passive = this.interrogative = false;
-						this.tense = RiTa.PRESENT_TENSE;
-						this.person = RiTa.FIRST_PERSON;
-						this.number = RiTa.SINGULAR;
-						this.form = RiTa.NORMAL;
-						this.head = "";
+		addChild : function(newToken, initialCount) {
 
-					},
+		  initialCount = initialCount || 1;
 
-					// Conjugates the verb based on the current state of the conjugator.
-					// !@# Removed (did not translate) incomplete/non-working java
-					// implementation of modals handling.
-					// !@# TODO: add handling of past tense modals.
-					conjugate : function(verb, args) {
+		  var key = this._key(newToken), node = this.children[key];
 
-						var s = E, actualModal = null, conjs = [], frontVG = verb, verbForm;
-						
-						if (!verb || !verb.length) return E;
-						
-						if (!args) return verb;
+		  //  add first instance of this token 
+		  if (!node) {
+			node = new TextNode(this, newToken);
+			node.count = initialCount;
+			this.children[key] = node;   
+		  }
+		  else {         
+			node.count++;
+		  }
+		  
+		  return node;
+		},
+		
+		asTree : function(sort) {
+			
+		  var s = this.token+" ";
+		  if (!this.isRoot()) 
+			s+= "("+this.count+")->"; 
+		  s += "{";
+		  if (!this.isLeaf())
+			return this.childrenToString(this, s, 1, sort);
+		  return s + "}";
+		},
+		
+		isRoot : function() {
+			
+			return undef(this.parent);
+		},
+		
+		isLeaf : function() {
+			
+			return this.childCount() == 0;
+		},
+		
+		probability : function() {
+			
+			//log('probability: '+ this.count+'/'+this.siblingCount());
+			return this.count/this.siblingCount();
+		},
+		
 
-						// ------------------ handle arguments ------------------
-						
-						args.number && (this.number = args.number);
-						args.person && (this.person = args.person);
-						args.tense && (this.tense = args.tense);
-						args.form && (this.form = args.form);
-						args.passive && (this.passive = args.passive);
-						args.progressive && (this.progressive = args.progressive);
-						args.interrogative && (this.interrogative = args.interrogative);
-						args.perfect && (this.perfect = args.perfect);
-						
-						// ----------------------- start ---------------------------
-						if (this.form == RiTa.INFINITIVE) {
-							actualModal = "to";
-						}
+		childNodes : function(regex) {
+			
+			if (!this.children) return EA;
+			
+			regex = is(regex,S) ? new RegExp(regex) : regex;
+			
+			var res = [];
+			for (var k in this.children)  {
+				var node = this.children[k];
+				if (!regex || (node && node.token && node.token.search(regex)>-1)) {
+					res.push(node);
+				}
+			}
+			
+			return res;
+		},        
+		
+		/**
+		 * Returns the number of siblings for this node (Note: is case-sensitive)
+		 */
+		siblingCount : function() {
+			
+		  if (this.isRoot()) err("Illegal siblingCount on ROOT!");
+		  
+		  if (!this.parent) err("Null parent for: "+this.token);
+		  
+		  return this.parent.childCount();
+		},
+		
+		/**
+		 * Returns the number of unique children (Note: is case-sensitive)
+		 */
+		uniqueCount : function() {
+		
+			var sum = 0;
+			for (var k in this.children) sum++;
+			return sum;
+		},
+		
+		 /**
+		 * Returns the number of children for this node (Note: is case-sensitive)
+		 */
+		childCount : function() {
+			
+			//return this.childNodes().length;
+			
+			if (!this.children) return 0;
+			
+			var sum = 0;
+			for (var k in this.children) {
+				if (k && this.children[k])
+					sum += this.children[k].count;
+			}
+			
+			return sum;
+		},        
+		
+		
+		/*
+		 * takes node or string, returns node
+		 */
+		lookup : function(obj) {   
+			
+		  if (!obj) return null;
+		  
+		  obj = (typeof obj != S && obj.token) ? obj.token : obj;
+		  
+		  //log(this.token+".lookup("+this._key(obj)+")");
+		  
+		  return obj ? this.children[this._key(obj)] : null; 
+		},
+		
+	
+		_key : function(str) {
 
-						if (this.tense == RiTa.FUTURE_TENSE) {
-							actualModal = "will";
-						}
+			return str;//(str && TextNode.ignoreCase) ? str.toLowerCase() : str;
+		},
 
-						if (this.passive) {
-							conjs.push(this.getPastParticiple(frontVG));
-							frontVG = "be"; 
-						}
+		childrenToString : function(textNode, str, depth, sort)  {
 
-						if (this.progressive) {
-							conjs.push(this.getPresentParticiple(frontVG));
-							frontVG = "be"; 
-						}
+		  var mn = textNode, l = [], node = null, indent = "\n";
+		  
+		  sort = sort || false;
+		  
+		  for (var k in textNode.children) {
+			  l.push(textNode.children[k]);
+		  }
+		  
+		  if (!l.length) return str;
+		  
+		  if (sort) l.sort();
+					
+		  for (var j = 0; j < depth; j++) 
+			indent += "  ";
+		  
+		  for (var i = 0; i < l.length; i++) {
+			  
+			node = l[i];
+			
+			if (!node) break;
+			
+			var tok = node.token;      
+			if (tok) {         
+			  (tok == "\n") && (tok = "\\n");
+			  (tok == "\r") && (tok = "\\r");
+			  (tok == "\t") && (tok = "\\t");
+			  (tok == "\r\n") && (tok = "\\r\\n");
+			}
+			
+			str += indent +"'"+tok+"'";
+			
+			if (!node.count) 
+			  err("ILLEGAL FREQ: "+node.count+" -> "+mn.token+","+node.token);
+			
+			if (!node.isRoot())
+			  str += " ["+node.count + ",p=" +//formatter.format
+				(node.probability().toFixed(3)) + "]->{"; 
+			
+			if (node.children)
+			  str = this.childrenToString(node, str, depth+1, sort);  
+			else 
+				str += "}";
+		  }
+		  
+		  indent = "\n";
+		  for (var j = 0; j < depth-1; j++) 
+			indent += "  ";
+		  
+		  return str + indent + "}";
+		},
+		
+		toString : function() {
+			return '[ '+this.token+" ("+this.count+'/'+this.probability().toFixed(3)+'%)]';
+		} 
+	}
 
-						if (this.perfect) {
-							conjs.push(this.getPastParticiple(frontVG));
-							frontVG = "have";
-						}
+	// ////////////////////////////////////////////////////////////
+	// Conjugator
+	// ////////////////////////////////////////////////////////////
+	
 
-						if (actualModal) {
-							// log("push: "+frontVG);
-							conjs.push(frontVG);
-							frontVG = null;
-						}
+	/**
+	 * @name Conjugator
+	 * @class
+	 * @private
+	 */
+	var Conjugator = makeClass();
+	
+	Conjugator.prototype = {
 
-						// Now inflect frontVG (if it exists) and push it on restVG
-						if (frontVG) {
+		init : function() {
+			
+			// TODO: get rid of these and make static method ?
+			
+			this.perfect = this.progressive = this.passive = this.interrogative = false;
+			this.tense = RiTa.PRESENT_TENSE;
+			this.person = RiTa.FIRST_PERSON;
+			this.number = RiTa.SINGULAR;
+			this.form = RiTa.NORMAL;
+			this.head = "";
 
-							if (this.form === RiTa.GERUND) { // gerund - use ING form
-								
-								var pp = this.getPresentParticiple(frontVG);
+		},
 
-								// !@# not yet implemented! ??? WHAT?
-								conjs.push(pp);
-								
-							}
-							else if (this.interrogative && !(verb == "be") && conjs.length < 1) {
+		// Conjugates the verb based on the current state of the conjugator.
+		// !@# Removed (did not translate) incomplete/non-working java
+		// implementation of modals handling.
+		// !@# TODO: add handling of past tense modals.
+		conjugate : function(verb, args) {
 
-								conjs.push(frontVG);
-								
-							}
-							else {
+			var s = E, actualModal = null, conjs = [], frontVG = verb, verbForm;
+			
+			if (!verb || !verb.length) return E;
+			
+			if (!args) return verb;
 
-								verbForm = this.getVerbForm(frontVG, this.tense, this.person, this.number);
-								conjs.push(verbForm);
-							}
-						}
+			// ------------------ handle arguments ------------------
+			
+			args.number && (this.number = args.number);
+			args.person && (this.person = args.person);
+			args.tense && (this.tense = args.tense);
+			args.form && (this.form = args.form);
+			args.passive && (this.passive = args.passive);
+			args.progressive && (this.progressive = args.progressive);
+			args.interrogative && (this.interrogative = args.interrogative);
+			args.perfect && (this.perfect = args.perfect);
+			
+			// ----------------------- start ---------------------------
+			if (this.form == RiTa.INFINITIVE) {
+				actualModal = "to";
+			}
 
-						// add modal, and we're done
-						actualModal && conjs.push(actualModal);
+			if (this.tense == RiTa.FUTURE_TENSE) {
+				actualModal = "will";
+			}
 
-						var s = E;
-						for ( var i = 0; i < conjs.length; i++) {
-							
-							s = conjs[i] + " " + s;
-						}
+			if (this.passive) {
+				conjs.push(this.getPastParticiple(frontVG));
+				frontVG = "be"; 
+			}
 
-						// !@# test this
-						endsWith(s, "peted") && err("Unexpected output: " + this.toString());
+			if (this.progressive) {
+				conjs.push(this.getPresentParticiple(frontVG));
+				frontVG = "be"; 
+			}
 
-						return trim(s);
-					},
+			if (this.perfect) {
+				conjs.push(this.getPastParticiple(frontVG));
+				frontVG = "have";
+			}
 
-					checkRules : function(ruleSet, verb) {
+			if (actualModal) {
+				// log("push: "+frontVG);
+				conjs.push(frontVG);
+				frontVG = null;
+			}
 
-						var res, name = ruleSet.name, rules = ruleSet.rules, defRule = ruleSet.defaultRule || null;
+			// Now inflect frontVG (if it exists) and push it on restVG
+			if (frontVG) {
 
-						//TODO: remove comments            
+				if (this.form === RiTa.GERUND) { // gerund - use ING form
+					
+					var pp = this.getPresentParticiple(frontVG);
+
+					// !@# not yet implemented! ??? WHAT?
+					conjs.push(pp);
+					
+				}
+				else if (this.interrogative && !(verb == "be") && conjs.length < 1) {
+
+					conjs.push(frontVG);
+					
+				}
+				else {
+
+					verbForm = this.getVerbForm(frontVG, this.tense, this.person, this.number);
+					conjs.push(verbForm);
+				}
+			}
+
+			// add modal, and we're done
+			actualModal && conjs.push(actualModal);
+
+			var s = E;
+			for ( var i = 0; i < conjs.length; i++) {
+				
+				s = conjs[i] + " " + s;
+			}
+
+			// !@# test this
+			endsWith(s, "peted") && err("Unexpected output: " + this.toString());
+
+			return trim(s);
+		},
+
+		checkRules : function(ruleSet, verb) {
+
+			var res, name = ruleSet.name, rules = ruleSet.rules, defRule = ruleSet.defaultRule || null;
+
+			//TODO: remove comments            
 			//log(ruleSet.name+' -> '+ruleSet.doubling);
 			
 			if (!rules) err("no rule: "+ruleSet.name+' of '+verb);
@@ -55235,7 +55258,7 @@ _RiTa_LTS=[
 		},
 
 		isAdverb : function(tag) {
-log('tag='+tag+' count='+this.TAGS.length);
+			//log('tag='+tag+' count='+this.TAGS.length);
 			return inArray(this.ADV, tag.toUpperCase());
 		},
 
@@ -57095,9 +57118,33 @@ log('tag='+tag+' count='+this.TAGS.length);
 
 	RiText_P5.prototype = {
 
-		init : function(p) {
+		init : function(p, ctx) {
 			
 			this.p = p;
+			if (!ctx) console.error("no cnv-context!");
+			this.ctx = ctx;
+			/*this.state = {
+		        "doFill": doFill,
+		        "currentFillColor": currentFillColor,
+		        "doStroke": doStroke,
+		        "currentStrokeColor": currentStrokeColor,
+		        "curTint": curTint,
+		        "curRectMode": curRectMode,
+		        "curColorMode": curColorMode,
+		        "colorModeX": colorModeX,
+		        "colorModeZ": colorModeZ,
+		        "colorModeY": colorModeY,
+		        "colorModeA": colorModeA,
+		        "curTextFont": curTextFont,
+		        "horizontalTextAlignment": horizontalTextAlignment,
+		        "verticalTextAlignment": verticalTextAlignment,
+		        "textMode": textMode,
+		        "curFontName": curFontName,
+		        "curTextSize": curTextSize,
+		        "curTextAscent": curTextAscent,
+		        "curTextDescent": curTextDescent,
+		        "curTextLeading": curTextLeading
+	      };*/
 		},
 		
 		_size : function() {
@@ -57110,17 +57157,95 @@ log('tag='+tag+' count='+this.TAGS.length);
 			return this.p;
 		},
 		
-		_pushState : function(str) {
+		/*_pushStyle : function(p) {
 			
-			this.p.pushStyle();
+			p.saveContext();
+			p.p.pushMatrix();
+
+			state.doFill = doFill;
+			state.currentFillColor = currentFillColor;
+			state.doStroke = doStroke;
+			state.currentStrokeColor = currentStrokeColor;
+			state.curTint = curTint;
+			state.curRectMode = curRectMode;
+			state.curColorMode = curColorMode;
+			state.colorModeX = colorModeX;
+			state.colorModeZ = colorModeZ;
+			state.colorModeY = colorModeY;
+			state.colorModeA = colorModeA;
+			state.curTextFont = curTextFont;
+			state.horizontalTextAlignment = horizontalTextAlignment;
+			state.verticalTextAlignment = verticalTextAlignment;
+			state.textMode = textMode;
+			state.curFontName = curFontName;
+			state.curTextSize = curTextSize;
+			state.curTextAscent = curTextAscent;
+			state.curTextDescent = curTextDescent;
+			state.curTextLeading = curTextLeading; 
+
+			//p.styleArray.push(newState)
+			return this;
+		},
+		
+		_popStyle : function(p) {
+			
+			p.restoreContext();
+	        p.p.popMatrix();
+	        
+	        doFill = state.doFill;
+	        currentFillColor = state.currentFillColor;
+	        doStroke = state.doStroke;
+	        currentStrokeColor = state.currentStrokeColor;
+	        curTint = state.curTint;
+	        curRectMode = state.curRectMode;
+	        curColorMode = state.curColorMode;
+	        colorModeX = state.colorModeX;
+	        colorModeZ = state.colorModeZ;
+	        colorModeY = state.colorModeY;
+	        colorModeA = state.colorModeA;
+	        curTextFont = state.curTextFont;
+	        curFontName = state.curFontName;
+	        curTextSize = state.curTextSize;
+	        horizontalTextAlignment = state.horizontalTextAlignment;
+	        verticalTextAlignment = state.verticalTextAlignment;
+	        textMode = state.textMode;
+	        curTextAscent = state.curTextAscent;
+	        curTextDescent = state.curTextDescent;
+	        curTextLeading = state.curTextLeading
+	        
+			return this;
+		},*/
+		
+		/*_pushState : function() {
+ 			
+			this.p.pushStyle(); 
 			this.p.pushMatrix();
+			return this;
+		 },
+ 		
+		 _popState : function() {
+ 			
+			this.p.popStyle();
+			this.p.popMatrix();
+			return this;
+		 },*/
+ 		
+		_pushState : function() {
+			
+			//this.p.pushStyle(); 
+			this.ctx.save();
+			
+			//this.p.pushMatrix();
 			return this;
 		},
 		
 		_popState : function() {
 			
-			this.p.popStyle();
-			this.p.popMatrix();
+			//this.p.popMatrix();
+			
+			this.ctx.restore();
+			//this.p.popStyle();
+			
 			return this;
 		},
 
@@ -57197,33 +57322,42 @@ log('tag='+tag+' count='+this.TAGS.length);
 		
 		_textWidth : function(fontObj, str) {
 			
-			this.p.pushStyle();
+			//this.p.pushStyle(); ////////
+			this.ctx.save();
 			this.p.textFont(fontObj,fontObj.size); // was _textFont
 			var tw = this.p.textWidth(str);
-			this.p.popStyle();
+			//this.p.popStyle();
+			this.ctx.restore();
 			return tw;
 		},
 		
 		_textHeight : function(rt) {
-			
-			return this._getBoundingBox(rt).height;
+			this.ctx.save();
+			var h = this._getBoundingBox(rt).height;
+			this.ctx.restore();
+			return h;
 		},
 		
 		_textAscent : function(rt) {
 			
-			this.p.pushStyle();
+			//this.p.pushStyle(); ////////
+			this.ctx.save();
 			this.p.textFont(rt._font, rt._font.size);
 			var asc = this.p.textAscent();
-			this.p.popStyle();
+			//this.p.popStyle();
+			this.ctx.restore();
+
 			return asc;
 		},
 		
 		_textDescent : function(rt) {
 			
-			this.p.pushStyle();
+			//this.p.pushStyle(); ////////
+			this.ctx.save();
 			this.p.textFont(rt._font, rt._font.size);
 			var dsc = this.p.textDescent();
-			this.p.popStyle();
+			//this.p.popStyle();
+			this.ctx.restore();
 			return dsc;
 		},
 
@@ -57240,14 +57374,16 @@ log('tag='+tag+' count='+this.TAGS.length);
 		// TODO: what about scale?
 		_getBoundingBox : function(rt) {
 			
-			this.p.pushStyle();
+			//this.p.pushStyle(); ////////
+			//this.ctx.save();
 
 			var ascent  =   Math.round(this.p.textAscent()),
 				descent =   Math.round(this.p.textDescent()),
 				width   =   Math.round(this.p.textWidth(rt.text()));
 			
-			this.p.popStyle();
-			
+			//this.p.popStyle(); ////////
+			//this.ctx.restore();
+
 			return { x: 0, y: -ascent-1, width: width, height: (ascent+descent)+1 };
 		},
 		
@@ -57330,9 +57466,11 @@ log('tag='+tag+' count='+this.TAGS.length);
 	];
 
 	var PLURAL_RULES = [
+		P_AND_S,
 		RE("^(piano|photo|solo|ego)$", 0, "s"),
 		RE("[bcdfghjklmnpqrstvwxyz]o$", 0, "es"),
 		RE("[bcdfghjklmnpqrstvwxyz]y$", 1, "ies"),
+		RE("^ox$", 0, "en"),
 		RE("([zsx]|ch|sh)$", 0, "es"),
 		RE("[lraeiou]fe$", 2, "ves"),
 		RE("[lraeiou]f$", 1, "ves"),
@@ -57359,7 +57497,6 @@ log('tag='+tag+' count='+this.TAGS.length);
 		RE("femur", 2, "ora"),
 		RE("goose", 4, "eese"),
 		RE("(human|german|roman)$", 0, "s"),
-		RE("^ox$", 0, "en"),
 		RE("(crisis)$", 2, "es"),
 		RE("^(monarch|loch|stomach)$", 0, "s"),
 		RE("^(taxi|chief|proof|ref|relief|roof|belief)$", 0, "s"),
@@ -57367,8 +57504,8 @@ log('tag='+tag+' count='+this.TAGS.length);
 		RE("^(memorandum|bacterium|curriculum|minimum|"
 			+ "maximum|referendum|spectrum|phenomenon|criterion)$", 2, "a"),
 		RE("^(appendix|index|matrix)", 2, "ices"),
-		RE("^(stimulus|alumnus)$", 2, "i"),
-		P_AND_S],
+		RE("^(stimulus|alumnus)$", 2, "i")
+		],
 		
 		ANY_STEM = "^((\\w+)(-\\w+)*)(\\s((\\w+)(-\\w+)*))*$", CONS = "[bcdfghjklmnpqrstvwxyz]",
 		VERBAL_PREFIX = "((be|with|pre|un|over|re|mis|under|out|up|fore|for|counter|co|sub)(-?))",
@@ -57377,16 +57514,16 @@ log('tag='+tag+' count='+this.TAGS.length);
 		SYMBOLS = [ "!", "?", "$", "%", "*", "+", "-", "=" ],
 
 		ING_FORM_RULES = [ 
-							  RE(CONS + "ie$", 2, "ying", 1),
-							  RE("[^ie]e$", 1, "ing", 1),
-							  RE("^bog-down$", 5, "ging-down", 0),
-							  RE("^chivy$", 1, "vying", 0),
-							  RE("^trek$", 1, "cking", 0), 
-							  RE("^bring$", 0, "ing", 0),
-							  RE("^be$", 0, "ing", 0), 
-							  RE("^age$", 1, "ing", 0), 
-							  RE("(ibe)$", 1, "ing", 0) 
-						  ],
+			  RE(CONS + "ie$", 2, "ying", 1),
+			  RE("[^ie]e$", 1, "ing", 1),
+			  RE("^bog-down$", 5, "ging-down", 0),
+			  RE("^chivy$", 1, "vying", 0),
+			  RE("^trek$", 1, "cking", 0), 
+			  RE("^bring$", 0, "ing", 0),
+			  RE("^be$", 0, "ing", 0), 
+			  RE("^age$", 1, "ing", 0), 
+			  RE("(ibe)$", 1, "ing", 0) 
+		],
 
 		PAST_PARTICIPLE_RULES = [     
 			
@@ -58271,8 +58408,12 @@ log('tag='+tag+' count='+this.TAGS.length);
 
 	// ///////////////////////////// End Functions ////////////////////////////////////
 
-	var hasProcessing = (typeof Processing !== 'undefined');
-		//console.log('hasProcessing='+hasProcessing);
+	var context2d, hasProcessing = (typeof Processing !== 'undefined');
+	//console.log('hasProcessing='+hasProcessing);
+
+	if (typeof document !== 'undefined') {
+	
+	}
 	
 	if (hasProcessing) {
 
@@ -58288,7 +58429,12 @@ log('tag='+tag+' count='+this.TAGS.length);
 			attach : function(p5) {
 				p = p5;
 				//log("Processing.registerLibrary.attach");
-				RiText.renderer = new RiText_P5(p5);
+				//log(p.externals);
+				//log(p.externals['canvas']);
+				var context2d = p.externals['canvas'].getContext("2d");
+				//log("p5:");
+				//log(context2d);
+				RiText.renderer = new RiText_P5(p5, context2d);
 			},
 			
 			detach : function(p5) {
@@ -58307,7 +58453,7 @@ log('tag='+tag+' count='+this.TAGS.length);
 				RiText.renderer = new RiText_Canvas(context2d);
 			}
 			catch(e) {
-				//console.warn("[RiTa] No object w' name='canvas' in DOM, renderer will be unavailable");
+				console.warn("[RiTa] No object w' name='canvas' in DOM, renderer will be unavailable");
 			}
 		}
 	}
@@ -58350,3 +58496,4 @@ log('tag='+tag+' count='+this.TAGS.length);
 	RiTa.p5Compatible(hasProcessing); // TODO: whats the no-P5 default? false, for now
 
 })(typeof window !== 'undefined' ? window : null);
+

@@ -1,7 +1,7 @@
 
 (function(window, undefined) {
 	
-	var _VERSION_ = '0.25';
+	var _VERSION_ = '0.26';
 	// also update /RiTaLibraryJS/www/download/index.html (TODO: should be automatic)
 
 	/**  @private Simple type-checking functions */ 
@@ -416,7 +416,6 @@
 		// RiTa constants =================================
 		
 		/** The current version of the RiTa tools */
-
 		VERSION : _VERSION_,
 
 		/** 
@@ -5464,7 +5463,7 @@
 			 
 				// Set color
 				g._fill(this._color.r, this._color.g, this._color.b, this._color.a);
-	  
+
 				// Set font params
 				g._textFont(this._font);
 				g._textAlign(this._alignment);
@@ -5474,6 +5473,8 @@
 		
 				// And the bounding box
 				if (this._boundingBoxVisible) {
+					
+					//	console.log(this.text()+".bb="+this._boundingBoxVisible);
 					
 					g._fill(this._boundingBoxFill.r, this._boundingBoxFill.g, 
 						this._boundingBoxFill.b, this._boundingBoxFill.a);
@@ -5711,14 +5712,11 @@
 		  if (this.fadeToTextCopy) 
 		  {
 			startAlpha = this.fadeToTextCopy.alpha();
-			RiText.dispose(this.fadeToTextCopy); // stop any currents
-
-		  	// WORKING HERE ON FADE BUG
-			//log('disposing fadeToTextCopy');
+			//RiText.dispose(this.fadeToTextCopy); // TODO: do we need this?
 		  }
 		
 		  // use the copy to fade out
-		  this.fadeToTextCopy = this.clone();
+		  this.fadeToTextCopy = this.copy();
 
 		  //this.fadeToTextCopy.fadeOut(seconds, 0, true);
 		  this.fadeToTextCopy.colorTo(
@@ -7627,7 +7625,6 @@
 		
 		_textDescent : function(rt) {
 			return this._getMetrics(rt).descent;
-
 		},
 
 		// should operate on the RiText itself (take rt as arg?)
@@ -7647,19 +7644,25 @@
 		},
 
 		_textHeight : function(rt) {
-			return this._getBoundingBox(rt).height;
+			this.ctx.save();
+			var h = this._getBoundingBox(rt).height;
+			this.ctx.restore();
+			return h;
 		},
 		
 		//  hack to deal with lack of metrics in the canvas
 		_getBoundingBox : function(rt) {
 
-			this.ctx.save();
+			//this.ctx.save();
+			
 			this._textFont(rt._font);
 			var w = this.ctx.measureText(rt.text()).width;
 			// this must be cached...
 			var metrics = this._getMetrics(rt);
+			
 			//log('[CTX] ascent='+metrics.ascent+' descent='+metrics.descent+" h="+(metrics.ascent+metrics.descent));
-			this.ctx.restore();
+			//this.ctx.restore();
+			
 			return { x: 0, y: -metrics.ascent-1, width: w, height: metrics.ascent+metrics.descent+1 };
 		},
 
@@ -7680,7 +7683,7 @@
 		
 		_getMetrics : function(rt) {  // hack for font metrics in the canvas
 			
-			// TODO: if (rt._metrics) return rt._metrics; // check cache
+			// TODO: if (rt._metrics) return rt._metrics; // check cache (invalidate on any change of font or size or...)
 
 			var st = '<span style="font-size: '+rt._font.size+'; font-family: '+rt._font.name+'">'+rt.text()+'</span>';
 			var dt = '<div style="display: inline-block; width: 1px; height: 0px; vertical-align: bottom; "></div>';
@@ -7710,10 +7713,12 @@
 
 				result.descent = (height - result.ascent);
 				result.ascent -=  result.descent;
-
 			} 
 			finally {
 				document.body.removeChild(div);
+				div.removeChild(text);
+				div.removeChild(block);
+				// fragment.removeChild(div);
 			}
 
 			// TODO: rt._metrics = results; // add to cache
@@ -10388,9 +10393,33 @@
 
 	RiText_P5.prototype = {
 
-		init : function(p) {
+		init : function(p, ctx) {
 			
 			this.p = p;
+			if (!ctx) console.error("no cnv-context!");
+			this.ctx = ctx;
+			/*this.state = {
+		        "doFill": doFill,
+		        "currentFillColor": currentFillColor,
+		        "doStroke": doStroke,
+		        "currentStrokeColor": currentStrokeColor,
+		        "curTint": curTint,
+		        "curRectMode": curRectMode,
+		        "curColorMode": curColorMode,
+		        "colorModeX": colorModeX,
+		        "colorModeZ": colorModeZ,
+		        "colorModeY": colorModeY,
+		        "colorModeA": colorModeA,
+		        "curTextFont": curTextFont,
+		        "horizontalTextAlignment": horizontalTextAlignment,
+		        "verticalTextAlignment": verticalTextAlignment,
+		        "textMode": textMode,
+		        "curFontName": curFontName,
+		        "curTextSize": curTextSize,
+		        "curTextAscent": curTextAscent,
+		        "curTextDescent": curTextDescent,
+		        "curTextLeading": curTextLeading
+	      };*/
 		},
 		
 		_size : function() {
@@ -10403,17 +10432,95 @@
 			return this.p;
 		},
 		
-		_pushState : function(str) {
+		/*_pushStyle : function(p) {
 			
-			this.p.pushStyle();
+			p.saveContext();
+			p.p.pushMatrix();
+
+			state.doFill = doFill;
+			state.currentFillColor = currentFillColor;
+			state.doStroke = doStroke;
+			state.currentStrokeColor = currentStrokeColor;
+			state.curTint = curTint;
+			state.curRectMode = curRectMode;
+			state.curColorMode = curColorMode;
+			state.colorModeX = colorModeX;
+			state.colorModeZ = colorModeZ;
+			state.colorModeY = colorModeY;
+			state.colorModeA = colorModeA;
+			state.curTextFont = curTextFont;
+			state.horizontalTextAlignment = horizontalTextAlignment;
+			state.verticalTextAlignment = verticalTextAlignment;
+			state.textMode = textMode;
+			state.curFontName = curFontName;
+			state.curTextSize = curTextSize;
+			state.curTextAscent = curTextAscent;
+			state.curTextDescent = curTextDescent;
+			state.curTextLeading = curTextLeading; 
+
+			//p.styleArray.push(newState)
+			return this;
+		},
+		
+		_popStyle : function(p) {
+			
+			p.restoreContext();
+	        p.p.popMatrix();
+	        
+	        doFill = state.doFill;
+	        currentFillColor = state.currentFillColor;
+	        doStroke = state.doStroke;
+	        currentStrokeColor = state.currentStrokeColor;
+	        curTint = state.curTint;
+	        curRectMode = state.curRectMode;
+	        curColorMode = state.curColorMode;
+	        colorModeX = state.colorModeX;
+	        colorModeZ = state.colorModeZ;
+	        colorModeY = state.colorModeY;
+	        colorModeA = state.colorModeA;
+	        curTextFont = state.curTextFont;
+	        curFontName = state.curFontName;
+	        curTextSize = state.curTextSize;
+	        horizontalTextAlignment = state.horizontalTextAlignment;
+	        verticalTextAlignment = state.verticalTextAlignment;
+	        textMode = state.textMode;
+	        curTextAscent = state.curTextAscent;
+	        curTextDescent = state.curTextDescent;
+	        curTextLeading = state.curTextLeading
+	        
+			return this;
+		},*/
+		
+		/*_pushState : function() {
+ 			
+			this.p.pushStyle(); 
 			this.p.pushMatrix();
+			return this;
+		 },
+ 		
+		 _popState : function() {
+ 			
+			this.p.popStyle();
+			this.p.popMatrix();
+			return this;
+		 },*/
+ 		
+		_pushState : function() {
+			
+			//this.p.pushStyle(); 
+			this.ctx.save();
+			
+			//this.p.pushMatrix();
 			return this;
 		},
 		
 		_popState : function() {
 			
-			this.p.popStyle();
-			this.p.popMatrix();
+			//this.p.popMatrix();
+			
+			this.ctx.restore();
+			//this.p.popStyle();
+			
 			return this;
 		},
 
@@ -10490,33 +10597,42 @@
 		
 		_textWidth : function(fontObj, str) {
 			
-			this.p.pushStyle();
+			//this.p.pushStyle(); ////////
+			this.ctx.save();
 			this.p.textFont(fontObj,fontObj.size); // was _textFont
 			var tw = this.p.textWidth(str);
-			this.p.popStyle();
+			//this.p.popStyle();
+			this.ctx.restore();
 			return tw;
 		},
 		
 		_textHeight : function(rt) {
-			
-			return this._getBoundingBox(rt).height;
+			this.ctx.save();
+			var h = this._getBoundingBox(rt).height;
+			this.ctx.restore();
+			return h;
 		},
 		
 		_textAscent : function(rt) {
 			
-			this.p.pushStyle();
+			//this.p.pushStyle(); ////////
+			this.ctx.save();
 			this.p.textFont(rt._font, rt._font.size);
 			var asc = this.p.textAscent();
-			this.p.popStyle();
+			//this.p.popStyle();
+			this.ctx.restore();
+
 			return asc;
 		},
 		
 		_textDescent : function(rt) {
 			
-			this.p.pushStyle();
+			//this.p.pushStyle(); ////////
+			this.ctx.save();
 			this.p.textFont(rt._font, rt._font.size);
 			var dsc = this.p.textDescent();
-			this.p.popStyle();
+			//this.p.popStyle();
+			this.ctx.restore();
 			return dsc;
 		},
 
@@ -10533,14 +10649,16 @@
 		// TODO: what about scale?
 		_getBoundingBox : function(rt) {
 			
-			this.p.pushStyle();
+			//this.p.pushStyle(); ////////
+			//this.ctx.save();
 
 			var ascent  =   Math.round(this.p.textAscent()),
 				descent =   Math.round(this.p.textDescent()),
 				width   =   Math.round(this.p.textWidth(rt.text()));
 			
-			this.p.popStyle();
-			
+			//this.p.popStyle(); ////////
+			//this.ctx.restore();
+
 			return { x: 0, y: -ascent-1, width: width, height: (ascent+descent)+1 };
 		},
 		
@@ -11565,8 +11683,12 @@
 
 	// ///////////////////////////// End Functions ////////////////////////////////////
 
-	var hasProcessing = (typeof Processing !== 'undefined');
-		//console.log('hasProcessing='+hasProcessing);
+	var context2d, hasProcessing = (typeof Processing !== 'undefined');
+	//console.log('hasProcessing='+hasProcessing);
+
+	if (typeof document !== 'undefined') {
+	
+	}
 	
 	if (hasProcessing) {
 
@@ -11582,7 +11704,12 @@
 			attach : function(p5) {
 				p = p5;
 				//log("Processing.registerLibrary.attach");
-				RiText.renderer = new RiText_P5(p5);
+				//log(p.externals);
+				//log(p.externals['canvas']);
+				var context2d = p.externals['canvas'].getContext("2d");
+				//log("p5:");
+				//log(context2d);
+				RiText.renderer = new RiText_P5(p5, context2d);
 			},
 			
 			detach : function(p5) {
@@ -11601,7 +11728,7 @@
 				RiText.renderer = new RiText_Canvas(context2d);
 			}
 			catch(e) {
-				//console.warn("[RiTa] No object w' name='canvas' in DOM, renderer will be unavailable");
+				console.warn("[RiTa] No object w' name='canvas' in DOM, renderer will be unavailable");
 			}
 		}
 	}
@@ -11644,3 +11771,4 @@
 	RiTa.p5Compatible(hasProcessing); // TODO: whats the no-P5 default? false, for now
 
 })(typeof window !== 'undefined' ? window : null);
+
