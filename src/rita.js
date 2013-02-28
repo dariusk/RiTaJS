@@ -3135,10 +3135,10 @@
 
 	
 	/**
-	 *  Syllabifies the input, given a string or array of phonemes in CMUpronunciation dictionary format 
+	 *  Syllabifies the input, given a string or array of phonemes in CMU Pronunciation Dictionary format 
 	 *   (with optional stress numbers after vowels), e.g. "B AE1 T" or ["B", "AE1", "T"]'''
 	 *       
-	 *  @param {string or array} input containing
+	 *  @param {string or array} input
 	 *  @returns {string} 
 	 */
 	RiString._syllabify = function(input) {
@@ -3321,9 +3321,17 @@
 		   return this._features;
 		},
 		
+		_initFeatureMap : function() {
+
+			this._features = {};					    
+		    this._features.mutable = "true";
+		    this._features.text = this.text();
+		},
+		
 		/**
 		 * Computes a set of features for the contained string, including
 		 * phonemes, syllables, stresses, etc.
+		 * 
 		 * To access any of these, use get(name), e.g., 
 		 * 
 		 * @example myRiString.get('phonemes') ||  myRiString.get(RiTa.PHONEMES);
@@ -3334,8 +3342,8 @@
 	
 			var phonemes = E, syllables = E, stresses = E, slash = '/',  delim = '-', raw, lts,
 				words = RiTa.tokenize(this._text), lts, stressyls, lex = RiLexicon._getInstance(); 
-				
-			this._features = this._features || {};
+			
+			if (!this._features) this._initFeatureMap();
 			
 			for (var i = 0, l = words.length; i < l; i++) {
 				
@@ -3346,7 +3354,6 @@
 					if (words[i].match(/[a-zA-Z]+/))
 						log("[RiTa] Used LTS-rules for '"+words[i]+"'");
 					
-					  
 					lts = lts || LetterToSound();
 					raw = RiString._syllabify(lts.getPhones(words[i]));
 				}
@@ -3369,8 +3376,11 @@
 			
 			
 			this._features.stresses = stresses.trim();
-			this._features.phonemes = replaceAll(phonemes.trim(), " +", SP);
-			this._features.syllables = replaceAll(syllables.trim(), " +", SP);
+			this._features.phonemes = replaceAll(phonemes.trim(), "\\s+", SP);
+			this._features.syllables = replaceAll(syllables.trim(), "\\s+", SP);
+			
+			this._features.tokens = words.join(SP);
+			this._features.pos = RiTa.getPosTags(this._text).join(SP);
 			
 			return this;
 		},
@@ -3446,7 +3456,7 @@
 			
 			if (arguments.length>0) {
 				this._text = theText;
-				this._features = undefined;
+				this._initFeatureMap();
 				return this;
 			}
 			return this._text;
@@ -4538,7 +4548,7 @@
 	}
 	
 	/**
-	 * Immediately stops the current animation loop and clears 
+	 * Immediately stops the current animation loop
 	 */
 	RiText.noLoop = function() {
 		var an = RiText._animator;
@@ -4551,8 +4561,8 @@
 	 * Starts an animation loop that calls the specified callback (usually 'draw') 
 	 * at the specified fps  
 	 * 
-	 * @param {function} callback the animation callback (optional, default=60)
-	 * @param {number} fps the target framesPerSecond (optional, default='draw')
+	 * @param {function} callback the animation callback (optional, default='draw')
+	 * @param {number} fps the target framesPerSecond (optional, default=60)
 	 * <pre>
 	 * Examples:
 	 *  RiText.loop();
@@ -4617,6 +4627,7 @@
 				 var fps = ++an.framesSinceLastFPS / sec;
 				 
 				 if (sec > 0.5) {
+				 	
 					 an.timeSinceLastFPS = Date.now();
 					 an.framesSinceLastFPS = 0;
 					 an.actualFPS = fps;
@@ -4629,10 +4640,12 @@
 					console.warn("Unable to invoke callback: "+callback);
 					an.callbackDisabled = true;
 				}
+				
 				window.clearInterval(an.loopId);
 				console.trace(this);
 				throw ex;
 			  }
+			  
 			}, mps);
 			
 			an.isLooping = true;
@@ -5254,6 +5267,8 @@
 		if (toDelete) {
 			delete(toDelete._rs);
 			delete(toDelete);
+			toDelete._rs = {};
+			toDelete = {};
 		}
 
 	}  
@@ -5438,8 +5453,8 @@
 		
 		_update : function() {
 			
-			var time = Date.now();
-			this._updateBehaviors(time);
+			if (this._behaviors.length)
+				this._updateBehaviors();
 			return this;
 		},
 		
@@ -5448,8 +5463,6 @@
 			var g = this.g;
 			
 			if (!g) err('no-renderer');
-			
-			g._pushState();
 			
 			if (this._rs && this._rs.length) {
 			
@@ -5769,12 +5782,13 @@
 					   rt._color.b = this.b;
 					   rt._color.a = this.a
 					})
-					//.delay(delay)
 					.onComplete( 
 						function () {
 							if (_type != 'silent')
 								RiTaEvent(rt, _type+'Complete')._fire(callback);    
-							if (_destroyOnComplete) RiText.dispose(rt);
+							if (_destroyOnComplete) {
+								RiText.dispose(rt);
+							}
 						})
 					.start();
 				
@@ -6882,7 +6896,7 @@
 
 			while ( i < num ) {
 
-				if (this._behaviors[ i ].update(time) ) {
+				if (this._behaviors[i].update(time) ) {
 					i++;
 
 				} else {
@@ -10358,8 +10372,8 @@
 				}
 			}
 	
-			if (_onUpdateCallback !== null ) {
-	
+			if (_onUpdateCallback) {
+
 				_onUpdateCallback.call( _object, value );
 			}
 	
@@ -10398,28 +10412,7 @@
 			this.p = p;
 			if (!ctx) console.error("no cnv-context!");
 			this.ctx = ctx;
-			/*this.state = {
-		        "doFill": doFill,
-		        "currentFillColor": currentFillColor,
-		        "doStroke": doStroke,
-		        "currentStrokeColor": currentStrokeColor,
-		        "curTint": curTint,
-		        "curRectMode": curRectMode,
-		        "curColorMode": curColorMode,
-		        "colorModeX": colorModeX,
-		        "colorModeZ": colorModeZ,
-		        "colorModeY": colorModeY,
-		        "colorModeA": colorModeA,
-		        "curTextFont": curTextFont,
-		        "horizontalTextAlignment": horizontalTextAlignment,
-		        "verticalTextAlignment": verticalTextAlignment,
-		        "textMode": textMode,
-		        "curFontName": curFontName,
-		        "curTextSize": curTextSize,
-		        "curTextAscent": curTextAscent,
-		        "curTextDescent": curTextDescent,
-		        "curTextLeading": curTextLeading
-	      };*/
+			
 		},
 		
 		_size : function() {
@@ -10431,65 +10424,6 @@
 			
 			return this.p;
 		},
-		
-		/*_pushStyle : function(p) {
-			
-			p.saveContext();
-			p.p.pushMatrix();
-
-			state.doFill = doFill;
-			state.currentFillColor = currentFillColor;
-			state.doStroke = doStroke;
-			state.currentStrokeColor = currentStrokeColor;
-			state.curTint = curTint;
-			state.curRectMode = curRectMode;
-			state.curColorMode = curColorMode;
-			state.colorModeX = colorModeX;
-			state.colorModeZ = colorModeZ;
-			state.colorModeY = colorModeY;
-			state.colorModeA = colorModeA;
-			state.curTextFont = curTextFont;
-			state.horizontalTextAlignment = horizontalTextAlignment;
-			state.verticalTextAlignment = verticalTextAlignment;
-			state.textMode = textMode;
-			state.curFontName = curFontName;
-			state.curTextSize = curTextSize;
-			state.curTextAscent = curTextAscent;
-			state.curTextDescent = curTextDescent;
-			state.curTextLeading = curTextLeading; 
-
-			//p.styleArray.push(newState)
-			return this;
-		},
-		
-		_popStyle : function(p) {
-			
-			p.restoreContext();
-	        p.p.popMatrix();
-	        
-	        doFill = state.doFill;
-	        currentFillColor = state.currentFillColor;
-	        doStroke = state.doStroke;
-	        currentStrokeColor = state.currentStrokeColor;
-	        curTint = state.curTint;
-	        curRectMode = state.curRectMode;
-	        curColorMode = state.curColorMode;
-	        colorModeX = state.colorModeX;
-	        colorModeZ = state.colorModeZ;
-	        colorModeY = state.colorModeY;
-	        colorModeA = state.colorModeA;
-	        curTextFont = state.curTextFont;
-	        curFontName = state.curFontName;
-	        curTextSize = state.curTextSize;
-	        horizontalTextAlignment = state.horizontalTextAlignment;
-	        verticalTextAlignment = state.verticalTextAlignment;
-	        textMode = state.textMode;
-	        curTextAscent = state.curTextAscent;
-	        curTextDescent = state.curTextDescent;
-	        curTextLeading = state.curTextLeading
-	        
-			return this;
-		},*/
 		
 		/*_pushState : function() {
  			
@@ -10691,7 +10625,7 @@
 	
 	var DEFAULT_PLURAL_RULE = RE("^((\\w+)(-\\w+)*)(\\s((\\w+)(-\\w+)*))*$", 0, "s");
 	
-	var P_AND_S = RE( // these don't change for plural/singular
+	var NULL_PLURALS = RE( // these don't change for plural/singular
 		"^(bantu|bengalese|bengali|beninese|boche|bonsai|"
 		+ "burmese|chinese|congolese|gabonese|guyanese|japanese|javanese|"
 		+ "lebanese|maltese|olympics|portuguese|senegalese|siamese|singhalese|"
@@ -10703,16 +10637,17 @@
 		+ "firstborn|fish|flatfish|flounder|fowl|fry|fries|works|globefish|goldfish|golf|"
 		+ "grand|grief|gudgeon|gulden|haddock|hake|halibut|headquarters|herring|hertz|horsepower|"
 		+ "goods|hovercraft|hundredweight|ironworks|jackanapes|kilohertz|kurus|kwacha|ling|lungfish|"
-		+ "mackerel|means|megahertz|moorfowl|moorgame|mullet|nepalese|offspring|pampas|parr|(pants$)|"
+		+ "mackerel|means|megahertz|moorfowl|moorgame|mullet|nepalese|offspring|pampas|parr|pants|"
 		+ "patois|pekinese|penn'orth|perch|pickerel|pike|pince-nez|plaice|precis|quid|rand|"
 		+ "rendezvous|revers|roach|roux|salmon|samurai|series|seychelles|seychellois|shad|"
 		+ "sheep|shellfish|smelt|spacecraft|species|starfish|stockfish|sunfish|superficies|"
-		+ "sweepstakes|swordfish|tench|tennis|tobacco|tope|triceps|trout|tuna|tunafish|tunny|turbot|trousers|"
+		+ "sweepstakes|swordfish|tench|tennis|[a-z]+osis|[a-z]+ness|tobacco|tope|triceps|trout|tuna|tunafish|tunny|turbot|trousers|"
 		+ "undersigned|veg|waterfowl|waterworks|waxworks|whiting|wildfowl|woodworm|"
 		+ "yen|aries|pisces|forceps|lieder|jeans|physics|mathematics|news|odds|politics|remains|"
 		+ "surroundings|thanks|statistics|goods|aids|wildlife)$", 0, E);
 		
 	var SINGULAR_RULES = [
+		  NULL_PLURALS,
 		  RE("^(oxen|buses)$",2,E),
 		  RE("^(toes|taxis)$",1,E),
 		  RE("^series$",0,E),
@@ -10737,11 +10672,10 @@
 		  RE("geese", 4, "oose"),
 		  RE("crises", 2, "is"),
 		  RE("(human|german|roman)$", 0, "s"),
-		  P_AND_S
 	];
 
 	var PLURAL_RULES = [
-		P_AND_S,
+		NULL_PLURALS,
 		RE("^(piano|photo|solo|ego)$", 0, "s"),
 		RE("[bcdfghjklmnpqrstvwxyz]o$", 0, "es"),
 		RE("[bcdfghjklmnpqrstvwxyz]y$", 1, "ies"),
@@ -10780,232 +10714,229 @@
 			+ "maximum|referendum|spectrum|phenomenon|criterion)$", 2, "a"),
 		RE("^(appendix|index|matrix)", 2, "ices"),
 		RE("^(stimulus|alumnus)$", 2, "i")
-		],
+	],
 		
-		ANY_STEM = "^((\\w+)(-\\w+)*)(\\s((\\w+)(-\\w+)*))*$", CONS = "[bcdfghjklmnpqrstvwxyz]",
-		VERBAL_PREFIX = "((be|with|pre|un|over|re|mis|under|out|up|fore|for|counter|co|sub)(-?))",
-		AUXILIARIES = [ "do", "have", "be" ],
-		MODALS = [ "shall", "would", "may", "might", "ought", "should" ],
-		SYMBOLS = [ "!", "?", "$", "%", "*", "+", "-", "=" ],
+	ANY_STEM = "^((\\w+)(-\\w+)*)(\\s((\\w+)(-\\w+)*))*$", CONS = "[bcdfghjklmnpqrstvwxyz]",
+	VERBAL_PREFIX = "((be|with|pre|un|over|re|mis|under|out|up|fore|for|counter|co|sub)(-?))",
+	AUXILIARIES = [ "do", "have", "be" ],
+	MODALS = [ "shall", "would", "may", "might", "ought", "should" ],
+	SYMBOLS = [ "!", "?", "$", "%", "*", "+", "-", "=" ],
 
-		ING_FORM_RULES = [ 
-			  RE(CONS + "ie$", 2, "ying", 1),
-			  RE("[^ie]e$", 1, "ing", 1),
-			  RE("^bog-down$", 5, "ging-down", 0),
-			  RE("^chivy$", 1, "vying", 0),
-			  RE("^trek$", 1, "cking", 0), 
-			  RE("^bring$", 0, "ing", 0),
-			  RE("^be$", 0, "ing", 0), 
-			  RE("^age$", 1, "ing", 0), 
-			  RE("(ibe)$", 1, "ing", 0) 
+	ING_FORM_RULES = [ 
+		  RE(CONS + "ie$", 2, "ying", 1),
+		  RE("[^ie]e$", 1, "ing", 1),
+		  RE("^bog-down$", 5, "ging-down", 0),
+		  RE("^chivy$", 1, "vying", 0),
+		  RE("^trek$", 1, "cking", 0), 
+		  RE("^bring$", 0, "ing", 0),
+		  RE("^be$", 0, "ing", 0), 
+		  RE("^age$", 1, "ing", 0), 
+		  RE("(ibe)$", 1, "ing", 0) 
+	],
+
+	PAST_PARTICIPLE_RULES = [     
+		
+		RE(CONS + "y$", 1, "ied", 1),
+		RE("^" + VERBAL_PREFIX + "?(bring)$", 3, "ought", 0),
+		RE("^" + VERBAL_PREFIX + "?(take|rise|strew|blow|draw|drive|know|give|"
+			+ "arise|gnaw|grave|grow|hew|know|mow|see|sew|throw|prove|saw|quartersaw|"
+			+ "partake|sake|shake|shew|show|shrive|sightsee|strew|strive)$",
+			0, "n", 0),
+		RE("^" + VERBAL_PREFIX + "?[gd]o$", 0, "ne", 1),
+		RE("^(beat|eat|be|fall)$", 0, "en", 0),
+		RE("^(have)$", 2, "d", 0),
+		RE("^" + VERBAL_PREFIX + "?bid$", 0, "den", 0),
+		RE("^" + VERBAL_PREFIX + "?[lps]ay$", 1, "id", 1),
+		RE("^behave$", 0, "d", 0),
+		RE("^" + VERBAL_PREFIX + "?have$", 2, "d", 1),
+		RE("(sink|slink|drink|shrink|stink)$", 3, "unk", 0),
+		RE("(([sfc][twlp]?r?|w?r)ing|hang)$", 3, "ung", 0),
+		RE("^" + VERBAL_PREFIX + "?(shear|swear|bear|wear|tear)$",3,"orn",0),
+		RE("^" + VERBAL_PREFIX + "?(bend|spend|send|lend)$", 1, "t", 0),
+		RE("^" + VERBAL_PREFIX + "?(weep|sleep|sweep|creep|keep$)$", 2,"pt", 0),
+		RE("^" + VERBAL_PREFIX + "?(sell|tell)$", 3, "old", 0),
+		RE("^(outfight|beseech)$", 4, "ought", 0),
+		RE("^bethink$", 3, "ought", 0),
+		RE("^buy$", 2, "ought", 0),
+		RE("^aby$", 1, "ought", 0),
+		RE("^tarmac", 0, "ked", 0),
+		RE("^abide$", 3, "ode", 0),
+		RE("^" + VERBAL_PREFIX + "?(speak|(a?)wake|break)$", 3, "oken", 0),
+		RE("^backbite$", 1, "ten", 0),
+		RE("^backslide$", 1, "den", 0),
+		RE("^become$", 3, "ame", 0),
+		RE("^begird$", 3, "irt", 0),
+		RE("^outlie$", 2, "ay", 0),
+		RE("^rebind$", 3, "ound", 0),
+		RE("^relay$", 2, "aid", 0),
+		RE("^shit$", 3, "hat", 0),
+		RE("^bereave$", 4, "eft", 0),
+		RE("^foreswear$", 3, "ore", 0),
+		RE("^overfly$", 1, "own", 0),
+		RE("^beget$", 2, "otten", 0),
+		RE("^begin$", 3, "gun", 0),
+		RE("^bestride$", 1, "den", 0),
+		RE("^bite$", 1, "ten", 0),
+		RE("^bleed$", 4, "led", 0),
+		RE("^bog-down$", 5, "ged-down", 0),
+		RE("^bind$", 3, "ound", 0),
+		RE("^(.*)feed$", 4, "fed", 0),
+		RE("^breed$", 4, "red", 0),
+		RE("^brei", 0, "d", 0),
+		RE("^bring$", 3, "ought", 0),
+		RE("^build$", 1, "t", 0),
+		RE("^come", 0, "", 0),
+		RE("^catch$", 3, "ught", 0),
+		RE("^chivy$", 1, "vied", 0),
+		RE("^choose$", 3, "sen", 0),
+		RE("^cleave$", 4, "oven", 0),
+		RE("^crossbreed$", 4, "red", 0),
+		RE("^deal", 0, "t", 0),
+		RE("^dow$", 1, "ught", 0),
+		RE("^dream", 0, "t", 0),
+		RE("^dig$", 3, "dug", 0),
+		RE("^dwell$", 2, "lt", 0),
+		RE("^enwind$", 3, "ound", 0),
+		RE("^feel$", 3, "elt", 0),
+		RE("^flee$", 2, "ed", 0),
+		RE("^floodlight$", 5, "lit", 0),
+		RE("^fly$", 1, "own", 0),
+		RE("^forbear$", 3, "orne", 0),
+		RE("^forerun$", 3, "ran", 0),
+		RE("^forget$", 2, "otten", 0),
+		RE("^fight$", 4, "ought", 0),
+		RE("^find$", 3, "ound", 0),
+		RE("^freeze$", 4, "ozen", 0),
+		RE("^gainsay$", 2, "aid", 0),
+		RE("^gin$", 3, "gan", 0),
+		RE("^gen-up$", 3, "ned-up", 0),
+		RE("^ghostwrite$", 1, "ten", 0),
+		RE("^get$", 2, "otten", 0),
+		RE("^grind$", 3, "ound", 0),
+		RE("^hacksaw", 0, "n", 0),
+		RE("^hear", 0, "d", 0),
+		RE("^hold$", 3, "eld", 0),
+		RE("^hide$", 1, "den", 0),
+		RE("^honey$", 2, "ied", 0),
+		RE("^inbreed$", 4, "red", 0),
+		RE("^indwell$", 3, "elt", 0),
+		RE("^interbreed$", 4, "red", 0),
+		RE("^interweave$", 4, "oven", 0),
+		RE("^inweave$", 4, "oven", 0),
+		RE("^ken$", 2, "ent", 0),
+		RE("^kneel$", 3, "elt", 0),
+		RE("^lie$", 2, "ain", 0),
+		RE("^leap$", 0, "t", 0),
+		RE("^learn$", 0, "t", 0),
+		RE("^lead$", 4, "led", 0),
+		RE("^leave$", 4, "eft", 0),
+		RE("^light$", 5, "lit", 0),
+		RE("^lose$", 3, "ost", 0),
+		RE("^make$", 3, "ade", 0),
+		RE("^mean", 0, "t", 0),
+		RE("^meet$", 4, "met", 0),
+		RE("^misbecome$", 3, "ame", 0),
+		RE("^misdeal$", 2, "alt", 0),
+		RE("^mishear$", 1, "d", 0),
+		RE("^mislead$", 4, "led", 0),
+		RE("^misunderstand$", 3, "ood", 0),
+		RE("^outbreed$", 4, "red", 0),
+		RE("^outrun$", 3, "ran", 0),
+		RE("^outride$", 1, "den", 0),
+		RE("^outshine$", 3, "one", 0),
+		RE("^outshoot$", 4, "hot", 0),
+		RE("^outstand$", 3, "ood", 0),
+		RE("^outthink$", 3, "ought", 0),
+		RE("^outgo$", 2, "went", 0),
+		RE("^overbear$", 3, "orne", 0),
+		RE("^overbuild$", 3, "ilt", 0),
+		RE("^overcome$", 3, "ame", 0),
+		RE("^overfly$", 2, "lew", 0),
+		RE("^overhear$", 2, "ard", 0),
+		RE("^overlie$", 2, "ain", 0),
+		RE("^overrun$", 3, "ran", 0),
+		RE("^override$", 1, "den", 0),
+		RE("^overshoot$", 4, "hot", 0),
+		RE("^overwind$", 3, "ound", 0),
+		RE("^overwrite$", 1, "ten", 0),
+		RE("^plead$", 2, "d", 0),
+		//RE("^run$", 3, "ran", 0), //DH
+		//RE("^rerun$", 3, "run", 0),
+		RE("^rebuild$", 3, "ilt", 0),
+		RE("^red$", 3, "red", 0),
+		RE("^redo$", 1, "one", 0),
+		RE("^remake$", 3, "ade", 0),
+		RE("^resit$", 3, "sat", 0),
+		RE("^rethink$", 3, "ought", 0),
+		RE("^rewind$", 3, "ound", 0),
+		RE("^rewrite$", 1, "ten", 0),
+		RE("^ride$", 1, "den", 0),
+		RE("^reeve$", 4, "ove", 0),
+		RE("^sit$", 3, "sat", 0),
+		RE("^shoe$", 3, "hod", 0),
+		RE("^shine$", 3, "one", 0),
+		RE("^shoot$", 4, "hot", 0),
+		RE("^ski$", 1, "i'd", 0),
+		RE("^slide$", 1, "den", 0),
+		RE("^smite$", 1, "ten", 0),
+		RE("^seek$", 3, "ought", 0),
+		RE("^spit$", 3, "pat", 0),
+		RE("^speed$", 4, "ped", 0),
+		RE("^spellbind$", 3, "ound", 0),
+		RE("^spoil$", 2, "ilt", 0),
+		RE("^spotlight$", 5, "lit", 0),
+		RE("^spin$", 3, "pun", 0),
+		RE("^steal$", 3, "olen", 0),
+		RE("^stand$", 3, "ood", 0),
+		RE("^stave$", 3, "ove", 0),
+		RE("^stride$", 1, "den", 0),
+		RE("^strike$", 3, "uck", 0),
+		RE("^stick$", 3, "uck", 0),
+		RE("^swell$", 3, "ollen", 0),
+		RE("^swim$", 3, "wum", 0),
+		RE("^teach$", 4, "aught", 0),
+		RE("^think$", 3, "ought", 0),
+		RE("^tread$", 3, "odden", 0),
+		RE("^typewrite$", 1, "ten", 0),
+		RE("^unbind$", 3, "ound", 0),
+		RE("^underbuy$", 2, "ought", 0),
+		RE("^undergird$", 3, "irt", 0),
+		RE("^undergo$", 1, "one", 0),
+		RE("^underlie$", 2, "ain", 0),
+		RE("^undershoot$", 4, "hot", 0),
+		RE("^understand$", 3, "ood", 0),
+		RE("^unfreeze$", 4, "ozen", 0),
+		RE("^unlearn", 0, "t", 0),
+		RE("^unmake$", 3, "ade", 0),
+		RE("^unreeve$", 4, "ove", 0),
+		RE("^unstick$", 3, "uck", 0),
+		RE("^unteach$", 4, "aught", 0),
+		RE("^unthink$", 3, "ought", 0),
+		RE("^untread$", 3, "odden", 0),
+		RE("^unwind$", 3, "ound", 0),
+		RE("^upbuild$", 1, "t", 0),
+		RE("^uphold$", 3, "eld", 0),
+		RE("^upheave$", 4, "ove", 0),
+		RE("^waylay$", 2, "ain", 0),
+		RE("^whipsaw$", 2, "awn", 0),
+		RE("^withhold$", 3, "eld", 0),
+		RE("^withstand$", 3, "ood", 0),
+		RE("^win$", 3, "won", 0),
+		RE("^wind$", 3, "ound", 0),
+		RE("^weave$", 4, "oven", 0),
+		RE("^write$", 1, "ten", 0),
+		RE("^trek$", 1, "cked", 0),
+		RE("^ko$", 1, "o'd", 0),
+		RE("^win$", 2, "on", 0),
+		
+		RE("e$", 0, "d", 1),
+		
+		// Null past forms
+		RE("^" + VERBAL_PREFIX
+		+ "?(cast|thrust|typeset|cut|bid|upset|wet|bet|cut|hit|hurt|inset|let|cost|burst|beat|beset|set|upset|hit|offset|put|quit|"
+		+ "wed|typeset|wed|spread|split|slit|read|run|rerun|shut|shed)$", 0, E, 0)
+
 		],
-
-		PAST_PARTICIPLE_RULES = [     
-			
-			RE(CONS + "y$", 1, "ied", 1),
-			RE("^" + VERBAL_PREFIX + "?(bring)$", 3, "ought", 0),
-			RE("^" + VERBAL_PREFIX + "?(take|rise|strew|blow|draw|drive|know|give|"
-				+ "arise|gnaw|grave|grow|hew|know|mow|see|sew|throw|prove|saw|quartersaw|"
-				+ "partake|sake|shake|shew|show|shrive|sightsee|strew|strive)$",
-				0, "n", 0),
-			RE("^" + VERBAL_PREFIX + "?[gd]o$", 0, "ne", 1),
-			RE("^(beat|eat|be|fall)$", 0, "en", 0),
-			RE("^(have)$", 2, "d", 0),
-			RE("^" + VERBAL_PREFIX + "?bid$", 0, "den", 0),
-			RE("^" + VERBAL_PREFIX + "?[lps]ay$", 1, "id", 1),
-			RE("^behave$", 0, "d", 0),
-			RE("^" + VERBAL_PREFIX + "?have$", 2, "d", 1),
-			RE("(sink|slink|drink|shrink|stink)$", 3, "unk", 0),
-			RE("(([sfc][twlp]?r?|w?r)ing|hang)$", 3, "ung", 0),
-			RE("^" + VERBAL_PREFIX + "?(shear|swear|bear|wear|tear)$",3,"orn",0),
-			RE("^" + VERBAL_PREFIX + "?(bend|spend|send|lend)$", 1, "t", 0),
-			RE("^" + VERBAL_PREFIX + "?(weep|sleep|sweep|creep|keep$)$", 2,"pt", 0),
-			RE("^" + VERBAL_PREFIX + "?(sell|tell)$", 3, "old", 0),
-			RE("^(outfight|beseech)$", 4, "ought", 0),
-			RE("^bethink$", 3, "ought", 0),
-			RE("^buy$", 2, "ought", 0),
-			RE("^aby$", 1, "ought", 0),
-			RE("^tarmac", 0, "ked", 0),
-			RE("^abide$", 3, "ode", 0),
-			RE("^" + VERBAL_PREFIX + "?(speak|(a?)wake|break)$", 3, "oken", 0),
-			RE("^backbite$", 1, "ten", 0),
-			RE("^backslide$", 1, "den", 0),
-			RE("^become$", 3, "ame", 0),
-			RE("^begird$", 3, "irt", 0),
-			RE("^outlie$", 2, "ay", 0),
-			RE("^rebind$", 3, "ound", 0),
-			RE("^relay$", 2, "aid", 0),
-			RE("^shit$", 3, "hat", 0),
-			RE("^bereave$", 4, "eft", 0),
-			RE("^foreswear$", 3, "ore", 0),
-			RE("^overfly$", 1, "own", 0),
-			RE("^beget$", 2, "otten", 0),
-			RE("^begin$", 3, "gun", 0),
-			RE("^bestride$", 1, "den", 0),
-			RE("^bite$", 1, "ten", 0),
-			RE("^bleed$", 4, "led", 0),
-			RE("^bog-down$", 5, "ged-down", 0),
-			RE("^bind$", 3, "ound", 0),
-			RE("^(.*)feed$", 4, "fed", 0),
-			RE("^breed$", 4, "red", 0),
-			RE("^brei", 0, "d", 0),
-			RE("^bring$", 3, "ought", 0),
-			RE("^build$", 1, "t", 0),
-			RE("^come", 0, "", 0),
-			RE("^catch$", 3, "ught", 0),
-			RE("^chivy$", 1, "vied", 0),
-			RE("^choose$", 3, "sen", 0),
-			RE("^cleave$", 4, "oven", 0),
-			RE("^crossbreed$", 4, "red", 0),
-			RE("^deal", 0, "t", 0),
-			RE("^dow$", 1, "ught", 0),
-			RE("^dream", 0, "t", 0),
-			RE("^dig$", 3, "dug", 0),
-			RE("^dwell$", 2, "lt", 0),
-			RE("^enwind$", 3, "ound", 0),
-			RE("^feel$", 3, "elt", 0),
-			RE("^flee$", 2, "ed", 0),
-			RE("^floodlight$", 5, "lit", 0),
-			RE("^fly$", 1, "own", 0),
-			RE("^forbear$", 3, "orne", 0),
-			RE("^forerun$", 3, "ran", 0),
-			RE("^forget$", 2, "otten", 0),
-			RE("^fight$", 4, "ought", 0),
-			RE("^find$", 3, "ound", 0),
-			RE("^freeze$", 4, "ozen", 0),
-			RE("^gainsay$", 2, "aid", 0),
-			RE("^gin$", 3, "gan", 0),
-			RE("^gen-up$", 3, "ned-up", 0),
-			RE("^ghostwrite$", 1, "ten", 0),
-			RE("^get$", 2, "otten", 0),
-			RE("^grind$", 3, "ound", 0),
-			RE("^hacksaw", 0, "n", 0),
-			RE("^hear", 0, "d", 0),
-			RE("^hold$", 3, "eld", 0),
-			RE("^hide$", 1, "den", 0),
-			RE("^honey$", 2, "ied", 0),
-			RE("^inbreed$", 4, "red", 0),
-			RE("^indwell$", 3, "elt", 0),
-			RE("^interbreed$", 4, "red", 0),
-			RE("^interweave$", 4, "oven", 0),
-			RE("^inweave$", 4, "oven", 0),
-			RE("^ken$", 2, "ent", 0),
-			RE("^kneel$", 3, "elt", 0),
-			RE("^lie$", 2, "ain", 0),
-			RE("^leap$", 0, "t", 0),
-			RE("^learn$", 0, "t", 0),
-			RE("^lead$", 4, "led", 0),
-			RE("^leave$", 4, "eft", 0),
-			RE("^light$", 5, "lit", 0),
-			RE("^lose$", 3, "ost", 0),
-			RE("^make$", 3, "ade", 0),
-			RE("^mean", 0, "t", 0),
-			RE("^meet$", 4, "met", 0),
-			RE("^misbecome$", 3, "ame", 0),
-			RE("^misdeal$", 2, "alt", 0),
-			RE("^mishear$", 1, "d", 0),
-			RE("^mislead$", 4, "led", 0),
-			RE("^misunderstand$", 3, "ood", 0),
-			RE("^outbreed$", 4, "red", 0),
-			RE("^outrun$", 3, "ran", 0),
-			RE("^outride$", 1, "den", 0),
-			RE("^outshine$", 3, "one", 0),
-			RE("^outshoot$", 4, "hot", 0),
-			RE("^outstand$", 3, "ood", 0),
-			RE("^outthink$", 3, "ought", 0),
-			RE("^outgo$", 2, "went", 0),
-			RE("^overbear$", 3, "orne", 0),
-			RE("^overbuild$", 3, "ilt", 0),
-			RE("^overcome$", 3, "ame", 0),
-			RE("^overfly$", 2, "lew", 0),
-			RE("^overhear$", 2, "ard", 0),
-			RE("^overlie$", 2, "ain", 0),
-			RE("^overrun$", 3, "ran", 0),
-			RE("^override$", 1, "den", 0),
-			RE("^overshoot$", 4, "hot", 0),
-			RE("^overwind$", 3, "ound", 0),
-			RE("^overwrite$", 1, "ten", 0),
-			RE("^plead$", 2, "d", 0),
-			//RE("^run$", 3, "ran", 0), //DH
-			//RE("^rerun$", 3, "run", 0),
-			RE("^rebuild$", 3, "ilt", 0),
-			RE("^red$", 3, "red", 0),
-			RE("^redo$", 1, "one", 0),
-			RE("^remake$", 3, "ade", 0),
-			RE("^resit$", 3, "sat", 0),
-			RE("^rethink$", 3, "ought", 0),
-			RE("^rewind$", 3, "ound", 0),
-			RE("^rewrite$", 1, "ten", 0),
-			RE("^ride$", 1, "den", 0),
-			RE("^reeve$", 4, "ove", 0),
-			RE("^sit$", 3, "sat", 0),
-			RE("^shoe$", 3, "hod", 0),
-			RE("^shine$", 3, "one", 0),
-			RE("^shoot$", 4, "hot", 0),
-			RE("^ski$", 1, "i'd", 0),
-			RE("^slide$", 1, "den", 0),
-			RE("^smite$", 1, "ten", 0),
-			RE("^seek$", 3, "ought", 0),
-			RE("^spit$", 3, "pat", 0),
-			RE("^speed$", 4, "ped", 0),
-			RE("^spellbind$", 3, "ound", 0),
-			RE("^spoil$", 2, "ilt", 0),
-			RE("^spotlight$", 5, "lit", 0),
-			RE("^spin$", 3, "pun", 0),
-			RE("^steal$", 3, "olen", 0),
-			RE("^stand$", 3, "ood", 0),
-			RE("^stave$", 3, "ove", 0),
-			RE("^stride$", 1, "den", 0),
-			RE("^strike$", 3, "uck", 0),
-			RE("^stick$", 3, "uck", 0),
-			RE("^swell$", 3, "ollen", 0),
-			RE("^swim$", 3, "wum", 0),
-			RE("^teach$", 4, "aught", 0),
-			RE("^think$", 3, "ought", 0),
-			RE("^tread$", 3, "odden", 0),
-			RE("^typewrite$", 1, "ten", 0),
-			RE("^unbind$", 3, "ound", 0),
-			RE("^underbuy$", 2, "ought", 0),
-			RE("^undergird$", 3, "irt", 0),
-			RE("^undergo$", 1, "one", 0),
-			RE("^underlie$", 2, "ain", 0),
-			RE("^undershoot$", 4, "hot", 0),
-			RE("^understand$", 3, "ood", 0),
-			RE("^unfreeze$", 4, "ozen", 0),
-			RE("^unlearn", 0, "t", 0),
-			RE("^unmake$", 3, "ade", 0),
-			RE("^unreeve$", 4, "ove", 0),
-			RE("^unstick$", 3, "uck", 0),
-			RE("^unteach$", 4, "aught", 0),
-			RE("^unthink$", 3, "ought", 0),
-			RE("^untread$", 3, "odden", 0),
-			RE("^unwind$", 3, "ound", 0),
-			RE("^upbuild$", 1, "t", 0),
-			RE("^uphold$", 3, "eld", 0),
-			RE("^upheave$", 4, "ove", 0),
-			RE("^waylay$", 2, "ain", 0),
-			RE("^whipsaw$", 2, "awn", 0),
-			RE("^withhold$", 3, "eld", 0),
-			RE("^withstand$", 3, "ood", 0),
-			RE("^win$", 3, "won", 0),
-			RE("^wind$", 3, "ound", 0),
-			RE("^weave$", 4, "oven", 0),
-			RE("^write$", 1, "ten", 0),
-			RE("^trek$", 1, "cked", 0),
-			RE("^ko$", 1, "o'd", 0),
-			RE("^win$", 2, "on", 0),
-			
-			RE("e$", 0, "d", 1),
-			
-			// Null past forms
-			RE("^"
-			+ VERBAL_PREFIX
-			+ "?(cast|thrust|typeset|cut|bid|upset|wet|bet|cut|hit|hurt|inset|let|cost|burst|beat|beset|set|upset|hit|offset|put|quit|"
-			+ "wed|typeset|wed|spread|split|slit|read|run|rerun|shut|shed)$", 0,
-			"", 0)
-
-			],
-			
 			
 		PAST_TENSE_RULES = [
 							RE("^(reduce)$", 0, "d", 0),
@@ -11685,10 +11616,6 @@
 
 	var context2d, hasProcessing = (typeof Processing !== 'undefined');
 	//console.log('hasProcessing='+hasProcessing);
-
-	if (typeof document !== 'undefined') {
-	
-	}
 	
 	if (hasProcessing) {
 

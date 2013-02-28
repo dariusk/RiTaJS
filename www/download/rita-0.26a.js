@@ -51263,7 +51263,7 @@ _RiTa_LTS=[
 	}
 	
 	/**
-	 * Immediately stops the current animation loop and clears 
+	 * Immediately stops the current animation loop
 	 */
 	RiText.noLoop = function() {
 		var an = RiText._animator;
@@ -51276,8 +51276,8 @@ _RiTa_LTS=[
 	 * Starts an animation loop that calls the specified callback (usually 'draw') 
 	 * at the specified fps  
 	 * 
-	 * @param {function} callback the animation callback (optional, default=60)
-	 * @param {number} fps the target framesPerSecond (optional, default='draw')
+	 * @param {function} callback the animation callback (optional, default='draw')
+	 * @param {number} fps the target framesPerSecond (optional, default=60)
 	 * <pre>
 	 * Examples:
 	 *  RiText.loop();
@@ -51342,6 +51342,7 @@ _RiTa_LTS=[
 				 var fps = ++an.framesSinceLastFPS / sec;
 				 
 				 if (sec > 0.5) {
+				 	
 					 an.timeSinceLastFPS = Date.now();
 					 an.framesSinceLastFPS = 0;
 					 an.actualFPS = fps;
@@ -51354,10 +51355,12 @@ _RiTa_LTS=[
 					console.warn("Unable to invoke callback: "+callback);
 					an.callbackDisabled = true;
 				}
+				
 				window.clearInterval(an.loopId);
 				console.trace(this);
 				throw ex;
 			  }
+			  
 			}, mps);
 			
 			an.isLooping = true;
@@ -51979,6 +51982,8 @@ _RiTa_LTS=[
 		if (toDelete) {
 			delete(toDelete._rs);
 			delete(toDelete);
+			toDelete._rs = {};
+			toDelete = {};
 		}
 
 	}  
@@ -52163,8 +52168,8 @@ _RiTa_LTS=[
 		
 		_update : function() {
 			
-			var time = Date.now();
-			this._updateBehaviors(time);
+			if (this._behaviors.length)
+				this._updateBehaviors();
 			return this;
 		},
 		
@@ -52173,8 +52178,6 @@ _RiTa_LTS=[
 			var g = this.g;
 			
 			if (!g) err('no-renderer');
-			
-			g._pushState();
 			
 			if (this._rs && this._rs.length) {
 			
@@ -52494,12 +52497,13 @@ _RiTa_LTS=[
 					   rt._color.b = this.b;
 					   rt._color.a = this.a
 					})
-					//.delay(delay)
 					.onComplete( 
 						function () {
 							if (_type != 'silent')
 								RiTaEvent(rt, _type+'Complete')._fire(callback);    
-							if (_destroyOnComplete) RiText.dispose(rt);
+							if (_destroyOnComplete) {
+								RiText.dispose(rt);
+							}
 						})
 					.start();
 				
@@ -53607,7 +53611,7 @@ _RiTa_LTS=[
 
 			while ( i < num ) {
 
-				if (this._behaviors[ i ].update(time) ) {
+				if (this._behaviors[i].update(time) ) {
 					i++;
 
 				} else {
@@ -57083,8 +57087,8 @@ _RiTa_LTS=[
 				}
 			}
 	
-			if (_onUpdateCallback !== null ) {
-	
+			if (_onUpdateCallback) {
+
 				_onUpdateCallback.call( _object, value );
 			}
 	
@@ -57123,28 +57127,7 @@ _RiTa_LTS=[
 			this.p = p;
 			if (!ctx) console.error("no cnv-context!");
 			this.ctx = ctx;
-			/*this.state = {
-		        "doFill": doFill,
-		        "currentFillColor": currentFillColor,
-		        "doStroke": doStroke,
-		        "currentStrokeColor": currentStrokeColor,
-		        "curTint": curTint,
-		        "curRectMode": curRectMode,
-		        "curColorMode": curColorMode,
-		        "colorModeX": colorModeX,
-		        "colorModeZ": colorModeZ,
-		        "colorModeY": colorModeY,
-		        "colorModeA": colorModeA,
-		        "curTextFont": curTextFont,
-		        "horizontalTextAlignment": horizontalTextAlignment,
-		        "verticalTextAlignment": verticalTextAlignment,
-		        "textMode": textMode,
-		        "curFontName": curFontName,
-		        "curTextSize": curTextSize,
-		        "curTextAscent": curTextAscent,
-		        "curTextDescent": curTextDescent,
-		        "curTextLeading": curTextLeading
-	      };*/
+			
 		},
 		
 		_size : function() {
@@ -57156,65 +57139,6 @@ _RiTa_LTS=[
 			
 			return this.p;
 		},
-		
-		/*_pushStyle : function(p) {
-			
-			p.saveContext();
-			p.p.pushMatrix();
-
-			state.doFill = doFill;
-			state.currentFillColor = currentFillColor;
-			state.doStroke = doStroke;
-			state.currentStrokeColor = currentStrokeColor;
-			state.curTint = curTint;
-			state.curRectMode = curRectMode;
-			state.curColorMode = curColorMode;
-			state.colorModeX = colorModeX;
-			state.colorModeZ = colorModeZ;
-			state.colorModeY = colorModeY;
-			state.colorModeA = colorModeA;
-			state.curTextFont = curTextFont;
-			state.horizontalTextAlignment = horizontalTextAlignment;
-			state.verticalTextAlignment = verticalTextAlignment;
-			state.textMode = textMode;
-			state.curFontName = curFontName;
-			state.curTextSize = curTextSize;
-			state.curTextAscent = curTextAscent;
-			state.curTextDescent = curTextDescent;
-			state.curTextLeading = curTextLeading; 
-
-			//p.styleArray.push(newState)
-			return this;
-		},
-		
-		_popStyle : function(p) {
-			
-			p.restoreContext();
-	        p.p.popMatrix();
-	        
-	        doFill = state.doFill;
-	        currentFillColor = state.currentFillColor;
-	        doStroke = state.doStroke;
-	        currentStrokeColor = state.currentStrokeColor;
-	        curTint = state.curTint;
-	        curRectMode = state.curRectMode;
-	        curColorMode = state.curColorMode;
-	        colorModeX = state.colorModeX;
-	        colorModeZ = state.colorModeZ;
-	        colorModeY = state.colorModeY;
-	        colorModeA = state.colorModeA;
-	        curTextFont = state.curTextFont;
-	        curFontName = state.curFontName;
-	        curTextSize = state.curTextSize;
-	        horizontalTextAlignment = state.horizontalTextAlignment;
-	        verticalTextAlignment = state.verticalTextAlignment;
-	        textMode = state.textMode;
-	        curTextAscent = state.curTextAscent;
-	        curTextDescent = state.curTextDescent;
-	        curTextLeading = state.curTextLeading
-	        
-			return this;
-		},*/
 		
 		/*_pushState : function() {
  			
@@ -57416,7 +57340,7 @@ _RiTa_LTS=[
 	
 	var DEFAULT_PLURAL_RULE = RE("^((\\w+)(-\\w+)*)(\\s((\\w+)(-\\w+)*))*$", 0, "s");
 	
-	var P_AND_S = RE( // these don't change for plural/singular
+	var NULL_PLURALS = RE( // these don't change for plural/singular
 		"^(bantu|bengalese|bengali|beninese|boche|bonsai|"
 		+ "burmese|chinese|congolese|gabonese|guyanese|japanese|javanese|"
 		+ "lebanese|maltese|olympics|portuguese|senegalese|siamese|singhalese|"
@@ -57462,11 +57386,11 @@ _RiTa_LTS=[
 		  RE("geese", 4, "oose"),
 		  RE("crises", 2, "is"),
 		  RE("(human|german|roman)$", 0, "s"),
-		  P_AND_S
+		  NULL_PLURALS
 	];
 
 	var PLURAL_RULES = [
-		P_AND_S,
+		NULL_PLURALS,
 		RE("^(piano|photo|solo|ego)$", 0, "s"),
 		RE("[bcdfghjklmnpqrstvwxyz]o$", 0, "es"),
 		RE("[bcdfghjklmnpqrstvwxyz]y$", 1, "ies"),
@@ -58410,10 +58334,6 @@ _RiTa_LTS=[
 
 	var context2d, hasProcessing = (typeof Processing !== 'undefined');
 	//console.log('hasProcessing='+hasProcessing);
-
-	if (typeof document !== 'undefined') {
-	
-	}
 	
 	if (hasProcessing) {
 

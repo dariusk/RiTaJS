@@ -50821,7 +50821,7 @@ _RiTa_LTS=[
 			
 		},
 
-		_clone: function() {  // NIAPI
+		_copy: function() {  // NIAPI
 			var tmp = RiGrammar();
 			for(var name in this._rules) {
 				tmp._rules[name] = this._rules[name];
@@ -50974,7 +50974,7 @@ _RiTa_LTS=[
 		 */
 		expandWith : function(literal, symbol) { // TODO: finish 
 
-			var gr = this._clone();
+			var gr = this._copy();
 			
 			var match = false;
 			for ( var name in gr._rules) {
@@ -51979,6 +51979,8 @@ _RiTa_LTS=[
 		if (toDelete) {
 			delete(toDelete._rs);
 			delete(toDelete);
+			toDelete._rs = {};
+			toDelete = {};
 		}
 
 	}  
@@ -52163,8 +52165,8 @@ _RiTa_LTS=[
 		
 		_update : function() {
 			
-			var time = Date.now();
-			this._updateBehaviors(time);
+			if (this._behaviors.length)
+				this._updateBehaviors();
 			return this;
 		},
 		
@@ -52173,8 +52175,6 @@ _RiTa_LTS=[
 			var g = this.g;
 			
 			if (!g) err('no-renderer');
-			
-			g._pushState();
 			
 			if (this._rs && this._rs.length) {
 			
@@ -52437,7 +52437,7 @@ _RiTa_LTS=[
 		  if (this.fadeToTextCopy) 
 		  {
 			startAlpha = this.fadeToTextCopy.alpha();
-			RiText.dispose(this.fadeToTextCopy); // stop any currents
+			//RiText.dispose(this.fadeToTextCopy); // TODO: do we need this?
 		  }
 		
 		  // use the copy to fade out
@@ -52494,12 +52494,13 @@ _RiTa_LTS=[
 					   rt._color.b = this.b;
 					   rt._color.a = this.a
 					})
-					//.delay(delay)
 					.onComplete( 
 						function () {
 							if (_type != 'silent')
 								RiTaEvent(rt, _type+'Complete')._fire(callback);    
-							if (_destroyOnComplete) RiText.dispose(rt);
+							if (_destroyOnComplete) {
+								RiText.dispose(rt);
+							}
 						})
 					.start();
 				
@@ -53180,7 +53181,7 @@ _RiTa_LTS=[
 	
 			for ( var i = 0; i < words.length; i++) {
 				if (words[i].length < 1) continue;
-				var tmp = this.clone();
+				var tmp = this.copy();
 				tmp.text(words[i]);
 				var mx = RiText._wordOffsetFor(this, words, i);
 				tmp.position(mx, this.y);
@@ -53206,7 +53207,7 @@ _RiTa_LTS=[
 	
 			for ( var i = 0; i < chars.length; i++) {
 				if (chars[i] == ' ') continue;
-				var tmp = this.clone();
+				var tmp = this.copy();
 				tmp.text(chars[i]);
 				var mx = this.charOffset(i);
 				tmp.position(mx, this.y);
@@ -53607,7 +53608,7 @@ _RiTa_LTS=[
 
 			while ( i < num ) {
 
-				if (this._behaviors[ i ].update(time) ) {
+				if (this._behaviors[i].update(time) ) {
 					i++;
 
 				} else {
@@ -57083,8 +57084,8 @@ _RiTa_LTS=[
 				}
 			}
 	
-			if (_onUpdateCallback !== null ) {
-	
+			if (_onUpdateCallback) {
+
 				_onUpdateCallback.call( _object, value );
 			}
 	
@@ -57123,28 +57124,7 @@ _RiTa_LTS=[
 			this.p = p;
 			if (!ctx) console.error("no cnv-context!");
 			this.ctx = ctx;
-			/*this.state = {
-		        "doFill": doFill,
-		        "currentFillColor": currentFillColor,
-		        "doStroke": doStroke,
-		        "currentStrokeColor": currentStrokeColor,
-		        "curTint": curTint,
-		        "curRectMode": curRectMode,
-		        "curColorMode": curColorMode,
-		        "colorModeX": colorModeX,
-		        "colorModeZ": colorModeZ,
-		        "colorModeY": colorModeY,
-		        "colorModeA": colorModeA,
-		        "curTextFont": curTextFont,
-		        "horizontalTextAlignment": horizontalTextAlignment,
-		        "verticalTextAlignment": verticalTextAlignment,
-		        "textMode": textMode,
-		        "curFontName": curFontName,
-		        "curTextSize": curTextSize,
-		        "curTextAscent": curTextAscent,
-		        "curTextDescent": curTextDescent,
-		        "curTextLeading": curTextLeading
-	      };*/
+			
 		},
 		
 		_size : function() {
@@ -57156,65 +57136,6 @@ _RiTa_LTS=[
 			
 			return this.p;
 		},
-		
-		/*_pushStyle : function(p) {
-			
-			p.saveContext();
-			p.p.pushMatrix();
-
-			state.doFill = doFill;
-			state.currentFillColor = currentFillColor;
-			state.doStroke = doStroke;
-			state.currentStrokeColor = currentStrokeColor;
-			state.curTint = curTint;
-			state.curRectMode = curRectMode;
-			state.curColorMode = curColorMode;
-			state.colorModeX = colorModeX;
-			state.colorModeZ = colorModeZ;
-			state.colorModeY = colorModeY;
-			state.colorModeA = colorModeA;
-			state.curTextFont = curTextFont;
-			state.horizontalTextAlignment = horizontalTextAlignment;
-			state.verticalTextAlignment = verticalTextAlignment;
-			state.textMode = textMode;
-			state.curFontName = curFontName;
-			state.curTextSize = curTextSize;
-			state.curTextAscent = curTextAscent;
-			state.curTextDescent = curTextDescent;
-			state.curTextLeading = curTextLeading; 
-
-			//p.styleArray.push(newState)
-			return this;
-		},
-		
-		_popStyle : function(p) {
-			
-			p.restoreContext();
-	        p.p.popMatrix();
-	        
-	        doFill = state.doFill;
-	        currentFillColor = state.currentFillColor;
-	        doStroke = state.doStroke;
-	        currentStrokeColor = state.currentStrokeColor;
-	        curTint = state.curTint;
-	        curRectMode = state.curRectMode;
-	        curColorMode = state.curColorMode;
-	        colorModeX = state.colorModeX;
-	        colorModeZ = state.colorModeZ;
-	        colorModeY = state.colorModeY;
-	        colorModeA = state.colorModeA;
-	        curTextFont = state.curTextFont;
-	        curFontName = state.curFontName;
-	        curTextSize = state.curTextSize;
-	        horizontalTextAlignment = state.horizontalTextAlignment;
-	        verticalTextAlignment = state.verticalTextAlignment;
-	        textMode = state.textMode;
-	        curTextAscent = state.curTextAscent;
-	        curTextDescent = state.curTextDescent;
-	        curTextLeading = state.curTextLeading
-	        
-			return this;
-		},*/
 		
 		/*_pushState : function() {
  			
@@ -57416,7 +57337,7 @@ _RiTa_LTS=[
 	
 	var DEFAULT_PLURAL_RULE = RE("^((\\w+)(-\\w+)*)(\\s((\\w+)(-\\w+)*))*$", 0, "s");
 	
-	var P_AND_S = RE( // these don't change for plural/singular
+	var NULL_PLURALS = RE( // these don't change for plural/singular
 		"^(bantu|bengalese|bengali|beninese|boche|bonsai|"
 		+ "burmese|chinese|congolese|gabonese|guyanese|japanese|javanese|"
 		+ "lebanese|maltese|olympics|portuguese|senegalese|siamese|singhalese|"
@@ -57462,11 +57383,11 @@ _RiTa_LTS=[
 		  RE("geese", 4, "oose"),
 		  RE("crises", 2, "is"),
 		  RE("(human|german|roman)$", 0, "s"),
-		  P_AND_S
+		  NULL_PLURALS
 	];
 
 	var PLURAL_RULES = [
-		P_AND_S,
+		NULL_PLURALS,
 		RE("^(piano|photo|solo|ego)$", 0, "s"),
 		RE("[bcdfghjklmnpqrstvwxyz]o$", 0, "es"),
 		RE("[bcdfghjklmnpqrstvwxyz]y$", 1, "ies"),
@@ -58410,10 +58331,6 @@ _RiTa_LTS=[
 
 	var context2d, hasProcessing = (typeof Processing !== 'undefined');
 	//console.log('hasProcessing='+hasProcessing);
-
-	if (typeof document !== 'undefined') {
-	
-	}
 	
 	if (hasProcessing) {
 
