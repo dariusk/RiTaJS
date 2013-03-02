@@ -3545,25 +3545,6 @@
 		},
 
 		/**
-		 * Inserts 'newWord' at 'wordIdx' and shifts each subsequent word accordingly.
-		 *
-		 * @returns {object} this RiString
-		 */
-		insertWordAt : function(newWord, wordIdx) {
-					
-			var words = this.words();
-			if (newWord && newWord.length && wordIdx >= 0 && wordIdx < words.length) {
-			 
-				// filthy hack to preserve punctuation in 'newWord'
-				words.splice(wordIdx,0, DeLiM+newWord+DeLiM);
-				
-				this.text( RiTa.untokenize(words).replace(new RegExp(DeLiM,'g'),E) );
-			}
-
-			return this;            
-		},
-
-		/**
 		 * Returns the index within this string of the last occurrence of the specified character.
 		 * 
 		 * @param {string} searchstring The string to search for
@@ -3646,13 +3627,12 @@
 			var s = this.text();
 			
 			if (idx > s.length || idx < -s.length) {
-				console.warn("bad index="+idx);
+				console.warn("insertChar: bad index="+idx);
 				return this;
 			}
 
 			 
 			idx = idx < 0 ? idx += s.length : idx;
-			//if (idx < 0) console.log("idx="+idx);
 			var beg = s.substring(0, idx);
 			var end = s.substring(idx);
 		 
@@ -3661,7 +3641,26 @@
 			return this.text(beg+end);
 		},
 		 
-		 
+	 	/**
+		 * Removes the character at the specified index
+		 * 
+		 * @param {number} idx the index
+		 * @returns {object} this RiString
+		 */
+		removeChar : function(idx) { 
+			
+			var s = this.text();
+			
+			if (idx > s.length || idx < -s.length) {
+				console.warn("removeChar: bad index="+idx);
+				return this;
+			}
+			idx = idx < 0 ? idx += s.length : idx;
+			
+			this.text(this._text.substring(0, idx).concat(this._text.substring(idx + 1)));
+			return this;   
+		},
+
 		/**
 		 * Replaces the character at 'idx' with 'replaceWith'.
 		 * If the specified 'idx' is less than zero, or beyond the
@@ -3673,8 +3672,13 @@
 		 */
 		replaceChar : function(idx, replaceWith) {
 			
-			if (idx < 0 || idx >= this.length()) 
+			var s = this.text();
+			
+			if (idx > s.length || idx < -s.length) {
+				console.warn("replaceChar: bad index="+idx);
 				return this;
+			}
+			idx = idx < 0 ? idx += s.length : idx;
 				
 			var s = this.text();
 			var beg = s.substring(0, idx);
@@ -3710,7 +3714,7 @@
 		 */
 		replaceLast : function(regex, replaceWith) {
 			
-			//TODO: this fails for '?', other regex chars?
+			//TODO: this fails for '?', other regex chars? Make TEST
 			
 			if (!regex) return this;
 			
@@ -3749,7 +3753,7 @@
 		 */
 		removeWord : function(wordIdx) {
 			
-			return this.replaceWord(wordIdx,E);
+			return this.replaceWord(wordIdx, E);
 		},    
 			
 		/**
@@ -3761,10 +3765,21 @@
 		 * @returns {object} this RiString
 		 */
 		insertWord : function(wordIdx, newWord) {
+
+			var words = this.words(); //  tokenize
 			
-			//console.log(newWord+' '+this.words()[wordIdx]);
-			//if (wordIdx == 0)  return text(newWord+' '+this.text());
-			return this.replaceWord(wordIdx, newWord+' '+this.words()[wordIdx]);
+			if (wordIdx < 0) wordIdx += words.length;
+			
+			// log("insertWord("+ newWord+', '+wordIdx+") -> words["+wordIdx+"] = " + words[wordIdx]);
+			
+			if (newWord && newWord.length>=0 && wordIdx >= 0 && wordIdx < words.length) {
+				
+				words[wordIdx] = newWord + SP + words[wordIdx];
+				
+				this.text(RiTa.untokenize(words));
+			}
+			
+			return this;  
 		},
 			
 		/**
@@ -3777,19 +3792,21 @@
 		 */
 		replaceWord : function(wordIdx, newWord) {
 			
+			//console.log("replaceWord: "+wordIdx+", '"+newWord+"'");
+			
 			var words = this.words(); //  tokenize
 			
 			if (wordIdx < 0) wordIdx += words.length;
 			
-			if (wordIdx >= 0 && wordIdx < words.length) {
+			if ((newWord || newWord===E) && wordIdx >= 0 && wordIdx < words.length) {
 				
 				words[wordIdx] = newWord;
 				
 				this.text(RiTa.untokenize(words));
 			}
 			
-			return this.trim();  
-		},
+			return this;  
+		}, 
 
 		/**
 		 * Split a RiString into an array of sub-RiString and return the new array.
@@ -3938,18 +3955,6 @@
 			return this._text.concat(riString.text());  
 		},
 			   
-		/**
-		 * Removes the character at the specified index
-		 * 
-		 * @param {number} idx the index
-		 * @returns {object} this RiString
-		 */
-		removeChar : function(idx) { 
-			
-			this.text(this._text.substring(0, idx).concat(this._text.substring(idx + 1)));
-			return this;   
-		}
-
 	}
 
 	// ////////////////////////////////////////////////////////////
@@ -5326,7 +5331,7 @@
 		
 		color : { r : 0, g : 0, b : 0, a : 255 }, 
 		alignment : RiTa.LEFT, motionType : RiTa.LINEAR, font: null,
-		rotateX:0, rotateY:0, rotateZ: 0, scaleX:1, scaleY:1, scaleZ:1,
+		rotateX:0, rotateY:0, rotateZ:0, scaleX:1, scaleY:1, scaleZ:1,
 		paragraphLeading :  0, paragraphIndent: '    ', indentFirstParagraph: false,
 		fontFamily: 'Times New Roman', fontSize: 14, leadingFactor : 1.1,
 		boundingBoxStroke : null, boundingBoxFill: null, boundingBoxVisible : false
@@ -5336,7 +5341,7 @@
 
 		/**
 		 * @private
-		 * @param {S | N | O} text
+		 * @param { S | N | O } text
 		 * @param x
 		 * @param y
 		 * @param font
@@ -5346,21 +5351,6 @@
 			
 			if (!RiText.renderer) 
 				err("No graphics context, RiText unavailable");
-
-			if (arguments.length) {
-				
-				if (is(text, O) && typeof text.text == F)
-					text = text.text();
-				
-				else if (is(text,N))    
-					text = String.fromCharCode(text);
-			}
-			else {
-				
-				text = E;
-			}
-			
-			ok(text, S);
 			
 			this._color = { 
 				r : RiText.defaults.color.r, 
@@ -5389,28 +5379,93 @@
 			this._motionType = RiText.defaults.motionType;
 			this._alignment = RiText.defaults.alignment;
 	
+			this._rotateX = RiText.defaults.rotateX;
+			this._rotateY = RiText.defaults.rotateY;
 			this._rotateZ = RiText.defaults.rotateZ;
+			
 			this._scaleX = RiText.defaults.scaleX;
 			this._scaleY = RiText.defaults.scaleY;
 			this._scaleZ = 1;
 	 
 			this._behaviors = [];
-			this.font(font);
-			this.text(text);
 			
 			this.g = RiText.renderer;
-
-			//log('RiText) '+this._rs._text +" / "+ this._font.name);
+			
+			// handle the arguments
+			
+			//var a = Array.prototype.slice.call(arguments);
+			//log(arguments);
+			var args = this._parseArgs.apply(this,arguments);
+			
+			this.font(args[3]);
+			this.text(args[0]);
 
 			// center by default
-			this.x = arguments.length>1 ? x : this.g._width() / 2 - this.textWidth() / 2.0;
-			this.y = arguments.length>1 ? y : this.g._height() / 2 + this.textHeight() / 2.0;
+			this.x = args[1] ? args[1] : this.g._width()  / 2 - this.textWidth()  / 2.0;
+			this.y = args[2] ? args[2] : this.g._height() / 2 + this.textHeight() / 2.0;
 			this.z = 0;
+
+			//log('RiText: '+this._rs._text +"("+this.x+","+this.y+")"+" / "+ this._font.name);
 
 			RiText.instances.push(this);
 			
 			return this;
 		},
+		
+	
+		_parseArgs : function() {
+
+			//log(arguments);
+			var a = arguments;
+			// var a = Array.prototype.slice.call(arguments);
+// 
+			// log("len="+a.length+" -> "+a[0]);
+			// log(a);
+
+			if (a.length && is(a[0], O) && typeof a[0].text != F) {
+				
+				// recurse, ignore 'this'
+				//log("RECURSE: ");
+				//log(a);
+				var shifted = Array.prototype.slice.call(a, 1);
+				//log("SHIFTED: ");
+				//log(shifted);
+				return this._parseArgs.apply(this,shifted);
+			}
+			
+			//log(a);
+			var parsed = [E, null, null, null];
+			if (a.length) {
+
+				if (is(a[0], S))
+					parsed[0] = a[0];
+				
+				else if (is(a[0], O) && typeof a[0].text == F)
+					parsed[0] = a[0].text();
+				
+				else if (is(a[0], N))
+					parsed[0] = String.fromCharCode(a[0]);
+			}
+
+			if (a.length > 1)
+				parsed[1] = a[1];
+			//a.shift();
+
+			if (a.length> 2)
+				parsed[2] = a[2];
+			//a.shift();
+
+			if (a.length> 3)
+				parsed[3] = a[3];
+
+			//ok(parsed[0], S);
+
+			//log(parsed);
+
+			return parsed;
+		},
+
+
 		
 		/**
 		 * Returns the specified feature, computing it first if necessary. <p>
@@ -5981,27 +6036,7 @@
 			return this._rs._text.indexOf(searchstring, start);
 			
 		},
-		
-		/**
-		 * Inserts 'newWord' at 'wordIdx' and shifts each subsequent word accordingly.
-		 *
-		 * @returns {object} this RiText
-		 */
-		insertWordAt : function(newWord, wordIdx) {
-					
-			var words = this._rs.words();
-			if (newWord && newWord.length && wordIdx >= 0 && wordIdx < words.length) {
-			 
-				// filthy hack to preserve punctuation in 'newWord'
-				words.splice(wordIdx,0, DeLiM+newWord+DeLiM);
-				
-				
-				this._rs.text( RiTa.untokenize(words).replace(new RegExp(DeLiM,'g'),E) );
-			}
 
-			return this;
-			
-		},
 		
 		 /**
 		 * Returns the index within this string of the last occurrence of the specified character.
@@ -6092,6 +6127,7 @@
 			return this;
 			
 		},
+		
 
 	  /**
 		 * Replaces the character at 'idx' with 'replaceWith'. If the specified 'idx' is less than
@@ -6103,20 +6139,6 @@
 		 */
 		replaceChar : function(idx, replaceWith) {
 			
-			// if (idx < 0 || idx >= this._rs.length()) 
-				// return this;
-			//                 
-			// var s = this._rs.text();
-			// var beg = s.substring(0, idx);
-			// var end = s.substring(idx + 1);
-			// var s2 = null;
-			//             
-			// if (replaceWith)
-				// s2 = beg + replaceWith + end;
-			// else
-				// s2 = beg + end;
-			// 
-			// return this._rs.text(s2);
 			this._rs.replaceChar(idx, replaceWith);
 			return this;
 		},
@@ -6160,10 +6182,7 @@
 					return this;
 				}
 			};
-
-
 		},
-		
 		
 		/**
 		 * Replaces each substring of this string that matches the given regular expression with the
@@ -6182,38 +6201,6 @@
 			
 		},
 		
-		/**
-		 * Inserts 'newWord' at 'wordIdx' 
-		 * 
-		 * @param {number} wordIdx the index
-		 * @param {string} newWord the string to insert
-		 * 
-		 * @returns {object} this RiText
-		 */
-		insertWord : function(wordIdx, newWord) {
-			
-			// var words = this.words();
-			//         	  
-						// if (wordIdx >= 0 && wordIdx < words.length) { 
-			//                 
-							// var newWords = [];
-			//                 
-							// for (var i=0; i <= wordIdx; i++)  // OPT?
-							  // newWords.push(words[i]);
-			//                 
-							// newWords.push(newWord);
-			//                 
-							// for (var i=wordIdx+1; i < words.length; i++) 
-							  // newWords.push(words[i]);
-			//                   
-							// this._rs.text(RiTa.untokenize(words));
-						// }
-			//             
-						this._rs.insertWord(wordIdx, newWord);
-						return this;
-					},
-		
-		   
 		 /**
 		 * Replaces the word at 'wordIdx' with 'newWord'
 		 * 
@@ -6221,23 +6208,14 @@
 		 * @param {string} newWord the replacement
 		 * 
 		 * @returns {object} this RiText
-		 */
+	     */
 		replaceWord : function(wordIdx, newWord) {
-			
-			// var words = this.words();
-			 
-			// if (wordIdx >= 0 && wordIdx < words.length) {
-				
-				// words[wordIdx] = newWord;
-				 
-				// this._rs.text(RiTa.untokenize(words));
-			// }
-			
-			this._rs.replaceWord(wordIdx, newWord);
+
+			this._rs.replaceWord.apply(this,arguments);
 			
 			return this; // TODO: check that all RiText methods use the delegate 
 						//  (like above) for methods that exist in RiString
-		},
+		},	 
 		
 		/**
 		 * Removes the word at 'wordIdx'.
@@ -6248,10 +6226,23 @@
 		 */
 		removeWord : function(wordIdx) {
 			
-			this._rs.removeWord(wordIdx,E);
+			this._rs.removeWord.apply(this,arguments);
 			return this;
-		},  
+		},   
 		
+		
+		/**
+		 * Inserts 'newWord' at 'wordIdx' and shifts each subsequent word accordingly.
+		 *
+		 * @returns {object} this RiText
+		 */
+		insertWord : function(wordIdx, newWord) {
+			
+			this._rs.insertWord.apply(this, arguments);
+			return this;            
+		},
+		
+	
 		 /**
 		 * Extracts a part of a string from this RiText
 		 * 
@@ -6517,7 +6508,7 @@
 						
 
 		   var bb = this.boundingBox(false);
-		   log('contains('+mx+','+my+') '+ bb.x + ","+bb.width+","+bb.y + ","+(bb.height));
+		   //log('contains('+mx+','+my+') '+ bb.x + ","+bb.width+","+bb.y + ","+(bb.height));
 		   
 			//           // TODO: need to test this with point
 			//           if (!my && Type.get(mx.x) == 'Number' && Type.get(mx.y) == 'Number') {
