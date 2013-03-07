@@ -3340,46 +3340,65 @@
 		 */
 		analyze : function() {
 	
-			var phonemes = E, syllables = E, stresses = E, slash = '/',  delim = '-', raw, lts,
-				words = RiTa.tokenize(this._text), lts, stressyls, lex = RiLexicon._getInstance(); 
+			var phonemes = E, syllables = E, stresses = E, slash = '/',  delim = '-',
+				phones, lts, ltsPhones, useRaw, words = RiTa.tokenize(this._text), 
+				lts, stressyls, lex = RiLexicon._getInstance(); 
 			
 			if (!this._features) this._initFeatureMap();
 			
 			for (var i = 0, l = words.length; i < l; i++) {
 				
-				raw = lex._getRawPhones(words[i]); 
+				useRaw = false;
 				
-				if (!raw) {
+				phones = lex._getRawPhones(words[i]); 
+				
+				if (!phones) {
 					
 					if (words[i].match(/[a-zA-Z]+/))
 						log("[RiTa] Used LTS-rules for '"+words[i]+"'");
 					
 					lts = lts || LetterToSound();
-					raw = RiString._syllabify(lts.getPhones(words[i]));
+					
+					
+					ltsPhones = lts.getPhones(words[i]);
+					
+					if (ltsPhones && ltsPhones.length>0) {
+						
+						phones = RiString._syllabify(ltsPhones);
+					}
+					else {
+						phones = words[i];
+						useRaw = true;
+					} 
 				}
  
-				phonemes += raw.replace(/[0-2]/g, E).replace(/ /g, delim) + SP;
-				syllables += raw.replace(/ /g, slash).replace(/1/g, E) + SP;
+				phonemes += phones.replace(/[0-2]/g, E).replace(/ /g, delim) + SP;
+				syllables += phones.replace(/ /g, slash).replace(/1/g, E) + SP;
 
-				stressyls = raw.split(SP);   
-				for (var j = 0; j < stressyls.length; j++) {
-
-					if (!stressyls[j].length) continue;
-					
-					stresses += (stressyls[j].indexOf(RiTa.STRESSED) > -1) 
-						? RiTa.STRESSED : RiTa.UNSTRESSED;
-					
-					if (j < stressyls.length-1) stresses += slash;      
+				if (!useRaw) {
+					stressyls = phones.split(SP);   
+					for (var j = 0; j < stressyls.length; j++) {
+	
+						if (!stressyls[j].length) continue;
+						
+						stresses += (stressyls[j].indexOf(RiTa.STRESSED) > -1) 
+							? RiTa.STRESSED : RiTa.UNSTRESSED;
+						
+						if (j < stressyls.length-1) stresses += slash;      
+					}
 				}
+				else {
+					
+					stresses += words[i];
+				}
+				
 				if (!endsWith(stresses, SP)) stresses += SP;     
 			}
 			
-			
+			this._features.tokens = words.join(SP);
 			this._features.stresses = stresses.trim();
 			this._features.phonemes = replaceAll(phonemes.trim(), "\\s+", SP);
 			this._features.syllables = replaceAll(syllables.trim(), "\\s+", SP);
-			
-			this._features.tokens = words.join(SP);
 			this._features.pos = RiTa.getPosTags(this._text).join(SP);
 			
 			return this;

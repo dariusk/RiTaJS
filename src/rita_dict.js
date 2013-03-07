@@ -33592,5 +33592,6 @@ _RiTa_DICT={
 'zoom': ['z-uw1-m','vb'],
 'zoomed': ['z-uw1-m-d','vbd vbn'],
 'zooming': ['z-uw1-m ih-ng','vbg'],
-'zooms': ['z-uw1-m-z','vbz']
+'zooms': ['z-uw1-m-z','vbz'],
+'&' : ['ae1-n-d','cc vbp jj rb nnp']
 };
