@@ -828,8 +828,7 @@
 				return word;
 			}
 
-			i = rules.length;
-			while (i--) {
+			for (var i = 0; i < rules.length; i++) {
 				rule = rules[i];
 				if (rule.applies(word.toLowerCase())) {
 					return rule.fire(word);
