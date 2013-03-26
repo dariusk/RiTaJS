@@ -582,6 +582,7 @@
  
 			return arr.join(delim);  
 		},
+
 		
 		/**
 		 * Returns a random number between min(default=0) and max(default=1)
@@ -3971,7 +3972,7 @@
 		concat : function(riString) {
 			
 			return this._text.concat(riString.text());  
-		},
+		}
 			   
 	}
 
@@ -4881,7 +4882,7 @@
 			}
 		}
 		RiText.instances = [];
-	}
+   }
 	
    RiText.createWords = function(txt, x, y, w, h, fontObj) {
 
@@ -5302,6 +5303,8 @@
 			
 			RiText._disposeOne(toDelete[i]);
 		}
+		
+		toDelete = [];
 	}
 	
 	// TODO: test this font default across all platforms and browsers
@@ -5419,8 +5422,8 @@
 			this.text(args[0]);
 
 			// center by default
-			this.x = args[1] ? args[1] : this.g._width()  / 2 - this.textWidth()  / 2.0;
-			this.y = args[2] ? args[2] : this.g._height() / 2 + this.textHeight() / 2.0;
+			this.x = is(args[1],N) ? args[1] : this.g._width()  / 2 - this.textWidth()  / 2.0;
+			this.y = is(args[2],N) ? args[2] : this.g._height() / 2 + this.textHeight() / 2.0;
 			this.z = 0;
 
 			//log('RiText: '+this._rs._text +"("+this.x+","+this.y+")"+" / "+ this._font.name);
@@ -5543,8 +5546,15 @@
 				
 				// order: scale, center-point-trans, rotate,-center-point-trans,translate?
 				
-				g._rotate(this._rotateZ);
+				var bb = g._getBoundingBox(this); // cache this!
+				
+				
 				g._translate(this.x, this.y);
+				g._translate(bb.width/2, bb.height/-4);
+				g._rotate(this._rotateZ);				
+				//g._fill(255,0,0);
+				//g.p.ellipse(0,0,10,10);
+				g._translate(bb.width/-2, bb.height/4);
 				g._scale(this._scaleX, this._scaleY, this._scaleZ); 
 			 
 				// Set color
@@ -5556,6 +5566,7 @@
 		
 				// Draw text
 				g._text(this._rs._text, 0, 0);
+				
 		
 				// And the bounding box
 				if (this._boundingBoxVisible) {
@@ -5567,9 +5578,7 @@
 					
 					g._stroke(this._boundingBoxStroke.r, this._boundingBoxStroke.g, 
 							this._boundingBoxStroke.b, this._boundingBoxStroke.a);
-					
-					var bb = g._getBoundingBox(this);
-					
+
 					// shift bounds based on alignment
 					switch(this._alignment) {
 						
@@ -5580,6 +5589,7 @@
 							g._translate(-bb.width/2,0);
 							break;
 					}
+					//g.p.noFill();
 					g._rect(0, bb.y, bb.width, bb.height);
 				}
 				
@@ -5747,6 +5757,7 @@
 		 */
 		rotateTo : function(angleInRadians, seconds, delay, callback) {
 
+
 			var rt = this;
 			delay = delay || 0;
 			seconds = seconds || 1.0;
@@ -5757,6 +5768,7 @@
 					.to( { _rotateZ: angleInRadians  }, seconds*1000)
 					.easing(rt._motionType)
 					.onUpdate( function () {
+					
 						rt._rotateZ = this._rotateZ;
 					})
 					//.delay(delay*1000)
@@ -7523,6 +7535,7 @@
 		},
 		
 		_rotate : function(zRot) {
+			console.log('rotate: '+zRot);
 			this.ctx.rotate(0,0,zRot);
 		},
 		
@@ -7652,7 +7665,7 @@
 
 		// should operate on the RiText itself (take rt as arg?)
 		_text : function(str, x, y) {
-			//log("text: "+str+","+x+","+y+","+this.ctx.textAlign);
+			log("text: "+str+","+x+","+y+","+this.ctx.textAlign);
 			this.ctx.baseline = 'alphabetic';
 			this.ctx.fillText(str, x, y);
 			//this.ctx.strokeText(str, x, y);
@@ -10419,7 +10432,7 @@
 		init : function(p, ctx) {
 			
 			this.p = p;
-			if (!ctx) console.error("no cnv-context!");
+			if (!ctx) console.error("no canvas-context!");
 			this.ctx = ctx;
 			
 		},
@@ -10449,6 +10462,8 @@
 		 },*/
  		
 		_pushState : function() {
+			
+			// TODO: what about the matrix?
 			
 			//this.p.pushStyle(); 
 			this.ctx.save();
@@ -10490,7 +10505,7 @@
 		
 		_text : function(str, x, y) {
 			
-			this.p.text.apply(this,arguments);
+			this.p.text.apply(this, arguments);
 		},
 		
 		_fill : function(r,g,b,a) {
@@ -10595,12 +10610,15 @@
 			//this.p.pushStyle(); ////////
 			//this.ctx.save();
 
+			this.ctx.save();
+			this.p.textFont(rt._font, rt._font.size);
+			
 			var ascent  =   Math.round(this.p.textAscent()),
 				descent =   Math.round(this.p.textDescent()),
 				width   =   Math.round(this.p.textWidth(rt.text()));
 			
 			//this.p.popStyle(); ////////
-			//this.ctx.restore();
+			this.ctx.restore();
 
 			return { x: 0, y: -ascent-1, width: width, height: (ascent+descent)+1 };
 		},
@@ -10680,7 +10698,7 @@
 		  RE("femora", 3, "ur"),
 		  RE("geese", 4, "oose"),
 		  RE("crises", 2, "is"),
-		  RE("(human|german|roman)$", 0, "s"),
+		  RE("(human|german|roman)$", 0, "s")
 	];
 
 	var PLURAL_RULES = [

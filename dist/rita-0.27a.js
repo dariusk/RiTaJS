@@ -33592,7 +33592,8 @@ _RiTa_DICT={
 'zoom': ['z-uw1-m','vb'],
 'zoomed': ['z-uw1-m-d','vbd vbn'],
 'zooming': ['z-uw1-m ih-ng','vbg'],
-'zooms': ['z-uw1-m-z','vbz']
+'zooms': ['z-uw1-m-z','vbz'],
+'&' : ['ae1-n-d','cc vbp jj rb nnp']
 };
 _RiTa_LTS=[
 'TOTAL 13100',
@@ -46726,7 +46727,7 @@ _RiTa_LTS=[
 
 (function(window, undefined) {
 	
-	var _VERSION_ = '0.26';
+	var _VERSION_ = '0.27';
 	// also update /RiTaLibraryJS/www/download/index.html (TODO: should be automatic)
 
 	/**  @private Simple type-checking functions */ 
@@ -47553,8 +47554,7 @@ _RiTa_LTS=[
 				return word;
 			}
 
-			i = rules.length;
-			while (i--) {
+			for (var i = 0; i < rules.length; i++) {
 				rule = rules[i];
 				if (rule.applies(word.toLowerCase())) {
 					return rule.fire(word);
@@ -49860,10 +49860,10 @@ _RiTa_LTS=[
 
 	
 	/**
-	 *  Syllabifies the input, given a string or array of phonemes in CMUpronunciation dictionary format 
+	 *  Syllabifies the input, given a string or array of phonemes in CMU Pronunciation Dictionary format 
 	 *   (with optional stress numbers after vowels), e.g. "B AE1 T" or ["B", "AE1", "T"]'''
 	 *       
-	 *  @param {string or array} input containing
+	 *  @param {string or array} input
 	 *  @returns {string} 
 	 */
 	RiString._syllabify = function(input) {
@@ -50046,9 +50046,17 @@ _RiTa_LTS=[
 		   return this._features;
 		},
 		
+		_initFeatureMap : function() {
+
+			this._features = {};					    
+		    this._features.mutable = "true";
+		    this._features.text = this.text();
+		},
+		
 		/**
 		 * Computes a set of features for the contained string, including
 		 * phonemes, syllables, stresses, etc.
+		 * 
 		 * To access any of these, use get(name), e.g., 
 		 * 
 		 * @example myRiString.get('phonemes') ||  myRiString.get(RiTa.PHONEMES);
@@ -50057,45 +50065,66 @@ _RiTa_LTS=[
 		 */
 		analyze : function() {
 	
-			var phonemes = E, syllables = E, stresses = E, slash = '/',  delim = '-', raw, lts,
-				words = RiTa.tokenize(this._text), lts, stressyls, lex = RiLexicon._getInstance(); 
-				
-			this._features = this._features || {};
+			var phonemes = E, syllables = E, stresses = E, slash = '/',  delim = '-',
+				phones, lts, ltsPhones, useRaw, words = RiTa.tokenize(this._text), 
+				lts, stressyls, lex = RiLexicon._getInstance(); 
+			
+			if (!this._features) this._initFeatureMap();
 			
 			for (var i = 0, l = words.length; i < l; i++) {
 				
-				raw = lex._getRawPhones(words[i]); 
+				useRaw = false;
 				
-				if (!raw) {
+				phones = lex._getRawPhones(words[i]); 
+				
+				if (!phones) {
 					
 					if (words[i].match(/[a-zA-Z]+/))
 						log("[RiTa] Used LTS-rules for '"+words[i]+"'");
 					
-					  
 					lts = lts || LetterToSound();
-					raw = RiString._syllabify(lts.getPhones(words[i]));
+					
+					
+					ltsPhones = lts.getPhones(words[i]);
+					
+					if (ltsPhones && ltsPhones.length>0) {
+						
+						phones = RiString._syllabify(ltsPhones);
+					}
+					else {
+						phones = words[i];
+						useRaw = true;
+					} 
 				}
  
-				phonemes += raw.replace(/[0-2]/g, E).replace(/ /g, delim) + SP;
-				syllables += raw.replace(/ /g, slash).replace(/1/g, E) + SP;
+				phonemes += phones.replace(/[0-2]/g, E).replace(/ /g, delim) + SP;
+				syllables += phones.replace(/ /g, slash).replace(/1/g, E) + SP;
 
-				stressyls = raw.split(SP);   
-				for (var j = 0; j < stressyls.length; j++) {
-
-					if (!stressyls[j].length) continue;
-					
-					stresses += (stressyls[j].indexOf(RiTa.STRESSED) > -1) 
-						? RiTa.STRESSED : RiTa.UNSTRESSED;
-					
-					if (j < stressyls.length-1) stresses += slash;      
+				if (!useRaw) {
+					stressyls = phones.split(SP);   
+					for (var j = 0; j < stressyls.length; j++) {
+	
+						if (!stressyls[j].length) continue;
+						
+						stresses += (stressyls[j].indexOf(RiTa.STRESSED) > -1) 
+							? RiTa.STRESSED : RiTa.UNSTRESSED;
+						
+						if (j < stressyls.length-1) stresses += slash;      
+					}
 				}
+				else {
+					
+					stresses += words[i];
+				}
+				
 				if (!endsWith(stresses, SP)) stresses += SP;     
 			}
 			
-			
+			this._features.tokens = words.join(SP);
 			this._features.stresses = stresses.trim();
-			this._features.phonemes = replaceAll(phonemes.trim(), " +", SP);
-			this._features.syllables = replaceAll(syllables.trim(), " +", SP);
+			this._features.phonemes = replaceAll(phonemes.trim(), "\\s+", SP);
+			this._features.syllables = replaceAll(syllables.trim(), "\\s+", SP);
+			this._features.pos = RiTa.getPosTags(this._text).join(SP);
 			
 			return this;
 		},
@@ -50171,7 +50200,7 @@ _RiTa_LTS=[
 			
 			if (arguments.length>0) {
 				this._text = theText;
-				this._features = undefined;
+				this._initFeatureMap();
 				return this;
 			}
 			return this._text;
@@ -50260,25 +50289,6 @@ _RiTa_LTS=[
 		},
 
 		/**
-		 * Inserts 'newWord' at 'wordIdx' and shifts each subsequent word accordingly.
-		 *
-		 * @returns {object} this RiString
-		 */
-		insertWordAt : function(newWord, wordIdx) {
-					
-			var words = this.words();
-			if (newWord && newWord.length && wordIdx >= 0 && wordIdx < words.length) {
-			 
-				// filthy hack to preserve punctuation in 'newWord'
-				words.splice(wordIdx,0, DeLiM+newWord+DeLiM);
-				
-				this.text( RiTa.untokenize(words).replace(new RegExp(DeLiM,'g'),E) );
-			}
-
-			return this;            
-		},
-
-		/**
 		 * Returns the index within this string of the last occurrence of the specified character.
 		 * 
 		 * @param {string} searchstring The string to search for
@@ -50361,13 +50371,12 @@ _RiTa_LTS=[
 			var s = this.text();
 			
 			if (idx > s.length || idx < -s.length) {
-				console.warn("bad index="+idx);
+				console.warn("insertChar: bad index="+idx);
 				return this;
 			}
 
 			 
 			idx = idx < 0 ? idx += s.length : idx;
-			//if (idx < 0) console.log("idx="+idx);
 			var beg = s.substring(0, idx);
 			var end = s.substring(idx);
 		 
@@ -50376,7 +50385,26 @@ _RiTa_LTS=[
 			return this.text(beg+end);
 		},
 		 
-		 
+	 	/**
+		 * Removes the character at the specified index
+		 * 
+		 * @param {number} idx the index
+		 * @returns {object} this RiString
+		 */
+		removeChar : function(idx) { 
+			
+			var s = this.text();
+			
+			if (idx > s.length || idx < -s.length) {
+				console.warn("removeChar: bad index="+idx);
+				return this;
+			}
+			idx = idx < 0 ? idx += s.length : idx;
+			
+			this.text(this._text.substring(0, idx).concat(this._text.substring(idx + 1)));
+			return this;   
+		},
+
 		/**
 		 * Replaces the character at 'idx' with 'replaceWith'.
 		 * If the specified 'idx' is less than zero, or beyond the
@@ -50388,8 +50416,13 @@ _RiTa_LTS=[
 		 */
 		replaceChar : function(idx, replaceWith) {
 			
-			if (idx < 0 || idx >= this.length()) 
+			var s = this.text();
+			
+			if (idx > s.length || idx < -s.length) {
+				console.warn("replaceChar: bad index="+idx);
 				return this;
+			}
+			idx = idx < 0 ? idx += s.length : idx;
 				
 			var s = this.text();
 			var beg = s.substring(0, idx);
@@ -50425,7 +50458,7 @@ _RiTa_LTS=[
 		 */
 		replaceLast : function(regex, replaceWith) {
 			
-			//TODO: this fails for '?', other regex chars?
+			//TODO: this fails for '?', other regex chars? Make TEST
 			
 			if (!regex) return this;
 			
@@ -50464,7 +50497,7 @@ _RiTa_LTS=[
 		 */
 		removeWord : function(wordIdx) {
 			
-			return this.replaceWord(wordIdx,E);
+			return this.replaceWord(wordIdx, E);
 		},    
 			
 		/**
@@ -50476,10 +50509,21 @@ _RiTa_LTS=[
 		 * @returns {object} this RiString
 		 */
 		insertWord : function(wordIdx, newWord) {
+
+			var words = this.words(); //  tokenize
 			
-			//console.log(newWord+' '+this.words()[wordIdx]);
-			//if (wordIdx == 0)  return text(newWord+' '+this.text());
-			return this.replaceWord(wordIdx, newWord+' '+this.words()[wordIdx]);
+			if (wordIdx < 0) wordIdx += words.length;
+			
+			// log("insertWord("+ newWord+', '+wordIdx+") -> words["+wordIdx+"] = " + words[wordIdx]);
+			
+			if (newWord && newWord.length>=0 && wordIdx >= 0 && wordIdx < words.length) {
+				
+				words[wordIdx] = newWord + SP + words[wordIdx];
+				
+				this.text(RiTa.untokenize(words));
+			}
+			
+			return this;  
 		},
 			
 		/**
@@ -50492,19 +50536,21 @@ _RiTa_LTS=[
 		 */
 		replaceWord : function(wordIdx, newWord) {
 			
+			//console.log("replaceWord: "+wordIdx+", '"+newWord+"'");
+			
 			var words = this.words(); //  tokenize
 			
 			if (wordIdx < 0) wordIdx += words.length;
 			
-			if (wordIdx >= 0 && wordIdx < words.length) {
+			if ((newWord || newWord===E) && wordIdx >= 0 && wordIdx < words.length) {
 				
 				words[wordIdx] = newWord;
 				
 				this.text(RiTa.untokenize(words));
 			}
 			
-			return this.trim();  
-		},
+			return this;  
+		}, 
 
 		/**
 		 * Split a RiString into an array of sub-RiString and return the new array.
@@ -50651,20 +50697,8 @@ _RiTa_LTS=[
 		concat : function(riString) {
 			
 			return this._text.concat(riString.text());  
-		},
-			   
-		/**
-		 * Removes the character at the specified index
-		 * 
-		 * @param {number} idx the index
-		 * @returns {object} this RiString
-		 */
-		removeChar : function(idx) { 
-			
-			this.text(this._text.substring(0, idx).concat(this._text.substring(idx + 1)));
-			return this;   
 		}
-
+			   
 	}
 
 	// ////////////////////////////////////////////////////////////
@@ -52041,7 +52075,7 @@ _RiTa_LTS=[
 		
 		color : { r : 0, g : 0, b : 0, a : 255 }, 
 		alignment : RiTa.LEFT, motionType : RiTa.LINEAR, font: null,
-		rotateX:0, rotateY:0, rotateZ: 0, scaleX:1, scaleY:1, scaleZ:1,
+		rotateX:0, rotateY:0, rotateZ:0, scaleX:1, scaleY:1, scaleZ:1,
 		paragraphLeading :  0, paragraphIndent: '    ', indentFirstParagraph: false,
 		fontFamily: 'Times New Roman', fontSize: 14, leadingFactor : 1.1,
 		boundingBoxStroke : null, boundingBoxFill: null, boundingBoxVisible : false
@@ -52051,7 +52085,7 @@ _RiTa_LTS=[
 
 		/**
 		 * @private
-		 * @param {S | N | O} text
+		 * @param { S | N | O } text
 		 * @param x
 		 * @param y
 		 * @param font
@@ -52061,21 +52095,6 @@ _RiTa_LTS=[
 			
 			if (!RiText.renderer) 
 				err("No graphics context, RiText unavailable");
-
-			if (arguments.length) {
-				
-				if (is(text, O) && typeof text.text == F)
-					text = text.text();
-				
-				else if (is(text,N))    
-					text = String.fromCharCode(text);
-			}
-			else {
-				
-				text = E;
-			}
-			
-			ok(text, S);
 			
 			this._color = { 
 				r : RiText.defaults.color.r, 
@@ -52104,28 +52123,93 @@ _RiTa_LTS=[
 			this._motionType = RiText.defaults.motionType;
 			this._alignment = RiText.defaults.alignment;
 	
+			this._rotateX = RiText.defaults.rotateX;
+			this._rotateY = RiText.defaults.rotateY;
 			this._rotateZ = RiText.defaults.rotateZ;
+			
 			this._scaleX = RiText.defaults.scaleX;
 			this._scaleY = RiText.defaults.scaleY;
 			this._scaleZ = 1;
 	 
 			this._behaviors = [];
-			this.font(font);
-			this.text(text);
 			
 			this.g = RiText.renderer;
-
-			//log('RiText) '+this._rs._text +" / "+ this._font.name);
+			
+			// handle the arguments
+			
+			//var a = Array.prototype.slice.call(arguments);
+			//log(arguments);
+			var args = this._parseArgs.apply(this,arguments);
+			
+			this.font(args[3]);
+			this.text(args[0]);
 
 			// center by default
-			this.x = arguments.length>1 ? x : this.g._width() / 2 - this.textWidth() / 2.0;
-			this.y = arguments.length>1 ? y : this.g._height() / 2 + this.textHeight() / 2.0;
+			this.x = args[1] > -1 ? args[1] : this.g._width()  / 2 - this.textWidth()  / 2.0;
+			this.y = args[2] > -1 ? args[2] : this.g._height() / 2 + this.textHeight() / 2.0;
 			this.z = 0;
+
+			//log('RiText: '+this._rs._text +"("+this.x+","+this.y+")"+" / "+ this._font.name);
 
 			RiText.instances.push(this);
 			
 			return this;
 		},
+		
+	
+		_parseArgs : function() {
+
+			//log(arguments);
+			var a = arguments;
+			// var a = Array.prototype.slice.call(arguments);
+// 
+			// log("len="+a.length+" -> "+a[0]);
+			// log(a);
+
+			if (a.length && is(a[0], O) && typeof a[0].text != F) {
+				
+				// recurse, ignore 'this'
+				//log("RECURSE: ");
+				//log(a);
+				var shifted = Array.prototype.slice.call(a, 1);
+				//log("SHIFTED: ");
+				//log(shifted);
+				return this._parseArgs.apply(this,shifted);
+			}
+			
+			//log(a);
+			var parsed = [E, null, null, null];
+			if (a.length) {
+
+				if (is(a[0], S))
+					parsed[0] = a[0];
+				
+				else if (is(a[0], O) && typeof a[0].text == F)
+					parsed[0] = a[0].text();
+				
+				else if (is(a[0], N))
+					parsed[0] = String.fromCharCode(a[0]);
+			}
+
+			if (a.length > 1)
+				parsed[1] = a[1];
+			//a.shift();
+
+			if (a.length> 2)
+				parsed[2] = a[2];
+			//a.shift();
+
+			if (a.length> 3)
+				parsed[3] = a[3];
+
+			//ok(parsed[0], S);
+
+			//log(parsed);
+
+			return parsed;
+		},
+
+
 		
 		/**
 		 * Returns the specified feature, computing it first if necessary. <p>
@@ -52185,8 +52269,15 @@ _RiTa_LTS=[
 				
 				// order: scale, center-point-trans, rotate,-center-point-trans,translate?
 				
-				g._rotate(this._rotateZ);
+				var bb = g._getBoundingBox(this); // cache this!
+				
+				
 				g._translate(this.x, this.y);
+				g._translate(bb.width/2, bb.height/-4);
+				g._rotate(this._rotateZ);				
+				//g._fill(255,0,0);
+				//g.p.ellipse(0,0,10,10);
+				g._translate(bb.width/-2, bb.height/4);
 				g._scale(this._scaleX, this._scaleY, this._scaleZ); 
 			 
 				// Set color
@@ -52198,6 +52289,7 @@ _RiTa_LTS=[
 		
 				// Draw text
 				g._text(this._rs._text, 0, 0);
+				
 		
 				// And the bounding box
 				if (this._boundingBoxVisible) {
@@ -52209,9 +52301,7 @@ _RiTa_LTS=[
 					
 					g._stroke(this._boundingBoxStroke.r, this._boundingBoxStroke.g, 
 							this._boundingBoxStroke.b, this._boundingBoxStroke.a);
-					
-					var bb = g._getBoundingBox(this);
-					
+
 					// shift bounds based on alignment
 					switch(this._alignment) {
 						
@@ -52222,6 +52312,7 @@ _RiTa_LTS=[
 							g._translate(-bb.width/2,0);
 							break;
 					}
+					//g.p.noFill();
 					g._rect(0, bb.y, bb.width, bb.height);
 				}
 				
@@ -52389,6 +52480,7 @@ _RiTa_LTS=[
 		 */
 		rotateTo : function(angleInRadians, seconds, delay, callback) {
 
+
 			var rt = this;
 			delay = delay || 0;
 			seconds = seconds || 1.0;
@@ -52399,6 +52491,7 @@ _RiTa_LTS=[
 					.to( { _rotateZ: angleInRadians  }, seconds*1000)
 					.easing(rt._motionType)
 					.onUpdate( function () {
+					
 						rt._rotateZ = this._rotateZ;
 					})
 					//.delay(delay*1000)
@@ -52696,27 +52789,7 @@ _RiTa_LTS=[
 			return this._rs._text.indexOf(searchstring, start);
 			
 		},
-		
-		/**
-		 * Inserts 'newWord' at 'wordIdx' and shifts each subsequent word accordingly.
-		 *
-		 * @returns {object} this RiText
-		 */
-		insertWordAt : function(newWord, wordIdx) {
-					
-			var words = this._rs.words();
-			if (newWord && newWord.length && wordIdx >= 0 && wordIdx < words.length) {
-			 
-				// filthy hack to preserve punctuation in 'newWord'
-				words.splice(wordIdx,0, DeLiM+newWord+DeLiM);
-				
-				
-				this._rs.text( RiTa.untokenize(words).replace(new RegExp(DeLiM,'g'),E) );
-			}
 
-			return this;
-			
-		},
 		
 		 /**
 		 * Returns the index within this string of the last occurrence of the specified character.
@@ -52807,6 +52880,7 @@ _RiTa_LTS=[
 			return this;
 			
 		},
+		
 
 	  /**
 		 * Replaces the character at 'idx' with 'replaceWith'. If the specified 'idx' is less than
@@ -52818,20 +52892,6 @@ _RiTa_LTS=[
 		 */
 		replaceChar : function(idx, replaceWith) {
 			
-			// if (idx < 0 || idx >= this._rs.length()) 
-				// return this;
-			//                 
-			// var s = this._rs.text();
-			// var beg = s.substring(0, idx);
-			// var end = s.substring(idx + 1);
-			// var s2 = null;
-			//             
-			// if (replaceWith)
-				// s2 = beg + replaceWith + end;
-			// else
-				// s2 = beg + end;
-			// 
-			// return this._rs.text(s2);
 			this._rs.replaceChar(idx, replaceWith);
 			return this;
 		},
@@ -52875,10 +52935,7 @@ _RiTa_LTS=[
 					return this;
 				}
 			};
-
-
 		},
-		
 		
 		/**
 		 * Replaces each substring of this string that matches the given regular expression with the
@@ -52897,38 +52954,6 @@ _RiTa_LTS=[
 			
 		},
 		
-		/**
-		 * Inserts 'newWord' at 'wordIdx' 
-		 * 
-		 * @param {number} wordIdx the index
-		 * @param {string} newWord the string to insert
-		 * 
-		 * @returns {object} this RiText
-		 */
-		insertWord : function(wordIdx, newWord) {
-			
-			// var words = this.words();
-			//         	  
-						// if (wordIdx >= 0 && wordIdx < words.length) { 
-			//                 
-							// var newWords = [];
-			//                 
-							// for (var i=0; i <= wordIdx; i++)  // OPT?
-							  // newWords.push(words[i]);
-			//                 
-							// newWords.push(newWord);
-			//                 
-							// for (var i=wordIdx+1; i < words.length; i++) 
-							  // newWords.push(words[i]);
-			//                   
-							// this._rs.text(RiTa.untokenize(words));
-						// }
-			//             
-						this._rs.insertWord(wordIdx, newWord);
-						return this;
-					},
-		
-		   
 		 /**
 		 * Replaces the word at 'wordIdx' with 'newWord'
 		 * 
@@ -52936,23 +52961,14 @@ _RiTa_LTS=[
 		 * @param {string} newWord the replacement
 		 * 
 		 * @returns {object} this RiText
-		 */
+	     */
 		replaceWord : function(wordIdx, newWord) {
-			
-			// var words = this.words();
-			 
-			// if (wordIdx >= 0 && wordIdx < words.length) {
-				
-				// words[wordIdx] = newWord;
-				 
-				// this._rs.text(RiTa.untokenize(words));
-			// }
-			
-			this._rs.replaceWord(wordIdx, newWord);
+
+			this._rs.replaceWord.apply(this,arguments);
 			
 			return this; // TODO: check that all RiText methods use the delegate 
 						//  (like above) for methods that exist in RiString
-		},
+		},	 
 		
 		/**
 		 * Removes the word at 'wordIdx'.
@@ -52963,10 +52979,23 @@ _RiTa_LTS=[
 		 */
 		removeWord : function(wordIdx) {
 			
-			this._rs.removeWord(wordIdx,E);
+			this._rs.removeWord.apply(this,arguments);
 			return this;
-		},  
+		},   
 		
+		
+		/**
+		 * Inserts 'newWord' at 'wordIdx' and shifts each subsequent word accordingly.
+		 *
+		 * @returns {object} this RiText
+		 */
+		insertWord : function(wordIdx, newWord) {
+			
+			this._rs.insertWord.apply(this, arguments);
+			return this;            
+		},
+		
+	
 		 /**
 		 * Extracts a part of a string from this RiText
 		 * 
@@ -53232,7 +53261,7 @@ _RiTa_LTS=[
 						
 
 		   var bb = this.boundingBox(false);
-		   log('contains('+mx+','+my+') '+ bb.x + ","+bb.width+","+bb.y + ","+(bb.height));
+		   //log('contains('+mx+','+my+') '+ bb.x + ","+bb.width+","+bb.y + ","+(bb.height));
 		   
 			//           // TODO: need to test this with point
 			//           if (!my && Type.get(mx.x) == 'Number' && Type.get(mx.y) == 'Number') {
@@ -54229,6 +54258,7 @@ _RiTa_LTS=[
 		},
 		
 		_rotate : function(zRot) {
+			console.log('rotate: '+zRot);
 			this.ctx.rotate(0,0,zRot);
 		},
 		
@@ -54358,7 +54388,7 @@ _RiTa_LTS=[
 
 		// should operate on the RiText itself (take rt as arg?)
 		_text : function(str, x, y) {
-			//log("text: "+str+","+x+","+y+","+this.ctx.textAlign);
+			log("text: "+str+","+x+","+y+","+this.ctx.textAlign);
 			this.ctx.baseline = 'alphabetic';
 			this.ctx.fillText(str, x, y);
 			//this.ctx.strokeText(str, x, y);
@@ -57125,7 +57155,7 @@ _RiTa_LTS=[
 		init : function(p, ctx) {
 			
 			this.p = p;
-			if (!ctx) console.error("no cnv-context!");
+			if (!ctx) console.error("no canvas-context!");
 			this.ctx = ctx;
 			
 		},
@@ -57155,6 +57185,8 @@ _RiTa_LTS=[
 		 },*/
  		
 		_pushState : function() {
+			
+			// TODO: what about the matrix?
 			
 			//this.p.pushStyle(); 
 			this.ctx.save();
@@ -57196,7 +57228,7 @@ _RiTa_LTS=[
 		
 		_text : function(str, x, y) {
 			
-			this.p.text.apply(this,arguments);
+			this.p.text.apply(this, arguments);
 		},
 		
 		_fill : function(r,g,b,a) {
@@ -57301,12 +57333,15 @@ _RiTa_LTS=[
 			//this.p.pushStyle(); ////////
 			//this.ctx.save();
 
+			this.ctx.save();
+			this.p.textFont(rt._font, rt._font.size);
+			
 			var ascent  =   Math.round(this.p.textAscent()),
 				descent =   Math.round(this.p.textDescent()),
 				width   =   Math.round(this.p.textWidth(rt.text()));
 			
 			//this.p.popStyle(); ////////
-			//this.ctx.restore();
+			this.ctx.restore();
 
 			return { x: 0, y: -ascent-1, width: width, height: (ascent+descent)+1 };
 		},
@@ -57352,16 +57387,17 @@ _RiTa_LTS=[
 		+ "firstborn|fish|flatfish|flounder|fowl|fry|fries|works|globefish|goldfish|golf|"
 		+ "grand|grief|gudgeon|gulden|haddock|hake|halibut|headquarters|herring|hertz|horsepower|"
 		+ "goods|hovercraft|hundredweight|ironworks|jackanapes|kilohertz|kurus|kwacha|ling|lungfish|"
-		+ "mackerel|means|megahertz|moorfowl|moorgame|mullet|nepalese|offspring|pampas|parr|(pants$)|"
+		+ "mackerel|means|megahertz|moorfowl|moorgame|mullet|nepalese|offspring|pampas|parr|pants|"
 		+ "patois|pekinese|penn'orth|perch|pickerel|pike|pince-nez|plaice|precis|quid|rand|"
 		+ "rendezvous|revers|roach|roux|salmon|samurai|series|seychelles|seychellois|shad|"
 		+ "sheep|shellfish|smelt|spacecraft|species|starfish|stockfish|sunfish|superficies|"
-		+ "sweepstakes|swordfish|tench|tennis|tobacco|tope|triceps|trout|tuna|tunafish|tunny|turbot|trousers|"
+		+ "sweepstakes|swordfish|tench|tennis|[a-z]+osis|[a-z]+ness|tobacco|tope|triceps|trout|tuna|tunafish|tunny|turbot|trousers|"
 		+ "undersigned|veg|waterfowl|waterworks|waxworks|whiting|wildfowl|woodworm|"
 		+ "yen|aries|pisces|forceps|lieder|jeans|physics|mathematics|news|odds|politics|remains|"
 		+ "surroundings|thanks|statistics|goods|aids|wildlife)$", 0, E);
 		
 	var SINGULAR_RULES = [
+		  NULL_PLURALS,
 		  RE("^(oxen|buses)$",2,E),
 		  RE("^(toes|taxis)$",1,E),
 		  RE("^series$",0,E),
@@ -57385,8 +57421,7 @@ _RiTa_LTS=[
 		  RE("femora", 3, "ur"),
 		  RE("geese", 4, "oose"),
 		  RE("crises", 2, "is"),
-		  RE("(human|german|roman)$", 0, "s"),
-		  NULL_PLURALS
+		  RE("(human|german|roman)$", 0, "s")
 	];
 
 	var PLURAL_RULES = [
@@ -57429,232 +57464,229 @@ _RiTa_LTS=[
 			+ "maximum|referendum|spectrum|phenomenon|criterion)$", 2, "a"),
 		RE("^(appendix|index|matrix)", 2, "ices"),
 		RE("^(stimulus|alumnus)$", 2, "i")
-		],
+	],
 		
-		ANY_STEM = "^((\\w+)(-\\w+)*)(\\s((\\w+)(-\\w+)*))*$", CONS = "[bcdfghjklmnpqrstvwxyz]",
-		VERBAL_PREFIX = "((be|with|pre|un|over|re|mis|under|out|up|fore|for|counter|co|sub)(-?))",
-		AUXILIARIES = [ "do", "have", "be" ],
-		MODALS = [ "shall", "would", "may", "might", "ought", "should" ],
-		SYMBOLS = [ "!", "?", "$", "%", "*", "+", "-", "=" ],
+	ANY_STEM = "^((\\w+)(-\\w+)*)(\\s((\\w+)(-\\w+)*))*$", CONS = "[bcdfghjklmnpqrstvwxyz]",
+	VERBAL_PREFIX = "((be|with|pre|un|over|re|mis|under|out|up|fore|for|counter|co|sub)(-?))",
+	AUXILIARIES = [ "do", "have", "be" ],
+	MODALS = [ "shall", "would", "may", "might", "ought", "should" ],
+	SYMBOLS = [ "!", "?", "$", "%", "*", "+", "-", "=" ],
 
-		ING_FORM_RULES = [ 
-			  RE(CONS + "ie$", 2, "ying", 1),
-			  RE("[^ie]e$", 1, "ing", 1),
-			  RE("^bog-down$", 5, "ging-down", 0),
-			  RE("^chivy$", 1, "vying", 0),
-			  RE("^trek$", 1, "cking", 0), 
-			  RE("^bring$", 0, "ing", 0),
-			  RE("^be$", 0, "ing", 0), 
-			  RE("^age$", 1, "ing", 0), 
-			  RE("(ibe)$", 1, "ing", 0) 
+	ING_FORM_RULES = [ 
+		  RE(CONS + "ie$", 2, "ying", 1),
+		  RE("[^ie]e$", 1, "ing", 1),
+		  RE("^bog-down$", 5, "ging-down", 0),
+		  RE("^chivy$", 1, "vying", 0),
+		  RE("^trek$", 1, "cking", 0), 
+		  RE("^bring$", 0, "ing", 0),
+		  RE("^be$", 0, "ing", 0), 
+		  RE("^age$", 1, "ing", 0), 
+		  RE("(ibe)$", 1, "ing", 0) 
+	],
+
+	PAST_PARTICIPLE_RULES = [     
+		
+		RE(CONS + "y$", 1, "ied", 1),
+		RE("^" + VERBAL_PREFIX + "?(bring)$", 3, "ought", 0),
+		RE("^" + VERBAL_PREFIX + "?(take|rise|strew|blow|draw|drive|know|give|"
+			+ "arise|gnaw|grave|grow|hew|know|mow|see|sew|throw|prove|saw|quartersaw|"
+			+ "partake|sake|shake|shew|show|shrive|sightsee|strew|strive)$",
+			0, "n", 0),
+		RE("^" + VERBAL_PREFIX + "?[gd]o$", 0, "ne", 1),
+		RE("^(beat|eat|be|fall)$", 0, "en", 0),
+		RE("^(have)$", 2, "d", 0),
+		RE("^" + VERBAL_PREFIX + "?bid$", 0, "den", 0),
+		RE("^" + VERBAL_PREFIX + "?[lps]ay$", 1, "id", 1),
+		RE("^behave$", 0, "d", 0),
+		RE("^" + VERBAL_PREFIX + "?have$", 2, "d", 1),
+		RE("(sink|slink|drink|shrink|stink)$", 3, "unk", 0),
+		RE("(([sfc][twlp]?r?|w?r)ing|hang)$", 3, "ung", 0),
+		RE("^" + VERBAL_PREFIX + "?(shear|swear|bear|wear|tear)$",3,"orn",0),
+		RE("^" + VERBAL_PREFIX + "?(bend|spend|send|lend)$", 1, "t", 0),
+		RE("^" + VERBAL_PREFIX + "?(weep|sleep|sweep|creep|keep$)$", 2,"pt", 0),
+		RE("^" + VERBAL_PREFIX + "?(sell|tell)$", 3, "old", 0),
+		RE("^(outfight|beseech)$", 4, "ought", 0),
+		RE("^bethink$", 3, "ought", 0),
+		RE("^buy$", 2, "ought", 0),
+		RE("^aby$", 1, "ought", 0),
+		RE("^tarmac", 0, "ked", 0),
+		RE("^abide$", 3, "ode", 0),
+		RE("^" + VERBAL_PREFIX + "?(speak|(a?)wake|break)$", 3, "oken", 0),
+		RE("^backbite$", 1, "ten", 0),
+		RE("^backslide$", 1, "den", 0),
+		RE("^become$", 3, "ame", 0),
+		RE("^begird$", 3, "irt", 0),
+		RE("^outlie$", 2, "ay", 0),
+		RE("^rebind$", 3, "ound", 0),
+		RE("^relay$", 2, "aid", 0),
+		RE("^shit$", 3, "hat", 0),
+		RE("^bereave$", 4, "eft", 0),
+		RE("^foreswear$", 3, "ore", 0),
+		RE("^overfly$", 1, "own", 0),
+		RE("^beget$", 2, "otten", 0),
+		RE("^begin$", 3, "gun", 0),
+		RE("^bestride$", 1, "den", 0),
+		RE("^bite$", 1, "ten", 0),
+		RE("^bleed$", 4, "led", 0),
+		RE("^bog-down$", 5, "ged-down", 0),
+		RE("^bind$", 3, "ound", 0),
+		RE("^(.*)feed$", 4, "fed", 0),
+		RE("^breed$", 4, "red", 0),
+		RE("^brei", 0, "d", 0),
+		RE("^bring$", 3, "ought", 0),
+		RE("^build$", 1, "t", 0),
+		RE("^come", 0, "", 0),
+		RE("^catch$", 3, "ught", 0),
+		RE("^chivy$", 1, "vied", 0),
+		RE("^choose$", 3, "sen", 0),
+		RE("^cleave$", 4, "oven", 0),
+		RE("^crossbreed$", 4, "red", 0),
+		RE("^deal", 0, "t", 0),
+		RE("^dow$", 1, "ught", 0),
+		RE("^dream", 0, "t", 0),
+		RE("^dig$", 3, "dug", 0),
+		RE("^dwell$", 2, "lt", 0),
+		RE("^enwind$", 3, "ound", 0),
+		RE("^feel$", 3, "elt", 0),
+		RE("^flee$", 2, "ed", 0),
+		RE("^floodlight$", 5, "lit", 0),
+		RE("^fly$", 1, "own", 0),
+		RE("^forbear$", 3, "orne", 0),
+		RE("^forerun$", 3, "ran", 0),
+		RE("^forget$", 2, "otten", 0),
+		RE("^fight$", 4, "ought", 0),
+		RE("^find$", 3, "ound", 0),
+		RE("^freeze$", 4, "ozen", 0),
+		RE("^gainsay$", 2, "aid", 0),
+		RE("^gin$", 3, "gan", 0),
+		RE("^gen-up$", 3, "ned-up", 0),
+		RE("^ghostwrite$", 1, "ten", 0),
+		RE("^get$", 2, "otten", 0),
+		RE("^grind$", 3, "ound", 0),
+		RE("^hacksaw", 0, "n", 0),
+		RE("^hear", 0, "d", 0),
+		RE("^hold$", 3, "eld", 0),
+		RE("^hide$", 1, "den", 0),
+		RE("^honey$", 2, "ied", 0),
+		RE("^inbreed$", 4, "red", 0),
+		RE("^indwell$", 3, "elt", 0),
+		RE("^interbreed$", 4, "red", 0),
+		RE("^interweave$", 4, "oven", 0),
+		RE("^inweave$", 4, "oven", 0),
+		RE("^ken$", 2, "ent", 0),
+		RE("^kneel$", 3, "elt", 0),
+		RE("^lie$", 2, "ain", 0),
+		RE("^leap$", 0, "t", 0),
+		RE("^learn$", 0, "t", 0),
+		RE("^lead$", 4, "led", 0),
+		RE("^leave$", 4, "eft", 0),
+		RE("^light$", 5, "lit", 0),
+		RE("^lose$", 3, "ost", 0),
+		RE("^make$", 3, "ade", 0),
+		RE("^mean", 0, "t", 0),
+		RE("^meet$", 4, "met", 0),
+		RE("^misbecome$", 3, "ame", 0),
+		RE("^misdeal$", 2, "alt", 0),
+		RE("^mishear$", 1, "d", 0),
+		RE("^mislead$", 4, "led", 0),
+		RE("^misunderstand$", 3, "ood", 0),
+		RE("^outbreed$", 4, "red", 0),
+		RE("^outrun$", 3, "ran", 0),
+		RE("^outride$", 1, "den", 0),
+		RE("^outshine$", 3, "one", 0),
+		RE("^outshoot$", 4, "hot", 0),
+		RE("^outstand$", 3, "ood", 0),
+		RE("^outthink$", 3, "ought", 0),
+		RE("^outgo$", 2, "went", 0),
+		RE("^overbear$", 3, "orne", 0),
+		RE("^overbuild$", 3, "ilt", 0),
+		RE("^overcome$", 3, "ame", 0),
+		RE("^overfly$", 2, "lew", 0),
+		RE("^overhear$", 2, "ard", 0),
+		RE("^overlie$", 2, "ain", 0),
+		RE("^overrun$", 3, "ran", 0),
+		RE("^override$", 1, "den", 0),
+		RE("^overshoot$", 4, "hot", 0),
+		RE("^overwind$", 3, "ound", 0),
+		RE("^overwrite$", 1, "ten", 0),
+		RE("^plead$", 2, "d", 0),
+		//RE("^run$", 3, "ran", 0), //DH
+		//RE("^rerun$", 3, "run", 0),
+		RE("^rebuild$", 3, "ilt", 0),
+		RE("^red$", 3, "red", 0),
+		RE("^redo$", 1, "one", 0),
+		RE("^remake$", 3, "ade", 0),
+		RE("^resit$", 3, "sat", 0),
+		RE("^rethink$", 3, "ought", 0),
+		RE("^rewind$", 3, "ound", 0),
+		RE("^rewrite$", 1, "ten", 0),
+		RE("^ride$", 1, "den", 0),
+		RE("^reeve$", 4, "ove", 0),
+		RE("^sit$", 3, "sat", 0),
+		RE("^shoe$", 3, "hod", 0),
+		RE("^shine$", 3, "one", 0),
+		RE("^shoot$", 4, "hot", 0),
+		RE("^ski$", 1, "i'd", 0),
+		RE("^slide$", 1, "den", 0),
+		RE("^smite$", 1, "ten", 0),
+		RE("^seek$", 3, "ought", 0),
+		RE("^spit$", 3, "pat", 0),
+		RE("^speed$", 4, "ped", 0),
+		RE("^spellbind$", 3, "ound", 0),
+		RE("^spoil$", 2, "ilt", 0),
+		RE("^spotlight$", 5, "lit", 0),
+		RE("^spin$", 3, "pun", 0),
+		RE("^steal$", 3, "olen", 0),
+		RE("^stand$", 3, "ood", 0),
+		RE("^stave$", 3, "ove", 0),
+		RE("^stride$", 1, "den", 0),
+		RE("^strike$", 3, "uck", 0),
+		RE("^stick$", 3, "uck", 0),
+		RE("^swell$", 3, "ollen", 0),
+		RE("^swim$", 3, "wum", 0),
+		RE("^teach$", 4, "aught", 0),
+		RE("^think$", 3, "ought", 0),
+		RE("^tread$", 3, "odden", 0),
+		RE("^typewrite$", 1, "ten", 0),
+		RE("^unbind$", 3, "ound", 0),
+		RE("^underbuy$", 2, "ought", 0),
+		RE("^undergird$", 3, "irt", 0),
+		RE("^undergo$", 1, "one", 0),
+		RE("^underlie$", 2, "ain", 0),
+		RE("^undershoot$", 4, "hot", 0),
+		RE("^understand$", 3, "ood", 0),
+		RE("^unfreeze$", 4, "ozen", 0),
+		RE("^unlearn", 0, "t", 0),
+		RE("^unmake$", 3, "ade", 0),
+		RE("^unreeve$", 4, "ove", 0),
+		RE("^unstick$", 3, "uck", 0),
+		RE("^unteach$", 4, "aught", 0),
+		RE("^unthink$", 3, "ought", 0),
+		RE("^untread$", 3, "odden", 0),
+		RE("^unwind$", 3, "ound", 0),
+		RE("^upbuild$", 1, "t", 0),
+		RE("^uphold$", 3, "eld", 0),
+		RE("^upheave$", 4, "ove", 0),
+		RE("^waylay$", 2, "ain", 0),
+		RE("^whipsaw$", 2, "awn", 0),
+		RE("^withhold$", 3, "eld", 0),
+		RE("^withstand$", 3, "ood", 0),
+		RE("^win$", 3, "won", 0),
+		RE("^wind$", 3, "ound", 0),
+		RE("^weave$", 4, "oven", 0),
+		RE("^write$", 1, "ten", 0),
+		RE("^trek$", 1, "cked", 0),
+		RE("^ko$", 1, "o'd", 0),
+		RE("^win$", 2, "on", 0),
+		
+		RE("e$", 0, "d", 1),
+		
+		// Null past forms
+		RE("^" + VERBAL_PREFIX
+		+ "?(cast|thrust|typeset|cut|bid|upset|wet|bet|cut|hit|hurt|inset|let|cost|burst|beat|beset|set|upset|hit|offset|put|quit|"
+		+ "wed|typeset|wed|spread|split|slit|read|run|rerun|shut|shed)$", 0, E, 0)
+
 		],
-
-		PAST_PARTICIPLE_RULES = [     
-			
-			RE(CONS + "y$", 1, "ied", 1),
-			RE("^" + VERBAL_PREFIX + "?(bring)$", 3, "ought", 0),
-			RE("^" + VERBAL_PREFIX + "?(take|rise|strew|blow|draw|drive|know|give|"
-				+ "arise|gnaw|grave|grow|hew|know|mow|see|sew|throw|prove|saw|quartersaw|"
-				+ "partake|sake|shake|shew|show|shrive|sightsee|strew|strive)$",
-				0, "n", 0),
-			RE("^" + VERBAL_PREFIX + "?[gd]o$", 0, "ne", 1),
-			RE("^(beat|eat|be|fall)$", 0, "en", 0),
-			RE("^(have)$", 2, "d", 0),
-			RE("^" + VERBAL_PREFIX + "?bid$", 0, "den", 0),
-			RE("^" + VERBAL_PREFIX + "?[lps]ay$", 1, "id", 1),
-			RE("^behave$", 0, "d", 0),
-			RE("^" + VERBAL_PREFIX + "?have$", 2, "d", 1),
-			RE("(sink|slink|drink|shrink|stink)$", 3, "unk", 0),
-			RE("(([sfc][twlp]?r?|w?r)ing|hang)$", 3, "ung", 0),
-			RE("^" + VERBAL_PREFIX + "?(shear|swear|bear|wear|tear)$",3,"orn",0),
-			RE("^" + VERBAL_PREFIX + "?(bend|spend|send|lend)$", 1, "t", 0),
-			RE("^" + VERBAL_PREFIX + "?(weep|sleep|sweep|creep|keep$)$", 2,"pt", 0),
-			RE("^" + VERBAL_PREFIX + "?(sell|tell)$", 3, "old", 0),
-			RE("^(outfight|beseech)$", 4, "ought", 0),
-			RE("^bethink$", 3, "ought", 0),
-			RE("^buy$", 2, "ought", 0),
-			RE("^aby$", 1, "ought", 0),
-			RE("^tarmac", 0, "ked", 0),
-			RE("^abide$", 3, "ode", 0),
-			RE("^" + VERBAL_PREFIX + "?(speak|(a?)wake|break)$", 3, "oken", 0),
-			RE("^backbite$", 1, "ten", 0),
-			RE("^backslide$", 1, "den", 0),
-			RE("^become$", 3, "ame", 0),
-			RE("^begird$", 3, "irt", 0),
-			RE("^outlie$", 2, "ay", 0),
-			RE("^rebind$", 3, "ound", 0),
-			RE("^relay$", 2, "aid", 0),
-			RE("^shit$", 3, "hat", 0),
-			RE("^bereave$", 4, "eft", 0),
-			RE("^foreswear$", 3, "ore", 0),
-			RE("^overfly$", 1, "own", 0),
-			RE("^beget$", 2, "otten", 0),
-			RE("^begin$", 3, "gun", 0),
-			RE("^bestride$", 1, "den", 0),
-			RE("^bite$", 1, "ten", 0),
-			RE("^bleed$", 4, "led", 0),
-			RE("^bog-down$", 5, "ged-down", 0),
-			RE("^bind$", 3, "ound", 0),
-			RE("^(.*)feed$", 4, "fed", 0),
-			RE("^breed$", 4, "red", 0),
-			RE("^brei", 0, "d", 0),
-			RE("^bring$", 3, "ought", 0),
-			RE("^build$", 1, "t", 0),
-			RE("^come", 0, "", 0),
-			RE("^catch$", 3, "ught", 0),
-			RE("^chivy$", 1, "vied", 0),
-			RE("^choose$", 3, "sen", 0),
-			RE("^cleave$", 4, "oven", 0),
-			RE("^crossbreed$", 4, "red", 0),
-			RE("^deal", 0, "t", 0),
-			RE("^dow$", 1, "ught", 0),
-			RE("^dream", 0, "t", 0),
-			RE("^dig$", 3, "dug", 0),
-			RE("^dwell$", 2, "lt", 0),
-			RE("^enwind$", 3, "ound", 0),
-			RE("^feel$", 3, "elt", 0),
-			RE("^flee$", 2, "ed", 0),
-			RE("^floodlight$", 5, "lit", 0),
-			RE("^fly$", 1, "own", 0),
-			RE("^forbear$", 3, "orne", 0),
-			RE("^forerun$", 3, "ran", 0),
-			RE("^forget$", 2, "otten", 0),
-			RE("^fight$", 4, "ought", 0),
-			RE("^find$", 3, "ound", 0),
-			RE("^freeze$", 4, "ozen", 0),
-			RE("^gainsay$", 2, "aid", 0),
-			RE("^gin$", 3, "gan", 0),
-			RE("^gen-up$", 3, "ned-up", 0),
-			RE("^ghostwrite$", 1, "ten", 0),
-			RE("^get$", 2, "otten", 0),
-			RE("^grind$", 3, "ound", 0),
-			RE("^hacksaw", 0, "n", 0),
-			RE("^hear", 0, "d", 0),
-			RE("^hold$", 3, "eld", 0),
-			RE("^hide$", 1, "den", 0),
-			RE("^honey$", 2, "ied", 0),
-			RE("^inbreed$", 4, "red", 0),
-			RE("^indwell$", 3, "elt", 0),
-			RE("^interbreed$", 4, "red", 0),
-			RE("^interweave$", 4, "oven", 0),
-			RE("^inweave$", 4, "oven", 0),
-			RE("^ken$", 2, "ent", 0),
-			RE("^kneel$", 3, "elt", 0),
-			RE("^lie$", 2, "ain", 0),
-			RE("^leap$", 0, "t", 0),
-			RE("^learn$", 0, "t", 0),
-			RE("^lead$", 4, "led", 0),
-			RE("^leave$", 4, "eft", 0),
-			RE("^light$", 5, "lit", 0),
-			RE("^lose$", 3, "ost", 0),
-			RE("^make$", 3, "ade", 0),
-			RE("^mean", 0, "t", 0),
-			RE("^meet$", 4, "met", 0),
-			RE("^misbecome$", 3, "ame", 0),
-			RE("^misdeal$", 2, "alt", 0),
-			RE("^mishear$", 1, "d", 0),
-			RE("^mislead$", 4, "led", 0),
-			RE("^misunderstand$", 3, "ood", 0),
-			RE("^outbreed$", 4, "red", 0),
-			RE("^outrun$", 3, "ran", 0),
-			RE("^outride$", 1, "den", 0),
-			RE("^outshine$", 3, "one", 0),
-			RE("^outshoot$", 4, "hot", 0),
-			RE("^outstand$", 3, "ood", 0),
-			RE("^outthink$", 3, "ought", 0),
-			RE("^outgo$", 2, "went", 0),
-			RE("^overbear$", 3, "orne", 0),
-			RE("^overbuild$", 3, "ilt", 0),
-			RE("^overcome$", 3, "ame", 0),
-			RE("^overfly$", 2, "lew", 0),
-			RE("^overhear$", 2, "ard", 0),
-			RE("^overlie$", 2, "ain", 0),
-			RE("^overrun$", 3, "ran", 0),
-			RE("^override$", 1, "den", 0),
-			RE("^overshoot$", 4, "hot", 0),
-			RE("^overwind$", 3, "ound", 0),
-			RE("^overwrite$", 1, "ten", 0),
-			RE("^plead$", 2, "d", 0),
-			//RE("^run$", 3, "ran", 0), //DH
-			//RE("^rerun$", 3, "run", 0),
-			RE("^rebuild$", 3, "ilt", 0),
-			RE("^red$", 3, "red", 0),
-			RE("^redo$", 1, "one", 0),
-			RE("^remake$", 3, "ade", 0),
-			RE("^resit$", 3, "sat", 0),
-			RE("^rethink$", 3, "ought", 0),
-			RE("^rewind$", 3, "ound", 0),
-			RE("^rewrite$", 1, "ten", 0),
-			RE("^ride$", 1, "den", 0),
-			RE("^reeve$", 4, "ove", 0),
-			RE("^sit$", 3, "sat", 0),
-			RE("^shoe$", 3, "hod", 0),
-			RE("^shine$", 3, "one", 0),
-			RE("^shoot$", 4, "hot", 0),
-			RE("^ski$", 1, "i'd", 0),
-			RE("^slide$", 1, "den", 0),
-			RE("^smite$", 1, "ten", 0),
-			RE("^seek$", 3, "ought", 0),
-			RE("^spit$", 3, "pat", 0),
-			RE("^speed$", 4, "ped", 0),
-			RE("^spellbind$", 3, "ound", 0),
-			RE("^spoil$", 2, "ilt", 0),
-			RE("^spotlight$", 5, "lit", 0),
-			RE("^spin$", 3, "pun", 0),
-			RE("^steal$", 3, "olen", 0),
-			RE("^stand$", 3, "ood", 0),
-			RE("^stave$", 3, "ove", 0),
-			RE("^stride$", 1, "den", 0),
-			RE("^strike$", 3, "uck", 0),
-			RE("^stick$", 3, "uck", 0),
-			RE("^swell$", 3, "ollen", 0),
-			RE("^swim$", 3, "wum", 0),
-			RE("^teach$", 4, "aught", 0),
-			RE("^think$", 3, "ought", 0),
-			RE("^tread$", 3, "odden", 0),
-			RE("^typewrite$", 1, "ten", 0),
-			RE("^unbind$", 3, "ound", 0),
-			RE("^underbuy$", 2, "ought", 0),
-			RE("^undergird$", 3, "irt", 0),
-			RE("^undergo$", 1, "one", 0),
-			RE("^underlie$", 2, "ain", 0),
-			RE("^undershoot$", 4, "hot", 0),
-			RE("^understand$", 3, "ood", 0),
-			RE("^unfreeze$", 4, "ozen", 0),
-			RE("^unlearn", 0, "t", 0),
-			RE("^unmake$", 3, "ade", 0),
-			RE("^unreeve$", 4, "ove", 0),
-			RE("^unstick$", 3, "uck", 0),
-			RE("^unteach$", 4, "aught", 0),
-			RE("^unthink$", 3, "ought", 0),
-			RE("^untread$", 3, "odden", 0),
-			RE("^unwind$", 3, "ound", 0),
-			RE("^upbuild$", 1, "t", 0),
-			RE("^uphold$", 3, "eld", 0),
-			RE("^upheave$", 4, "ove", 0),
-			RE("^waylay$", 2, "ain", 0),
-			RE("^whipsaw$", 2, "awn", 0),
-			RE("^withhold$", 3, "eld", 0),
-			RE("^withstand$", 3, "ood", 0),
-			RE("^win$", 3, "won", 0),
-			RE("^wind$", 3, "ound", 0),
-			RE("^weave$", 4, "oven", 0),
-			RE("^write$", 1, "ten", 0),
-			RE("^trek$", 1, "cked", 0),
-			RE("^ko$", 1, "o'd", 0),
-			RE("^win$", 2, "on", 0),
-			
-			RE("e$", 0, "d", 1),
-			
-			// Null past forms
-			RE("^"
-			+ VERBAL_PREFIX
-			+ "?(cast|thrust|typeset|cut|bid|upset|wet|bet|cut|hit|hurt|inset|let|cost|burst|beat|beset|set|upset|hit|offset|put|quit|"
-			+ "wed|typeset|wed|spread|split|slit|read|run|rerun|shut|shed)$", 0,
-			"", 0)
-
-			],
-			
 			
 		PAST_TENSE_RULES = [
 							RE("^(reduce)$", 0, "d", 0),

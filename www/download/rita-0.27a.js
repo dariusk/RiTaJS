@@ -52145,8 +52145,8 @@ _RiTa_LTS=[
 			this.text(args[0]);
 
 			// center by default
-			this.x = args[1] > -1 ? args[1] : this.g._width()  / 2 - this.textWidth()  / 2.0;
-			this.y = args[2] > -1 ? args[2] : this.g._height() / 2 + this.textHeight() / 2.0;
+			this.x = is(args[1],N) ? args[1] : this.g._width()  / 2 - this.textWidth()  / 2.0;
+			this.y = is(args[2],N) ? args[2] : this.g._height() / 2 + this.textHeight() / 2.0;
 			this.z = 0;
 
 			//log('RiText: '+this._rs._text +"("+this.x+","+this.y+")"+" / "+ this._font.name);
