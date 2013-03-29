@@ -4881,6 +4881,7 @@
 				delete(RiText.instances[i]);
 			}
 		}
+		
 		RiText.instances = [];
    }
 	
@@ -7535,7 +7536,7 @@
 		},
 		
 		_rotate : function(zRot) {
-			console.log('rotate: '+zRot);
+			//console.log('rotate: '+zRot);
 			this.ctx.rotate(0,0,zRot);
 		},
 		
@@ -7665,7 +7666,7 @@
 
 		// should operate on the RiText itself (take rt as arg?)
 		_text : function(str, x, y) {
-			log("text: "+str+","+x+","+y+","+this.ctx.textAlign);
+			//log("text: "+str+","+x+","+y+","+this.ctx.textAlign);
 			this.ctx.baseline = 'alphabetic';
 			this.ctx.fillText(str, x, y);
 			//this.ctx.strokeText(str, x, y);
