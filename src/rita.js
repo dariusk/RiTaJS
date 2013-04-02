@@ -5545,10 +5545,7 @@
 			
 				g._pushState();
 				
-				// order: scale, center-point-trans, rotate,-center-point-trans,translate?
-				
 				var bb = g._getBoundingBox(this); // cache this!
-				
 				
 				g._translate(this.x, this.y);
 				g._translate(bb.width/2, bb.height/-4);
