@@ -2133,7 +2133,7 @@
 		},
 		
 		/**
-		 * Gets the source for this event
+		 * Gets the source for this event (usually a RiText object)
 		 * @returns {object} the source
 		 */
 		getSource : function() {
@@ -2143,7 +2143,7 @@
 		
 		/**
 		 * Gets the type for this event
-		 * @returns {string} the type
+		 * @returns {number} the type
 		 */
 		getType : function() {
 			
