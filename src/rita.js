@@ -430,12 +430,8 @@
 		
 		// :::: For RiTaEvents :::::::::
 	
-		UNKNOWN : -1, TEXT_ENTERED : 1, BEHAVIOR_COMPLETED : 2, TIMER_TICK : 3,
-	
-		// :::: TextBehavior ::::::::::::
-	
-		MOVE_TO : 1, FADE_COLOR : 2, FADE_IN : 3, FADE_OUT : 4, FADE_TO_TEXT : 5, 
-		TIMER : 6, SCALE_TO : 7, LERP : 8,
+		UNKNOWN : -1, MOVE_TO : 1, COLOR_TO : 2, FADE_IN : 3, FADE_OUT : 4, TEXT_TO : 5, 
+		TIMER : 6, SCALE_TO : 7, ROTATE_TO: 8, TEXT_ENTERED : 9, LERP : 10,
 	
 		// :::: RiText Constants  ::::::::: 
 
@@ -2128,15 +2124,18 @@
 		/** @private  */
 		toString : function() {
 			
-			return "RiTaEvent[#"+this._id+" type="+this._type+
-				" src="+this._source.toString()+"]";//+", data="+this._data+"]";
+			// TODO: implement typeToString() and uncomment below
+			
+			return "RiTaEvent[#"+this._id+" type="+ // typeToString(this._type)+ 
+				"("+this._type+") src="+this._source.toString()+"]";
+
 		},
 		
 		/**
 		 * Gets the source for this event (usually a RiText object)
 		 * @returns {object} the source
 		 */
-		getSource : function() {
+		source : function() {
 			
 			return this._source;  
 		},
@@ -2145,7 +2144,7 @@
 		 * Gets the type for this event
 		 * @returns {number} the type
 		 */
-		getType : function() {
+		type : function() {
 			
 			return this._type;  
 		},

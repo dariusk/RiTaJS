@@ -47157,8 +47157,8 @@ _RiTa_LTS=[
 	
 		// :::: TextBehavior ::::::::::::
 	
-		MOVE_TO : 1, FADE_COLOR : 2, FADE_IN : 3, FADE_OUT : 4, FADE_TO_TEXT : 5, 
-		TIMER : 6, SCALE_TO : 7, LERP : 8,
+		MOVE_TO : 1, COLOR_TO : 2, FADE_IN : 3, FADE_OUT : 4, TEXT_TO : 5, 
+		TIMER : 6, SCALE_TO : 7, ROTATE_TO : 8,TEXT_ENTERED : 9, UNKNOWN : -1, LERP : 10,
 	
 		// :::: RiText Constants  ::::::::: 
 
