@@ -1287,7 +1287,7 @@
 		 */
 		stem : function(word, type) {
 			
-			type = type || 'Lancaster';  // CONSTANTS
+			type = type || 'Lancaster';  // USE CONSTANTS
 			
 			if (type != 'Lancaster' && type != 'Porter' && type != 'Pling')
 				err('Bad stemmer type: '+type);
@@ -1317,7 +1317,7 @@
 		 * 
 		 * @param {boolean} true to enable compatibility, else false
 		 */
-		p5Compatible : function(value) {
+		p5Compatible : function(value) {  // TODO: remove with canvas renderer?
 			
 			//console.log('p5Compatible('+value+'['+window+'])');
 			
@@ -1352,19 +1352,19 @@
 				RiText.prototype.textFont   = RiText.prototype.font;
 				RiText.prototype.textSize   = RiText.prototype.fontSize;
 				
-				// alias for some RiTa-java functions
+				// alias for some RiTa-java functions (?)
 				RiText.prototype.setText    = RiText.prototype.text;
 				RiText.prototype.fadeColor  = RiText.prototype.colorTo;
 				RiText.prototype.fadeToText = RiText.prototype.textTo;
 				RiText.prototype.setColor   = RiText.prototype.color;
 	
-				// alias for RiTa-java static functions
-				RiText.setDefaultFont = RiText.defaultFont;
+				// alias for RiTa-java static functions  (?)
+				RiText.setDefaultFont = RiText.defaultFont; 
 				RiText.setDefaultColor = RiText.defaultColor;
 				RiText.setDefaultAlignment = RiText.defaultAlignment;
 				RiText.setCallbackTimer = RiText.timer;
 				
-				if (typeof window != 'undefined' && !hasProcessing) {
+				if (typeof window != 'undefined' && !hasProcessing) { // remove all this
 					
 					// add some common P5 global methods (sorry, namespace)
 					
@@ -2093,7 +2093,7 @@
 	 <pre>
 	 function onRiTaEvent(e)
 		{
-		  if (e.getSource() == RiTa.BEHAVIOR_COMPLETED)
+		  if (e.source() == RiTa.FADE_OUT)
 			// ...
 		  else 
 			// ...
@@ -4978,20 +4978,20 @@
 	 * Sets/gets the default font size for all RiTexts
 	 * @param {number} size (optional, for sets only)
 	 * @returns {number} the current default font size
-	 */
+
 	RiText.defaultFontSize = function(size) {
 
 		if (arguments.length==1) 
 			RiText.defaults.fontSize = size;
 		return RiText.defaults.fontSize;
-	}
+	}	 */
 
 	/**
 	 * Sets/gets the default bounding box visibility
 	 * @param {boolean} size (optional, for sets only)
 	 * @returns {boolean} the current default bounding box visibility
 	 */
-	RiText.showBoundingBoxes = function(value) {
+	RiText.defaultBoundingBoxes = function(value) {
 		
 		if (arguments.length==1) 
 			RiText.defaults.boundingBoxVisible = value;
@@ -5578,7 +5578,7 @@
 					g._stroke(this._boundingBoxStroke.r, this._boundingBoxStroke.g, 
 							this._boundingBoxStroke.b, this._boundingBoxStroke.a);
 
-					// shift bounds based on alignment
+					// shift bounds based on alignment  // TODO: check that rotation still works w bounds? 
 					switch(this._alignment) {
 						
 						case RiTa.RIGHT:
@@ -11721,7 +11721,7 @@
 	}
 	
 
-	RiTa.p5Compatible(hasProcessing); // TODO: whats the no-P5 default? false, for now
+	RiTa.p5Compatible(hasProcessing);
 
 })(typeof window !== 'undefined' ? window : null);
 

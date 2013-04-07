@@ -47156,12 +47156,8 @@ _RiTa_LTS=[
 		
 		// :::: For RiTaEvents :::::::::
 	
-		UNKNOWN : -1, TEXT_ENTERED : 1, BEHAVIOR_COMPLETED : 2, TIMER_TICK : 3,
-	
-		// :::: TextBehavior ::::::::::::
-	
-		MOVE_TO : 1, FADE_COLOR : 2, FADE_IN : 3, FADE_OUT : 4, FADE_TO_TEXT : 5, 
-		TIMER : 6, SCALE_TO : 7, LERP : 8,
+		UNKNOWN : -1, MOVE_TO : 1, COLOR_TO : 2, FADE_IN : 3, FADE_OUT : 4, TEXT_TO : 5, 
+		TIMER : 6, SCALE_TO : 7, ROTATE_TO: 8, TEXT_ENTERED : 9, LERP : 10,
 	
 		// :::: RiText Constants  ::::::::: 
 
@@ -47308,6 +47304,7 @@ _RiTa_LTS=[
  
 			return arr.join(delim);  
 		},
+
 		
 		/**
 		 * Returns a random number between min(default=0) and max(default=1)
@@ -48213,11 +48210,10 @@ _RiTa_LTS=[
 		 * 
 		 * Construct a Markov chain (or n-gram) model and set its n-Factor
 		 * 
-		 * @param {number} nFactor for the model
-		 * @param {boolean} caseSensitive whether the model should be case-sensitive (optional, default=false)
-		 * @param {boolean} useSmoothing whether the model should be case-sensitive (optional, default=false)
-		 */
-		init : function(nFactor, useSmoothing) {
+		 * @param {number} nFactor for the model (an int)
+		 * @param {boolean} recognizeSentences whether the model will attempt to recognize (English) sentences (optional, default=true)
+		 * @param {boolean} allowDuplicates whether the model allow duplicates in its output (optional, default=true)		 */
+		init : function(nFactor, recognizeSentences, allowDuplicates) {
 
 			ok(nFactor,N);
 
@@ -48225,7 +48221,9 @@ _RiTa_LTS=[
 			this.sentenceList = [];
 			this.sentenceStarts = [];
 			this.sentenceAware = true;
-			this.smoothing = useSmoothing || false;
+			this.smoothing = false;
+			this.allowDuplicates = allowDuplicates || true;
+			this.recognizeSentences = recognizeSentences || true;
 			this.root = new TextNode(null, 'ROOT');
 			this.ssRegex = "\"?[A-Z][a-z\"',;`-]*";
 			this.ssDelim = "D=l1m"; // last 2 should be static
@@ -48853,24 +48851,27 @@ _RiTa_LTS=[
 		/** @private  */
 		toString : function() {
 			
-			return "RiTaEvent[#"+this._id+" type="+this._type+
-				" src="+this._source.toString()+"]";//+", data="+this._data+"]";
+			// TODO: implement typeToString() and uncomment below
+			
+			return "RiTaEvent[#"+this._id+" type="+ // typeToString(this._type)+ 
+				"("+this._type+") src="+this._source.toString()+"]";
+
 		},
 		
 		/**
-		 * Gets the source for this event
+		 * Gets the source for this event (usually a RiText object)
 		 * @returns {object} the source
 		 */
-		getSource : function() {
+		source : function() {
 			
 			return this._source;  
 		},
 		
 		/**
 		 * Gets the type for this event
-		 * @returns {string} the type
+		 * @returns {number} the type
 		 */
-		getType : function() {
+		type : function() {
 			
 			return this._type;  
 		},
@@ -50845,6 +50846,7 @@ _RiTa_LTS=[
 		
 		/**
 		 * Deletes the named rule from the grammar
+		 * @param {String} the rule name
 		 * @returns {object} this RiGrammar
 		 */ 
 		removeRule : function(name)  {
@@ -50882,8 +50884,7 @@ _RiTa_LTS=[
 			if (dbug) log("addRule: "+name+ " -> "+ruleStr+" ["+weight+"]");
 			
 			var ruleset = ruleStr.split(RiGrammar.OR_PATT);
-			//ruleset = "<noun-phrase> <verb-phrase>";
-	
+
 			for ( var i = 0; i < ruleset.length; i++) {
 				
 				var rule = ruleset[i];
@@ -51066,7 +51067,7 @@ _RiTa_LTS=[
 				
 		/**
 		 * Expands a grammar from its '<start>' symbol
-		 * @param {string} One or more function to be added to the current context BEFORE 
+		 * @param {string} (optional) One or more function to be added to the current context BEFORE 
 		 * executing the expand() call. Useful for defining functions referenced in back-ticked rules.
 		 * @returns {string}
 		 */
@@ -51076,6 +51077,7 @@ _RiTa_LTS=[
 			
 			return this.expandFrom(RiGrammar.START_RULE);
 		}, 
+		
 		// TODO: reconsider
 		
 		/**
@@ -51606,8 +51608,9 @@ _RiTa_LTS=[
 				delete(RiText.instances[i]);
 			}
 		}
+		
 		RiText.instances = [];
-	}
+   }
 	
    RiText.createWords = function(txt, x, y, w, h, fontObj) {
 
@@ -52028,6 +52031,8 @@ _RiTa_LTS=[
 			
 			RiText._disposeOne(toDelete[i]);
 		}
+		
+		toDelete = [];
 	}
 	
 	// TODO: test this font default across all platforms and browsers
@@ -52145,8 +52150,8 @@ _RiTa_LTS=[
 			this.text(args[0]);
 
 			// center by default
-			this.x = args[1] > -1 ? args[1] : this.g._width()  / 2 - this.textWidth()  / 2.0;
-			this.y = args[2] > -1 ? args[2] : this.g._height() / 2 + this.textHeight() / 2.0;
+			this.x = is(args[1],N) ? args[1] : this.g._width()  / 2 - this.textWidth()  / 2.0;
+			this.y = is(args[2],N) ? args[2] : this.g._height() / 2 + this.textHeight() / 2.0;
 			this.z = 0;
 
 			//log('RiText: '+this._rs._text +"("+this.x+","+this.y+")"+" / "+ this._font.name);
@@ -52267,10 +52272,7 @@ _RiTa_LTS=[
 			
 				g._pushState();
 				
-				// order: scale, center-point-trans, rotate,-center-point-trans,translate?
-				
 				var bb = g._getBoundingBox(this); // cache this!
-				
 				
 				g._translate(this.x, this.y);
 				g._translate(bb.width/2, bb.height/-4);
@@ -54258,7 +54260,7 @@ _RiTa_LTS=[
 		},
 		
 		_rotate : function(zRot) {
-			console.log('rotate: '+zRot);
+			//console.log('rotate: '+zRot);
 			this.ctx.rotate(0,0,zRot);
 		},
 		
@@ -54388,7 +54390,7 @@ _RiTa_LTS=[
 
 		// should operate on the RiText itself (take rt as arg?)
 		_text : function(str, x, y) {
-			log("text: "+str+","+x+","+y+","+this.ctx.textAlign);
+			//log("text: "+str+","+x+","+y+","+this.ctx.textAlign);
 			this.ctx.baseline = 'alphabetic';
 			this.ctx.fillText(str, x, y);
 			//this.ctx.strokeText(str, x, y);

@@ -48210,11 +48210,10 @@ _RiTa_LTS=[
 		 * 
 		 * Construct a Markov chain (or n-gram) model and set its n-Factor
 		 * 
-		 * @param {number} nFactor for the model
-		 * @param {boolean} caseSensitive whether the model should be case-sensitive (optional, default=false)
-		 * @param {boolean} useSmoothing whether the model should be case-sensitive (optional, default=false)
-		 */
-		init : function(nFactor, useSmoothing) {
+		 * @param {number} nFactor for the model (an int)
+		 * @param {boolean} recognizeSentences whether the model will attempt to recognize (English) sentences (optional, default=true)
+		 * @param {boolean} allowDuplicates whether the model allow duplicates in its output (optional, default=true)		 */
+		init : function(nFactor, recognizeSentences, allowDuplicates) {
 
 			ok(nFactor,N);
 
@@ -48222,7 +48221,9 @@ _RiTa_LTS=[
 			this.sentenceList = [];
 			this.sentenceStarts = [];
 			this.sentenceAware = true;
-			this.smoothing = useSmoothing || false;
+			this.smoothing = false;
+			this.allowDuplicates = allowDuplicates || true;
+			this.recognizeSentences = recognizeSentences || true;
 			this.root = new TextNode(null, 'ROOT');
 			this.ssRegex = "\"?[A-Z][a-z\"',;`-]*";
 			this.ssDelim = "D=l1m"; // last 2 should be static
@@ -50845,6 +50846,7 @@ _RiTa_LTS=[
 		
 		/**
 		 * Deletes the named rule from the grammar
+		 * @param {String} the rule name
 		 * @returns {object} this RiGrammar
 		 */ 
 		removeRule : function(name)  {
@@ -50882,8 +50884,7 @@ _RiTa_LTS=[
 			if (dbug) log("addRule: "+name+ " -> "+ruleStr+" ["+weight+"]");
 			
 			var ruleset = ruleStr.split(RiGrammar.OR_PATT);
-			//ruleset = "<noun-phrase> <verb-phrase>";
-	
+
 			for ( var i = 0; i < ruleset.length; i++) {
 				
 				var rule = ruleset[i];
@@ -51066,7 +51067,7 @@ _RiTa_LTS=[
 				
 		/**
 		 * Expands a grammar from its '<start>' symbol
-		 * @param {string} One or more function to be added to the current context BEFORE 
+		 * @param {string} (optional) One or more function to be added to the current context BEFORE 
 		 * executing the expand() call. Useful for defining functions referenced in back-ticked rules.
 		 * @returns {string}
 		 */
@@ -51076,6 +51077,7 @@ _RiTa_LTS=[
 			
 			return this.expandFrom(RiGrammar.START_RULE);
 		}, 
+		
 		// TODO: reconsider
 		
 		/**
