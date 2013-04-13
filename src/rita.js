@@ -620,14 +620,27 @@
 		 * @returns {number} the unique id for the timer
 		 */
 		timer: function(period, callback) {
+			 
+			var a = arguments;
 			
-			var timer = Timer(
-				function(){       
+			// if 1st arg is an object (e.g., 'this'), ignore it...
+			if (a.length && is(a[0], O)) 
+				a = Array.prototype.slice.call(a, 1);
+			
+			if (a.length < 1)
+				throw Error("Bad args to RiTa.timer("+a+")");
+				
+			var callback = a.length > 1 ? a[1] : null;
+				
+			var timer = new Timer(
+				function() {       					
 					RiTaEvent(RiTa, 'tick')._fire(callback);  
-			}, period * 1000, true);
+			}, [a[0]] * 1000, true);
+			
 			timer.go();
 			var id = timer.id(); 
 			timers[id] = timer;
+			
 			return id;
 		}, 
 		
@@ -635,7 +648,7 @@
 		 * Stops a timer according to its unique id
 		 * @param {number} the unique id for the timer
 		 */
-		stopTimer: function(id) {
+		stopTimer: function(id) { 
 			
 			if (timers[id])  
 				timers[id].stop();
@@ -649,18 +662,22 @@
 		 * @param {number} pause-time (in seconds)
 		 * @returns {number} the new unique id for the timer
 		 */
-		pauseTimer: function(id, pauseSec) {
+		pauseTimer: function(id, pauseSec) {  
 			
 			pauseSec = is(pauseSec, N) ? pauseSec : Number.MAX_VALUE;
 			
 			if (timers[id])  {
 				timers[id].pause();
 				setTimeout(function() { 
-					if (timers[id]) timers[id].play(); else warn("no timer!!!");
+					if (timers[id])
+						timers[id].play(); 
+					else
+						warn("no timer!!!");
 				}, pauseSec*1000);
 			}
-			else
+			else {
 				warn('no timer with id: '+id);
+			}
 		},   
 
 		/**
@@ -4568,14 +4585,14 @@
 	 * Returns the number of frames since the start of the sketch 
 	 * @returns {number} the number of frames
 	 */
-	RiText.frameCount = function() {
+	RiText.frameCount = function() {   // TODO: REMOVE
 		return RiText._animator.frameCount;
 	}
 	
 	/**
 	 * Immediately stops the current animation loop
 	 */
-	RiText.noLoop = function() {
+	RiText.noLoop = function() {  // TODO: REMOVE
 		var an = RiText._animator;
 		an.isLooping = false;
 		an.loopStarted = false;
@@ -4596,7 +4613,7 @@
 	 *  RiText.loop(draw, 10);
 	 * </pre>
 	 */
-	RiText.loop = function(callbackFun, fps) {
+	RiText.loop = function(callbackFun, fps) {   // TODO: REMOVE
 		
 		var a = arguments, 
 			g = RiText.renderer,  
@@ -4683,14 +4700,14 @@
 	 * Convenience method to get the height of the current drawing surface
 	 * @returns {number} width
 	 */
-	RiText.width = function() { return RiText.renderer._width(); }
-	 
+	RiText.width = function() { return RiText.renderer._width(); } // TODO: REMOVE
+	  
 
 	/**
 	 * Convenience method to get the height of the current drawing surface
 	 * @returns {number} height
 	 */
-	RiText.height = function() { return RiText.renderer._height(); }
+	RiText.height = function() { return RiText.renderer._height(); } // TODO: REMOVE
  
 	/**
 	 * Convenience method to draw a crisp line on the drawing surface
@@ -4700,7 +4717,7 @@
 	 * @param {number} y2
 	 * @param {number} lineWidth (optional: default=1)
 	 */ 
-	RiText.line = function(x1, y1, x2, y2, lineWidth) {
+	RiText.line = function(x1, y1, x2, y2, lineWidth) { // TODO: REMOVE
 
 		var g = RiText.renderer;
 		g._pushState();
@@ -4714,16 +4731,16 @@
 	 * @param {number} w width
 	 * @param {number} h height
 	 */
-	RiText.size = function(w,h/*renderer*/) {
+	RiText.size = function(w,h/*renderer*/) { // TODO: REMOVE
 		
 		RiText.renderer._size(w,h/*renderer*/);
 	}
 	
 	/**
-	 * Returns the current graphics context, either a canvas 2d'-context or ProcessingJS instance 
+	 * Returns the current graphics context, either a canvas 2d-context or ProcessingJS instance 
 	 * @returns {object}
 	 */
-	RiText.graphics = function() {
+	RiText.graphics = function() { // TODO: REMOVE
 		
 		return RiText.renderer ? RiText.renderer._getGraphics() : null;
 	}
@@ -4805,7 +4822,7 @@
 	 * @param {MouseEvent} e mouseEvent
 	 * @returns {object} mouse position with x,y properties
 	 */
-	RiText.mouse = function(e) { // TODO: broken for canvas (see contains-test) [replace]
+	RiText.mouse = function(e) { // TODO: broken for canvas (see contains-test)  // TODO: REMOVE
 		
 		var posX = -1,posY = -1;
 		
@@ -5440,19 +5457,13 @@
 
 			//log(arguments);
 			var a = arguments;
-			// var a = Array.prototype.slice.call(arguments);
-// 
-			// log("len="+a.length+" -> "+a[0]);
-			// log(a);
 
 			if (a.length && is(a[0], O) && typeof a[0].text != F) {
 				
 				// recurse, ignore 'this'
-				//log("RECURSE: ");
-				//log(a);
+
 				var shifted = Array.prototype.slice.call(a, 1);
-				//log("SHIFTED: ");
-				//log(shifted);
+
 				return this._parseArgs.apply(this,shifted);
 			}
 			
@@ -5472,18 +5483,12 @@
 
 			if (a.length > 1)
 				parsed[1] = a[1];
-			//a.shift();
 
 			if (a.length> 2)
 				parsed[2] = a[2];
-			//a.shift();
 
 			if (a.length> 3)
 				parsed[3] = a[3];
-
-			//ok(parsed[0], S);
-
-			//log(parsed);
 
 			return parsed;
 		},
@@ -6369,13 +6374,14 @@
 		 * @returns {array} RiTexts with each letter as its own RiText element
 		 */
 		toCharArray : function() {
-			var parts = this._rs._text.split(E);
+			return this._rs._text.split(E); // DCH: to match Java, 4/13/13
+			/*var parts = this._rs._text.split(E);
 			var rs = [];
 			for ( var i = 0; i < parts.length; i++) {
 				if (!undef(parts[i]))
 					rs.push(parts[i]);
 			}
-			return rs;
+			return rs;*/
 		},
 		
 		/**
