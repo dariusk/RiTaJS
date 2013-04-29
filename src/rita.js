@@ -552,7 +552,7 @@
 		 * unless the 'adjustPunctuationSpacing' flag is set to false
 		 * 
 		 * @param {array} arr the array to join
-		 * @param {string} delim the characters to place between each array element
+		 * @param {string} delim the characters to place between each array element (optional)
 		 * @param {boolean} adjustPunctuationSpacing (optional, default=true)
 		 * 
 		 * @returns {string} the joined array as string
@@ -659,10 +659,10 @@
 		/**
 		 * Pauses a timer according to its unique id
 		 * @param {number} the unique id for the timer
-		 * @param {number} pause-time (in seconds)
+		 * @param {number} pause-time (in seconds) (optional)
 		 * @returns {number} the new unique id for the timer
 		 */
-		pauseTimer: function(id, pauseSec) {  
+		 : function(id, pauseSec) {  
 			
 			pauseSec = is(pauseSec, N) ? pauseSec : Number.MAX_VALUE;
 			
@@ -736,7 +736,7 @@
 		 *  <pre>"The/dt doctor/nn treated/vbd dogs/nns"</pre>
 		 * assuming a "/" as 'delimiter'.
 		 *
-		 * @param {string} words the text to tag
+		 * @param {string | array} words the text to tag
 		 * @returns {string} 
 		 */
 		getPosTagsInline : function(words, delimiter) { 
@@ -903,7 +903,7 @@
 		 *  @param {string} words a sentence
 		 *  @param {string | regex} regex (optional) the pattern to be used for tozenization
 		 *  
-		 *  @return{array} strings, which each element is a single token (or word) 
+		 *  @returns {array} strings, which each element is a single token (or word) 
 		 */
 		tokenize : function(words, regex) {
 			
@@ -1651,8 +1651,8 @@
 		 * the length of the output array is between min and maxLength (inclusive).
 		 * 
 		 * @param {string} or {object} regex The regex string or object to match against
-		 * @param {number} minLength the minimum number of tokens to generate
-		 * @param {number} maxLength the maximum number of tokens to generate
+		 * @param {number} minLength the minimum number of tokens to generate (optional, default=1)
+		 * @param {number} maxLength the maximum number of tokens to generate (optional)
 		 * 
 		 * @returns {array} strings
 		 */ 
@@ -2531,7 +2531,7 @@
 		 * If specified, the order of the result array is randomized before return.
 		 *  
 		 * @param {regex} regex (string or object) pattern to match (optional)
-		 * @param {boolean} sorted In sorted order when true (default=false)
+		 * @param {boolean} sorted In sorted order when true (optional, default=false)
 		 * @returns {array} words in the RiLexicon  
 		 */
 		words : function() {
@@ -3032,7 +3032,7 @@
 		 * Returns a random word from the lexicon
 		 * 
 		 * @param {string} pos (optional)
-		 * @param {string} syllableCount (optional)
+		 * @param {number} syllableCount (optional)
 		 * @returns {string} random word
 		 */
 		randomWord : function() {  // takes nothing, pos, syllableCount, or both 
@@ -4883,12 +4883,19 @@
 	  return hits;
 	}
 	
+	 /**
+	  * Disposes of any resources associated with this RiText and removes it from
+      * the draw() queue.
+	  */
 	RiText.dispose = function(toDelete) {
 		
 	   is(toDelete,A) && RiText._disposeArray(toDelete);
 	   is(toDelete,O) && RiText._disposeOne(toDelete);
 	}
 	
+	 /**
+     * Deletes all current instances.
+     */
 	RiText.disposeAll = function() {
 		
 		for ( var i = 0; i < RiText.instances.length; i++) {
@@ -5069,6 +5076,10 @@
 	
 	/**
 	 * Sets/gets the default color
+	 * @param {number | array} r takes 1-4 number values for rgba, or an array of size 1-4
+	 * @param {number} g (optional)
+	 * @param {number} b (optional)
+	 * @param {number} a (optional)
 	 * @returns {object} the current default color
 	 */
 	RiText.defaultColor = function(r, g, b, a) {
@@ -5652,7 +5663,7 @@
 		 * <li>RiText.ELASTIC_IN_OUT                  
 		 * </ul>
 		 * 
-		 * @param {number} motionType
+		 * @param {number} motionType (optional)
 		 * @returns {number} motionType
 		 */
 		motionType : function (motionType) {
@@ -5751,10 +5762,10 @@
 		 * Rotates to 'radians' over 'seconds' starting at 'delay' seconds in the future
 		 * 
 		 * @param {number} angleInRadians
-		 * @param {number} delay 
-		 *          (optional, default=0),  # of seconds in the future that the fade will start       
 		 * @param {number} seconds
 		 *          time for fade  
+		 * @param {number} delay 
+		 *          (optional, default=0),  # of seconds in the future that the fade will start       
 		 * @param {function} callback the callback to be invoked when the behavior has completed (optional: default=onRiTaEvent(e)
 		 * 
 		 * @returns {number} the unique id for this behavior
@@ -5838,10 +5849,10 @@
 		 * Transitions to 'color' (rgba) over 'seconds' starting at 'delay' seconds in the future
 		 * 
 		 * @param {array} colors (length 1-4)  r,g,b,a (0-255)
-		 * @param {number} seconds delay 
-		 *          (optional, default=0),  # of seconds in the future that the fade will start 
 		 * @param {number} delay seconds
 		 *          time for fade
+		 * @param {number} seconds delay 
+		 *          (optional, default=0),  # of seconds in the future that the fade will start 
 		 * @param {function} callback the callback to be invoked when the behavior has completed
 		 *   (optional: default=onRiTaEvent(e))
 
