@@ -1509,12 +1509,12 @@
 			ok(nFactor,N);
 
 			this._n = nFactor;
+			this.smoothing = false;
 			this.sentenceList = [];
 			this.sentenceStarts = [];
-			this.sentenceAware = true;
-			this.smoothing = false;
+			this.sentenceAware = recognizeSentences || true;
 			this.allowDuplicates = allowDuplicates || true;
-			this.recognizeSentences = recognizeSentences || true;
+			//this.recognizeSentences = recognizeSentences || true;
 			this.root = new TextNode(null, 'ROOT');
 			this.ssRegex = "\"?[A-Z][a-z\"',;`-]*";
 			this.ssDelim = "D=l1m"; // last 2 should be static
@@ -1755,20 +1755,13 @@
 		
 						
 		/**
-		 * Sets whether the model will try to recognize 
-		 * (english-like) sentences in its input (default=true).
-		 * Note: should be called before any data loading is done.
-		 * 
-		 * @param {boolean} the value (optional, for sets only)
-		 * @returns {object | boolean} 
+		 * Returns whether the model will try to recognize 
+		 * (English-like) sentences in its input (default=true).
+		 *
+		 * @returns {boolean} 
 		 */
-		recognizeSentences : function(value) {
-			
-			if (arguments.length) {
-				
-				this.sentenceAware = value;
-				return this;
-			}
+		recognizeSentences : function() {
+
 			return this.sentenceAware;
 		},
 
@@ -1879,7 +1872,7 @@
 
 		generateSentences: function(num) {
 
-			if (!this.recognizeSentences) 
+			if (!this.sentenceAware) 
 				err("Illegal: call to generateSentences() while generateSentences=false");
 
 			var s, result = [],
@@ -2007,7 +2000,7 @@
 		
 		_validSentenceStart : function(word) {      
  
-			return (!this.recognizeSentences || word.match(this.ssRegex)); 
+			return (!this.sentenceAware || word.match(this.ssRegex)); 
 		},
 		
 		addSentenceSequence: function(toAdd) {
@@ -2027,7 +2020,7 @@
 						add = add.substring(this.ssDelim.length); // ??
 						var parent = node;
 
-						node = node.addChild(add, this.useSmoothing ? 2 : 1);
+						node = node.addChild(add, this.smoothing ? 2 : 1);
 						node.setIsSentenceStart(true);
 
 						if (parent.isRoot()) {
@@ -2035,7 +2028,7 @@
 						}
 
 					} else 
-						node = node.addChild(add, this.useSmoothing ? 2 : 1);
+						node = node.addChild(add, this.smoothing ? 2 : 1);
 				}
 			}
 		},
@@ -3047,19 +3040,22 @@
 					
 						a[0] = trim(a[0].toUpperCase()); 
 						
-						for(var j = 0; j < PosTagger.TAGS.length; j++) { 
+						for (var j = 0; j < PosTagger.TAGS.length; j++) { 
 							
 							if (PosTagger.TAGS[j] == a[0]) found = true;
 						} 
 						
+
 						if (found) { 
 							
-							for(var i=0; i< ranWordArr.length; i++){
+							a[0] = a[0].toLowerCase(); 
+							
+							for (var i=0; i< ranWordArr.length; i++){
 								
 								var data = this._lookupRaw(ranWordArr[i]);
 								var posTag = RiTa.getPosTags(ranWordArr[i]);
 								
-								if (data[0].split(" ").length == a[1] && a[0] == posTag[0].toUpperCase()) {
+								if (data[0].split(SP).length == a[1] && a[0] == this._getBestPos(ranWordArr[i])) {
 									return ranWordArr[i];
 								}
 							} 
@@ -3071,7 +3067,7 @@
 					
 				case 1:
 					
-					if (is(a[0],S)) { //pos
+					if (is(a[0],S)) { // a[0] = pos
 						
 						a[0] = trim(a[0].toUpperCase()); 
 						
@@ -3082,24 +3078,26 @@
 						
 						if (found) { 
 							
+							a[0] = a[0].toLowerCase();
+
+							
 							for(var i=0; i< ranWordArr.length; i++){
 								
-								var posTag = RiTa.getPosTags(ranWordArr[i]);
-								
-								if (a[0] == posTag[0].toUpperCase()) {
+								var thePos = this._getBestPos(ranWordArr[i]);
+								if (a[0] == thePos) {
 									return ranWordArr[i];
 								}
 							} 
 						} 
 					}
 					
-					else { //syllableCount    
+					else { // a[0] = syllableCount    
 						
 						for(var i=0; i< ranWordArr.length; i++) {
 							
 							var data = this._lookupRaw(ranWordArr[i]);
 							
-							if (data[0].split(" ").length == a[0]) {
+							if (data[0].split(SP).length == a[0]) {
 								
 								return ranWordArr[i];
 							}
@@ -3850,7 +3848,8 @@
 		 * If an empty string ("") is used as the separator, the string is split between each character.
 		 * 
 		 * @param {string} separator (Optional) Specifies the character to use for splitting the string. If
-		 *        omitted, the entire string will be returned. If an empty string ("") is used as the separator, 
+		 *        omitted, the string will be tokenized according to RiTa.tokenize(). 
+		 * 		  If an empty string ("") is used as the separator, 
 		 *        the string is split between each character.
 		 *        
 		 * @param {number} limit (Optional) An integer that specifies the number of splits
@@ -4922,7 +4921,7 @@
 			strLines = RiText._makeLines(txt, x, y, maxW, maxH, theFont);
 
 		if (!(strLines && strLines.length)) 
-			err('Unexpected fail in createLines: no lines');
+			err('Unexpected fail in createLines(): no lines');
 
 		// lay out the lines
 		var rts = RiText._createLinesByCharCountFromArray(strLines, x, y, theFont);
@@ -4948,7 +4947,7 @@
 		// check all the lines are still in the rect
 		var toKill = [];
 		var check = rts[rts.length - 1];   
-		for (var z = 1; check.y > y + maxH; z++) {
+		for (var z = 1; (check.y + check.textDescent()) > y + maxH; z++) {
 			
 			toKill.push(check);
 			var idx = rts.length - 1 - z;
@@ -6305,7 +6304,7 @@
 		 * @param {number} limit (Optional) An integer that specifies the number of splits
 		 * 
 		 * @returns {array} RiText
-		 */
+		 
 		split : function(separator, limit) {
 			
 			var parts = this._rs._text.split(separator, limit);
@@ -6315,8 +6314,7 @@
 					rs.push(new RiText(parts[i]));
 			}
 			return rs;
-			
-		},
+		},*/
 		
 		 /**
 		 * Tests if this string starts with the specified prefix.
@@ -6485,7 +6483,7 @@
 		 */
 		splitWords : function(regex) {
 			
-			regex = regex || ' ';
+			regex = regex || SP;
 			
 			(typeof regex == S) && (regex = new RegExp(regex));  
 			
@@ -6520,12 +6518,11 @@
 			}
 	
 			for ( var i = 0; i < chars.length; i++) {
-				if (chars[i] == ' ') continue;
+				if (chars[i] == SP) continue;
 				var tmp = this.copy();
 				tmp.text(chars[i]);
 				var mx = this.charOffset(i);
 				tmp.position(mx, this.y);
-	
 				l.push(tmp);
 			}
 	

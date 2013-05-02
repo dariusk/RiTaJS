@@ -15400,7 +15400,7 @@ _RiTa_DICT={
 'inner': ['ih1-n er','jj'],
 'innermost': ['ih1-n er-m ow1-s-t','jj'],
 'inning': ['ih1-n ih-ng','nn'],
-'innings': ['ih1-n ih-ng-z','nn nns'],
+'innings': ['ih1-n ih-ng-z','nns'],
 'innocence': ['ih1-n ax-s ax-n-s','nn'],
 'innocent': ['ih1-n ax-s ax-n-t','jj'],
 'innocently': ['ih1-n ax-s ax-n-t l-iy','rb'],
