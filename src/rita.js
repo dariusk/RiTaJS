@@ -1,7 +1,7 @@
 
 (function(window, undefined) {
 	
-	var _VERSION_ = '0.27';
+	var _VERSION_ = '0.28';
 	// also update /RiTaLibraryJS/www/download/index.html (TODO: should be automatic)
 
 	/**  @private Simple type-checking functions */ 
@@ -662,7 +662,7 @@
 		 * @param {number} pause-time (in seconds) (optional)
 		 * @returns {number} the new unique id for the timer
 		 */
-		 : function(id, pauseSec) {  
+		 pauseTimer : function(id, pauseSec) {  
 			
 			pauseSec = is(pauseSec, N) ? pauseSec : Number.MAX_VALUE;
 			
@@ -3412,8 +3412,8 @@
 			
 			this._features.tokens = words.join(SP);
 			this._features.stresses = stresses.trim();
-			this._features.phonemes = replaceAll(phonemes.trim(), "\\s+", SP);
-			this._features.syllables = replaceAll(syllables.trim(), "\\s+", SP);
+			this._features.phonemes = phonemes.trim().replace(/\\s+/, SP);
+			this._features.syllables = syllables.trim().replace(/\\s+/, SP);
 			this._features.pos = RiTa.getPosTags(this._text).join(SP);
 			
 			return this;
@@ -4734,16 +4734,7 @@
 		
 		RiText.renderer._size(w,h/*renderer*/);
 	}
-	
-	/**
-	 * Returns the current graphics context, either a canvas 2d-context or ProcessingJS instance 
-	 * @returns {object}
-	 */
-	RiText.graphics = function() { // TODO: REMOVE
-		
-		return RiText.renderer ? RiText.renderer._getGraphics() : null;
-	}
-	
+
 	/**
 	 * Returns a random color in which the 3 values for rgb (or rgba if 'includeAlpha' is true), 
 	 * are between min and max 
@@ -4920,7 +4911,7 @@
 	}
 
 	// TODO: other alignments?
-	RiText.createLines = function(txt, x, y, maxW, maxH, theFont) { 
+	RiText.createLines= function(txt, x, y, maxW, maxH, theFont) { 
    
   		var strLines = txt, theFont = theFont || RiText._getDefaultFont();
 				 
@@ -5026,8 +5017,6 @@
 	 * @param {object} font (optional, for 'sets' only)
 	 * @param {string} the font name (optional, for 'sets' only)
 	 * @param {number} the font size (optional, for 'sets' only)
-	 * @param {number} the font leading (optional, for 'sets' only)
-	 *
 	 * @returns {object} the current default font
 	 */
 	RiText.defaultFont = function(font) {
@@ -5036,24 +5025,25 @@
 		if (a.length == 1 && typeof a[0] == O) {
 			RiText.defaults.font = a[0];
 		}
-		// this allows for RiText.defaultFont(name,sz,lead); // TODO: remove or add to params
+		// this allows for RiText.defaultFont(name,sz);
 		else if (a.length > 1 && typeof a[0] == S) {
 			RiText.defaults.font = RiText.renderer._createFont.apply(RiText.renderer, a);
+			//if (!RiText.defaults.font.leading) RiText.defaults.font.leading = 0;
+		}
+		else {
+			RiText.defaults.font = RiText.createFont(RiText.defaults.fontFamily);
 		}
 
-		if (!RiText.defaults.font.leading)
-			RiText.defaults.font.leading = RiText.defaults.font.size * RiText.defaults.leadingFactor;
- 
 		return RiText.defaults.font;
 	}
 	
-	RiText.createFont = function(fontName, fontSize, leading) {
+	RiText.createFont = function(fontName, fontSize) {
 		
 		if (!fontName) err('RiText.createFont requires fontName');
 		
 		fontSize = fontSize || RiText.defaults.fontSize;
 
-		return RiText.renderer._createFont(fontName, fontSize, leading);
+		return RiText.renderer._createFont(fontName, fontSize);
 	}
 	
 	/**
@@ -5089,9 +5079,187 @@
 		return RiText.defaults.color;
 	}
 	
+	
 	// private statics ///////////////////////////////////////////////////////////////
 	
-	RiText._makeLines = function(txt, x, y, maxW, maxH, theFont) {
+	RiText._layoutArray = function(lines, x, y, w, h, pfont, leading) {
+	
+		if (!is(arguments[0], A)) { // ignore first (PApplet) argument
+	    	var a = arguments;
+	    	lines = a[1], x = a[2], y = a[3], w = a[4], h = a[5], pfont = a[6], leading = a[7];
+	    }
+	    
+		var ritexts = [];
+	    if (!lines || !lines.length) return ritexts;
+	    
+	    pfont = pfont || RiText.defaultFont();
+	 	leading = leading || pfont.leading || pfont.size * RiText.defaults.leadingFactor;
+
+	    for (var i = 0; i < lines.length; i++)
+	      ritexts.push(RiText(lines[i], x+1, y).font(pfont));
+	
+	    return RiText._constrainLines(ritexts, y, h, leading);
+	}
+	
+	RiText._constrainLines = function(ritexts, y, h, leading) {
+
+		var ascent = ritexts[0].textAscent();
+	    var descent = ritexts[0].textDescent();
+	    var lastOk, next, maxY = y + h, currentY = y + ascent + 1;
+
+	    // set y-pos for those that fit
+	    for (lastOk = 0; lastOk < ritexts.length; lastOk++)
+	    {
+	      next = ritexts[lastOk];
+	      next.y = currentY; 
+	      //console.log(lastOk+") "+currentY);
+	      if (!RiText._withinBoundsY(currentY, leading, maxY, descent))
+	        break;
+	      currentY += leading;
+	    }   
+	    
+	    var toKill = ritexts.slice(lastOk+1);
+	    
+	    // and delete the rest
+	    RiText.dispose(toKill);
+	    	    	      
+	 	var result = ritexts.slice(0, lastOk);
+	 	
+	 	//console.log("lastOk="+lastOk+"/"+ritexts.length + " toKill="+toKill.length+" result="+result.length);
+	    
+	 	return result;
+  	}
+  	
+	RiText._makeLines = function(txt, x, y, w, h, pfont, leading) {
+	    
+	    if (!is(arguments[0], S)) { // ignore first (PApplet) argument
+	    	var a = arguments;
+	    	txt = a[1], x = a[2], y = a[3], w = a[4], h = a[5], pfont = a[6], leading = a[7];
+	    }
+
+	    var g = RiText.renderer, ascent, descent, leading, startX = x+1, currentX, 
+	    	currentY, rlines = [], sb = E, maxW = x + w, maxH = y + h, words = [], next
+	    	newParagraph = false, forceBreak = false, firstLine = true, yPos = 0, rt = undef;
+	    
+		// remove line breaks & add spaces around html
+		txt = txt.replace(/[\r\n]/, SP);
+		txt = txt.replace(/ ?(<[^>]+>) ?/, " $1 "); 	
+
+		// split into reversed array of words
+		RiText._addToStack(txt, words);
+		if (!words.length) return RiText.EMPTY_ARRAY;
+	 
+	    pfont = pfont || RiText.defaultFont();
+	 	leading = leading || pfont.leading || pfont.size * RiText.defaults.leadingFactor;
+	 	
+	 	//log("txt.len="+txt.length+" x="+x+" y="+y+" w="+w+" h="+h+" font="+pfont+" lead="+leading);
+	 	
+	    g._textFont(pfont); // for ascent & descent
+	    ascent = g.p.textAscent();
+	    descent = g.p.textDescent();
+	    currentY = y + ascent + 1;
+	
+	    if (RiText.defaults.indentFirstParagraph) 
+	    	startX += RiText.defaults.paragraphIndent;
+	        
+	    while (words.length>0)
+	    {
+	      next = words.pop();
+
+	      if (!next.length) continue;
+	      	
+	      // check for HTML-style tags 
+	      if (startsWith(next,'<') && endsWith(next,'>'))
+	      {
+	        if (next == RiText.NON_BREAKING_SPACE)
+	        {
+	          sb += SP;
+	        }
+	        else if (next == RiText.PARAGRAPH_BREAK)
+	        {
+	        	// case: paragraph break
+	            newParagraph = sb.length;
+	        }
+	        else if (next == RiText.LINE_BREAK) {
+	          forceBreak = true;
+	        }
+	        continue;
+	      }
+	
+	      // re-calculate our X position
+	      currentX = startX + g._textWidth(pfont, sb + next);
+	
+	      // check it against the line-width 
+	      if (!newParagraph && !forceBreak && currentX < maxW)
+	      {
+	        sb += next + SP; // add-word
+	      }
+	      else 
+	      {
+	         // check yPosition for line break
+			if (RiText._withinBoundsY(currentY, leading, maxH, descent)) {
+	        
+	          yPos = firstLine ? currentY : currentY + leading;
+	          rt = RiText._newRiTextLine(sb, pfont, startX, yPos);
+	          rlines.push(rt);
+	          
+	          currentY = newParagraph ? rt.y + RiText.defaults.paragraphLeading : rt.y;
+	          startX = x + 1; // reset
+	
+	          if (newParagraph) startX += RiText.defaults.paragraphIndent;
+	          
+	          sb = next + SP; // reset with next word
+	          
+	          newParagraph = false;
+	          forceBreak = false;
+	          firstLine = false;
+	        }
+	        else {
+	        	
+	          words.push(next);
+	          break;
+	        }
+	      }
+	    }
+	    
+	    // check if leftover words can make a new line 
+		if (RiText._withinBoundsY(currentY, leading, maxH, descent)) {
+						
+			// TODO: what if there is are tags in here -- is it possible?)
+			rlines.push(RiText._newRiTextLine(sb, pfont, x + 1, leading + currentY));
+			sb = E;
+	    }
+	    else {
+	    	
+			RiText._addToStack(sb, words); // save for next
+	    }
+
+	    return rlines;
+	}
+	
+	RiText._withinBoundsY = function(currentY, leading, maxY, descent)
+  	{
+    	return currentY + leading <= maxY - descent;
+  	}
+  
+	RiText._addToStack = function(txt, words) {
+
+		var tmp = txt.split(SP)
+		for ( var i = tmp.length - 1; i >= 0; i--)
+			words.push(tmp[i]);
+	}
+	  
+	RiText._newRiTextLine = function(s, pf, xPos, nextY) {
+		
+	    // strip trailing spaces
+	    while (s != null && s.length > 0 && endsWith(s, SP))
+	      s = s.substring(0, s.length - 1);
+	    
+	    return RiText(s, xPos, nextY, pf);
+	    //console.log(rt);return rt;
+	}
+	
+	RiText._makeLinesOld = function(txt, x, y, maxW, maxH, theFont) {  // TODO: remove
 
 		//log('_makeLines('+txt.length+','+x+','+y+','+maxW+','+maxH+','+theFont+')');
 
@@ -5107,7 +5275,6 @@
 		var tmp = txt.split(SP), words = [];
 		for ( var i = tmp.length - 1; i >= 0; i--)
 			words.push(tmp[i]);
-
 
 		// cached helpers //////////////////////////////////////////// 
 		
@@ -5138,11 +5305,11 @@
 
 			if (startsWith(next, '<') && endsWith(next, ">")) {
 		 
-				if (next === RiText.NON_BREAKING_SPACE || next === "</sp>") {
+				if (next === RiText.NON_BREAKING_SPACE) {
 					
 					sb += SP;
 				}
-				else if (next === RiText.PARAGRAPH || next === "</p>") {
+				else if (next === RiText.PARAGRAPH_BREAK) {
 					
 					if (sb.length > 0) { // case: paragraph break
 						
@@ -5153,7 +5320,7 @@
 						sb += RiText.defaults.paragraphIndent;
 					}
 				}
-				else if (endsWith(next, RiText.LINE_BREAK) || next === "</br>") {
+				else if (endsWith(next, RiText.LINE_BREAK)) {
 					
 					forceBreak = true;
 				}
@@ -5344,47 +5511,41 @@
 		
 		RiText.defaults.font = RiText.defaults.font || 
 			RiText.renderer._createFont(RiText.defaults.fontFamily, 
-				RiText.defaults.fontSize, RiText.defaults.fontSize * RiText.defaults.leadingFactor);
+				RiText.defaults.fontSize, RiText.defaults.leading);
 		
 		return RiText.defaults.font;
 	}
 	
-	RiText.foreach = function(fun) {
-	
-		var f = function(el,idx,arr){ fun(el,idx,arr); return 1; }; 
-		RiText.instances.every(f);
-	}
+	// RiText.foreach = function(fun) {
+// 	
+		// var f = function(el,idx,arr){ fun(el,idx,arr); return 1; }; 
+		// RiText.instances.every(f);
+	// }
 	
 	// PUBLIC statics (TODO: clean up) ///////////////////////////////////////////
    
-	RiText.NON_BREAKING_SPACE = "<sp>";
-	RiText.LINE_BREAK = "<br>";
-	RiText.PARAGRAPH = "<p>";
-	
+	RiText.NON_BREAKING_SPACE = "<sp/>";
+	RiText.PARAGRAPH_BREAK = "<p/>";
+	RiText.LINE_BREAK = "<br/>";
 	RiText.instances = [];
 	
 	/**
 	 * A set of static defaults to be shared by RiText objects
-	 * Can be modified directly or through API methods.
-	 * 
-	 * @example 
-	 *  RiText.defaultAlignment(RiTa.RIGHT);
-	 *  RiText.defaultFontSize(20);
-	 * 
+     *
 	 * @example 
 	 *  RiText.defaults.alignment = RiTa.RIGHT;
 	 *  RiText.defaults.fontSize = 20;
-
+	 * 
 	 * @property {object} defaults
 	 */
 	RiText.defaults = { 
 		
-		color : { r : 0, g : 0, b : 0, a : 255 }, 
-		alignment : RiTa.LEFT, motionType : RiTa.LINEAR, font: null,
+		color : { r : 0, g : 0, b : 0, a : 255 }, fontFamily: 'Times New Roman',  
+		alignment : RiTa.LEFT, motionType : RiTa.LINEAR, font: null, fontSize: 14,
+		paragraphLeading : 0, paragraphIndent: 20, indentFirstParagraph : false,
+		boundingBoxStroke : null, boundingBoxVisible : false, leadingFactor: 1.2,
 		rotateX:0, rotateY:0, rotateZ:0, scaleX:1, scaleY:1, scaleZ:1,
-		paragraphLeading :  0, paragraphIndent: '    ', indentFirstParagraph: false,
-		fontFamily: 'Times New Roman', fontSize: 14, leadingFactor : 1.1,
-		boundingBoxStroke : null, boundingBoxFill: null, boundingBoxVisible : false
+
 	}
 
 	RiText.prototype = {
@@ -6238,6 +6399,7 @@
 		 */
 		replaceAll : function(pattern, replacement) {
 			
+			// SHOULD BE: this._rs._text.replace(pattern, replacement)
 			if (pattern && (replacement || replacement==='')) {
 				this._rs._text = replaceAll(this._rs._text, pattern, replacement);
 			}
@@ -6331,6 +6493,7 @@
 		 * Tests if this string starts with the specified prefix.
 		 * 
 		 * @param {string} substr string the prefix
+		 * 
 		 * @returns {boolean} true if the character sequence represented by the argument is a prefix of
 		 *         the character sequence represented by this string; false otherwise. Note also
 		 *         that true will be returned if the argument is an empty string or is equal to this
@@ -6463,7 +6626,6 @@
 			return RiTa.tokenize(this._rs._text);
 			
 		},
-
 
 		/**
 		 * Returns the distance between the center points of this and another RiText
@@ -6614,7 +6776,7 @@
 
 				this._font = font || RiText._getDefaultFont();
 				this._font.size = this._font.size || RiText.defaults.fontSize;
-				this._font.leading = this._font.leading || this._font.size * RiText.defaults.leadingFactor;
+				if (!this._font.leading) this._font.leading = 0;
 				return this;
 			}
 			else if (a.length == 2) {
@@ -7618,7 +7780,7 @@
 			var font = {
 				name:       fontName, 
 				size:       fontSize || RiText.defaults.font.size, 
-				leading:    leading || (fontSize * RiText.defaults.leadingFactor) 
+				//leading:    leading || 0
 			};
 			return font;
 		},
@@ -10537,12 +10699,12 @@
 		},
 
 		// actual creation: only called from RiText.createDefaultFont();!
-		_createFont : function(fontName, fontSize, leading) { // ignores leading
+		_createFont : function(fontName, fontSize) {
 			
 			//console.log("[P5] Creating font: "+fontName+"-"+fontSize+"/"+leading);
 			var pfont = this.p.createFont(fontName, fontSize);                
 			
-			if (leading) pfont.leading = leading;
+			//pfont.leading = leading || RiText.defaults.fontLeading;
 
 			//console.log(pfont);
 			return pfont;
@@ -10570,7 +10732,7 @@
 			
 			//this.p.pushStyle(); ////////
 			this.ctx.save();
-			this.p.textFont(fontObj,fontObj.size); // was _textFont
+			this.p.textFont(fontObj, fontObj.size); // was _textFont
 			var tw = this.p.textWidth(str);
 			//this.p.popStyle();
 			this.ctx.restore();
@@ -11530,18 +11692,20 @@
 		}
 	}
 
+// remove!
 	function replaceAll(theText, replace, withThis) {
 		
 		return theText && is(replace, S) ?  
 			theText.replace(new RegExp(replace, 'g'), withThis) : theText;
 	}
 
+// replace w regex?
 	function endsWith(str, ending) { 
 		
 		if (!is(str,S)) return false;
 		return str.slice(-ending.length) == ending;
 	}
-	
+// replace w regex?	
 	function startsWith(text, substr) {
 
 		if (!is(text,S)) return false;
