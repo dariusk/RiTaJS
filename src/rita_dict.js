@@ -1707,6 +1707,7 @@ _RiTa_DICT={
 'assembling': ['ax-s eh1-m-b ax-l ih-ng','vbg nn'],
 'assembly': ['ax-s eh1-m-b l-iy','nn'],
 'assent': ['ax-s eh1-n-t','vb nn'],
+'assented': ['ax-s eh1-n-t ax-d','vbd vbn'],
 'assenting': ['ax-s eh1-n-t ih-ng','vbg'],
 'assert': ['ax-s er1-t','vb vbp'],
 'asserted': ['ax-s er1-t ax-d','vbd vbn'],

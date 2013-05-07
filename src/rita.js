@@ -2166,7 +2166,7 @@
 		 */
 		_fire: function(callback) {
 
-			callback = callback || window.onRiTaEvent || (RiText.graphics() && RiText.graphics().onRiTaEvent); 
+			callback = callback || window.onRiTaEvent || (RiText._graphics() && RiText._graphics().onRiTaEvent); 
 																				// last is for P5
 			//if (typeof callback === 'function') {
 			if (is(callback,F)) {
@@ -4546,6 +4546,15 @@
 		callbackDisabled : false,
 		timeSinceLastFPS : Date.now()
 	}
+	
+	/**
+	 * Returns the current graphics context, either a canvas 2d'-context or ProcessingJS instance 
+	 * @returns {object}
+	 */
+	RiText._graphics = function() {
+		
+		return RiText.renderer ? RiText.renderer._getGraphics() : null;
+	}
 
 	/**
 	 * Starts a timer that calls 'onRiTaEvent' or the specified callback every 'period'
@@ -4900,18 +4909,18 @@
 		RiText.instances = [];
    }
 	
-   RiText.createWords = function(txt, x, y, w, h, fontObj) {
+   RiText.createWords = function(txt, x, y, w, h, fontObj, leading) {
 
-		return RiText._createRiTexts(txt, x, y, w, h, fontObj, RiText.prototype.splitWords);
+		return RiText._createRiTexts(txt, x, y, w, h, fontObj, leading, RiText.prototype.splitWords);
 	}
 
-	RiText.createLetters = function(txt, x, y, w, h, fontObj) {
+	RiText.createLetters = function(txt, x, y, w, h, fontObj, leading) {
 
-		return RiText._createRiTexts(txt, x, y, w, h, fontObj, RiText.prototype.splitLetters);
+		return RiText._createRiTexts(txt, x, y, w, h, fontObj, leading, RiText.prototype.splitLetters);
 	}
 
 	// TODO: other alignments?
-	RiText.createLines= function(txt, x, y, maxW, maxH, theFont) { 
+	/*RiText.createLinesOld= function(txt, x, y, maxW, maxH, theFont) { 
    
   		var strLines = txt, theFont = theFont || RiText._getDefaultFont();
 				 
@@ -4962,7 +4971,7 @@
 		RiText._disposeArray(toKill);
 
 		return rts;
-	}
+	}*/
 
 	/**
 	 * Sets/gets the default font size for all RiTexts
@@ -5030,7 +5039,7 @@
 			RiText.defaults.font = RiText.renderer._createFont.apply(RiText.renderer, a);
 			//if (!RiText.defaults.font.leading) RiText.defaults.font.leading = 0;
 		}
-		else {
+		else if (a.length == 0 && !RiText.defaults.font) {
 			RiText.defaults.font = RiText.createFont(RiText.defaults.fontFamily);
 		}
 
@@ -5091,9 +5100,6 @@
 	    
 		var ritexts = [];
 	    if (!lines || !lines.length) return ritexts;
-	    
-	    pfont = pfont || RiText.defaultFont();
-	 	leading = leading || pfont.leading || pfont.size * RiText.defaults.leadingFactor;
 
 	    for (var i = 0; i < lines.length; i++)
 	      ritexts.push(RiText(lines[i], x+1, y).font(pfont));
@@ -5130,13 +5136,18 @@
 	 	return result;
   	}
   	
-	RiText._makeLines = function(txt, x, y, w, h, pfont, leading) {
+	RiText.createLines = function(txt, x, y, w, h, pfont, leading) {
 	    
-	    if (!is(arguments[0], S)) { // ignore first (PApplet) argument
+	    if (!is(arguments[0], S) && !is(arguments[0], A)) { // ignore first (PApplet) argument
 	    	var a = arguments;
 	    	txt = a[1], x = a[2], y = a[3], w = a[4], h = a[5], pfont = a[6], leading = a[7];
 	    }
+	    
+	    w = w || Number.MAX_VALUE-x, h = h || Number.MAX_VALUE, pfont = pfont || RiText.defaultFont();
+	 	leading = leading || pfont.leading || pfont.size * RiText.defaults.leadingFactor;
 
+	    if (is(txt, A)) return RiText._layoutArray(txt, x, y, w, h, pfont, leading);
+	      
 	    var g = RiText.renderer, ascent, descent, leading, startX = x+1, currentX, 
 	    	currentY, rlines = [], sb = E, maxW = x + w, maxH = y + h, words = [], next
 	    	newParagraph = false, forceBreak = false, firstLine = true, yPos = 0, rt = undef;
@@ -5149,10 +5160,7 @@
 		RiText._addToStack(txt, words);
 		if (!words.length) return RiText.EMPTY_ARRAY;
 	 
-	    pfont = pfont || RiText.defaultFont();
-	 	leading = leading || pfont.leading || pfont.size * RiText.defaults.leadingFactor;
-	 	
-	 	//log("txt.len="+txt.length+" x="+x+" y="+y+" w="+w+" h="+h+" font="+pfont+" lead="+leading);
+	 	//log("txt.len="+txt.length+" x="+x+" y="+y+" w="+w+" h="+h+" lead="+leading);log(pfont);
 	 	
 	    g._textFont(pfont); // for ascent & descent
 	    ascent = g.p.textAscent();
@@ -5379,16 +5387,15 @@
 		return strLines;
 	}
 	
-	RiText._createRiTexts = function(txt, x, y, w, h, fontObj, splitFun) {  
+	RiText._createRiTexts = function(txt, x, y, w, h, fontObj, lead, splitFun) {  
 
 		if (!txt || !txt.length) return EA;
 
-		fontObj = fontObj || RiText._getDefaultFont();
-
-		var rlines = RiText.createLines(txt, x, y, w, h, fontObj);
+		var rlines = RiText.createLines(txt, x, y, w, h, fontObj, lead);
 		if (!rlines) return EA;
 
 		var result = [];
+		var font = rlines[0].font();
 		for (var i = 0; i < rlines.length; i++) {
 			
 			var rts = splitFun.call(rlines[i]);
@@ -5403,7 +5410,7 @@
 		return result;
 	}
 	
-	RiText._createLinesByCharCountFromArray = function(txtArr, startX, startY, fontObj) {
+	/*RiText._createLinesByCharCountFromArray = function(txtArr, startX, startY, fontObj) {
 
 		if (!fontObj) err('no font in _createLinesByCharCountFromArray!');
 
@@ -5417,7 +5424,7 @@
 		}
 		
 		return (rts && rts.length > 1)  ? RiText._handleLeading(fontObj, rts, yOff) : []; 
-	}
+	}*/
 	
 	// Returns the pixel x-offset for the word at 'wordIdx' 
 	RiText._wordOffsetFor = function(rt, words, wordIdx) { 
@@ -8816,8 +8823,6 @@
 			// Apply transformations
 			for (var i = 0, l = words.length; i < l; i++) {
 
-				var firstLetter = words[i].charAt(0);
-
 				// transform 1: DT, {VBD | VBP | VB} --> DT, NN
 				if (i > 0 && (result[i - 1] == "dt")) {
 					if (sW(result[i], "vb")) {
@@ -8853,15 +8858,14 @@
 					result[i] = "vbn";
 				}
 
-				// transform 4: convert any type to adverb if it ends in
-				// "ly";
+				// transform 4: convert any type to adverb if it ends in "ly";
 				if (eW(words[i], "ly")) {
 					result[i] = "rb";
 				}
 
 				// transform 5: convert a common noun (NN or NNS) to a
-				// adjective if it ends with "al"
-				if (sW(result[i], "nn") && eW(words[i], "al")) {
+				// adjective if it ends with "al", special-case for mammal
+				if (sW(result[i], "nn") && eW(words[i], "al") && words[i] != 'mammal') {
 					result[i] = "jj";
 				}
 
@@ -8872,37 +8876,40 @@
 				}
 
 				// transform 7: if a word has been categorized as a
-				// common noun and it ends
-				// with "s", then set its type to plural common noun
-				// (NNS)
-				if ((result[i] == "nn") && eW(words[i], "s")) {
-					result[i] = "nns";
+				// common noun and it ends with "s", then set its type to plural common noun (NNS)
+				if ((result[i] == "nn") && words[i].match(/^.*[^s]s$/)) {
+					if (!NULL_PLURALS.applies(words[i])) 
+						result[i] = "nns";
 				}
 
 				// transform 8: convert a common noun to a present
 				// participle verb (i.e., a gerund)
 				if (sW(result[i], "nn") && eW(words[i], "ing")) {
-					// fix here -- add check on choices for any verb: eg
-					// 'morning'
+					// DH: fixed here -- add check on choices for any verb: eg. // 'morning'
 					if (this.hasTag(choices[i], "vb")) {
 						result[i] = "vbg";
 					} else if (PRINT_CUSTOM_TAGS) {
 						log("[RiTa] PosTagger tagged '" + words[i] + "' as " + result[i]);
 					}
 				}
+				
+				// transform 9(dch): convert plural nouns (which are also 3sg-verbs) to 
+      			// 3sg-verbs when following a singular noun (the dog dances, Dave dances, he dances) 
+				if (i>0 && result[i] == "nns" && this.hasTag(choices[i], "vbz") && result[i-1].match(/^(nn|prp|nnp)$/)) {
+					result[i] = "vbz";
+				}
 
-				// transform 9(dch): convert common nouns to proper
-				// nouns when they start w' a capital and are not a
-				// sentence start
-				if (i > 0 && sW(result[i], "nn") && words[i].length > 1
-						&& (firstLetter == firstLetter.toUpperCase())) {
+				// transform 10(dch): convert common nouns to proper
+				// nouns when they start w' a capital and (?are not a
+				// sentence start?)
+				if (/*i > 0 && */sW(result[i], "nn") && (words[i].charAt(0) == words[i].charAt(0).toUpperCase())) 
+				{
 					result[i] = eW(result[i], "s") ? "nnps" : "nnp";
 				}
 
-				// transform 10(dch): convert plural nouns (which are
+				// DISABLED: transform 10(dch): convert plural nouns (which are
 				// also 3sg-verbs) to 3sg-verbs when followed by adverb
-				// (jumps, dances)
-				if (i < result.length - 1 && result[i] == "nns" && sW(result[i + 1], "rb")
+				if (0 && i < result.length - 1 && result[i] == "nns" && sW(result[i + 1], "rb")
 						&& this.hasTag(choices[i], "vbz")) {
 					result[i] = "vbz";
 				}
@@ -10828,9 +10835,9 @@
 	var DEFAULT_PLURAL_RULE = RE("^((\\w+)(-\\w+)*)(\\s((\\w+)(-\\w+)*))*$", 0, "s");
 	
 	var NULL_PLURALS = RE( // these don't change for plural/singular
-		"^(bantu|bengalese|bengali|beninese|boche|bonsai|"
-		+ "burmese|chinese|congolese|gabonese|guyanese|japanese|javanese|"
-		+ "lebanese|maltese|olympics|portuguese|senegalese|siamese|singhalese|"
+		"^(bantu|bengalese|bengali|beninese|boche|bonsai|digitalis|mess|"
+		+ "burmese|chinese|colossus|congolese|discus|emphasis|gabonese|guyanese|japanese|javanese|"
+		+ "lebanese|maltese|olympics|portuguese|senegalese|siamese|singhalese|innings|"
 		+ "sinhalese|sioux|sudanese|swiss|taiwanese|togolese|vietnamese|aircraft|"
 		+ "anopheles|apparatus|asparagus|barracks|bellows|bison|bluefish|bob|bourgeois|"
 		+ "bream|brill|butterfingers|cargo|carp|catfish|chassis|clothes|chub|cod|codfish|"
@@ -10843,10 +10850,11 @@
 		+ "patois|pekinese|penn'orth|perch|pickerel|pike|pince-nez|plaice|precis|quid|rand|"
 		+ "rendezvous|revers|roach|roux|salmon|samurai|series|seychelles|seychellois|shad|"
 		+ "sheep|shellfish|smelt|spacecraft|species|starfish|stockfish|sunfish|superficies|"
-		+ "sweepstakes|swordfish|tench|tennis|[a-z]+osis|[a-z]+ness|tobacco|tope|triceps|trout|tuna|tunafish|tunny|turbot|trousers|"
+		+ "sweepstakes|swordfish|tench|tennis|[a-z]+osis|[a-z]+itis|[a-z]+ness|"
+		+ "tobacco|tope|triceps|trout|tuna|tunafish|tunny|turbot|trousers|"
 		+ "undersigned|veg|waterfowl|waterworks|waxworks|whiting|wildfowl|woodworm|"
 		+ "yen|aries|pisces|forceps|lieder|jeans|physics|mathematics|news|odds|politics|remains|"
-		+ "surroundings|thanks|statistics|goods|aids|wildlife)$", 0, E);
+		+ "surroundings|thanks|statistics|goods|aids|wildlife)$", 0, E); 
 		
 	var SINGULAR_RULES = [
 		  NULL_PLURALS,
