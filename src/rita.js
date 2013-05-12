@@ -557,7 +557,7 @@
 		 * 
 		 * @returns {string} the joined array as string
 		 */
-		untokenize: function(arr, delim, adjustPunctuationSpacing) {
+		untokenize : function(arr, delim, adjustPunctuationSpacing) {
 			 
 			delim = delim || SP;
 			adjustPunctuationSpacing = adjustPunctuationSpacing || 1;
@@ -584,7 +584,7 @@
 		 * Returns a random number between min(default=0) and max(default=1)
 		 * @returns {number}
 		 */
-		random: function() {
+		random : function() {
 			
 			var currentRandom = Math.random();
 			if (arguments.length === 0) return currentRandom;
@@ -594,6 +594,14 @@
 			return currentRandom * (aMax - aMin) + aMin;
 			
 		},
+		
+		/**
+		 * Returns a random item from the array
+		 */
+		 randomItem : function(arr) {
+			
+			return arr[Math.floor(Math.random()*arr.length)];
+		 }, 
 		
 		/**
 		 * Convenience method to get the distance between 2 points
@@ -1328,23 +1336,14 @@
 		},
 		
 		/**
-		 * For convenience, provides implementations of some of Processing built-in 
-		 * method, e.g. size(), background(), etc. and backwards compatibility with
+		 * Provides backwards compatibility (when possible) with
 		 * the original RiTa/Processing Java library
 		 * 
 		 * @param {boolean} true to enable compatibility, else false
 		 */
-		p5Compatible : function(value) {  // TODO: remove with canvas renderer?
+		p5Compatible : function(value) {  // TODO: remove?
 			
 			//console.log('p5Compatible('+value+'['+window+'])');
-			
-			if (!arguments.callee.setupAndDraw) {
-				
-				arguments.callee.setupAndDraw = function() {
-					if (typeof window.setup == F) setup();
-					if (typeof window.draw == F) RiText.loop();
-				};
-			}
 			
 			if (window) {
 				// TODO: add mouse-handling methods here?
@@ -1357,25 +1356,24 @@
 				if (typeof window.mouseMoved == F) 
 					window.onmousemove = window.mouseMoved;
 			}
+			
 			//if (typeof window.mouseDragged == F) 
 				//window.onmousemove = window.mouseDragged; 
 			// window.onmousemove = mouseDragged;
 
 			if (value) {
 				
-				// alias for some P5 member functions 
+				// alias' for RiTa-java member functions 
 				RiText.prototype.fill       = RiText.prototype.color;
 				RiText.prototype.textAlign  = RiText.prototype.align;
 				RiText.prototype.textFont   = RiText.prototype.font;
 				RiText.prototype.textSize   = RiText.prototype.fontSize;
-				
-				// alias for some RiTa-java functions (?)
 				RiText.prototype.setText    = RiText.prototype.text;
 				RiText.prototype.fadeColor  = RiText.prototype.colorTo;
 				RiText.prototype.fadeToText = RiText.prototype.textTo;
 				RiText.prototype.setColor   = RiText.prototype.color;
 	
-				// alias for RiTa-java static functions  (?)
+				// alias' for RiTa-java static functions  (?)
 				RiText.setDefaultFont = RiText.defaultFont; 
 				RiText.setDefaultColor = RiText.defaultColor;
 				RiText.setDefaultAlignment = RiText.defaultAlignment;
@@ -1383,20 +1381,9 @@
 				
 				if (typeof window != 'undefined' && !hasProcessing) { // remove all this
 					
-					// add some common P5 global methods (sorry, namespace)
-					
-					if (!window.line) window.line = RiText.line;
-					if (!window.size) window.size= RiText.size;
-					if (!window.width) window.width = RiText.width; // want the var
-					if (!window.height) window.height= RiText.height; // want the var
-					if (!window.createFont) window.createFont= RiText.createFont;
-					if (!window.background) window.background= RiText.background;
-					if (!window.random) window.random= RiText.random;
-					if (!window.RIGHT) window.RIGHT = RiTa.RIGHT;
 					if (!window.LEFT) window.LEFT = RiTa.LEFT;
-					if (!window.CENTER) window.CENTER = RiTa.CENTER;
-					
-					window.onload = arguments.callee.setupAndDraw;
+					if (!window.RIGHT) window.RIGHT = RiTa.RIGHT;
+					if (!window.CENTER) window.CENTER = RiTa.CENTER;					
 				}
 			}
 			else { // non-compatible mode (clear extra stuff)
@@ -1418,20 +1405,12 @@
 
 				if (typeof window != 'undefined' && window && !hasProcessing)  {
 					
-					// are these checks needed?
-					if (window.line === RiText.line) delete window.line;
-					if (window.size === RiText.size) delete window.size;
-					if (window.width === RiText.width) delete window.width;
-					if (window.height === RiText.height) delete window.height;
-					if (window.createFont === RiText.createFont) delete window.createFont;
-					if (window.background === RiText.background) delete window.background;
-					if (window.random === RiText.random) delete window.random;
 					if (window.RIGHT === RiTa.RIGHT) delete window.RIGHT;
 					if (window.LEFT === RiTa.LEFT) delete window.LEFT;
 					if (window.CENTER === RiTa.CENTER) delete window.CENTER;
 
 					if (window.onload && (window.onload == arguments.callee.setupAndDraw))
-						delete window.onload;
+						window.onload == undefined;
 				}
 			}
 		},
@@ -1486,12 +1465,23 @@
 	 * 
 	 */
 	/*
-	 * Note: use RiMarkov.setAllowDuplicates(false) method to ensure that sentences that exist 
+	 * Note: use allowDuplicates(false) to ensure that sentences that exist 
 	 * in the input test are not output by generate().  This method should be used with care, 
 	 * as certain sets of input texts (with allowDuplicates=false) may result in decreased performance
 	 * and/or excessive memory use.
 	 */
 	var RiMarkov = makeClass();
+	
+	
+	// TODO: When should duplicate list be reset??
+	
+	
+	 /** constant for max # of tries for a generation */
+  	RiMarkov.MAX_GENERATION_ATTEMPTS = 1000;
+  
+	RiMarkov._SSRE =  /"?[A-Z][a-z"',;`-]*/;  // TODO: CAPS
+	
+	RiMarkov._SSDLM =  'D=l1m_';     // TODO: CAPS (OR use HTML-style tag)
 
 	RiMarkov.prototype = {
 
@@ -1503,28 +1493,30 @@
 		 * 
 		 * @param {number} nFactor for the model (an int)
 		 * @param {boolean} recognizeSentences whether the model will attempt to recognize (English) sentences (optional, default=true)
-		 * @param {boolean} allowDuplicates whether the model allow duplicates in its output (optional, default=true)		 */
+		 * @param {boolean} allowDuplicates whether the model allow duplicates in its output (optional, default=true)		 
+		 */
 		init : function(nFactor, recognizeSentences, allowDuplicates) {
 
-			ok(nFactor,N);
+			ok(nFactor, N);
 
 			this._n = nFactor;
-			this.smoothing = false;
+			this.pathTrace = [];
 			this.sentenceList = [];
 			this.sentenceStarts = [];
-			this.sentenceAware = recognizeSentences || true;
-			this.allowDuplicates = allowDuplicates || true;
-			//this.recognizeSentences = recognizeSentences || true;
+			this.minSentenceLength = 6;
+			this.maxSentenceLength = 35;
+			this.maxDuplicatesToSkip = 10000;
 			this.root = new TextNode(null, 'ROOT');
-			this.ssRegex = "\"?[A-Z][a-z\"',;`-]*";
-			this.ssDelim = "D=l1m"; // last 2 should be static
+			this.sentenceAware = (arguments.length > 1 && !recognizeSentences) ? false : true;
+			this.allowDuplicates = (arguments.length > 2 && !allowDuplicates) ? false : true;
+			this.printIgnoredText = false;
+			this.smoothing = false;
 		},
 
 		/**
 		 * Returns either the raw (unigram) probability for a single token in the model (0 if it does not exist)
 		 * OR (for an array) the probability of obtaining a sequence of k tokens where k <= nFactor,
-		 * e.g., if nFactor = 3, then valid lengths for the data arrau are 1, 2 & 3.
-  
+		 * e.g., if nFactor = 3, then valid lengths for the data array are 1, 2 & 3.
 		 * @param {string | array} data the string (or sequence of strings) to search for
 		 * 
 		 * @returns {number} from 0-1
@@ -1607,7 +1599,7 @@
 			
 			//  log(pre+" :: "+post);
 			
-			var tn, result=[], node, test, nexts;
+			var tn, result=[], node, atest, nexts;
 			
 			if (post) { // fill the center
 	
@@ -1624,14 +1616,14 @@
 	
 					node = nexts[i];
 					
-					test = pre.slice(0); // clone
+					atest = pre.slice(0); // clone
 	
-					test.push(node.token);
+					atest.push(node.token);
 					
 					for ( var j = 0; j < post.length; j++)
-						test.push(post[j]);
+						atest.push(post[j]);
 	
-					if (this._findNode(test)) result.push(node.token);
+					if (this._findNode(atest)) result.push(node.token);
 				}
 				return result;
 			}
@@ -1671,7 +1663,7 @@
 				// keep adding one and checking until we pass the max
 				while (tokens.length < maxLength) {
 					
-					mn = this._nextNode(tokens);
+					mn = this._nextNodeForArr(tokens);
 					
 					if (!mn || !mn.token)   
 						continue OUT;// fail, restart
@@ -1709,7 +1701,7 @@
 
 				while(tokens.length < targetNumber) {
 
-					mn = this._nextNode(tokens);
+					mn = this._nextNodeForArr(tokens);
 					if (!mn || !mn.token) { // hit the end
 						tokens = []; // start over
 						continue OUT;
@@ -1723,7 +1715,8 @@
 
 			// uh-oh, looks like we failed...
 			if (tokens.length < targetNumber) {
-				err("\n[WARN] RiMarkov failed to complete after " + tries + " tries, with only " + tokens.length + " successful generations...\n");
+				err("\n[WARN] RiMarkov failed to complete after " + tries 
+					+" tries, with only " + tokens.length + " successful generations...\n");
 			}
 
 			var res = [];
@@ -1761,7 +1754,9 @@
 		 * @returns {boolean} 
 		 */
 		recognizeSentences : function() {
-
+			if (arguments.length>0)
+			  throw Error("recognizeSentences() takes no arguments, "+
+			  	"use the constructor RiMarkov(n,recognizeSentences);");
 			return this.sentenceAware;
 		},
 
@@ -1828,26 +1823,31 @@
 		 */
 		loadTokens: function(tokens, multiplier) {
 
+			//console.log("loadTokens: smooth="+this.smoothing);
+			
 			multiplier = multiplier || 1;
 
 			if (multiplier < 1 || multiplier != Math.floor(multiplier))
 		    	err('multiplier must be an positive integer, found: '+multiplier); 
 
 			this.root.count += tokens.length; // here?
-			for(var toAdd, k = 0; k < tokens.length; k++) {
+			
+			for (var toAdd, k = 0; k < tokens.length; k++) {
 				toAdd = [];
 
-				for(var j = 0; j < this._n; j++) {
+				for (var j = 0; j < this._n; j++) {
 					if ((k + j) < tokens.length) toAdd[j] = (!undef(tokens[k + j])) ? tokens[k + j] : null;
 					else toAdd[j] = null;
 				}
 
 				// hack to deal with multiplier...
-				for(var l = 0; l < multiplier; l++) {
+				for (var l = 0; l < multiplier; l++) {
 
 					var node = this.root;
-					for(var i = 0; i < toAdd.length; i++) {
-						if (node.token) node = node.addChild(toAdd[i], this.smoothing ? 2 : 1);
+					for (var i = 0; i < toAdd.length; i++) {
+						if (node.token) { 
+							node = node.addChild(toAdd[i], this.smoothing ? 2 : 1);
+						}
 					}
 				}
 			}
@@ -1869,65 +1869,59 @@
 		 * between one and the next; while the former will follow probabilities
 		 * from one sentence (across a boundary) to the next.
 		 */
-
 		generateSentences: function(num) {
 
-			if (!this.sentenceAware) 
-				err("Illegal: call to generateSentences() while generateSentences=false");
-
-			var s, result = [],
-				counter = 0,
-				totalTries = 0,
-				wordsInSentence = 1;
-
-			// find a token to start from
-			var mn = this._getSentenceStart();
-
-			if (!mn) err("Unable to find start node! genSen=" + this.sentenceAware);
-
-			s.append(mn.getToken() + " ");
-
-			var tries = 0;
-			while(counter < numSentences) {
-				if (wordsInSentence >= this._getMaxSentenceLength() || !mn) { // too long, start over
-					//System.out.println("MarkovModel.generateSentences() L:: toolong");
-					wordsInSentence = 0;
-					s = E;
+			var mn = this._getSentenceStart(), s = mn.token + SP, result = [], 
+				tries = 0, totalTries = 0, wordsInSentence = 1;
+			
+			while (result.length < num) {
+				
+				if (wordsInSentence >= this.maxSentenceLength) { 
+					
+					//System.out.println("MarkovModel.generateSentences().reject:: too long!");
+					
+					mn = this._getSentenceStart(); 
+					s = mn.token + SP;
+					wordsInSentence = 1;
 				}
 
 				if (mn.isLeaf()) {
-					mn = this.tracePathFromRoot(mn);
+					mn = this._tracePathFromRoot(mn);
 					continue;
 				}
 
-				mn = nextNode(mn);
-				if (mn.isSentenceStart()) {
-					if (wordsInSentence >= this._getMinSentenceLength()) {
-						var candidate = this._checkPunctuation(s.toString());
-						if (candidate && this._validateSentence(candidate)) {
+				mn = this._nextNodeForNode(mn);
+				
+				if (mn.isSentenceStart) {
+					
+					if (wordsInSentence >= this.minSentenceLength) {
+						
+						var candidate = RiTa.untokenize(s.trim().split(/\s+/));
+						
+						if (this._validateSentence(candidate)) {
+							
 							// got one, store and reset the counters
-							result[counter++] = candidate;
-							formattotalTries += tries;
+							if (result.indexOf(candidate) < 0) 
+								result.push(candidate);
+							//log(result.length+" RESULTS SO FAR");
+							totalTries += tries; 
 							tries = 0;
-						} else {
-							log("MarkovModel.generateSentences() L:: reject");
-							candidate = E;
-						}
+						} 
 					}
-					wordsInSentence = 0;
-					s = E;
+					mn = this._getSentenceStart(); 
+					s = mn.token + SP;
+					wordsInSentence = 1;
+					continue;
 				}
+				
+				// add the next word
 				wordsInSentence++;
-				s.append(mn.getToken() + " ");
+				s += mn.token + SP;
 
-				//System.out.println("adding: "+mn);
-				if (++tries >= MAX_GENERATION_ATTEMPTS) {
-					totalTries += tries;
-					this._onGenerationIncomplete(totalTries, counter);
-
-					for(var i = 0; i < result.length; i++)
-					if (!result[i]) result[i] = "";
-
+				// check if its time to give up
+				if (++tries >= RiMarkov.MAX_GENERATION_ATTEMPTS) {
+					
+					this._onGenerationIncomplete(totalTries+=tries, result.length);
 					break; // give-up
 				}
 			}
@@ -1935,10 +1929,128 @@
 			return result;
 		},
 		
-		_clean: function(sentence) {
-
-			return RiTa.trim(sentence.replace('\s+', ' '));
+		_validateSentence : function(sent) {
+			
+		    var tokens = RiTa.tokenize(sent), first = tokens[0], last = tokens[tokens.length-1];
+ 
+		    if (!first.match(/[A-Z]\S*/)) {
+		      if (this.printIgnoredText)
+		      	log("Skipping: bad first char in '"+sent+"'");
+		      return false;
+		    }      
+		    
+		    if (!last.match(/[!?.]/)) {
+		      if (this.printIgnoredText) 
+		      	log("Bad last token: '"+last+"' in: "+sent);   
+		      return false;
+		    }
+		    
+		    if (!this.allowDuplicates) 
+		    {
+		      if (!this.recognizeSentences) {
+		        err("[WARN] Invalid state: allowDuplicates must be"
+		        	+" true when not generating sentences");
+		      }
+		      
+		      if (this.sentenceList.indexOf(sent)>-1) 
+		      {
+		        if (++this.skippedDups == this.maxDuplicatesToSkip) {
+		          log("[WARN] Hit skip-maximum (RiMarkov.maxDuplicatesToSkip="+this.maxDuplicatesToSkip
+		              +") after skipping "+ this.maxDuplicatesToSkip+", now allowing duplicates!");
+		          this.allowDuplicates = true;
+		        }
+		        
+				if (this.printIgnoredText) log("Ignoring duplicate: "+sent);
+				  
+		        return false;
+		      }
+		    }
+		    return true;
 		},
+		
+		_checkPunctuation : function(sent) {    
+			
+			var result = value.charAt(0).toUpperCase() + value.substring(1);
+			return RiTa.untokenize(result.split(/\s+/));
+	    },
+	    
+		_tracePathFromRoot : function(node) { 
+		    
+		    // (TODO: change this
+		    node.pathFromRoot(this.pathTrace);
+		    
+		    this.pathTrace.pop(); // ignore the first element
+		    var mn = this.root;    
+		    while ( this.pathTrace.length) {
+		      var search =  this.pathTrace.pop();
+		      mn = mn.lookup(search);
+		    }     
+		    return mn;
+		},
+  		
+		_nextNodeForArr: function(previousTokens) {
+
+			//if (!is(previousTokens,A)) return this.root;
+			
+			// Follow the seed path down the tree
+			var firstLookupIdx = Math.max(0, previousTokens.length - (this._n - 1)),
+				node = this.root.lookup(previousTokens[firstLookupIdx++]);
+
+			for (var i = firstLookupIdx; i < previousTokens.length; i++) {
+
+				if (node) node = node.lookup(previousTokens[i]);
+			}
+
+			// Now select the next node
+			return node ? node.selectChild(null, true) : null;
+		},
+		
+		_nextNodeForNode : function(current) {         
+			
+		    var attempts = 0, selector, pTotal=0, nodes = current.childNodes();
+		    
+		    while (true) {
+		    	
+		        pTotal = 0;
+		        selector = Math.random();   
+		        //System.out.println("current="+current+", selector="+selector);
+		        for(var i=0,j=nodes.length; i<j; i++){
+				  var child = nodes[i]
+				 
+		          //System.out.println("child="+child);
+		          pTotal += child.probability();
+		          
+		          //System.out.println("pTotal="+pTotal);
+		          if (current.isRoot() && (recognizeSentences && !child.isSentenceStart())) {
+		            //System.out.println("continuing...");
+		            continue;
+		          }
+		          if (selector < pTotal) {
+		            //System.out.println("returning "+child+"\n====================");
+		            return child;
+		          }
+		          //System.out.println("selector >= pTotal\n====================");
+		        }
+		        attempts++; 
+		        console.log("[WARN] Prob. miss (#"+attempts+") in RiMarkov.nextNode()."
+		        		+ " Make sure there are a sufficient\n       # of sentences"
+		        		+ " in the model that are longer than your minSentenceLength.");
+		        if (attempts == MAX_PROB_MISSES)
+		          err  // should never happen
+		            ("PROB. MISS"+current+ " total="+pTotal+" selector="+selector);  
+		      }      
+		},
+		
+		_clean : function(sentence) {
+
+			return RiTa.trim(sentence.replace(/\s+/, SP));
+		},
+		
+		_onGenerationIncomplete : function(tries, successes) {
+			
+    		if (!RiTa.SILENT) console.log("\n[WARN] RiMarkov failed to complete after "+tries
+      			+" tries\n       Giving up after "+successes+" successful generations...\n");
+  		},	
 
 		/**
 		 * Loads an array of sentences into the model; each
@@ -1947,6 +2059,8 @@
 		 */ 
 		_loadSentences : function(sentences, multiplier) {
 
+			//console.log("_loadSentences("+this.allowDuplicates+")");
+			
 			var i, j, tokens, sentence, allWords = [], printIgnoredText = true;
 
 			// do the cleaning/splitting first ---------------------
@@ -1970,13 +2084,11 @@
 					continue;
 				}
 				
-				allWords.push(this.ssDelim + tokens[0]);
+				allWords.push(RiMarkov._SSDLM + tokens[0]);
 				
 				j = 1; // awful hack
 				for (; j < tokens.length; j++)
 					allWords.push(tokens[j]);
-
-				return this;
 			}
 
 			// ------------------------------------------------
@@ -1996,35 +2108,38 @@
 				for (j = 0; j < multiplier; j++)
 					this._addSentenceSequence(toAdd);
 			}
+			
+			return this;
+
 		},
-		
+		  
 		_validSentenceStart : function(word) {      
  
-			return (!this.sentenceAware || word.match(this.ssRegex)); 
+			return (!this.sentenceAware || word && word.match(RiMarkov._SSRE)); 
 		},
 		
-		addSentenceSequence: function(toAdd) {
+		_addSentenceSequence : function(toAdd) {
 
-			var node = root;
+			var node = this.root;
 
 			for(var i = 0; i < toAdd.length; i++) {
 
 				if (!toAdd[i]) continue;
 
-				if (node.getToken()) {
+				if (node.token) {
 
 					var add = toAdd[i];
 
-					if (add.startsWith(SS_DELIM)) {
+					if (startsWith(add,RiMarkov._SSDLM)) {
 
-						add = add.substring(this.ssDelim.length); // ??
+						add = add.substring(RiMarkov._SSDLM.length); 
 						var parent = node;
 
 						node = node.addChild(add, this.smoothing ? 2 : 1);
-						node.setIsSentenceStart(true);
+						node.isSentenceStart = true;
 
 						if (parent.isRoot()) {
-							this.sentenceStarts.add(node.getToken());
+							this.sentenceStarts.push(node.token);
 						}
 
 					} else 
@@ -2036,14 +2151,12 @@
 
 		_getSentenceStart : function() {
 			
-			if (!this.sentenceStarts || this.sentenceStarts.length < 1) {
-				console.warn('no sentence starts found!');
-				return null;
-			}
-				
-			var idx = Math.floor(Math.random() * this.sentenceStarts.length); 
+			if (!this.sentenceStarts || !this.sentenceStarts.length)
+				err('No sentence starts found! genSen='+recognizeSentences);
 			
-			return root.lookup(this.sentenceStarts[idx]);
+			var start = RiTa.randomItem(this.sentenceStarts);
+			
+			return this.root.lookup(start);
 		},
 
 		_findNode: function(path) {
@@ -2070,22 +2183,8 @@
 			}
 
 			return nodes ? nodes[nodes.length - 1] : null;
-		},
-		
-		_nextNode: function(previousTokens) {
-
-			// Follow the seed path down the tree
-			var firstLookupIdx = Math.max(0, previousTokens.length - (this._n - 1)),
-				node = this.root.lookup(previousTokens[firstLookupIdx++]);
-
-			for(var i = firstLookupIdx; i < previousTokens.length; i++) {
-
-				if (node) node = node.lookup(previousTokens[i]);
-			}
-
-			// Now select the next node
-			return node ? node.selectChild(null, true) : null;
 		}
+
 	}
 	
 	///////////////////////////////////////////////////////////////////////////
@@ -4001,8 +4100,7 @@
 	 * @class A probabilistic context-free grammar with literary extensions designed for text-generation
 	 * <pre> 
 		rg = new RiGrammar("mygrammar.g");
-		System.out.println(rg.expand());
-
+		println(rg.expand())
 		</pre>
 	 * 
 	 * RiTa grammar files are JSON-formatted text files that follow the format below:
@@ -4769,6 +4867,7 @@
 		
 		return RiTa.random.apply(this ,arguments);
 	}
+	
 	
 	/**
 	 * Convenience method to get the distance between 2 points
@@ -8086,6 +8185,15 @@
 			this.token = token;
 		},
 		
+		pathFromRoot : function(result) {       
+		    var mn = this;
+		    while (true) {
+		      if (mn.isRoot()) break;
+		      result.push(mn.token);      
+		      mn = mn.parent;          
+		    }   
+		},
+				
 		selectChild : function(regex, probabalisticSelect) {
 			
 			var ps = probabalisticSelect || true;
@@ -8176,9 +8284,9 @@
 			
 			var res = [];
 			for (var k in this.children)  {
-				var node = this.children[k];
-				if (!regex || (node && node.token && node.token.search(regex)>-1)) {
-					res.push(node);
+				var nd = this.children[k];
+				if (!regex || (nd && nd.token && nd.token.search(regex)>-1)) {
+					res.push(nd);
 				}
 			}
 			
@@ -8225,7 +8333,6 @@
 			return sum;
 		},        
 		
-		
 		/*
 		 * takes node or string, returns node
 		 */
@@ -8235,9 +8342,11 @@
 		  
 		  obj = (typeof obj != S && obj.token) ? obj.token : obj;
 		  
-		  //log(this.token+".lookup("+this._key(obj)+")");
+		  var key = this._key(obj);
 		  
-		  return obj ? this.children[this._key(obj)] : null; 
+		  //log(this.token+".lookup("+this._key(obj)+") :: "+this.children[key]);
+		  
+		  return obj ? this.children[key] : null; 
 		},
 		
 	
@@ -11707,17 +11816,22 @@
 			theText.replace(new RegExp(replace, 'g'), withThis) : theText;
 	}
 
-// replace w regex?
+	// TODO: replace w regex?
 	function endsWith(str, ending) { 
 		
 		if (!is(str,S)) return false;
 		return str.slice(-ending.length) == ending;
 	}
-// replace w regex?	
+	
+	// TODO: replace w regex?	
 	function startsWith(text, substr) {
 
 		if (!is(text,S)) return false;
 		return text.slice(0, substr.length) == substr;
+	}
+	
+	function err(msg) {
+		throw Error("[RiTa] "+msg);
 	}
 	
 	function equalsIgnoreCase(str1, str2) {
