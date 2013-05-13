@@ -32775,7 +32775,7 @@ _RiTa_DICT={
 'wartime': ['w-ao1-r-t ay1-m','nn'],
 'warts': ['w-ao1-r-t-s','nns'],
 'wary': ['w-eh1-r iy','jj'],
-'was': ['w-aa1-z','vbd :'],
+'was': ['w-aa1-z','vbd'],
 'wash': ['w-aa1-sh','nn vbp vb'],
 'washable': ['w-aa1-sh ax-b ax-l','jj'],
 'washbasin': ['w-aa1-sh b-ey1-s ax-n','nn'],

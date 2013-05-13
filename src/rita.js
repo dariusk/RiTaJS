@@ -2373,7 +2373,7 @@
 
 				if (typeof _RiTa_DICT != 'undefined') {
 
-					log('[RiTa] Loaded lexicon data...');
+					log('[RiTa] Loading lexicon data...');
 
 					RiLexicon.data = {}; // TODO: test perf. of this
 					for (var word in _RiTa_DICT) {
@@ -2493,9 +2493,8 @@
 			minEditDist = minEditDist || 1;
 
 			var minVal = Number.MAX_VALUE, entry, result = [], minLen = 2,
-				phonesArr, phones = RiTa.getPhonemes(input), med;
-
-			targetPhonesArr = phones ? phones.split('-') : [];
+				phonesArr, phones = RiTa.getPhonemes(input), med,
+				targetPhonesArr = phones ? phones.split('-') : [];
 
 			if(!targetPhonesArr[0] || !(input && input.length)) return EA;
 
@@ -2592,17 +2591,6 @@
 			simSound = this.similarBySound(word);
 			simLetter = this.similarByLetter(word);
 			
-			// if (undef(minEditDist)) {
-				
-			// 	simSound = this.similarBySound(word);
-			// 	simLetter = this.similarByLetter(word);
-			// } 
-			// else {
-				
-			// 	simSound = this.similarBySound(word,minEditDist);
-			// 	simLetter = this.similarByLetter(word,minEditDist);
-			// }
-
 			if (undef(simSound) || undef(simLetter)) 
 				return result;
 			
@@ -2910,8 +2898,9 @@
 		 
 		/**
 		 * Returns a String containing the phonemes for each syllable of each word of the input text, 
-		 * delimited by dashes (phonemes) and semi-colons (words). For example, the 4 syllables of the phrase 
-		 * 'The dog ran fast' is "dh-ax:d-ao-g:r-ae-n:f-ae-s-t".
+		 * delimited by dashes (phonemes) and semi-colons (words). 
+		 * For example, the 4 syllables of the phrase 
+		 * 'The dog ran fast' are "dh-ax:d-ao-g:r-ae-n:f-ae-s-t".
 		 * 
 		 * @param {string} word
 		 * 
@@ -2919,13 +2908,15 @@
 		 */
 		_getSyllables : function(word) {
 			
+			// TODO: use feature cache?
+			
 			if (!strOk(word)) return E;
 			
-			var wordArr = RiTa.tokenize((word)), phones, raw = [];
+			var wordArr = RiTa.tokenize(word), raw = [];
 			
 			for (var i=0; i< wordArr.length; i++) {
 				
-				raw[i] = this._getRawPhones(wordArr[i]).replace(/ /g, "/");
+				raw[i] = this._getRawPhones(wordArr[i]).replace(/\s/g, '/');
 			}
 			
 			return RiTa.untokenize(raw).replace(/1/g, E).trim();
@@ -2941,6 +2932,8 @@
 		 * @returns {string} all phonemes,
 		 */
 		_getPhonemes : function(word) {
+			
+			// TODO: use feature cache?
 
 			if (!strOk(word)) return E;
 			
@@ -12021,7 +12014,7 @@
 	}
 	
 
-	RiTa.p5Compatible(hasProcessing);
+	RiTa.p5Compatible(false);
 
 })(typeof window !== 'undefined' ? window : null);
 
