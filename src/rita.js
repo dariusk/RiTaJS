@@ -2321,38 +2321,10 @@
 	 */
 	var RiLexicon = makeClass();
 
-	
-	// ////////////////////////////////////////////////////////////
-	// Static functions
-	// ////////////////////////////////////////////////////////////
-	
-	/**
-	 * Returns the singleton instance of RiLexicon
-	 */
-	RiLexicon._getInstance = function() { // Do we need this? 
-
-		var lexicon; 
-		
-		try {
-			lexicon = new RiLexicon();
-		}
-		catch(e) {
-			err("No RiTa lexicon found! Have you included 'rita_dict.js'?");
-		}
-		
-		RiLexicon._getInstance = function() {
-			return lexicon;
-		};
-		
-		return lexicon;
-	};
-
 	// ////////////////////////////////////////////////////////////
 	// Static variables
-	// ////////////////////////////////////////////////////////////
-   
+	// ////////////////////////////////////////////////////////////   
 	
-	/** @private */
 	RiLexicon.data = undefined; // shared static var
 	
 	// ////////////////////////////////////////////////////////////
@@ -2381,7 +2353,8 @@
 					}
 				} else {
 
-					err("Dictionary not found! Make sure to add it to your .html:" + ", e.g.,\n\n    <script src=\"path/to/rita_dict.js\"></script>");
+					err("Dictionary not found! Make sure to add it to your sketch:" 
+						+ ", e.g.,\n\n    <script src=\"path/to/rita_dict.js\"></script>");
 				}
 			}
 		},
@@ -2439,9 +2412,7 @@
 		 */
 		similarByLetter: function(input, minAllowedDist, preserveLength) {
 
-			var minVal = Number.MAX_VALUE,
-				minLen = 2,
-				result = [];
+			var minVal = Number.MAX_VALUE, minLen = 2, result = [];
 
 			if (!(input && input.length)) return EA;
 
@@ -2496,38 +2467,40 @@
 				phonesArr, phones = RiTa.getPhonemes(input), med,
 				targetPhonesArr = phones ? phones.split('-') : [];
 
-			if(!targetPhonesArr[0] || !(input && input.length)) return EA;
+			if (!targetPhonesArr[0] || !(input && input.length)) return EA;
 
-			for(entry in RiLexicon.data) {
+			for (entry in RiLexicon.data) {
 
-				if(entry.length < minLen) continue;
+				if (entry.length < minLen) 
+					continue;
 
 				entry = entry.toLowerCase();
 
-				if(entry == input || entry == (input + "s") || entry == (input + "es")) continue;
+				if (entry == input || entry == (input + "s") || entry == (input + "es")) 
+					continue;
 
 				phones = this._getRawPhones(entry);
 
-				if(!phones.length) {
+				if (!phones.length) {
 
 					phones = RiString._syllabify(LetterToSound().getPhones(entry));
-					if(!phones) return EA;
+					if (!phones) return EA;
 				}
 
 				phonesArr = phones.replace(/1/g, "").replace(/ /g, "-").split('-');
 
 				med = MinEditDist.computeRaw(phonesArr, targetPhonesArr);
 
-				if(med == 0) continue; // same phones 
+				if (med == 0) continue; // same phones 
 
 				// found something even closer
-				if(med >= minEditDist && med < minVal) {
+				if (med >= minEditDist && med < minVal) {
 
 					minVal = med;
 					result = [entry];
 				}
 				// another best to add
-				else if(med == minVal) {
+				else if (med == minVal) {
 
 					result.push(entry);
 				}
@@ -2569,7 +2542,8 @@
 			
 			for  (entry in RiLexicon.data){
 				if (entry == word) continue;
-				if (entry.indexOf(word) >= 0) result.push(entry);
+				if (entry.indexOf(word) >= 0) 
+					result.push(entry);
 			}
 			
 			return result;
@@ -3449,7 +3423,7 @@
 	
 			var phonemes = E, syllables = E, stresses = E, slash = '/',  delim = '-',
 				phones, lts, ltsPhones, useRaw, words = RiTa.tokenize(this._text), 
-				lts, stressyls, lex = RiLexicon._getInstance(); 
+				lts, stressyls, lex = RiLexicon();//._getInstance(); 
 			
 			if (!this._features) this._initFeatureMap();
 			
@@ -8877,8 +8851,7 @@
 		 */
 		tag : function(words) {
 			
-			var result = [], lex = RiLexicon._getInstance(); 
-			var choices2d = [];
+			var result = [], choices2d = [], lex = RiLexicon();//._getInstance(); 
 			
 			words = is(words,A) ?  words : [ words ];
 			
