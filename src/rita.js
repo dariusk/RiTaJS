@@ -1,7 +1,7 @@
 
 (function(window, undefined) {
 	
-	var _VERSION_ = '0.28';
+	var _VERSION_ = '0.29';
 	// also update /RiTaLibraryJS/www/download/index.html (TODO: should be automatic)
 
 	/**  @private Simple type-checking functions */ 
@@ -9,38 +9,32 @@
 		
 		N : 'number', S : 'string', O : 'object', A :'array', B : 'boolean', R : 'regexp', F : 'function',
 		
-		/**
-		 * From: http://javascriptweblog.wordpress.com/2011/08/08/fixing-the-javascript-typeof-operator/
-		 */
+		// From: http://javascriptweblog.wordpress.com/2011/08/08/fixing-the-javascript-typeof-operator/ 
 		get : function(obj) {
 			
 			return ({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase();
 		},
 		
-		/**
-		 * Returns true if the object is of type 'type', otherwise false
-		 */
+		// Returns true if the object is of type 'type', otherwise false
+		 
 		is : function(obj,type) {
 			
 			return Type.get(obj) === type;
 		},
 		
-		/**
-		 * Throws TypeError if not the correct type, else returns true
-		 */
+		// Throws TypeError if not the correct type, else returns true
 		ok : function(obj,type) {
 			
 			if (Type.get(obj)!=type) {
 				
-				throw TypeError('Expected '+(type ? type.toUpperCase() : type+E) + ", received "+(obj ? Type.get(obj).toUpperCase() : obj+E));
+				throw TypeError('Expected '+(type ? type.toUpperCase() : type+E)
+					+ ", but received "+(obj ? Type.get(obj).toUpperCase() : obj+E));
 			}
 			
 			return true;
 		}
 		
-	}; // end Type
-	
-	var is = Type.is, ok = Type.ok; // alias
+	},  is = Type.is, ok = Type.ok; // alias
 
 	var Easing = {
 	
@@ -412,9 +406,7 @@
 	 * @namespace A collection of static variables and functions for the RiTa library
 	 */
 	RiTa = {
-		
-		// RiTa constants =================================
-		
+
 		/** The current version of the RiTa tools */
 		VERSION : _VERSION_,
 
@@ -423,7 +415,7 @@
 		 * b=beta
 		 * @private
 		 */
-		PHASE : 'a', 
+		_PHASE : 'a', 
 
 		/** For tokenization, Can't -> Can not, etc. */
 		SPLIT_CONTRACTIONS : false,
@@ -1345,7 +1337,8 @@
 			
 			//console.log('p5Compatible('+value+'['+window+'])');
 			
-			if (window) {
+			if (typeof window != 'undefined' && window) {
+				
 				// TODO: add mouse-handling methods here?
 				if (typeof window.mouseClicked == F) 
 					window.onmouseup = window.mouseClicked;
@@ -1376,10 +1369,10 @@
 				// alias' for RiTa-java static functions  (?)
 				RiText.setDefaultFont = RiText.defaultFont; 
 				RiText.setDefaultColor = RiText.defaultColor;
-				RiText.setDefaultAlignment = RiText.defaultAlignment;
+				//RiText.setDefaultAlignment = RiText.defaultAlignment;
 				RiText.setCallbackTimer = RiText.timer;
 				
-				if (typeof window != 'undefined' && !hasProcessing) { // remove all this
+				if (typeof window != 'undefined' && window && !hasProcessing) { // remove all this?
 					
 					if (!window.LEFT) window.LEFT = RiTa.LEFT;
 					if (!window.RIGHT) window.RIGHT = RiTa.RIGHT;
@@ -1400,7 +1393,7 @@
 				
 				delete RiText.setDefaultFont;
 				delete RiText.setDefaultColor;
-				delete RiText.setDefaultAlignment;
+				//delete RiText.setDefaultAlignment;
 				delete RiText.setCallbackTimer;
 
 				if (typeof window != 'undefined' && window && !hasProcessing)  {
@@ -1410,7 +1403,7 @@
 					if (window.CENTER === RiTa.CENTER) delete window.CENTER;
 
 					if (window.onload && (window.onload == arguments.callee.setupAndDraw))
-						window.onload == undefined;
+						window.onload = undefined; //?
 				}
 			}
 		},
@@ -1471,17 +1464,13 @@
 	 * and/or excessive memory use.
 	 */
 	var RiMarkov = makeClass();
-	
-	
-	// TODO: When should duplicate list be reset??
-	
-	
+
 	 /** constant for max # of tries for a generation */
   	RiMarkov.MAX_GENERATION_ATTEMPTS = 1000;
   
-	RiMarkov._SSRE =  /"?[A-Z][a-z"',;`-]*/;  // TODO: CAPS
+	RiMarkov._SSRE =  /"?[A-Z][a-z"',;`-]*/;  
 	
-	RiMarkov._SSDLM =  'D=l1m_';     // TODO: CAPS (OR use HTML-style tag)
+	RiMarkov._SSDLM =  'D=l1m_';     // TODO:  (OR use HTML-style tag) ??
 
 	RiMarkov.prototype = {
 
@@ -3727,7 +3716,7 @@
 			var s = this.text();
 			
 			if (idx > s.length || idx < -s.length) {
-				console.warn("insertChar: bad index="+idx);
+				console.warn("RiString.insertChar: bad index="+idx);
 				return this;
 			}
 
@@ -3752,7 +3741,7 @@
 			var s = this.text();
 			
 			if (idx > s.length || idx < -s.length) {
-				console.warn("removeChar: bad index="+idx);
+				console.warn("RiString.removeChar: bad index="+idx);
 				return this;
 			}
 			idx = idx < 0 ? idx += s.length : idx;
@@ -3775,7 +3764,7 @@
 			var s = this.text();
 			
 			if (idx > s.length || idx < -s.length) {
-				console.warn("replaceChar: bad index="+idx);
+				console.warn("RiString.replaceChar: bad index="+idx);
 				return this;
 			}
 			idx = idx < 0 ? idx += s.length : idx;
@@ -4159,6 +4148,7 @@
 		init : function(grammar) {
 			
 			(arguments.length == 0 || is(grammar,S) || ok(grammar, O)); 
+			
 			this._rules = {};
 			this._execDisabled = false;
 			grammar && this.setGrammar(grammar);  
@@ -5043,25 +5033,25 @@
 	 * Sets/gets the default font size for all RiTexts
 	 * @param {object} motionType
 	 * @returns {object} the current default motionType
-	 */
+
 	RiText.defaultMotionType = function(motionType) {
 
 		if (arguments.length==1) 
 			RiText.defaults.motionType = motionType;
 		return RiText.defaults.motionType;
-	}
+	}	 */
 	
 	/**
 	 * Sets/gets the default alignment for all RiTexts
 	 * @param {number} align (optional, for sets only)
 	 * @returns {number} the current default alignment
-	 */
+
 	RiText.defaultAlignment = function(align) {
 
 		if (arguments.length==1)
 			RiText.defaults.alignment = align;
 		return RiText.defaults.alignment;
-	}
+	}	 */
 	
 	/**
 	 * Sets/gets the default font size for all RiTexts
@@ -5079,13 +5069,13 @@
 	 * Sets/gets the default bounding box visibility
 	 * @param {boolean} size (optional, for sets only)
 	 * @returns {boolean} the current default bounding box visibility
-	 */
+
 	RiText.defaultBoundingBoxes = function(value) {
 		
 		if (arguments.length==1) 
 			RiText.defaults.boundingBoxVisible = value;
 		return RiText.defaults.boundingBoxVisible;
-	}
+	}	 */
 
 	/**
 	 * Sets/gets the default font for all RiTexts
@@ -5617,8 +5607,7 @@
 		alignment : RiTa.LEFT, motionType : RiTa.LINEAR, font: null, fontSize: 14,
 		paragraphLeading : 0, paragraphIndent: 20, indentFirstParagraph : false,
 		boundingBoxStroke : null, boundingBoxVisible : false, leadingFactor: 1.2,
-		rotateX:0, rotateY:0, rotateZ:0, scaleX:1, scaleY:1, scaleZ:1,
-
+		rotateX:0, rotateY:0, rotateZ:0, scaleX:1, scaleY:1, scaleZ:1
 	}
 
 	RiText.prototype = {
@@ -7852,7 +7841,7 @@
 			
 			var font = {
 				name:       fontName, 
-				size:       fontSize || RiText.defaults.font.size, 
+				size:       fontSize || RiText.defaults.font.size 
 				//leading:    leading || 0
 			};
 			return font;
@@ -8261,7 +8250,7 @@
 		},        
 		
 		/**
-		 * Returns the number of siblings for this node (Note: is case-sensitive)
+		 * Returns the number of siblings for this node 
 		 */
 		siblingCount : function() {
 			
@@ -8273,7 +8262,7 @@
 		},
 		
 		/**
-		 * Returns the number of unique children (Note: is case-sensitive)
+		 * Returns the number of unique children 
 		 */
 		uniqueCount : function() {
 		
@@ -8283,7 +8272,7 @@
 		},
 		
 		 /**
-		 * Returns the number of children for this node (Note: is case-sensitive)
+		 * Returns the number of children for this node 
 		 */
 		childCount : function() {
 			
@@ -8984,10 +8973,10 @@
 
 				// DISABLED: transform 10(dch): convert plural nouns (which are
 				// also 3sg-verbs) to 3sg-verbs when followed by adverb
-				if (0 && i < result.length - 1 && result[i] == "nns" && sW(result[i + 1], "rb")
+				/*if (i < result.length - 1 && result[i] == "nns" && sW(result[i + 1], "rb")
 						&& this.hasTag(choices[i], "vbz")) {
 					result[i] = "vbz";
-				}
+				}*/
 			}
 		 
 			return result;
@@ -10054,7 +10043,7 @@
 		var categoryIX_ICES = ["appendices", "cervices"];
 	
 		/** Words that change from "-is" to "-es" (like "axis" etc.), listed in their plural forms, plus everybody ending in theses */
-		var categoryIS_ES = ["analyses", "axes", "bases", "crises", "diagnoses", "ellipses", "emphases", "neuroses", "oases", "paralyses", "synopses"];
+		var categoryIS_ES = ["analyses", "axes", "bases", "crises", "diagnoses", "ellipses", "em_PHASEs", "neuroses", "oases", "paralyses", "synopses"];
 	
 		/** Words that change from "-oe" to "-oes" (like "toe" etc.), listed in their plural forms*/
 		var categoryOE_OES = ["aloes", "backhoes", "beroes", "canoes", "chigoes", "cohoes", "does", "felloes", "floes", "foes", "gumshoes", "hammertoes", "hoes", "hoopoes", "horseshoes", "leucothoes", "mahoes", "mistletoes", "oboes", "overshoes", "pahoehoes", "pekoes", "roes", "shoes", "sloes", "snowshoes", "throes", "tic-tac-toes", "tick-tack-toes", "ticktacktoes", "tiptoes", "tit-tat-toes", "toes", "toetoes", "tuckahoes", "woes"];
@@ -11953,7 +11942,7 @@
 	}
 	
 	if (!RiTa.SILENT)
-		console && console.log("[INFO] RiTaJS.version ["+RiTa.VERSION+RiTa.PHASE+"]");
+		console && console.log("[INFO] RiTaJS.version ["+RiTa.VERSION+RiTa._PHASE+"]");
 	
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// Core RiTa objects (in global namespace)
