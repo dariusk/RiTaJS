@@ -6675,7 +6675,6 @@
 			
 			if (!this._rs._text.length) return 0;
 			return this.words().length;
-			
 		},
 		
 		/**
@@ -6683,18 +6682,17 @@
 		 * 
 		 * @returns {array} strings, one per word
 		 */
-		words : function() { //TODO: change to words()
+		words : function() { 
 			
 			return RiTa.tokenize(this._rs._text);
-			
 		},
 
 		/**
 		 * Returns the distance between the center points of this and another RiText
 		 * @returns {number} the distance
 		 */
-		distanceTo : function(riText)
-		{
+		distanceTo : function(riText) {
+			
 		  var p1 = this.center(), p2 = riText.center();
 		  return RiTa.distance( p1.x,  p1.y,  p2.x,  p2.y);
 		},
@@ -6706,7 +6704,7 @@
 		center : function() {
 			
 			var bb = this.boundingBox();
-			return { x: bb.x+bb.width/2, y: bb.y - bb.height/2 };
+			return { x: bb.x + bb.width/2.0, y: bb.y - bb.height/2.0 };
 		},
 		
 		/**
