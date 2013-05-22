@@ -1,8 +1,8 @@
 
 (function(window, undefined) {
 	
-	var _VERSION_ = '0.29';
-	// also update /RiTaLibraryJS/www/download/index.html (TODO: should be automatic)
+	var _VERSION_ = '1.0.29';
+	// also update /RiTaLibraryJS/www/download/index.html (TODO: make automatic)
 
 	/**  @private Simple type-checking functions */ 
 	var Type = {
@@ -1357,7 +1357,6 @@
 			if (value) {
 				
 				// alias' for RiTa-java member functions 
-				RiText.prototype.fill       = RiText.prototype.color;
 				RiText.prototype.textAlign  = RiText.prototype.align;
 				RiText.prototype.textFont   = RiText.prototype.font;
 				RiText.prototype.textSize   = RiText.prototype.fontSize;
@@ -1381,7 +1380,6 @@
 			}
 			else { // non-compatible mode (clear extra stuff)
 				
-				delete RiText.prototype.fill;
 				delete RiText.prototype.textAlign;
 				delete RiText.prototype.textFont;
 				delete RiText.prototype.textSize;
@@ -5194,10 +5192,13 @@
   	
 	RiText.createLines = function(txt, x, y, w, h, pfont, leading) {
 	    
-	    if (!is(arguments[0], S) && !is(arguments[0], A)) { // ignore first (PApplet) argument
-	    	var a = arguments;
+	    var a = arguments, t = Type.get(a[0]);
+	    
+	    if (t != S && t != A) { // ignore first (PApplet/window) argument
 	    	txt = a[1], x = a[2], y = a[3], w = a[4], h = a[5], pfont = a[6], leading = a[7];
 	    }
+	    
+	    if (!txt || !txt.length) return EA;
 	    
 	    w = w || Number.MAX_VALUE-x, h = h || Number.MAX_VALUE, pfont = pfont || RiText.defaultFont();
 	 	leading = leading || pfont.leading || pfont.size * RiText.defaults.leadingFactor;
@@ -5445,10 +5446,10 @@
 	
 	RiText._createRiTexts = function(txt, x, y, w, h, fontObj, lead, splitFun) {  
 
-		if (!txt || !txt.length) return EA;
+		//if (!txt || !txt.length) return EA;
 
 		var rlines = RiText.createLines(txt, x, y, w, h, fontObj, lead);
-		if (!rlines) return EA;
+		if (!rlines || rlines.length < 1) return EA;
 
 		var result = [];
 		var font = rlines[0].font();
@@ -5665,11 +5666,8 @@
 			this.g = RiText.renderer;
 			
 			// handle the arguments
-			
-			//var a = Array.prototype.slice.call(arguments);
-			//log(arguments);
-			var args = this._parseArgs.apply(this,arguments);
-			
+			var args = this._initArgs.apply(this,arguments);
+
 			this.font(args[3]);
 			this.text(args[0]);
 
@@ -5686,47 +5684,44 @@
 		},
 		
 	
-		_parseArgs : function() {
+		_initArgs : function() {
 
-			//log(arguments);
-			var a = arguments;
-
-			if (a.length && is(a[0], O) && typeof a[0].text != F) {
+			var a = arguments, t = Type.get(a[0]);
+		
+			//console.error(a[0]);
+			//console.error("a[0]="+t+" a.length="+a.length+" type="+t+" analyze="+typeof a[0].text);
+			
+			if (a.length && (t===O || t==='global') && typeof a[0].analyze != F) {
 				
 				// recurse, ignore 'this'
-
 				var shifted = Array.prototype.slice.call(a, 1);
 
-				return this._parseArgs.apply(this,shifted);
+				return this._initArgs.apply(this, shifted);
 			}
-			
-			//log(a);
+
 			var parsed = [E, null, null, null];
 			if (a.length) {
 
-				if (is(a[0], S))
+				if (is(a[0], S))   // String
 					parsed[0] = a[0];
 				
 				else if (is(a[0], O) && typeof a[0].text == F)
-					parsed[0] = a[0].text();
+					parsed[0] = a[0].text(); // RiString
 				
-				else if (is(a[0], N))
+				else if (is(a[0], N)) // Number
 					parsed[0] = String.fromCharCode(a[0]);
+					
+				else
+				  console.error("Unexpected Arg: "+a[0]+" (type="+(typeof a[0])+")");
 			}
+			if (a.length > 1) parsed[1] = a[1];
 
-			if (a.length > 1)
-				parsed[1] = a[1];
+			if (a.length> 2) parsed[2] = a[2];
 
-			if (a.length> 2)
-				parsed[2] = a[2];
-
-			if (a.length> 3)
-				parsed[3] = a[3];
+			if (a.length> 3) parsed[3] = a[3];
 
 			return parsed;
 		},
-
-
 		
 		/**
 		 * Returns the specified feature, computing it first if necessary. <p>
@@ -6794,7 +6789,7 @@
 		copy : function() {
 
 			var c = new RiText(this.text(), this.x, this.y, this._font);
-			c.color(this._color.r, this._color.g, this._color.b, this._color.a);
+			c.fill(this._color.r, this._color.g, this._color.b, this._color.a);
 
 			for (var prop in this) {
 				if (typeof this[prop] ==  F || typeof this[prop] ==  O) 
@@ -6863,17 +6858,17 @@
 		},
 
 		/**
-		 * Set/gets the color for this RiText
+		 * Set/gets the fill color for this RiText
 		 * 
-		 * @param {number | array} cr takes 1-4 number values for rgba, or an array of size 1-4
+		 * @param {number | array} takes 1-4 number values for rgba, or an array of size 1-4
 		 * @param {number} cg
 		 * @param {number} cb
 		 * @param {number} ca
 		 * 
 		 * @returns {object} either this RiText (for sets) or the current color object (for gets)
 		 */
-		color : function(cr, cg, cb, ca) {
-			
+		fill : function(cr, cg, cb, ca) {
+			//console.log("fill");
 			if (arguments.length == 0) 
 				return this._color;
 			this._color = parseColor.apply(this, arguments);
@@ -7726,7 +7721,7 @@
 
 	
 	// ///////////////////////////////////////////////////////////////////////
-	// RiText_Canvas 2D-Renderer
+	// RiText_Canvas 2d-Renderer
 	// ///////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -10880,7 +10875,7 @@
 	
 	////////////////////////////////// End Classes ///////////////////////////////////
 
-	// TODO: clean this mess up... wrap in Constants?
+	// TODO: clean this mess up... wrap in Constants, and EnglishConstants?
 	
 	var QUESTION_STARTS = ["Was", "What", "When", "Where", "How", "Which", "If", "Who", "Is", "Could", "Might", "Will", "Does", "Why", "Are" ];    
 	
@@ -11909,12 +11904,9 @@
 		
 			attach : function(p5) {
 				p = p5;
-				//log("Processing.registerLibrary.attach");
-				//log(p.externals);
-				//log(p.externals['canvas']);
+				//log("Processing.registerLibrary.attach");log(p.externals);log(p.externals['canvas']);
 				var context2d = p.externals['canvas'].getContext("2d");
-				//log("p5:");
-				//log(context2d);
+				//log("p5:");log(context2d);
 				RiText.renderer = new RiText_P5(p5, context2d);
 			},
 			
@@ -11961,7 +11953,6 @@
 	
 	if (typeof module != 'undefined' && module.exports) { // for node
 		
-		//module.exports['RiText'] = RiText; // not in Node
 		module.exports['RiString'] = RiString;
 		module.exports['RiLexicon'] = RiLexicon;
 		module.exports['RiGrammar'] = RiGrammar;

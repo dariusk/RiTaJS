@@ -46729,7 +46729,7 @@ _RiTa_LTS=[
 (function(window, undefined) {
 	
 	var _VERSION_ = '0.29';
-	// also update /RiTaLibraryJS/www/download/index.html (TODO: should be automatic)
+	// also update /RiTaLibraryJS/www/download/index.html (TODO: make automatic)
 
 	/**  @private Simple type-checking functions */ 
 	var Type = {
@@ -52392,9 +52392,6 @@ _RiTa_LTS=[
 			this.g = RiText.renderer;
 			
 			// handle the arguments
-			
-			//var a = Array.prototype.slice.call(arguments);
-			//log(arguments);
 			var args = this._parseArgs.apply(this,arguments);
 			
 			this.font(args[3]);
@@ -52415,10 +52412,10 @@ _RiTa_LTS=[
 	
 		_parseArgs : function() {
 
-			//log(arguments);
-			var a = arguments;
-
-			if (a.length && is(a[0], O) && typeof a[0].text != F) {
+			//console.error("Arg[0]: "+a.length+", "+is(a[0],O)+", "+Type.get(a[0]));
+			var a = arguments, t = Type.get(a[0]);
+			
+			if (a.length && (t===O || t==='global') && typeof a[0].text != F) {
 				
 				// recurse, ignore 'this'
 
@@ -52427,28 +52424,27 @@ _RiTa_LTS=[
 				return this._parseArgs.apply(this,shifted);
 			}
 			
-			//log(a);
 			var parsed = [E, null, null, null];
 			if (a.length) {
 
-				if (is(a[0], S))
+				if (is(a[0], S))   // String
 					parsed[0] = a[0];
 				
 				else if (is(a[0], O) && typeof a[0].text == F)
-					parsed[0] = a[0].text();
+					parsed[0] = a[0].text(); // RiString
 				
-				else if (is(a[0], N))
+				else if (is(a[0], N)) // Number
 					parsed[0] = String.fromCharCode(a[0]);
+					
+				else
+				  console.error("Unexpected Arg: "+a[0]+" (type="+(typeof a[0])+")");
 			}
 
-			if (a.length > 1)
-				parsed[1] = a[1];
+			if (a.length > 1) parsed[1] = a[1];
 
-			if (a.length> 2)
-				parsed[2] = a[2];
+			if (a.length> 2) parsed[2] = a[2];
 
-			if (a.length> 3)
-				parsed[3] = a[3];
+			if (a.length> 3) parsed[3] = a[3];
 
 			return parsed;
 		},
@@ -53402,7 +53398,6 @@ _RiTa_LTS=[
 			
 			if (!this._rs._text.length) return 0;
 			return this.words().length;
-			
 		},
 		
 		/**
@@ -53410,18 +53405,17 @@ _RiTa_LTS=[
 		 * 
 		 * @returns {array} strings, one per word
 		 */
-		words : function() { //TODO: change to words()
+		words : function() { 
 			
 			return RiTa.tokenize(this._rs._text);
-			
 		},
 
 		/**
 		 * Returns the distance between the center points of this and another RiText
 		 * @returns {number} the distance
 		 */
-		distanceTo : function(riText)
-		{
+		distanceTo : function(riText) {
+			
 		  var p1 = this.center(), p2 = riText.center();
 		  return RiTa.distance( p1.x,  p1.y,  p2.x,  p2.y);
 		},
@@ -53433,7 +53427,7 @@ _RiTa_LTS=[
 		center : function() {
 			
 			var bb = this.boundingBox();
-			return { x: bb.x+bb.width/2, y: bb.y - bb.height/2 };
+			return { x: bb.x + bb.width/2.0, y: bb.y - bb.height/2.0 };
 		},
 		
 		/**
@@ -54455,7 +54449,7 @@ _RiTa_LTS=[
 
 	
 	// ///////////////////////////////////////////////////////////////////////
-	// RiText_Canvas 2D-Renderer
+	// RiText_Canvas 2d-Renderer
 	// ///////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -57609,7 +57603,7 @@ _RiTa_LTS=[
 	
 	////////////////////////////////// End Classes ///////////////////////////////////
 
-	// TODO: clean this mess up... wrap in Constants?
+	// TODO: clean this mess up... wrap in Constants, and EnglishConstants?
 	
 	var QUESTION_STARTS = ["Was", "What", "When", "Where", "How", "Which", "If", "Who", "Is", "Could", "Might", "Will", "Does", "Why", "Are" ];    
 	
@@ -58638,12 +58632,9 @@ _RiTa_LTS=[
 		
 			attach : function(p5) {
 				p = p5;
-				//log("Processing.registerLibrary.attach");
-				//log(p.externals);
-				//log(p.externals['canvas']);
+				//log("Processing.registerLibrary.attach");log(p.externals);log(p.externals['canvas']);
 				var context2d = p.externals['canvas'].getContext("2d");
-				//log("p5:");
-				//log(context2d);
+				//log("p5:");log(context2d);
 				RiText.renderer = new RiText_P5(p5, context2d);
 			},
 			
@@ -58690,7 +58681,6 @@ _RiTa_LTS=[
 	
 	if (typeof module != 'undefined' && module.exports) { // for node
 		
-		//module.exports['RiText'] = RiText; // not in Node
 		module.exports['RiString'] = RiString;
 		module.exports['RiLexicon'] = RiLexicon;
 		module.exports['RiGrammar'] = RiGrammar;
