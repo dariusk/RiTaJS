@@ -730,11 +730,11 @@
 		},
 		
 		// TODO: example
+		
 		/**
-		 * Takes an array of words and of tags and returns a 
+		 * Takes a string or string array of words and returns a 
 		 * combined String of the form:
 		 *  <pre>"The/dt doctor/nn treated/vbd dogs/nns"</pre>
-		 * assuming a "/" as 'delimiter'.
 		 *
 		 * @param {string | array} words the text to tag
 		 * @returns {string} 
