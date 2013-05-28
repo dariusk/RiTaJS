@@ -474,9 +474,7 @@
 		ELASTIC_IN_OUT : Easing.Elastic.InOut,
 
 		// For Conjugator =================================
-		
-		//TODO: add comments
-		
+
 		PHONEMES : 'phonemes',
 		
 		STRESSES : 'stresses',
