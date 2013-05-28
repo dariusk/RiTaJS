@@ -1,7 +1,7 @@
 
 (function(window, undefined) {
 	
-	var _VERSION_ = '1.0.29';
+	var _VERSION_ = '1.0.29';	
 	// also update /RiTaLibraryJS/www/download/index.html (TODO: make automatic)
 
 	/**  @private Simple type-checking functions */ 
@@ -397,7 +397,24 @@
 			}
 		}
 	};
-
+	
+			// TIMER : 6, SCALE_TO : 7, ROTATE_TO: 8, TEXT_ENTERED : 9, LERP : 10,
+	// var EventType = {
+	  // MoveTo: {value: 0, name:"MoveTo"},
+	  // ColorTo: {value: 1, name:"ColorTo"},
+	  // FadeIn: {value: 2, name:"FadeIn"},
+	  // FadeOut: {value: 3, name:"FadeOut"},
+	  // TextTo: {value: 4, name:"TextTo"} ,
+	  // Timer: {value: 5, 	name:"Timer"},
+	  // ScaleTo: {value: 6, name:"ScaleTo"},
+	  // RotateTo: {value: 7, name:"RotateTo"},
+	  // TextEntered: {value: 8, name:"TextEntered"},
+	  // Lerp: {value: 9, name:"Lerp"},
+	  // BoundingAlpha: {value: 10, name:"BoundingAlpha"},
+	  // TextToCopy: {value: 11, name:"TextToCopy"},
+	  // Unknown: {value: 12, name:"Unknown"}
+	// }
+		
 	// ////////////////////////////////////////////////////////////
 	// RiTa object (singleton)
 	// ////////////////////////////////////////////////////////////
@@ -422,9 +439,37 @@
 		
 		// :::: For RiTaEvents :::::::::
 	
-		UNKNOWN : -1, MOVE_TO : 1, COLOR_TO : 2, FADE_IN : 3, FADE_OUT : 4, TEXT_TO : 5, 
-		TIMER : 6, SCALE_TO : 7, ROTATE_TO: 8, TEXT_ENTERED : 9, LERP : 10,
-	
+		// UNKNOWN : -1, MOVE_TO : 1, COLOR_TO : 2, FADE_IN : 3, FADE_OUT : 4, TEXT_TO : 5, 
+// 
+	    // MOVE_TO : EventType.MoveTo.name,
+	    // COLOR_TO : EventType.ColorTo.name,
+	    // FADE_IN : EventType.FadeIn.name,
+	    // FADE_OUT : EventType.FadeOut.name,
+	    // TEXT_TO : EventType.TextTo.name,
+	    // TIMER : EventType.Timer.name,
+	    // SCALE_TO : EventType.ScaleTo.name,
+	    // ROTATE_TO : EventType.RotateTo.name,
+	    // TEXT_ENTERED : EventType.TextEntered.name,
+	    // LERP : EventType.Lerp.name,
+	    // BOUNDING_ALPHA : EventType.BoundingAlpha.name,
+	    // TEXT_TO_COPY : EventType.TextToCopy.name,
+	    // UNKNOWN : EventType.Unknown.name,
+
+	    MOVE_TO : "MoveTo",
+	    COLOR_TO : "ColorTo",
+	    FADE_IN : "FadeIn",
+	    FADE_OUT : "FadeOut",
+	    TEXT_TO : "TextTo",
+	    TIMER : "Timer",
+	    SCALE_TO : "ScaleTo",
+	    ROTATE_TO : "RotateTo",
+	    TEXT_ENTERED : "TextEntered",
+	    BOUNDING_ALPHA : "BoundingAlpha",
+	    TEXT_TO_COPY : "TextToCopy",
+	    UNKNOWN : "Unknown",
+		LERP : "Lerp",
+
+  			
 		// :::: RiText Constants  ::::::::: 
 
 		LEFT : 37, UP : 38, RIGHT : 39, DOWN : 40,  CENTER : 3,
@@ -1370,7 +1415,7 @@
 				RiText.prototype.setText    = RiText.prototype.text;
 				RiText.prototype.fadeColor  = RiText.prototype.colorTo;
 				RiText.prototype.fadeToText = RiText.prototype.textTo;
-				RiText.prototype.setColor   = RiText.prototype.color;
+				RiText.prototype.setColor   = RiText.prototype.fill;
 	
 				// alias' for RiTa-java static functions  (?)
 				RiText.setDefaultFont = RiText.defaultFont; 
@@ -5156,9 +5201,9 @@
 	RiText.defaultFill = function(r, g, b, a) {
  
 		if (arguments.length) { 
-			RiText.defaults.color = parseColor.apply(this,arguments);
+			RiText.defaults.fill = parseColor.apply(this,arguments);
 		}
-		return RiText.defaults.color;
+		return RiText.defaults.fill;
 	}
 	
 	
@@ -5623,7 +5668,7 @@
 	 */
 	RiText.defaults = { 
 		
-		color : { r : 0, g : 0, b : 0, a : 255 }, fontFamily: 'Times New Roman',  
+		fill : { r : 0, g : 0, b : 0, a : 255 }, fontFamily: 'Times New Roman',  
 		alignment : RiTa.LEFT, motionType : RiTa.LINEAR, font: null, fontSize: 14,
 		paragraphLeading : 0, paragraphIndent: 20, indentFirstParagraph : false,
 		boundingStroke : null, boundingStrokeWeight : 1, showBounds : false, leadingFactor: 1.2,
@@ -5646,10 +5691,10 @@
 				err("No graphics context, RiText unavailable");
 			
 			this._color = { 
-				r : RiText.defaults.color.r, 
-				g : RiText.defaults.color.g, 
-				b : RiText.defaults.color.b, 
-				a : RiText.defaults.color.a 
+				r : RiText.defaults.fill.r, 
+				g : RiText.defaults.fill.g, 
+				b : RiText.defaults.fill.b, 
+				a : RiText.defaults.fill.a 
 			};
 			
 			var bbs = RiText.defaults.boundingStroke;
