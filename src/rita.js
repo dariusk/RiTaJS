@@ -3992,7 +3992,6 @@
 		 * Converts this object to an array of RiString objects, one per character
 		 * 
 		 * @returns {array} RiStrings with each letter as its own RiString element
-		 */
 		toCharArray : function() {
 			var parts = this._text.split(E);
 			var rs = [];
@@ -4001,7 +4000,7 @@
 					rs.push(parts[i]);
 			}
 			return rs;
-		},
+		},	 */
 
 		/**
 		 * Converts all of the characters in this RiString to lower case
@@ -4316,8 +4315,7 @@
 			} 
 			else if (cnt > 1) {
 				
-				var sr = this._getStochasticRule(tmp);
-				return sr;
+				return this._getStochasticRule(tmp);
 			}
 			else {
 				err("No rule found for: "+pre);
@@ -6310,7 +6308,7 @@
 		 /**
 		 * Returns the index within this string of the first occurrence of the specified character.
 		 * 
-		 * @param {string} searchstring (Required) or character to search for
+		 * @param {string} searchstring or character to search for
 		 * @param {number} start (Optional) The start position in the string to start the search. If omitted,
 		 *        the search starts from position 0
 		 * @returns {number} the first index of the matching pattern or -1 if none are found
@@ -6623,17 +6621,9 @@
 		 * Converts this object to an array of RiText objects, one per character
 		 * 
 		 * @returns {array} RiTexts with each letter as its own RiText element
-		 */
 		toCharArray : function() {
 			return this._rs._text.split(E); // DCH: to match Java, 4/13/13
-			/*var parts = this._rs._text.split(E);
-			var rs = [];
-			for ( var i = 0; i < parts.length; i++) {
-				if (!undef(parts[i]))
-					rs.push(parts[i]);
-			}
-			return rs;*/
-		},
+		},		 */
 		
 		/**
 		 * Converts all of the characters in this RiText to lower case
