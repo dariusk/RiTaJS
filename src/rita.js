@@ -2734,13 +2734,13 @@
 		 * 
 		 * @returns {boolean} true if the two words rhyme, else false.
 		 */
-		isRhyme : function(word1, word2) {
+		isRhyme : function(word1, word2, useLTS) {
 
 			if ( !strOk(word1) || !strOk(word2) || equalsIgnoreCase(word1, word2))
 				return false;
 			
-			var p1 = this._lastStressedPhoneToEnd(word1), 
-				p2 = this._lastStressedPhoneToEnd(word2);
+			var p1 = this._lastStressedPhoneToEnd(word1, useLTS), 
+				p2 = this._lastStressedPhoneToEnd(word2, useLTS);
 			
 			return (strOk(p1) && strOk(p2) && p1 === p2);  
 		},
@@ -2781,8 +2781,10 @@
 		 * @param {string} word input
 		 * @returns {array} strings of alliterations
 		 */
-		alliterations : function(word) {
-
+		alliterations : function(word, matchMinLength) {
+			
+			matchMinLength = matchMinLength || 4;
+			
 			if (this.containsWord(word)) {
 
 				var c2, entry, results = [];
@@ -2792,11 +2794,11 @@
 					
 					c2 = this._firstConsonant(this._firstStressedSyllable(entry));
 					
-					if (c2 && c1 === c2) {
+					if (c2 && c1 === c2 && entry.length > matchMinLength) {
 						results.push(entry);
 					}
 				}
-				return (results.length > 0) ? results : EA; 
+				return results; 
 			}
 			return EA;
 		},
@@ -3065,9 +3067,26 @@
 		},
 		
 
-		_getRawPhones : function(word) {
+		_getRawPhones : function(word, useLTS) {
+			
+			// TODO: test this with useLTS=true
 			
 			var data = this._lookupRaw(word);
+			useLTS = useLTS || false;
+			
+			var phones, data = this._lookupRaw(word);
+			if (data && useLTS)
+			{
+				if (!RiTa.SILENT)
+					log("[RiTa] Using letter-to-sound rules for: " + word);
+
+				phones = LetterToSound.getInstance().getPhones(word);
+				
+				//System.out.println("phones="+RiTa.asList(phones));
+				if (phones && phones.length)
+					return RiString.syllabify(phones);
+
+			}
 			return (data && data.length==2) ? data[0] : E; 
 		},
 
@@ -3115,12 +3134,12 @@
 		},
 		
 
-		_lastStressedPhoneToEnd : function(word) {
+		_lastStressedPhoneToEnd : function(word, useLTS) {
 
 			if (!strOk(word)) return E; // return null?
 			
 			var idx, c, result;
-			var raw = this._getRawPhones(word);
+			var raw = this._getRawPhones(word, useLTS);
 
 			if (!strOk(raw)) return E; // return null?
 			
