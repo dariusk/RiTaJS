@@ -46728,7 +46728,7 @@ _RiTa_LTS=[
 
 (function(window, undefined) {
 	
-	var _VERSION_ = '1.0.29';
+	var _VERSION_ = '1.0.29';	
 	// also update /RiTaLibraryJS/www/download/index.html (TODO: make automatic)
 
 	/**  @private Simple type-checking functions */ 
@@ -47124,7 +47124,24 @@ _RiTa_LTS=[
 			}
 		}
 	};
-
+	
+			// TIMER : 6, SCALE_TO : 7, ROTATE_TO: 8, TEXT_ENTERED : 9, LERP : 10,
+	// var EventType = {
+	  // MoveTo: {value: 0, name:"MoveTo"},
+	  // ColorTo: {value: 1, name:"ColorTo"},
+	  // FadeIn: {value: 2, name:"FadeIn"},
+	  // FadeOut: {value: 3, name:"FadeOut"},
+	  // TextTo: {value: 4, name:"TextTo"} ,
+	  // Timer: {value: 5, 	name:"Timer"},
+	  // ScaleTo: {value: 6, name:"ScaleTo"},
+	  // RotateTo: {value: 7, name:"RotateTo"},
+	  // TextEntered: {value: 8, name:"TextEntered"},
+	  // Lerp: {value: 9, name:"Lerp"},
+	  // BoundingAlpha: {value: 10, name:"BoundingAlpha"},
+	  // TextToCopy: {value: 11, name:"TextToCopy"},
+	  // Unknown: {value: 12, name:"Unknown"}
+	// }
+		
 	// ////////////////////////////////////////////////////////////
 	// RiTa object (singleton)
 	// ////////////////////////////////////////////////////////////
@@ -47149,9 +47166,37 @@ _RiTa_LTS=[
 		
 		// :::: For RiTaEvents :::::::::
 	
-		UNKNOWN : -1, MOVE_TO : 1, COLOR_TO : 2, FADE_IN : 3, FADE_OUT : 4, TEXT_TO : 5, 
-		TIMER : 6, SCALE_TO : 7, ROTATE_TO: 8, TEXT_ENTERED : 9, LERP : 10,
-	
+		// UNKNOWN : -1, MOVE_TO : 1, COLOR_TO : 2, FADE_IN : 3, FADE_OUT : 4, TEXT_TO : 5, 
+// 
+	    // MOVE_TO : EventType.MoveTo.name,
+	    // COLOR_TO : EventType.ColorTo.name,
+	    // FADE_IN : EventType.FadeIn.name,
+	    // FADE_OUT : EventType.FadeOut.name,
+	    // TEXT_TO : EventType.TextTo.name,
+	    // TIMER : EventType.Timer.name,
+	    // SCALE_TO : EventType.ScaleTo.name,
+	    // ROTATE_TO : EventType.RotateTo.name,
+	    // TEXT_ENTERED : EventType.TextEntered.name,
+	    // LERP : EventType.Lerp.name,
+	    // BOUNDING_ALPHA : EventType.BoundingAlpha.name,
+	    // TEXT_TO_COPY : EventType.TextToCopy.name,
+	    // UNKNOWN : EventType.Unknown.name,
+
+	    MOVE_TO : "MoveTo",
+	    COLOR_TO : "ColorTo",
+	    FADE_IN : "FadeIn",
+	    FADE_OUT : "FadeOut",
+	    TEXT_TO : "TextTo",
+	    TIMER : "Timer",
+	    SCALE_TO : "ScaleTo",
+	    ROTATE_TO : "RotateTo",
+	    TEXT_ENTERED : "TextEntered",
+	    BOUNDING_ALPHA : "BoundingAlpha",
+	    TEXT_TO_COPY : "TextToCopy",
+	    UNKNOWN : "Unknown",
+		LERP : "Lerp",
+
+  			
 		// :::: RiText Constants  ::::::::: 
 
 		LEFT : 37, UP : 38, RIGHT : 39, DOWN : 40,  CENTER : 3,
@@ -47201,9 +47246,7 @@ _RiTa_LTS=[
 		ELASTIC_IN_OUT : Easing.Elastic.InOut,
 
 		// For Conjugator =================================
-		
-		//TODO: add comments
-		
+
 		PHONEMES : 'phonemes',
 		
 		STRESSES : 'stresses',
@@ -47457,11 +47500,11 @@ _RiTa_LTS=[
 		},
 		
 		// TODO: example
+		
 		/**
-		 * Takes an array of words and of tags and returns a 
+		 * Takes a string or string array of words and returns a 
 		 * combined String of the form:
 		 *  <pre>"The/dt doctor/nn treated/vbd dogs/nns"</pre>
-		 * assuming a "/" as 'delimiter'.
 		 *
 		 * @param {string | array} words the text to tag
 		 * @returns {string} 
@@ -48064,6 +48107,15 @@ _RiTa_LTS=[
 			
 			//console.log('p5Compatible('+value+'['+window+'])');
 			
+			if (!arguments.callee.setupAndDraw) {
+				
+				arguments.callee.setupAndDraw = function() {
+					if (typeof window.setup == F) setup();
+					if (typeof window.draw == F) RiText.loop();
+				};
+			}
+
+			
 			if (typeof window != 'undefined' && window) {
 				
 				// TODO: add mouse-handling methods here?
@@ -48090,19 +48142,27 @@ _RiTa_LTS=[
 				RiText.prototype.setText    = RiText.prototype.text;
 				RiText.prototype.fadeColor  = RiText.prototype.colorTo;
 				RiText.prototype.fadeToText = RiText.prototype.textTo;
-				RiText.prototype.setColor   = RiText.prototype.color;
+				RiText.prototype.setColor   = RiText.prototype.fill;
 	
 				// alias' for RiTa-java static functions  (?)
 				RiText.setDefaultFont = RiText.defaultFont; 
-				RiText.setDefaultColor = RiText.defaultColor;
+				RiText.setDefaultColor = RiText.defaultFill;
 				//RiText.setDefaultAlignment = RiText.defaultAlignment;
 				RiText.setCallbackTimer = RiText.timer;
 				
-				if (typeof window != 'undefined' && window && !hasProcessing) { // remove all this?
+				if (typeof window != 'undefined' && window && !hasProcessing) { 
 					
 					if (!window.LEFT) window.LEFT = RiTa.LEFT;
 					if (!window.RIGHT) window.RIGHT = RiTa.RIGHT;
-					if (!window.CENTER) window.CENTER = RiTa.CENTER;					
+					if (!window.CENTER) window.CENTER = RiTa.CENTER;	
+	
+					if (!window.line) window.line = RiText.line;
+					if (!window.size) window.size = RiText.size;
+					if (!window.createFont) window.createFont = RiText.createFont;
+					if (!window.background) window.background = RiText.background;
+					if (!window.random) window.random = RiText.random;	
+					
+					if (!window.onload) window.onload = arguments.callee.setupAndDraw;					
 				}
 			}
 			else { // non-compatible mode (clear extra stuff)
@@ -48126,9 +48186,15 @@ _RiTa_LTS=[
 					if (window.RIGHT === RiTa.RIGHT) delete window.RIGHT;
 					if (window.LEFT === RiTa.LEFT) delete window.LEFT;
 					if (window.CENTER === RiTa.CENTER) delete window.CENTER;
-
+					
+					if (window.line === RiTa.line) delete window.line;
+					if (window.size === RiTa.size) delete window.size;
+					if (window.random === RiTa.random) delete window.random;
+					if (window.background === RiTa.background) delete window.background;
+					if (window.createFont === RiTa.createFont) delete window.createFont;
+					
 					if (window.onload && (window.onload == arguments.callee.setupAndDraw))
-						window.onload = undefined; //?
+						window.onload = undefined; // ?
 				}
 			}
 		},
@@ -49395,13 +49461,13 @@ _RiTa_LTS=[
 		 * 
 		 * @returns {boolean} true if the two words rhyme, else false.
 		 */
-		isRhyme : function(word1, word2) {
+		isRhyme : function(word1, word2, useLTS) {
 
 			if ( !strOk(word1) || !strOk(word2) || equalsIgnoreCase(word1, word2))
 				return false;
 			
-			var p1 = this._lastStressedPhoneToEnd(word1), 
-				p2 = this._lastStressedPhoneToEnd(word2);
+			var p1 = this._lastStressedPhoneToEnd(word1, useLTS), 
+				p2 = this._lastStressedPhoneToEnd(word2, useLTS);
 			
 			return (strOk(p1) && strOk(p2) && p1 === p2);  
 		},
@@ -49442,8 +49508,10 @@ _RiTa_LTS=[
 		 * @param {string} word input
 		 * @returns {array} strings of alliterations
 		 */
-		alliterations : function(word) {
-
+		alliterations : function(word, matchMinLength) {
+			
+			matchMinLength = matchMinLength || 4;
+			
 			if (this.containsWord(word)) {
 
 				var c2, entry, results = [];
@@ -49453,11 +49521,11 @@ _RiTa_LTS=[
 					
 					c2 = this._firstConsonant(this._firstStressedSyllable(entry));
 					
-					if (c2 && c1 === c2) {
+					if (c2 && c1 === c2 && entry.length > matchMinLength) {
 						results.push(entry);
 					}
 				}
-				return (results.length > 0) ? results : EA; 
+				return results; 
 			}
 			return EA;
 		},
@@ -49726,9 +49794,26 @@ _RiTa_LTS=[
 		},
 		
 
-		_getRawPhones : function(word) {
+		_getRawPhones : function(word, useLTS) {
+			
+			// TODO: test this with useLTS=true
 			
 			var data = this._lookupRaw(word);
+			useLTS = useLTS || false;
+			
+			var phones, data = this._lookupRaw(word);
+			if (data && useLTS)
+			{
+				if (!RiTa.SILENT)
+					log("[RiTa] Using letter-to-sound rules for: " + word);
+
+				phones = LetterToSound.getInstance().getPhones(word);
+				
+				//System.out.println("phones="+RiTa.asList(phones));
+				if (phones && phones.length)
+					return RiString.syllabify(phones);
+
+			}
 			return (data && data.length==2) ? data[0] : E; 
 		},
 
@@ -49776,12 +49861,12 @@ _RiTa_LTS=[
 		},
 		
 
-		_lastStressedPhoneToEnd : function(word) {
+		_lastStressedPhoneToEnd : function(word, useLTS) {
 
 			if (!strOk(word)) return E; // return null?
 			
 			var idx, c, result;
-			var raw = this._getRawPhones(word);
+			var raw = this._getRawPhones(word, useLTS);
 
 			if (!strOk(raw)) return E; // return null?
 			
@@ -50698,7 +50783,6 @@ _RiTa_LTS=[
 		 * Converts this object to an array of RiString objects, one per character
 		 * 
 		 * @returns {array} RiStrings with each letter as its own RiString element
-		 */
 		toCharArray : function() {
 			var parts = this._text.split(E);
 			var rs = [];
@@ -50707,7 +50791,7 @@ _RiTa_LTS=[
 					rs.push(parts[i]);
 			}
 			return rs;
-		},
+		},	 */
 
 		/**
 		 * Converts all of the characters in this RiString to lower case
@@ -51022,8 +51106,7 @@ _RiTa_LTS=[
 			} 
 			else if (cnt > 1) {
 				
-				var sr = this._getStochasticRule(tmp);
-				return sr;
+				return this._getStochasticRule(tmp);
 			}
 			else {
 				err("No rule found for: "+pre);
@@ -51210,9 +51293,9 @@ _RiTa_LTS=[
 					var post = prod.substring(idx + name.length);
 					
 					if (trimSpace) {
-						pre = pre.trim();
-						expanded = expanded.trim();
-						post = post.trim();
+						pre = (pre || E).trim();
+						post = (post || E).trim();
+						expanded = (expanded || E).trim();
 					}
 
 					if (dbug) log("  pre=" + pre+"  expanded=" + expanded+"  post=" + post+"  result=" + pre + expanded + post);
@@ -51408,7 +51491,7 @@ _RiTa_LTS=[
 			an = RiText._animator, 
 			callback = undef(window) ? null : window['draw'];
 		
-		if (g._type() === 'Processing') return; // let P5 do its own loop?
+		if (g._type() === 'Processing') return; // let P5 do its own loop
   
 		if (an.loopStarted) return;
 		
@@ -51505,7 +51588,7 @@ _RiTa_LTS=[
 	 * @param {number} y2
 	 * @param {number} lineWidth (optional: default=1)
 	 */ 
-	RiText.line = function(x1, y1, x2, y2, lineWidth) { // TODO: REMOVE
+	RiText.line = function(x1, y1, x2, y2, lineWidth) { 
 
 		var g = RiText.renderer;
 		g._pushState();
@@ -51798,8 +51881,8 @@ _RiTa_LTS=[
 	RiText.defaultBoundingBoxes = function(value) {
 		
 		if (arguments.length==1) 
-			RiText.defaults.boundingBoxVisible = value;
-		return RiText.defaults.boundingBoxVisible;
+			RiText.defaults.showBounds = value;
+		return RiText.defaults.showBounds;
 	}	 */
 
 	/**
@@ -51854,19 +51937,19 @@ _RiTa_LTS=[
 	}
 	
 	/**
-	 * Sets/gets the default color
+	 * Sets/gets the default fill color
 	 * @param {number | array} r takes 1-4 number values for rgba, or an array of size 1-4
 	 * @param {number} g (optional)
 	 * @param {number} b (optional)
 	 * @param {number} a (optional)
 	 * @returns {object} the current default color
 	 */
-	RiText.defaultColor = function(r, g, b, a) {
+	RiText.defaultFill = function(r, g, b, a) {
  
 		if (arguments.length) { 
-			RiText.defaults.color = parseColor.apply(this,arguments);
+			RiText.defaults.fill = parseColor.apply(this,arguments);
 		}
-		return RiText.defaults.color;
+		return RiText.defaults.fill;
 	}
 	
 	
@@ -52331,10 +52414,10 @@ _RiTa_LTS=[
 	 */
 	RiText.defaults = { 
 		
-		color : { r : 0, g : 0, b : 0, a : 255 }, fontFamily: 'Times New Roman',  
+		fill : { r : 0, g : 0, b : 0, a : 255 }, fontFamily: 'Times New Roman',  
 		alignment : RiTa.LEFT, motionType : RiTa.LINEAR, font: null, fontSize: 14,
 		paragraphLeading : 0, paragraphIndent: 20, indentFirstParagraph : false,
-		boundingBoxStroke : null, boundingBoxVisible : false, leadingFactor: 1.2,
+		boundingStroke : null, boundingStrokeWeight : 1, showBounds : false, leadingFactor: 1.2,
 		rotateX:0, rotateY:0, rotateZ:0, scaleX:1, scaleY:1, scaleZ:1
 	}
 
@@ -52354,29 +52437,29 @@ _RiTa_LTS=[
 				err("No graphics context, RiText unavailable");
 			
 			this._color = { 
-				r : RiText.defaults.color.r, 
-				g : RiText.defaults.color.g, 
-				b : RiText.defaults.color.b, 
-				a : RiText.defaults.color.a 
+				r : RiText.defaults.fill.r, 
+				g : RiText.defaults.fill.g, 
+				b : RiText.defaults.fill.b, 
+				a : RiText.defaults.fill.a 
 			};
 			
-			var bbs = RiText.defaults.boundingBoxStroke;
-			this._boundingBoxStroke = { 
+			var bbs = RiText.defaults.boundingStroke;
+			this._boundingStroke = { 
 				r : (bbs && bbs.r) || this._color.r, 
 				g : (bbs && bbs.g) || this._color.g, 
 				b : (bbs && bbs.b) || this._color.b, 
 				a : (bbs && bbs.a) || this._color.a
 			};
 			
-			var bbf = RiText.defaults.boundingBoxFill;
-			this._boundingBoxFill = { 
+			/*var bbf = RiText.defaults.boundingFill;
+			this._boundingFill = { 
 				r : (bbf && bbf.r) || this._color.r, 
 				g : (bbf && bbf.g) || this._color.g, 
 				b : (bbf && bbf.b) || this._color.b, 
 				a : (bbf && bbf.a) || 0
-			};
+			};*/
 	
-			this._boundingBoxVisible = RiText.defaults.boundingBoxVisible;
+			this._showBounds = RiText.defaults.showBounds;
 			this._motionType = RiText.defaults.motionType;
 			this._alignment = RiText.defaults.alignment;
 	
@@ -52528,15 +52611,16 @@ _RiTa_LTS=[
 				
 		
 				// And the bounding box
-				if (this._boundingBoxVisible) {
+				if (this._showBounds) {
 					
-					//	console.log(this.text()+".bb="+this._boundingBoxVisible);
+					//	console.log(this.text()+".bb="+this._showBounds);
 					
-					g._fill(this._boundingBoxFill.r, this._boundingBoxFill.g, 
-						this._boundingBoxFill.b, this._boundingBoxFill.a);
+					//g._fill(this._boundingFill.r, this._boundingFill.g, 
+						//this._boundingFill.b, this._boundingFill.a);
+					g._fill(0, 0, 0, 0); // push/popStyle
 					
-					g._stroke(this._boundingBoxStroke.r, this._boundingBoxStroke.g, 
-							this._boundingBoxStroke.b, this._boundingBoxStroke.a);
+					g._stroke(this._boundingStroke.r, this._boundingStroke.g, 
+							this._boundingStroke.b, this._boundingStroke.a);
 
 					// shift bounds based on alignment  // TODO: check that rotation still works w bounds? 
 					switch(this._alignment) {
@@ -53015,7 +53099,7 @@ _RiTa_LTS=[
 		 /**
 		 * Returns the index within this string of the first occurrence of the specified character.
 		 * 
-		 * @param {string} searchstring (Required) or character to search for
+		 * @param {string} searchstring or character to search for
 		 * @param {number} start (Optional) The start position in the string to start the search. If omitted,
 		 *        the search starts from position 0
 		 * @returns {number} the first index of the matching pattern or -1 if none are found
@@ -53328,17 +53412,9 @@ _RiTa_LTS=[
 		 * Converts this object to an array of RiText objects, one per character
 		 * 
 		 * @returns {array} RiTexts with each letter as its own RiText element
-		 */
 		toCharArray : function() {
 			return this._rs._text.split(E); // DCH: to match Java, 4/13/13
-			/*var parts = this._rs._text.split(E);
-			var rs = [];
-			for ( var i = 0; i < parts.length; i++) {
-				if (!undef(parts[i]))
-					rs.push(parts[i]);
-			}
-			return rs;*/
-		},
+		},		 */
 		
 		/**
 		 * Converts all of the characters in this RiText to lower case
@@ -53571,17 +53647,17 @@ _RiTa_LTS=[
 		
 
 		/**
-		 * Set/gets the boundingbox visibility for this RiText
+		 * Set/gets the visibility of the bounding box for this RiText
 		 * 
 		 * @param {boolean} trueOrFalse (optional) true or false 
-		 * @returns {object | boolean}this RiText (set) or the current boolean value (get)
+		 * @returns {object | boolean} this RiText (set) or the current boolean value (get)
 		 */
-		showBoundingBox : function(trueOrFalse) {
+		showBounds : function(trueOrFalse) {
 		   if (arguments.length == 1) {
-			   this._boundingBoxVisible = trueOrFalse;
+			   this._showBounds = trueOrFalse;
 			   return this;
 		   }
-		   return this._boundingBoxVisible;
+		   return this._showBounds;
 		},
 
 		/**

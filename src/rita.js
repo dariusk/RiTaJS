@@ -1,10 +1,11 @@
 
 (function(window, undefined) {
 	
-	var _VERSION_ = '1.0.29';	
+	var _VERSION_ = '1.0.30';	
 	// also update /RiTaLibraryJS/www/download/index.html (TODO: make automatic)
 
 	/**  @private Simple type-checking functions */ 
+	
 	var Type = {
 		
 		N : 'number', S : 'string', O : 'object', A :'array', B : 'boolean', R : 'regexp', F : 'function',
