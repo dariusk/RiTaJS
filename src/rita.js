@@ -6751,7 +6751,6 @@
 		
 		/**
 		 * Returns the array of words in the object, via a call to RiTa.tokenize().
-		 * 
 		 * @returns {array} strings, one per word
 		 */
 		words : function() { 
@@ -6763,9 +6762,20 @@
 		 * Returns the distance between the center points of this and another RiText
 		 * @returns {number} the distance
 		 */
-		distanceTo : function(riText) {
+		distanceTo : function(a,b) {
 			
-		  var p1 = this.center(), p2 = riText.center();
+	      var p2x, p2y, p1 = this.center(), p1x = p1.x, p1y = p1.y;
+	       
+	      if (a.length == 1) {
+		     p2 = a.center();
+		     p2x = p1.x;
+		     p2y = p1.y;
+		  }
+		  else {
+		  	 p2x = a;
+		     p2y = b;
+		  }
+		  
 		  return RiTa.distance( p1.x,  p1.y,  p2.x,  p2.y);
 		},
 	  
