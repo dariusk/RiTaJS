@@ -428,34 +428,11 @@
 		/** The current version of the RiTa tools */
 		VERSION : _VERSION_,
 
-		/** 
-		 * a=alpha
-		 * b=beta
-		 * @private
-		 */
-		_PHASE : 'a', 
-
 		/** For tokenization, Can't -> Can not, etc. */
 		SPLIT_CONTRACTIONS : false,
 		
 		// :::: For RiTaEvents :::::::::
 	
-		// UNKNOWN : -1, MOVE_TO : 1, COLOR_TO : 2, FADE_IN : 3, FADE_OUT : 4, TEXT_TO : 5, 
-// 
-	    // MOVE_TO : EventType.MoveTo.name,
-	    // COLOR_TO : EventType.ColorTo.name,
-	    // FADE_IN : EventType.FadeIn.name,
-	    // FADE_OUT : EventType.FadeOut.name,
-	    // TEXT_TO : EventType.TextTo.name,
-	    // TIMER : EventType.Timer.name,
-	    // SCALE_TO : EventType.ScaleTo.name,
-	    // ROTATE_TO : EventType.RotateTo.name,
-	    // TEXT_ENTERED : EventType.TextEntered.name,
-	    // LERP : EventType.Lerp.name,
-	    // BOUNDING_ALPHA : EventType.BoundingAlpha.name,
-	    // TEXT_TO_COPY : EventType.TextToCopy.name,
-	    // UNKNOWN : EventType.Unknown.name,
-
 	    MOVE_TO : "MoveTo",
 	    COLOR_TO : "ColorTo",
 	    FADE_IN : "FadeIn",
@@ -468,6 +445,7 @@
 	    BOUNDING_ALPHA : "BoundingAlpha",
 	    TEXT_TO_COPY : "TextToCopy",
 	    UNKNOWN : "Unknown",
+	    INTERNAL : "Internal",
 		LERP : "Lerp",
 
   			
@@ -648,11 +626,10 @@
 		 * 
 		 * @returns {number}
 		 */
-		distance: function(x1,y1,x2,y2) {
+		distance : function(x1,y1,x2,y2) {
 			
 			var dx = x1 - x2, dy = y1 - y2;
 			return Math.sqrt(dx * dx + dy * dy);
-			
 		},
 		
 		/**
@@ -663,7 +640,7 @@
 		 * @param {function} callback called every 'period' seconds (optional)
 		 * @returns {number} the unique id for the timer
 		 */
-		timer: function(period, callback) {
+		timer : function(period, callback) {
 			 
 			var a = arguments;
 			
@@ -692,8 +669,9 @@
 		 * Stops a timer according to its unique id
 		 * @param {number} the unique id for the timer
 		 */
-		stopTimer: function(id) { 
+		stopTimer : function(id) { 
 			
+			// TODO: THIS DEFINATELY BROKEN
 			if (timers[id])  
 				timers[id].stop();
 			else
@@ -707,7 +685,9 @@
 		 * @returns {number} the new unique id for the timer
 		 */
 		 pauseTimer : function(id, pauseSec) {  
+			//console.log("pause");
 			
+			// TODO: THIS MAY BE BROKEN
 			pauseSec = is(pauseSec, N) ? pauseSec : Number.MAX_VALUE;
 			
 			if (timers[id])  {
@@ -718,10 +698,14 @@
 					else
 						warn("no timer!!!");
 				}, pauseSec*1000);
+				return timers[id].id();
 			}
 			else {
 				warn('no timer with id: '+id);
 			}
+			
+			 
+			return -1; 
 		},   
 
 		/**
@@ -814,7 +798,7 @@
 		 * @param {string} tag pos tag to convert
 		 * @returns {string} simplified WordNet tag
 		 */
-		posToWordNet  : function(tag) {
+		posToWordNet : function(tag) {
 			
 			if (!strOk(tag)) return E;
 
@@ -4876,9 +4860,9 @@
 	 * @param {number} w width
 	 * @param {number} h height
 	 */
-	RiText.size = function(w,h/*renderer*/) { // TODO: REMOVE
+	RiText.size = function(w ,h) { 
 		
-		RiText.renderer._size(w,h/*renderer*/);
+		RiText.renderer._size(w, h);
 	}
 
 	/**
@@ -4901,11 +4885,11 @@
 	/**
 	 * Returns a random number between 'min' (default 0) and 'max
 	 * @returns {number}
-	 */
+
 	RiText.random = function() {
 		
 		return RiTa.random.apply(this ,arguments);
-	}
+	}	 */
 	
 	
 	/**
@@ -4916,12 +4900,12 @@
 	 * @param {number} y2
 	 * 
 	 * @returns {number}
-	 */
+	 
 	RiText.distance = function() {
 		
 		return RiTa.distance.apply(this,arguments);
-	}
-	
+	}*/
+		
 	/**
 	 * Convenience method to fill drawing surface background with specified color
 	 * @param {number} r
@@ -5045,74 +5029,20 @@
 		}
 		
 		RiText.instances = [];
-   }
+	}
 	
-   RiText.createWords = function(txt, x, y, w, h, fontObj, leading) {
+	RiText.createWords = function(txt, x, y, w, h, fontObj, leading) {
 
 		return RiText._createRiTexts(txt, x, y, w, h, fontObj, leading, RiText.prototype.splitWords);
-	}
+ 	}
 
 	RiText.createLetters = function(txt, x, y, w, h, fontObj, leading) {
 
 		return RiText._createRiTexts(txt, x, y, w, h, fontObj, leading, RiText.prototype.splitLetters);
 	}
 
-	// TODO: other alignments?
-	/*RiText.createLinesOld= function(txt, x, y, maxW, maxH, theFont) { 
-   
-  		var strLines = txt, theFont = theFont || RiText._getDefaultFont();
-				 
-		if (is(txt, S)) 
-			strLines = RiText._makeLines(txt, x, y, maxW, maxH, theFont);
-
-		if (!(strLines && strLines.length)) 
-			err('Unexpected fail in createLines(): no lines');
-
-		// lay out the lines
-		var rts = RiText._createLinesByCharCountFromArray(strLines, x, y, theFont);
-		
-		if (!rts || rts.length < 1) return EA;
-
-		// set the paragraph spacing
-		if (RiText.defaults.paragraphLeading > 0)  {
-			
-		  var lead = 0;
-		  for (var i = 0; i < rts.length; i++) {
-			  
-			var str = rts[i].text();
-			var idx = str.indexOf('|');
-			if (idx > -1) {
-			  lead += RiText.defaults.paragraphLeading;
-			  rts[i].removeChar(idx);
-			}
-			rts[i].y += lead;
-		  }
-		}
-		
-		// check all the lines are still in the rect
-		var toKill = [];
-		var check = rts[rts.length - 1];   
-		for (var z = 1; (check.y + check.textDescent()) > y + maxH; z++) {
-			
-			toKill.push(check);
-			var idx = rts.length - 1 - z;
-			if (idx < 0) break;
-			check = rts[idx];
-		}
-		
-		// remove the dead ones
-		for (var z = 0; z < toKill.length; z++) {
-			
-			removeFromArray(rts, toKill[z]);
-		}
-		
-		RiText._disposeArray(toKill);
-
-		return rts;
-	}*/
-
 	/**
-	 * Sets/gets the default font size for all RiTexts
+	 * Sets/gets the default motionType for all RiTexts
 	 * @param {object} motionType
 	 * @returns {object} the current default motionType
 
@@ -5152,7 +5082,7 @@
 	 * @param {boolean} size (optional, for sets only)
 	 * @returns {boolean} the current default bounding box visibility
 
-	RiText.defaultBoundingBoxes = function(value) {
+	RiText.defaultBounds = function(value) {
 		
 		if (arguments.length==1) 
 			RiText.defaults.showBounds = value;
@@ -5408,126 +5338,6 @@
 	    //console.log(rt);return rt;
 	}
 	
-	RiText._makeLinesOld = function(txt, x, y, maxW, maxH, theFont) {  // TODO: remove
-
-		//log('_makeLines('+txt.length+','+x+','+y+','+maxW+','+maxH+','+theFont+')');
-
-		var currentH = 0, currentW = 0, newParagraph = false, forceBreak = false, strLines = [],
-			sb = RiText.defaults.indentFirstParagraph ? RiText.defaults.paragraphIndent : E,
-			g = RiText.renderer, fn = RiText._makeLines;
-			
-		// remove line breaks & add spaces around html
-		txt = replaceAll(txt, "[\r\n]", SP);
-		txt = replaceAll(txt," ?(<[^>]+>) ?", " $1 "); 	
-
-		// split into reversed array of words
-		var tmp = txt.split(SP), words = [];
-		for ( var i = tmp.length - 1; i >= 0; i--)
-			words.push(tmp[i]);
-
-		// cached helpers //////////////////////////////////////////// 
-		
-		fn.checkLineHeight = fn.checkLineHeight || function(currentH, lineH, maxH) {
-			
-			return currentH + lineH <= maxH;
-		};
-		
-		fn.addLine = fn.addLine || function(arr, s) {
-			if (s && s.length) {
-				// strip trailing spaces (regex?)
-				while (s.length > 0 && endsWith(s, ' '))
-					s = s.substring(0, s.length - 1);
-				arr.push(s); 
-			}
-		};
-		
-		// the guts ////////////////////////////////////////////////
-			
-		var tmp = new RiText('_',0,0,theFont), textH = tmp.textHeight();
-		RiText.dispose(tmp); // grab the line height [?]
-		
-		while (words.length > 0) {
-
-			var next = words.pop();
-			
-			if (next.length == 0) continue;
-
-			if (startsWith(next, '<') && endsWith(next, ">")) {
-		 
-				if (next === RiText.NON_BREAKING_SPACE) {
-					
-					sb += SP;
-				}
-				else if (next === RiText.PARAGRAPH_BREAK) {
-					
-					if (sb.length > 0) { // case: paragraph break
-						
-						newParagraph = true;
-					}
-					else if (RiText.indentFirstParagraph) {
-					
-						sb += RiText.defaults.paragraphIndent;
-					}
-				}
-				else if (endsWith(next, RiText.LINE_BREAK)) {
-					
-					forceBreak = true;
-				}
-				continue;
-			}
-
-			currentW = g._textWidth(theFont, sb + next);
-
-			// check line-length & add a word
-			if (!newParagraph && !forceBreak && currentW < maxW) {
-				
-				sb += next + " "; 
-			}
-			else // new paragraph or line-break
-			{
-				// check vertical space, add line & next word
-				if (fn.checkLineHeight(currentH, textH, maxH)) {
-					
-					fn.addLine(strLines, sb);
-					sb = E;
-
-					if (newParagraph) { // do indent
-
-						sb += RiText.defaults.paragraphIndent;
-						if (RiText.defaults.paragraphLeading > 0) {
-							sb += '|'; // filthy
-						}
-					}
-					newParagraph = false;
-					forceBreak = false;
-					sb += next + SP;
-
-					currentH += textH;
-				}
-				else {
-					
-					if (next != null) words.push(next);
-					break;
-				}
-			}
-		}
-
-		// check if leftover words can make a new line
-		if (fn.checkLineHeight(currentH, textH, maxH)) {
-			
-			fn.addLine(strLines, sb);
-			sb = E;
-		}
-		else {
-			var tmp = sb.split(SP);
-			for ( var i = tmp.length - 1; i >= 0; i--) {
-				words.push(tmp[i]);
-			}
-		}
-		
-		return strLines;
-	}
-	
 	RiText._createRiTexts = function(txt, x, y, w, h, fontObj, lead, splitFun) {  
 
 		//if (!txt || !txt.length) return EA;
@@ -5550,23 +5360,7 @@
 
 		return result;
 	}
-	
-	/*RiText._createLinesByCharCountFromArray = function(txtArr, startX, startY, fontObj) {
 
-		if (!fontObj) err('no font in _createLinesByCharCountFromArray!');
-
-		//log('createLinesByCharCountFromArray('+txtArr.length+','+startX+','+startY+','+fontObj.size+','+fontObj.leading+')');
-
-		var rts = [], leading = fontObj.leading, yOff = startY + leading;
-		
-		for ( var i = 0; i < txtArr.length; i++) {
-			
-			rts.push(RiText(txtArr[i], startX, yOff, fontObj));
-		}
-		
-		return (rts && rts.length > 1)  ? RiText._handleLeading(fontObj, rts, yOff) : []; 
-	}*/
-	
 	// Returns the pixel x-offset for the word at 'wordIdx' 
 	RiText._wordOffsetFor = function(rt, words, wordIdx) { 
 
@@ -5775,7 +5569,7 @@
 			//console.error(a[0]);
 			//console.error("a[0]="+t+" a.length="+a.length+" type="+t+" analyze="+typeof a[0].text);
 			
-			if (a.length && (t===O || t==='global') && typeof a[0].analyze != F) {
+			if (a.length && (t===O || t==='global' || t==='window') && typeof a[0].analyze != F) {
 				
 				// recurse, ignore 'this'
 				var shifted = Array.prototype.slice.call(a, 1);
@@ -5841,8 +5635,8 @@
 		 */
 		draw : function() {
 		  this._update()._render();   
-		  if (this.fadeToTextCopy)
-			  this.fadeToTextCopy.draw();
+		  if (this.textToCopy)
+			  this.textToCopy.draw();
 		  return this;
 		},
 		
@@ -5868,8 +5662,6 @@
 				g._translate(this.x, this.y);
 				g._translate(bb.width/2, bb.height/-4);
 				g._rotate(this._rotateZ);				
-				//g._fill(255,0,0);
-				//g.p.ellipse(0,0,10,10);
 				g._translate(bb.width/-2, bb.height/4);
 				g._scale(this._scaleX, this._scaleY, this._scaleZ); 
 			 
@@ -5883,14 +5675,9 @@
 				// Draw text
 				g._text(this._rs._text, 0, 0);
 				
-		
 				// And the bounding box
 				if (this._showBounds) {
 					
-					//	console.log(this.text()+".bb="+this._showBounds);
-					
-					//g._fill(this._boundingFill.r, this._boundingFill.g, 
-						//this._boundingFill.b, this._boundingFill.a);
 					g._fill(0, 0, 0, 0); // push/popStyle
 					
 					g._stroke(this._boundingStroke.r, this._boundingStroke.g, 
@@ -5906,7 +5693,6 @@
 							g._translate(-bb.width/2,0);
 							break;
 					}
-					//g.p.noFill();
 					g._rect(0, bb.y, bb.width, bb.height);
 				}
 				
@@ -5992,7 +5778,7 @@
 		fadeIn : function(seconds, delay, callback) {
 			
 			return this.colorTo([this._color.r, this._color.g, this._color.b, 255],
-				seconds, delay, null, 'fadeIn', false);
+				seconds, delay, null, RiTa.FADE_IN, false);
 		},
 	
 		/**
@@ -6015,7 +5801,7 @@
 	
 			destroyOnComplete = destroyOnComplete || false;
 			return this.colorTo([this._color.r, this._color.g, this._color.b, 0], 
-				seconds, delay, null, 'fadeOut', destroyOnComplete);
+				seconds, delay, null, RiTa.FADE_OUT, destroyOnComplete);
 		},
 
 		
@@ -6050,7 +5836,7 @@
 					//.delay(delay*1000)
 					.onComplete( 
 						function () {
-						   RiTaEvent(rt, 'scaleToComplete')._fire(callback);                    
+						   RiTaEvent(rt, RiTa.SCALE_TO)._fire(callback);                    
 					});
 			
 				tb.start();
@@ -6074,7 +5860,6 @@
 		 */
 		rotateTo : function(angleInRadians, seconds, delay, callback) {
 
-
 			var rt = this;
 			delay = delay || 0;
 			seconds = seconds || 1.0;
@@ -6091,7 +5876,7 @@
 					//.delay(delay*1000)
 					.onComplete( 
 						function () {
-						   RiTaEvent(rt, 'rotateToComplete')._fire(callback);                    
+						   RiTaEvent(rt, RiTa.ROTATE_TO)._fire(callback);                    
 					});
 			
 				tb.start();
@@ -6124,26 +5909,26 @@
 		  // grab the alphas if needed
 		  var c = this._color, startAlpha = 0, endAlpha = endAlpha || 255; // this._color.a
 		  
-		  if (this.fadeToTextCopy) 
+		  if (this.textToCopy) 
 		  {
-			startAlpha = this.fadeToTextCopy.alpha();
-			//RiText.dispose(this.fadeToTextCopy); // TODO: do we need this?
+			startAlpha = this.textToCopy.alpha();
+			//RiText.dispose(this.textToCopy); // TODO: do we need this?
 		  }
 		
 		  // use the copy to fade out
-		  this.fadeToTextCopy = this.copy();
+		  this.textToCopy = this.copy();
 
-		  //this.fadeToTextCopy.fadeOut(seconds, 0, true);
-		  this.fadeToTextCopy.colorTo(
+		  //this.textToCopy.fadeOut(seconds, 0, true);
+		  this.textToCopy.colorTo(
 		  		[this._color.r, this._color.g, this._color.b, 0], 
-				seconds, 0, null, 'silent', true); // fade-out
+				seconds, 0, null, RiTa.INTERNAL, true); // fade-out
 		  
-		  RiText.dispose(this.fadeToTextCopy.fadeToTextCopy); // no turtles
+		  RiText.dispose(this.textToCopy.textToCopy); // no turtles
 		  
 		  // and use 'this' to fade in
 		  this.text(newText).alpha(startAlpha);
 		  
-		  return this.colorTo([c.r, c.g, c.b, endAlpha], seconds * .95, 0, null, 'textTo', false);
+		  return this.colorTo([c.r, c.g, c.b, endAlpha], seconds * .95, 0, null, RiTa.TEXT_TO, false);
 		},
 
 
@@ -6171,7 +5956,7 @@
 			delay = delay || 0;
 			seconds = seconds || 1.0;
 			colors = parseColor.apply(this, colors);
-			_type = _type || 'colorTo';            
+			_type = _type || RiTa.COLOR_TO;            
 
 			var rt = this, id = setTimeout(function() {
 
@@ -6185,11 +5970,15 @@
 					   rt._color.a = this.a
 					})
 					.onComplete( 
+						
 						function () {
-							if (_type != 'silent')
-								RiTaEvent(rt, _type+'Complete')._fire(callback);    
+							
+							if (_type != RiTa.INTERNAL)
+								RiTaEvent(rt, _type)._fire(callback);  
+								  
 							if (_destroyOnComplete) {
 								RiText.dispose(rt);
+								
 							}
 						})
 					.start();
@@ -6230,7 +6019,7 @@
 					})
 					.delay(delay).onComplete( 
 						function () {
-							RiTaEvent(rt, 'moveToCompleted')._fire(callback);                    
+							RiTaEvent(rt, RiTa.MOVE_TO)._fire(callback);                    
 						})
 					.start();
 				
@@ -6264,9 +6053,7 @@
 					txt = txt.text();
 				}
 				this._rs = (this._rs) ? this._rs.text(txt) : new RiString(txt);
-				
-				if (!this._rs) err("no rs!! "+txt); // TODO:remove
-	 
+	
 				return this;
 			}
 			
@@ -6767,7 +6554,7 @@
 	      var p2x, p2y, p1 = this.center(), p1x = p1.x, p1y = p1.y;
 	       
 	      if (a.length == 1) {
-		     p2 = a.center();
+		     //p2 = a.center();
 		     p2x = p1.x;
 		     p2y = p1.y;
 		  }
@@ -6776,7 +6563,7 @@
 		     p2y = b;
 		  }
 		  
-		  return RiTa.distance( p1.x,  p1.y,  p2.x,  p2.y);
+		  return RiTa.distance( p1.x,  p1.y,  p2x,  p2y);
 		},
 	  
 		/**
@@ -7910,7 +7697,6 @@
 		},
 		
 		_size : function(w, h, renderer) {
-			
 			
 			this.ctx.canvas.width = w;
 			this.ctx.canvas.height = h;
@@ -11844,21 +11630,21 @@
 		}
 	}
 
-// remove!
+// TODO: remove!
 	function replaceAll(theText, replace, withThis) {
 		
 		return theText && is(replace, S) ?  
 			theText.replace(new RegExp(replace, 'g'), withThis) : theText;
 	}
 
-	// TODO: replace w regex?
+	// TODO: replace body w regex?
 	function endsWith(str, ending) { 
 		
 		if (!is(str,S)) return false;
 		return str.slice(-ending.length) == ending;
 	}
 	
-	// TODO: replace w regex?	
+	// TODO: replace body w regex?	
 	function startsWith(text, substr) {
 
 		if (!is(text,S)) return false;
@@ -12013,13 +11799,13 @@
 				RiText.renderer = new RiText_Canvas(context2d);
 			}
 			catch(e) {
-				console.warn("[RiTa] No object w' name='canvas' in DOM, renderer will be unavailable");
+				console.warn("[RiTa] No object w' name='canvas' in DOM, renderer unavailable");
 			}
 		}
 	}
 	
 	if (!RiTa.SILENT)
-		console && console.log("[INFO] RiTaJS.version ["+RiTa.VERSION+RiTa._PHASE+"]");
+		console && console.log("[INFO] RiTaJS.version ["+RiTa.VERSION+"]");
 	
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// Core RiTa objects (in global namespace)
