@@ -1,8 +1,7 @@
 
 (function(window, undefined) {
 	
-	var _VERSION_ = '1.0.31';	
-	// also update /RiTaLibraryJS/www/download/index.html (TODO: make automatic)
+	var _VERSION_ = '##version##';	
 
 	/**  @private Simple type-checking functions */ 
 	

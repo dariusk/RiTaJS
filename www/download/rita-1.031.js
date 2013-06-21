@@ -46729,6 +46729,7 @@ _RiTa_LTS=[
 (function(window, undefined) {
 	
 	var _VERSION_ = '1.0.31';	
+	// also update /RiTaLibraryJS/www/download/index.html (TODO: make automatic)
 
 	/**  @private Simple type-checking functions */ 
 	
