@@ -4342,7 +4342,26 @@
 		   return this;
 		   
 		},
-			  
+
+		/**
+		 * Returns the requested rule
+		 * @param {string} rule name
+		 * @returns {string} the rule
+		 */
+		doRule : function(pre) {
+
+			var cnt = 0, name = E, result = E,
+				rules = this._rules[this._normalizeRuleName(pre)];
+			
+			if (!rules) return null;
+			
+			for (name in rules) cnt++;
+			
+			if (!cnt) return null;
+			
+			return (cnt == 1) ? name : this._getStochasticRule(rules); 
+		},
+					  
 		/**
 		 * Returns the requested rule
 		 * @param {string} rule name
@@ -4368,7 +4387,6 @@
 			}
 
 			return result;
-
 		},
 		
 		/**
@@ -4440,6 +4458,7 @@
 					match = true;
 				}
 			}
+			
 			if (!match) 
 				err("Rule '"+symbol+"' not found in grammar");
 
@@ -4542,7 +4561,7 @@
 			
 		_expandRule : function(prod) { 
 			
-			var dbug = false, trimSpace = true, result = [];
+			var dbug = 0, trimSpace = 1, result = [];
 			if (trimSpace) prod = prod.trim();
 
 			if (dbug) log("_expandRule(" + prod + ")");
@@ -4556,7 +4575,7 @@
 				if (idx >= 0) {
 					
 					var pre = prod.substring(0, idx);
-					var expanded = this.getRule(name);
+					var expanded = this.doRule(name);
 					var post = prod.substring(idx + name.length);
 					
 					if (trimSpace) {
