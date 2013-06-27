@@ -4349,43 +4349,53 @@
 		 * @returns {string} the rule
 		 */
 		getRule : function(pre) {
+
+			var cnt = 0, name = E, result = E,
+				rules = this._rules[this._normalizeRuleName(pre)];
 			
-			pre = this._normalizeRuleName(pre);
-	   
-			// log("getRule("+pre+")");
-			var tmp = this._rules[pre];
-			var name, cnt = 0;
+			for (name in rules) cnt++;
 			
-			for (name in tmp) cnt++; // count the matching rules
-			
-			if (cnt == 1) {
-				return name;
-			} 
-			else if (cnt > 1) {
-				
-				return this._getStochasticRule(tmp);
+			if (cnt <= 1) return name; // 0 or 1 rule
+
+			// multiple rules: concatenate into string
+			for (name in rules) {
+				result += name;
+				var pr = rules[name];
+				if (pr != 1.0)
+					result += " [" + pr + "]";
+				if (--cnt > 0)
+					result += " | ";
 			}
-			else {
-				err("No rule found for: "+pre);
-			}  
+
+			return result;
+
 		},
 		
+		/**
+		 * Returns the grammar as a string 
+		 * @returns {string} representation of the grammar
+		 */
+		getGrammar : function() { 
+			var s = E;
+			for (var name in this._rules) {
+				s += ("  '" + name + "' -> ");
+				var choices = this._rules[name];
+				for (var p in choices) {
+					s += ("    '" + p + "' [" + choices[p] + "]");
+				}
+			}
+			return s;
+		},
+			
 		/**
 		 * Prints the grammar rules to the console in human-readable format (useful for debugging) 
 		 * @returns {object} this RiGrammar
 		 */
-		print : function() { //TODO: compare to RiTa
+		print : function() {  
 			
 			if (console) {
 				console.log("Grammar----------------");
-				for ( var name in this._rules) {
-					
-					console.log("  '" + name + "' -> ");
-					var choices = this._rules[name];
-					for ( var p in choices) {
-						console.log("    '" + p + "' [" + choices[p] + "]");
-					}
-				}
+				console.log(this.getGrammar());
 				console.log("-----------------------");
 			}
 			return this;
@@ -4882,13 +4892,13 @@
 	}
 	
 	/**
-	 * Returns a random number between 'min' (default 0) and 'max
+	 * Returns a random number between 'min' (default 0) and 'max'
 	 * @returns {number}
-
+     */
 	RiText.random = function() {
 		
 		return RiTa.random.apply(this ,arguments);
-	}	 */
+	}	
 	
 	
 	/**
