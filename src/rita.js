@@ -4217,19 +4217,19 @@
 			
 			this._rules = {};
 			this._execDisabled = false;
-			grammar && this.setGrammar(grammar);  
+			grammar && this.load(grammar);  
 		},
 	
 		/**
-		 * Loads a JSON grammar via AJAX call to 'url', replacing any existing grammar. 
-		 * @param {string} url of JSON file containing the grammar rules
+		 * Loads a JSON grammar from a file or 'url', replacing any existing grammar. 
+		 * @param {string} url of file containing the grammar rules
 		 * @returns {object} this RiGrammar
 		 */
-		_load : function(url) {
+		loadFromFile : function(url) {
 			
-			this.reset();
+			err("RiGrammar.loadFromFile: not yet implemented in JS");
 			
-			err("Implement me!");
+			// this.reset();
 			
 			return this;
 			
@@ -4241,7 +4241,7 @@
 		 * @param  {string | object} grammar containing the grammar rules
 		 * @returns {object} this RiGrammar
 		 */
-		setGrammar : function(grammar) {
+		load : function(grammar) {
 			
 			this.reset();
 			
@@ -4396,10 +4396,10 @@
 		getGrammar : function() { 
 			var s = E;
 			for (var name in this._rules) {
-				s += ("  '" + name + "' -> ");
+				s += (name + "\n");
 				var choices = this._rules[name];
 				for (var p in choices) {
-					s += ("    '" + p + "' [" + choices[p] + "]");
+					s += ("  '" + p + "' [" + choices[p] + "]\n");
 				}
 			}
 			return s;
@@ -5237,7 +5237,8 @@
 	    var a = arguments, t = Type.get(a[0]);
 	    
 	    if (t != S && t != A) { // ignore first (PApplet/window) argument
-	    	txt = a[1], x = a[2], y = a[3], w = a[4], h = a[5], pfont = a[6], leading = a[7];
+	    	txt = a[1], x = a[2], y = a[3], w = a[4],
+				h = a[5], pfont = a[6], leading = a[7];
 	    }
 	    
 	    if (!txt || !txt.length) return EA;
@@ -5251,6 +5252,8 @@
 	    	currentY, rlines = [], sb = E, maxW = x + w, maxH = y + h, words = [], next
 	    	newParagraph = false, forceBreak = false, firstLine = true, yPos = 0, rt = undef;
 	    
+	    if (!g.p) rt = RiText(SP, 0, 0, pfont); // placeholder for ascent/descent [for canvas renderer]
+	    
 		// remove line breaks & add spaces around html
 		txt = txt.replace(/[\r\n]/, SP);
 		txt = txt.replace(/ ?(<[^>]+>) ?/, " $1 "); 	
@@ -5262,8 +5265,14 @@
 	 	//log("txt.len="+txt.length+" x="+x+" y="+y+" w="+w+" h="+h+" lead="+leading);log(pfont);
 	 	
 	    g._textFont(pfont); // for ascent & descent
-	    ascent = g.p.textAscent();
-	    descent = g.p.textDescent();
+	    
+	    // TODO: breaks in canvas-renderer (no p, no this)
+	    ascent = g.p ? g.p.textAscent() : g._textAscent(rt,true); 
+	    descent = g.p ? g.p.textDescent() : g._textDescent(rt,true); 
+	    
+	    log(g._type()+'.ascent='+ascent);
+	    log(g._type()+'.descent='+descent);
+	    
 	    currentY = y + ascent + 1;
 	
 	    if (RiText.defaults.indentFirstParagraph) 
@@ -7786,7 +7795,7 @@
 			this.ctx.font = "normal "+fontObj.size+"px "+fontObj.name;
 		},
 		
-		_textAscent : function(rt) {
+		_textAscent : function(rt,zzz) {
 			return this._getMetrics(rt).ascent;
 		},
 		
@@ -7848,7 +7857,8 @@
 			return div.firstChild; 
 		},
 		
-		_getMetrics : function(rt) {  // hack for font metrics in the canvas
+		// TODO: this hack no longer works correctly -- wait for ascent/descent to be fixed in canvas? 
+		_getMetrics : function(rt) {  
 			
 			// TODO: if (rt._metrics) return rt._metrics; // check cache (invalidate on any change of font or size or...)
 
@@ -10705,20 +10715,27 @@
 		},
 		
 		_textHeight : function(rt) {
+			
 			this.ctx.save();
 			var h = this._getBoundingBox(rt).height;
 			this.ctx.restore();
 			return h;
 		},
 		
-		_textAscent : function(rt) {
+		_textAscent : function(rt,ignoreContext) {
 			
-			//this.p.pushStyle(); ////////
-			this.ctx.save();
-			this.p.textFont(rt._font, rt._font.size);
+			ignoreContext = ignoreContext || false;
+			
+			if (!ignoreContext) {
+			  //this.p.pushStyle();
+			  this.ctx.save();
+			  this.p.textFont(rt._font, rt._font.size);
+			}
 			var asc = this.p.textAscent();
-			//this.p.popStyle();
-			this.ctx.restore();
+			if (!ignoreContext) {
+			  this.ctx.restore();
+			  //this.p.popStyle();
+			}
 
 			return asc;
 		},
