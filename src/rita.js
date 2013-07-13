@@ -5270,8 +5270,7 @@
 	    ascent = g.p ? g.p.textAscent() : g._textAscent(rt,true); 
 	    descent = g.p ? g.p.textDescent() : g._textDescent(rt,true); 
 	    
-	    log(g._type()+'.ascent='+ascent);
-	    log(g._type()+'.descent='+descent);
+	    //log(g._type()+'.ascent/descent='+ascent+'/'+descent);
 	    
 	    currentY = y + ascent + 1;
 	
