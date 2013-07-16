@@ -1404,7 +1404,6 @@
 				// alias' for RiTa-java static functions  (?)
 				RiText.setDefaultFont = RiText.defaultFont; 
 				RiText.setDefaultColor = RiText.defaultFill;
-				//RiText.setDefaultAlignment = RiText.defaultAlignment;
 				RiText.setCallbackTimer = RiText.timer;
 				
 				if (typeof window != 'undefined' && window && !hasProcessing) { 
