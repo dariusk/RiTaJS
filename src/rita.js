@@ -418,10 +418,7 @@
 	// ////////////////////////////////////////////////////////////
 	// RiTa object (singleton)
 	// ////////////////////////////////////////////////////////////
-	
-	/**
-	 * @namespace A collection of static variables and functions for the RiTa library
-	 */
+
 	RiTa = {
 
 		/** The current version of the RiTa tools */
@@ -1050,6 +1047,32 @@
 		},
 		
 		/**
+   		 * Loads a file's contents froms its URL and calls back to the supplied
+   		 * function with the loaded string as an argument
+   		 */
+		loadString : function(url, fun) {
+
+			if ( typeof document === 'undefined') {// for node
+				// try node here method here
+				warn("no document object; node?");
+				return;
+			}
+			
+			//console.log("trying: "+url);
+	
+			var cwin, text, iframe = document.createElement("iframe");
+			iframe.setAttribute('src', url);
+			iframe.setAttribute('style', 'display: none');
+			document.body.appendChild(iframe);
+			cwin = iframe.contentWindow || iframe.contentDocument.parentWindow;
+			cwin.onload = function() {
+				text = cwin.document.body.childNodes[0].innerHTML;
+				//alert("text="+text.length);
+				fun.call(this, text);
+			};			
+		},
+		
+		/**
 		 * Returns true if sentence starts with a question word.
 		 * 
 		 * @param {string} sentence
@@ -1471,45 +1494,6 @@
 	// RiMarkov
 	// ////////////////////////////////////////////////////////////
 	
-	/**
-	 * @name RiMarkov
-	 * @class Performs text generation via Markov chains (aka n-grams)
-	 * with options to process single characters, words, sentences, and 
-	 * arbitrary regular expressions. 
-	 * 
-	 * <p>
-	 * 
-	 * Provides a variety of methods specifically 
-	 * designed for text-generation.
-	 *  
-	 * @example
-	 *   var rm = new RiMarkov(3);
-	 *   rm.loadFile("war_peace.txt"); 
-	 *   var sents = rm.generateSentences(10);
-	 *   for (var i = 0; i < sents.length; i++) {
-	 *     console.log(sents[i]);
-	 *   }
-	 
-	 * Note: use RiMarkov.setTokenizerRegex() to control how inputs are tokenized (or split-up). 
-	 * The default is to use the Penn word-tokenizing conventions (without splitting contractions). 
-	 * You may wish to simply use whitespace (or some other regular expression), which 
-	 * can be accomplished as follows:
-	 * <pre>
-	 *   var rm = new RiMarkov(3);
-	 *   rm.setTokenizerRegex(/\s+/);</pre>
-	 *   
-	 * This creates a new model, with n=3, that tokenizes its
-	 * input on one or more whitespace characters: [ \t\n\x0B\f\r].
-	 * 
-	 * <p> 
-	 * 
-	 */
-	/*
-	 * Note: use allowDuplicates(false) to ensure that sentences that exist 
-	 * in the input test are not output by generate().  This method should be used with care, 
-	 * as certain sets of input texts (with allowDuplicates=false) may result in decreased performance
-	 * and/or excessive memory use.
-	 */
 	var RiMarkov = makeClass();
 
 	 /** constant for max # of tries for a generation */
@@ -1789,10 +1773,10 @@
 		 *
 		 * @returns {boolean} 
 		 */
-		recognizeSentences : function() {
+		sentenceAware : function() {
 			if (arguments.length>0)
-			  throw Error("recognizeSentences() takes no arguments, "+
-			  	"use the constructor RiMarkov(n,recognizeSentences);");
+			  throw Error("sentenceAware() takes no arguments, instead "+
+			  	"use the constructor RiMarkov(n, recognizeSentences);");
 			return this.sentenceAware;
 		},
 
@@ -1907,6 +1891,11 @@
 		 */
 		generateSentences: function(num) {
 
+		    if (!this.sentenceAware) {
+		      err("generateSentences() can only be called when the model is "
+		        + "in 'sentence-aware' mode, otherwise use generateTokens()");
+		    }
+    
 			var mn = this._getSentenceStart(), s = mn.token + SP, result = [], 
 				tries = 0, totalTries = 0, wordsInSentence = 1;
 			
@@ -1939,6 +1928,7 @@
 							// got one, store and reset the counters
 							if (result.indexOf(candidate) < 0) 
 								result.push(candidate);
+								
 							//log(result.length+" RESULTS SO FAR");
 							totalTries += tries; 
 							tries = 0;
@@ -1983,9 +1973,9 @@
 		    
 		    if (!this.allowDuplicates) 
 		    {
-		      if (!this.recognizeSentences) {
+		      if (!this.sentenceAware) {
 		        err("[WARN] Invalid state: allowDuplicates must be"
-		        	+" true when not generating sentences");
+		        	 +" true when not generating sentences");
 		      }
 		      
 		      if (this.sentenceList.indexOf(sent)>-1) 
@@ -1993,23 +1983,30 @@
 		        if (++this.skippedDups == this.maxDuplicatesToSkip) {
 		          log("[WARN] Hit skip-maximum (RiMarkov.maxDuplicatesToSkip="+this.maxDuplicatesToSkip
 		              +") after skipping "+ this.maxDuplicatesToSkip+", now allowing duplicates!");
-		          this.allowDuplicates = true;
+		          this.allowDuplicates = true;	
 		        }
 		        
-				if (this.printIgnoredText) log("Ignoring duplicate: "+sent);
+				if (this.printIgnoredText) 
+					log("Ignoring duplicate: "+sent);
 				  
 		        return false;
 		      }
 		    }
+		    
+		    var words = sent.split(/\s+/);
+		    if (RiTa.isAbbreviation(words[words.length-1])) {
+      			//console.log("BAD SENTENCE: "+sent);
+      			return false;
+      		}
+
 		    return true;
 		},
 		
-		_checkPunctuation : function(sent) {    
-			
-			var result = value.charAt(0).toUpperCase() + value.substring(1);
-			return RiTa.untokenize(result.split(/\s+/));
-	    },
-	    
+		// _checkPunctuation : function(sent) {    		
+			// var result = value.charAt(0).toUpperCase() + value.substring(1);
+			// return RiTa.untokenize(result.split(/\s+/));
+	    // },
+ 
 		_tracePathFromRoot : function(node) { 
 		    
 		    // (TODO: change this
@@ -2057,7 +2054,7 @@
 		          pTotal += child.probability();
 		          
 		          //System.out.println("pTotal="+pTotal);
-		          if (current.isRoot() && (recognizeSentences && !child.isSentenceStart())) {
+		          if (current.isRoot() && (this.sentenceAware && !child.isSentenceStart())) {
 		            //System.out.println("continuing...");
 		            continue;
 		          }
@@ -2095,9 +2092,9 @@
 		 */ 
 		_loadSentences : function(sentences, multiplier) {
 
-			//console.log("_loadSentences("+this.allowDuplicates+")");
+			//log("_loadSentences("+sentences.length+", "+this.allowDuplicates+")");
 			
-			var i, j, tokens, sentence, allWords = [], printIgnoredText = true;
+			var i, j, tokens, sentence, allWords = [];
 
 			// do the cleaning/splitting first ---------------------
 
@@ -2113,28 +2110,28 @@
 				tokens = RiTa.tokenize(sentence);
 				
 				//wordCount += tokens.length;
-				
+
 				if (!this._validSentenceStart(tokens[0])) {
-					if (printIgnoredText)
+					if (this.printIgnoredText)
 						warn("[WARN] Skipping (bad sentence start): " + tokens);
 					continue;
 				}
 				
-				allWords.push(RiMarkov._SSDLM + tokens[0]);
+				//log("Added sentence start: " + tokens);
+		
+				allWords.push(RiMarkov._SSDLM + tokens[0]); // bad hack for sentence-starts
 				
-				j = 1; // awful hack
-				for (; j < tokens.length; j++)
+				for (j = 1; j < tokens.length; j++)
 					allWords.push(tokens[j]);
 			}
 
 			// ------------------------------------------------
 
-			var toAdd, words = allWords,nFactor;
+			var toAdd, words = allWords, nFactor = this.getN();
 			//wordsPerFile += allWords.length;
 			for (i = 0; i < words.length; i++) {
 				
 				toAdd = [];
-				nFactor = this.getN();
 				for (j = 0; j < nFactor; j++) {
 					if ((i + j) < words.length)
 						toAdd[j] = words[i + j];
@@ -2145,8 +2142,9 @@
 					this._addSentenceSequence(toAdd);
 			}
 			
-			return this;
+//log(this.root.children+" nodes");
 
+			return this;
 		},
 		  
 		_validSentenceStart : function(word) {      
@@ -2166,7 +2164,7 @@
 
 					var add = toAdd[i];
 
-					if (startsWith(add,RiMarkov._SSDLM)) {
+					if (startsWith(add, RiMarkov._SSDLM)) {
 
 						add = add.substring(RiMarkov._SSDLM.length); 
 						var parent = node;
@@ -2187,8 +2185,12 @@
 
 		_getSentenceStart : function() {
 			
+			if (!this.sentenceAware) {
+      			err("getSentenceStart() can only "
+        			+ "be called when the model is in 'sentence-aware' mode...");
+    		}
 			if (!this.sentenceStarts || !this.sentenceStarts.length)
-				err('No sentence starts found! genSen='+recognizeSentences);
+				err('No sentence starts found! genSen='+this.sentenceAware);
 			
 			var start = RiTa.randomItem(this.sentenceStarts);
 			
@@ -2227,23 +2229,6 @@
 	// RiTaEvent class 
 	///////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * @name RiTaEvent
-	 * 
-	 * @class A simple wrapper for event-based callbacks 
-	 */
-	/*
-	 * @example A typical usage might be to switch on the type 
-	 * of a RiTaEvent within a callback:
-	 <pre>
-	 function onRiTaEvent(e)
-		{
-		  if (e.source() == RiTa.FADE_OUT)
-			// ...
-		  else 
-			// ...
-		}<pre>
-	 */   
 	var RiTaEvent = makeClass();
 	
 	RiTaEvent._callbacksDisabled = false;
@@ -2332,29 +2317,6 @@
 	// RiLexicon
 	// ////////////////////////////////////////////////////////////
 	
-	/**
-	 * @name RiLexicon
-	 * 
-	 * @class The core 'dictionary' (or lexicon) for the RiTa tools. 
-	 * <p>
-	 * It contains ~40,000 words augmented with phonemic and syllabic data, as well as a list of valid parts-of-speech for each. 
-	 * The lexicon can be extended and/or customized for additional words, usages, or pronunciations.
-	 * 
-	 * <p> Additionally the lexicon is equipped with implementations of a variety of matching algorithms 
-	 * (min-edit-distance, soundex, anagrams, alliteration, rhymes, looks-like, etc.) 
-	 * based on combinations of letters, syllables and phonemes.
-	 * <p>
-	 * Note: For performance, the data for RiLexicon is shared in a single location for ALL created instances (static)
-	 * <p> 
-	 * Note: If you wish to modify or customize the lexicon (e.g., add words, or change pronunciations) 
-	 * you can do so directly, by editing the 'rita_dict.js' file, or programatically, via addWord() & removeWord()
-	 *
-	 * @example
-		var lex = new RiLexicon(this);
-		var similars = lex.similarBySound("cat");
-		var rhymes = lex.getSimpleRhymes("cat");
-		// etc.
-	 */
 	var RiLexicon = makeClass();
 
 	// ////////////////////////////////////////////////////////////
@@ -3260,23 +3222,8 @@
 	// RiString
 	////////////////////////////////////////////////////////////////
 	
-	
-	/**
-	 * @name RiString
-	 * 
-	 * @class The basic text container object, implementing a variety of 
-	 * additional functionality atop the javascript string object
-	 */
 	var RiString = makeClass();
-
 	
-	/**
-	 *  Syllabifies the input, given a string or array of phonemes in CMU Pronunciation Dictionary format 
-	 *   (with optional stress numbers after vowels), e.g. "B AE1 T" or ["B", "AE1", "T"]'''
-	 *       
-	 *  @param {string or array} input
-	 *  @returns {string} 
-	 */
 	RiString._syllabify = function(input) {
 	   
 		var dbug, None=undefined, internuclei = [], syllables = [],   // returned data structure.
@@ -4116,70 +4063,6 @@
 	// RiGrammar
 	// ////////////////////////////////////////////////////////////
 
-	/**
-	 * @name RiGrammar
-	 * @class A probabilistic context-free grammar with literary extensions designed for text-generation
-	 * <pre> 
-		rg = new RiGrammar("mygrammar.g");
-		println(rg.expand())
-		</pre>
-	 * 
-	 * RiTa grammar files are JSON-formatted text files that follow the format below:
-	 *  <pre>   
-
-		  "&lt;start&gt;": "&lt;rule1&gt; | &lt;rule2&gt; | &lt;rule3&gt;"
-	
-		  "&lt;rule2&gt;": "terminal1 |  terminal2 | &lt;rule1&gt;"
-		
-		   ...
-		</pre>   
-	 * <b>Primary methods of interest:</b>
-	 * <ul>
-	 * <li><code>expand()</code> which simply begins at the &lt;start&gt; state and 
-	 * generates a string of terminals from the grammar.<p>
-	 * <li><code>expandFrom(String)</code> which begins with the argument
-	 * String (which can consist of both non-terminals and terminals,) 
-	 * and expands from there. Notice that <code>expand()</code> is simply
-	 * a convenient version of <code>expandFrom("&lt;start&gt;");</code>.<p>
-	 * <li><code>expandWith(String, String)</code> takes 2 String arguments, the 1st 
-	 * (a terminal) is guaranteed to be substituted for the 2nd (a non-terminal). Once this 
-	 * substitution is made, the algorithm then works backwards (up the tree from the leaf)
-	 * ensuring that the terminal (terminal1) appears in the output string. 
-	 * For example, with the grammar fragment above, one might call:<p>
-	   <pre>
-			grammar.expandWith(terminal1, "&lt;rule2&gt;");
-	  </pre>
-	 * assuring not only that <code>&lt;rule2&gt;</code>will be used at least 
-	 * once in the generation process, but that when it is, it will be replaced 
-	 * by the terminal "hello".
-	 *</ul>
-	 *
-	 *<li>A RiGrammar object will assign (by default) equal weights to all choices in a rule. 
-	 *One can adjust the weights by adding 'multipliers' as follows: (in the rule below,
-	 * 'terminal1' will be chosen twice as often as the 2 other choices.
-	 * <pre>   
-		 "&lt;rule2&gt;": "[2] terminal1 | terminal2 | &lt;rule1&gt;" 
-	   </pre>
-		
-	 *<li>The RiGrammar object supports callbacks, from your grammar, back into your code.
-	 * To generate a callback, add the method call in your grammar, surrounded by back-ticks, as follows:
-	 * <pre>   
-	 *     
-	 *       "&lt;rule2&gt;": "The cat ran after the `pluralize('cat');` | \
-	 *       The &lt;noun&gt; ran after the `pluralize(&lt;noun&gt;);`" 
-	 *     </pre>
-	 *     
-	 * Any number of arguments may be passed in a callback, but for each call,
-	 * there must be a corresponding method in the sketch, e.g.,
-	 * 
-	 * <pre>
-	 *    function pluralize(theString) {
-	 *      ...
-	 *    }
-	 * </pre>
-	 * 
-	 * @author dhowe 
-	 */
 	var RiGrammar = makeClass();
 	
 	RiGrammar.START_RULE = "<start>";
@@ -4656,28 +4539,13 @@
 	
 	
 	//////////////////////////////////////////////////////////////////////
-	////////// RiText   
+	//  RiText   
 	////////////////////////////////////////////////////////////////////// 
 	
-	/**
-	 * @name RiText
-	 * 
-	 * @class A text display object for the RiTa tools. 
-	 * 
-	 * Wraps an instance of RiString to provide utility
-	 * methods for typography, text effects, animation, etc. 
-	 * 
-	 * <p>
-	 * 
-	 * Uses either the native canvas renderer or the Processing renderer (when included) 
-	 * 
-	 * @property {number} x The x position
-	 * @property {number} y The y position
-	 */    
 	var RiText = makeClass();
 		
 	//////////////////////////////////////////////////////////////////////
-	//////// RiText statics
+	// RiText statics
 	////////////////////////////////////////////////////////////////////// 
 	
 	/**
@@ -5243,7 +5111,9 @@
 	    if (!txt || !txt.length) return EA;
 	    
 	    w = w || Number.MAX_VALUE-x, h = h || Number.MAX_VALUE, pfont = pfont || RiText.defaultFont();
-	 	leading = leading || pfont.leading || pfont.size * RiText.defaults.leadingFactor;
+	 	leading = leading || pfont.size * RiText.defaults.leadingFactor;
+	 	
+	 	console.log("lead="+leading);
 
 	    if (is(txt, A)) return RiText._layoutArray(txt, x, y, w, h, pfont, leading);
 	      
@@ -5251,7 +5121,7 @@
 	    	currentY, rlines = [], sb = E, maxW = x + w, maxH = y + h, words = [], next
 	    	newParagraph = false, forceBreak = false, firstLine = true, yPos = 0, rt = undef;
 	    
-	    if (!g.p) rt = RiText(SP, 0, 0, pfont); // placeholder for ascent/descent [for canvas renderer]
+	    if (!g || !g.p) rt = RiText(SP, 0, 0, pfont); // placeholder for ascent/descent [for canvas renderer]
 	    
 		// remove line breaks & add spaces around html
 		txt = txt.replace(/[\r\n]/, SP);
@@ -5265,7 +5135,7 @@
 	 	
 	    g._textFont(pfont); // for ascent & descent
 	    
-	    // TODO: breaks in canvas-renderer (no p, no this)
+	    /// STOP: these are null for the noOp-renderer 
 	    ascent = g.p ? g.p.textAscent() : g._textAscent(rt,true); 
 	    descent = g.p ? g.p.textDescent() : g._textDescent(rt,true); 
 	    
@@ -5299,7 +5169,7 @@
 	        }
 	        continue;
 	      }
-	
+
 	      // re-calculate our X position
 	      currentX = startX + g._textWidth(pfont, sb + next);
 	
@@ -5395,6 +5265,11 @@
 
 		return result;
 	}
+	
+	RiText.fontMetrics = function(fontMetrics) {
+		RiText.renderer = RiText_NoOp(fontMetrics);
+	} 
+
 
 	// Returns the pixel x-offset for the word at 'wordIdx' 
 	RiText._wordOffsetFor = function(rt, words, wordIdx) { 
@@ -5492,12 +5367,6 @@
 		
 		return RiText.defaults.font;
 	}
-	
-	// RiText.foreach = function(fun) {
-// 	
-		// var f = function(el,idx,arr){ fun(el,idx,arr); return 1; }; 
-		// RiText.instances.every(f);
-	// }
 	
 	// PUBLIC statics (TODO: clean up) ///////////////////////////////////////////
    
@@ -7628,7 +7497,150 @@
 	
 	////////////////////////// PRIVATE CLASSES ///////////////////////////////
 
-	
+	// ///////////////////////////////////////////////////////////////////////
+	// RiText_NoOp Renderer (for headless operation, eg. in Node.js)
+	// ///////////////////////////////////////////////////////////////////////
+
+
+	var RiText_NoOp = makeClass();
+
+	RiText_NoOp.prototype = {
+
+		init : function(metrics) {
+			
+			this.font = metrics;
+		},
+		
+		_size : function() {
+			
+			return this.font.size;
+		},
+		
+		_getGraphics : function() {
+			
+			console.warn("NoOpRenderer._getGraphics() returning null graphics context!");
+			return null;
+		},
+		
+ 		
+		_pushState : function() {
+			// no-op
+			return this;
+		},
+		
+		_popState : function() {
+			// no-op
+			return this;
+		},
+
+		_textAlign : function(align) {
+			// no-op
+			return this;
+		},
+		
+		_scale : function(sx, sy) {
+			//console.warn("scale("+sx+","+sy+") not yet implemented");
+		},
+		
+		_translate : function(tx, ty) {
+			//console.warn("translate("+tx+","+ty+") not yet implemented");
+		},
+		
+		_rotate : function(zRot) {
+			//console.warn("rotate() not yet implemented");
+		},
+		
+		_text : function(str, x, y) {
+			// no-op
+		},
+		
+		_fill : function(r,g,b,a) {
+			// no-op			
+		},
+		
+		_stroke : function(r,g,b,a) {
+			// no-op			
+		},
+		
+		_background : function(r,g,b,a) {
+			// no-op			
+		},
+
+		// actual creation: only called from RiText.createDefaultFont();!
+		_createFont : function(fontName, fontSize) {
+			
+			//console.log("[NoOp] Creating font: "+fontName+"-"+fontSize);
+			// TODO: load json for a font here ???
+			// what to return
+			// this.font = loadJSONFont(fontName, fontSize); 
+			return this.font;
+		},
+
+		_rect : function(x,y,w,h) {
+			
+			// no-op
+		},
+		
+		_line : function(x1,y1,x2,y2,lw) {
+			// no-op
+		},
+		
+		_textFont : function(fontObj) {
+			// TODO: apply one of the (cached?) fonts?
+			this.font = fontObj;
+		},
+		
+		_textWidth : function(fontObj, str) {
+		
+			var w = 0;
+			var def = this.font.widths["i"];
+			if (str && str.length) {
+				for (var i = 0; i < str.length; i++)  {
+					var c = str.charAt(i);
+					var k = this.font.widths[c];
+					if (!k) {
+					  console.error("No glyph for \""+c+"\"in word: "+str);
+					  k = def;
+					}
+					w += k;
+				}
+			}
+			return w;
+		},
+		
+		_textHeight : function(rt) {
+			
+			return this._textAscent() + this._textDescent();
+		},
+		
+		_textAscent : function(rt,ignoreContext) {
+			
+			return this.font.ascent;
+		},
+		
+		_textDescent : function(rt) {
+			
+			return this.font.descent;
+		},
+
+		// TODO: what about scale/rotate?
+		_getBoundingBox : function(rt) {
+			
+			// bc of no translate(), we use the actual x,y
+			return { x: rt.x, y: rt.y-this._textAscent(), width: this._textWidth(), height: this._textHeight() };
+		},
+		
+		_type : function() {
+			
+			return "NoOp";
+		},
+			
+		toString : function() {
+			
+			return "RiText_"+_type();
+		}
+	}
+
 	// ///////////////////////////////////////////////////////////////////////
 	// RiText_Canvas 2d-Renderer
 	// ///////////////////////////////////////////////////////////////////////
@@ -10674,7 +10686,8 @@
 		// actual creation: only called from RiText.createDefaultFont();!
 		_createFont : function(fontName, fontSize) {
 			
-			//console.log("[P5] Creating font: "+fontName+"-"+fontSize+"/"+leading);
+//console.log("[P5] Creating font: "+fontName+"-"+fontSize);
+			
 			var pfont = this.p.createFont(fontName, fontSize);                
 			
 			//pfont.leading = leading || RiText.defaults.fontLeading;
@@ -10709,6 +10722,7 @@
 			var tw = this.p.textWidth(str);
 			//this.p.popStyle();
 			this.ctx.restore();
+			//console.log(str+" -> "+tw);
 			return tw;
 		},
 		
@@ -10768,14 +10782,19 @@
 			this.ctx.save();
 			this.p.textFont(rt._font, rt._font.size);
 			
-			var ascent  =   Math.round(this.p.textAscent()),
-				descent =   Math.round(this.p.textDescent()),
-				width   =   Math.round(this.p.textWidth(rt.text()));
-			
+			// var ascent  =   Math.round(this.p.textAscent()),
+				// descent =   Math.round(this.p.textDescent()),
+				// width   =   Math.round(this.p.textWidth(rt.text()));
+// 			
 			//this.p.popStyle(); ////////
+			
+			var ascent  =   this.p.textAscent(),
+				descent =   this.p.textDescent(),
+				width   =   this.p.textWidth(rt.text());
+			
 			this.ctx.restore();
 
-			return { x: 0, y: -ascent-1, width: width, height: (ascent+descent)+1 };
+			return { x: 0, y: -ascent, width: width, height: (ascent+descent) };
 		},
 		
 		_type : function() {
@@ -11864,11 +11883,13 @@
 		window['RiGrammar'] = RiGrammar;
 		window['RiMarkov'] = RiMarkov;
 		window['RiTaEvent'] = RiTaEvent;
+
 		window['RiTa'] = RiTa;
 	}
 	
 	if (typeof module != 'undefined' && module.exports) { // for node
 		
+		module.exports['RiText'] = RiText;
 		module.exports['RiString'] = RiString;
 		module.exports['RiLexicon'] = RiLexicon;
 		module.exports['RiGrammar'] = RiGrammar;
