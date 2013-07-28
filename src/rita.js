@@ -4991,22 +4991,75 @@
 	 * @param {number} the font size (optional, for 'sets' only)
 	 * @returns {object} the current default font
 	 */
-	RiText.defaultFont = function(font) {
+	RiText.defaultFont = function(font, size) {
 		
 		var a = arguments;
-		if (a.length == 1 && typeof a[0] == O) {
-			RiText.defaults.font = a[0];
+		if (a.length > 1) {
+			var sz = Number(a[1]);
+			if (!sz) a = [a[0]];
 		}
-		// this allows for RiText.defaultFont(name,sz);
+			
+		if (a.length == 1) {
+			
+			// RiText.defaultFont(pfont);
+			if (typeof a[0] == O) {
+				
+				if (a[0].widths) // hack for no-op
+					RiText.renderer = RiText_NoOp(a[0]);
+				else
+			  		RiText.defaults.font = a[0];
+			}	
+			
+			// RiText.defaultFont(name);
+			if (typeof a[0] == S) {
+				RiText.defaults.font = RiText.renderer._createFont(a[0], RiText.defaults.fontSize);
+			}
+		}
+
+		// RiText.defaultFont(name, size);
 		else if (a.length > 1 && typeof a[0] == S) {
-			RiText.defaults.font = RiText.renderer._createFont.apply(RiText.renderer, a);
-			//if (!RiText.defaults.font.leading) RiText.defaults.font.leading = 0;
+			
+			RiText.defaults.font = RiText.renderer._createFont(a[0], a[1]);
 		}
+		
+		// RiText.defaultFont();
 		else if (a.length == 0 && !RiText.defaults.font) {
+			
+			
 			RiText.defaults.font = RiText.createFont(RiText.defaults.fontFamily);
 		}
 
 		return RiText.defaults.font;
+	}
+	
+	/**
+	 * Returns json-formatted string representing font metrics, with the following fields: 
+	 * { name, size, ascent, descent, widths }
+	 * 
+	 * @param chars (optional) the characters for which widths should be calculated 
+	 */
+	RiText.fontMetrics = function(chars) {
+		
+		var j, c, gwidths = {}, pf = RiText.defaultFont();
+
+		//console.log(pf);
+	
+		if (!(chars && chars.length)) {
+	    	chars = [];
+	    	for (j = 33; j < 126; j++) 
+	      		chars.push(String.fromCharCode(j));    	
+	    }
+	    
+		for ( var i = 0; i < chars.length; i++) {
+	      //console.log(c +" -> "+pf.measureTextWidth(c))
+	      c = chars[i];
+	      gwidths[c] = pf.measureTextWidth(c);
+	    }
+	    
+	    var metrics =  { name: pf.name, size: pf.size, 
+	    	ascent: pf.ascent,  descent: pf.descent, widths: gwidths };
+	    	
+		return metrics;    
 	}
 	
 	RiText.createFont = function(fontName, fontSize) {
@@ -5113,8 +5166,6 @@
 	    w = w || Number.MAX_VALUE-x, h = h || Number.MAX_VALUE, pfont = pfont || RiText.defaultFont();
 	 	leading = leading || pfont.size * RiText.defaults.leadingFactor;
 	 	
-	 	console.log("lead="+leading);
-
 	    if (is(txt, A)) return RiText._layoutArray(txt, x, y, w, h, pfont, leading);
 	      
 	    var g = RiText.renderer, ascent, descent, leading, startX = x+1, currentX, 
@@ -5265,11 +5316,6 @@
 
 		return result;
 	}
-	
-	RiText.fontMetrics = function(fontMetrics) {
-		RiText.renderer = RiText_NoOp(fontMetrics);
-	} 
-
 
 	// Returns the pixel x-offset for the word at 'wordIdx' 
 	RiText._wordOffsetFor = function(rt, words, wordIdx) { 
@@ -7750,12 +7796,11 @@
 			if (renderer) console.warn("Renderer arg ignored");
 		},
 		
-		_createFont : function(fontName, fontSize, leading) {
+		_createFont : function(fontName, fontSize) {
 			
 			var font = {
 				name:       fontName, 
 				size:       fontSize || RiText.defaults.font.size 
-				//leading:    leading || 0
 			};
 			return font;
 		},
@@ -10683,17 +10728,12 @@
 			this.p.background.apply(this,arguments);
 		},
 
-		// actual creation: only called from RiText.createDefaultFont();!
+		// actual creation: only called from RiText.createDefaultFont()!
 		_createFont : function(fontName, fontSize) {
 			
-//console.log("[P5] Creating font: "+fontName+"-"+fontSize);
+			//console.log("[P5] Creating font: "+fontName+"-"+fontSize);
 			
-			var pfont = this.p.createFont(fontName, fontSize);                
-			
-			//pfont.leading = leading || RiText.defaults.fontLeading;
-
-			//console.log(pfont);
-			return pfont;
+			return this.p.createFont(fontName, fontSize);                
 		},
 
 		_rect : function(x,y,w,h) {
