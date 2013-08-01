@@ -1053,13 +1053,15 @@
 		loadString : function(url, callback) {
 
 			if ( typeof document === 'undefined') {// for node
-				// try node (fs.readFile) method here?
+				// try with node method
+				require('fs').readFile(__dirname+'/'+file, function(e, data) {
+   					 if (e) throw e;
+					 callback.call(this, initialize(data.toString().replace(/[\r\n]+/g,' '));
+				});
 				warn("no document object; node?");
 				return;
 			}
 			
-			//console.log("trying: "+url);
-	
 			var cwin, text, iframe = document.createElement("iframe");
 			iframe.setAttribute('src', url);
 			iframe.setAttribute('style', 'display: none');
@@ -1067,6 +1069,7 @@
 				console.error('[RiTa] unable to string without document.body!');
 				return E;
 			}
+			
 			document.body.appendChild(iframe);
 			cwin = iframe.contentWindow || iframe.contentDocument.parentWindow;
 			cwin.onload = function() {
