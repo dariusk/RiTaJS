@@ -1048,12 +1048,12 @@
 		
 		/**
    		 * Loads a file's contents froms its URL and calls back to the supplied
-   		 * function with the loaded string as an argument
+   		 * callback function with the loaded string as an argument
    		 */
-		loadString : function(url, fun) {
+		loadString : function(url, callback) {
 
 			if ( typeof document === 'undefined') {// for node
-				// try node here method here
+				// try node (fs.readFile) method here?
 				warn("no document object; node?");
 				return;
 			}
@@ -1063,12 +1063,16 @@
 			var cwin, text, iframe = document.createElement("iframe");
 			iframe.setAttribute('src', url);
 			iframe.setAttribute('style', 'display: none');
+			if (!document.body) {
+				console.error('[RiTa] unable to string without document.body!');
+				return E;
+			}
 			document.body.appendChild(iframe);
 			cwin = iframe.contentWindow || iframe.contentDocument.parentWindow;
 			cwin.onload = function() {
 				text = cwin.document.body.childNodes[0].innerHTML;
-				//alert("text="+text.length);
-				fun.call(this, text);
+				text = text.replace(/[\r\n]+/g, SP);
+				callback.call(this, text);
 			};			
 		},
 		
@@ -5163,21 +5167,23 @@
 	    
 	    if (!txt || !txt.length) return EA;
 	    
-	    w = w || Number.MAX_VALUE-x, h = h || Number.MAX_VALUE, pfont = pfont || RiText.defaultFont();
+	    w = w || Number.MAX_VALUE - x, h = h || Number.MAX_VALUE, pfont = pfont || RiText.defaultFont();
 	 	leading = leading || pfont.size * RiText.defaults.leadingFactor;
 	 	
 	    if (is(txt, A)) return RiText._layoutArray(txt, x, y, w, h, pfont, leading);
 	      
-	    var g = RiText.renderer, ascent, descent, leading, startX = x+1, currentX, 
+	    var g = RiText.renderer, ascent, descent, leading, startX = x, currentX, 
 	    	currentY, rlines = [], sb = E, maxW = x + w, maxH = y + h, words = [], next
 	    	newParagraph = false, forceBreak = false, firstLine = true, yPos = 0, rt = undef;
 	    
-	    if (!g || !g.p) rt = RiText(SP, 0, 0, pfont); // placeholder for ascent/descent [for canvas renderer]
+	    if (!g || !g.p) rt = RiText(SP, 0, 0, pfont); // for ascent/descent in canvas renderer
 	    
 		// remove line breaks & add spaces around html
+		txt = txt.replace(/&gt;/g, '>');
+		txt = txt.replace(/&lt;/g, '<');
+		txt = txt.replace(/ ?(<[^>]+>) ?/, " $1 "); 
 		txt = txt.replace(/[\r\n]/, SP);
-		txt = txt.replace(/ ?(<[^>]+>) ?/, " $1 "); 	
-
+		
 		// split into reversed array of words
 		RiText._addToStack(txt, words);
 		if (!words.length) return RiText.EMPTY_ARRAY;
@@ -5186,7 +5192,6 @@
 	 	
 	    g._textFont(pfont); // for ascent & descent
 	    
-	    /// STOP: these are null for the noOp-renderer 
 	    ascent = g.p ? g.p.textAscent() : g._textAscent(rt,true); 
 	    descent = g.p ? g.p.textDescent() : g._textDescent(rt,true); 
 	    
@@ -5211,9 +5216,9 @@
 	          sb += SP;
 	        }
 	        else if (next == RiText.PARAGRAPH_BREAK)
+				//(RiText.PARAGRAPH_BREAK.test(next))
 	        {
-	        	// case: paragraph break
-	            newParagraph = sb.length;
+	            newParagraph = true;//sb.length;
 	        }
 	        else if (next == RiText.LINE_BREAK) {
 	          forceBreak = true;
@@ -5416,8 +5421,9 @@
 	
 	// PUBLIC statics (TODO: clean up) ///////////////////////////////////////////
    
+   // TODO: make into regex that matches '<p>', '<p/>', '&lt;p&gt;', and '&lt;p/&gt;' 
 	RiText.NON_BREAKING_SPACE = "<sp/>";
-	RiText.PARAGRAPH_BREAK = "<p/>";
+	RiText.PARAGRAPH_BREAK = "<p/>";//   regex: /<p\/?>/g;
 	RiText.LINE_BREAK = "<br/>";
 	RiText.instances = [];
 	
@@ -7643,9 +7649,10 @@
 			if (str && str.length) {
 				for (var i = 0; i < str.length; i++)  {
 					var c = str.charAt(i);
+					if (c == '\n' || c == '\r') continue;
 					var k = this.font.widths[c];
 					if (!k) {
-					  console.error("No glyph for \""+c+"\"in word: "+str);
+					  console.error("[WARN] No glyph for \""+c+"\"in word: "+str);
 					  k = def;
 					}
 					w += k;
