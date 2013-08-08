@@ -46728,7 +46728,7 @@ _RiTa_LTS=[
 
 (function(window, undefined) {
 	
-	var _VERSION_ = '1.0.38';	
+	var _VERSION_ = '1.0.39';	
 
 	/**  @private Simple type-checking functions */ 
 	

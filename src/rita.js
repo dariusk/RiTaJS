@@ -1043,22 +1043,35 @@
 			caseSensitive = caseSensitive || false;
 			input = caseSensitive ? input : RiTa._titleCase(input);
 			return inArray(this.ABBREVIATIONS, input);
-			
 		},
 		
+		/*
+		 * Returns true if NodeJS is the current environment
+		 */
+		isNode : function() {
+
+			return (typeof module != 'undefined' && module.exports);
+		},
+		
+			
 		/**
    		 * Loads a file's contents froms its URL and calls back to the supplied
    		 * callback function with the loaded string as an argument
    		 */
 		loadString : function(url, callback) {
-
+			
+			//console.log('loadString('+url+')');
+			
+			// TODO: test with URLS in all platforms...
+			
 			if ( typeof document === 'undefined') {// for node
-				// try with node method
-				require('fs').readFile(__dirname+'/'+file, function(e, data) {
+				
+				// try with node file-system
+				var rq = require('fs');
+				rq.readFile(url, function(e, data) {
    					 if (e) throw e;
-					 callback.call(this, initialize(data.toString().replace(/[\r\n]+/g,' '));
+					 callback.call(this, data.toString().replace(/[\r\n]+/g, SP));
 				});
-				warn("no document object; node?");
 				return;
 			}
 			
@@ -1066,7 +1079,7 @@
 			iframe.setAttribute('src', url);
 			iframe.setAttribute('style', 'display: none');
 			if (!document.body) {
-				console.error('[RiTa] unable to string without document.body!');
+				console.error('[RiTa] loadString() found null document.body!');
 				return E;
 			}
 			
@@ -1074,6 +1087,10 @@
 			cwin = iframe.contentWindow || iframe.contentDocument.parentWindow;
 			cwin.onload = function() {
 				text = cwin.document.body.childNodes[0].innerHTML;
+				if (!text) {
+					console.error('[RiTa] loadString() found no text!');
+					return E;
+				}
 				text = text.replace(/[\r\n]+/g, SP);
 				callback.call(this, text);
 			};			
@@ -4999,38 +5016,39 @@
 	 * @returns {object} the current default font
 	 */
 	RiText.defaultFont = function(font, size) {
-		
+
 		var a = arguments;
+		
 		if (a.length > 1) {
 			var sz = Number(a[1]);
 			if (!sz) a = [a[0]];
 		}
 			
-		if (a.length == 1) {
-			
-			// RiText.defaultFont(pfont);
+		if (a.length == 1) { // 1-arg
+	
 			if (typeof a[0] == O) {
 				
-				if (a[0].widths) // hack for no-op
+				if (RiTa.isNode() && a[0].widths) {// use no-op
 					RiText.renderer = RiText_NoOp(a[0]);
-				else
-			  		RiText.defaults.font = a[0];
+				}
+			  	RiText.defaults.font = a[0];
 			}	
 			
 			// RiText.defaultFont(name);
-			if (typeof a[0] == S) {
+			if (typeof a[0] == S) 
 				RiText.defaults.font = RiText.renderer._createFont(a[0], RiText.defaults.fontSize);
-			}
+
 		}
 
 		// RiText.defaultFont(name, size);
-		else if (a.length > 1 && typeof a[0] == S) {
-			
-			RiText.defaults.font = RiText.renderer._createFont(a[0], a[1]);
+		else if (a.length > 1) { // > 1 args
+			  
+			if (typeof a[0] == S)
+			  RiText.defaults.font = RiText.renderer._createFont(a[0], a[1]);
 		}
 		
 		// RiText.defaultFont();
-		else if (a.length == 0 && !RiText.defaults.font) {
+		else if (a.length == 0 && !RiText.defaults.font) { // 0-args
 			
 			
 			RiText.defaults.font = RiText.createFont(RiText.defaults.fontFamily);
@@ -5043,19 +5061,19 @@
 	 * Returns json-formatted string representing font metrics, with the following fields: 
 	 * { name, size, ascent, descent, widths }
 	 * 
-	 * @param chars (optional) the characters for which widths should be calculated 
+	 * @param chars (optional) array or string, characters for which widths should be calculated 
 	 */
 	RiText.fontMetrics = function(chars) {
 		
 		var j, c, gwidths = {}, pf = RiText.defaultFont();
 
-		//console.log(pf);
-	
 		if (!(chars && chars.length)) {
 	    	chars = [];
 	    	for (j = 33; j < 126; j++) 
 	      		chars.push(String.fromCharCode(j));    	
 	    }
+	    
+	    if (is(chars, S)) chars = chars.split(/./g); // split into array
 	    
 		for ( var i = 0; i < chars.length; i++) {
 	      //console.log(c +" -> "+pf.measureTextWidth(c))
@@ -5064,7 +5082,8 @@
 	    }
 	    
 	    var metrics =  { name: pf.name, size: pf.size, 
-	    	ascent: pf.ascent,  descent: pf.descent, widths: gwidths };
+	    	ascent: pf.ascent,  descent: pf.descent, widths: gwidths 
+	   	};
 	    	
 		return metrics;    
 	}
@@ -5159,129 +5178,138 @@
 	 	return result;
   	}
   	
+
 	RiText.createLines = function(txt, x, y, w, h, pfont, leading) {
-	    
-	    var a = arguments, t = Type.get(a[0]);
-	    
-	    if (t != S && t != A) { // ignore first (PApplet/window) argument
-	    	txt = a[1], x = a[2], y = a[3], w = a[4],
-				h = a[5], pfont = a[6], leading = a[7];
-	    }
-	    
-	    if (!txt || !txt.length) return EA;
-	    
-	    w = w || Number.MAX_VALUE - x, h = h || Number.MAX_VALUE, pfont = pfont || RiText.defaultFont();
-	 	leading = leading || pfont.size * RiText.defaults.leadingFactor;
-	 	
-	    if (is(txt, A)) return RiText._layoutArray(txt, x, y, w, h, pfont, leading);
-	      
-	    var g = RiText.renderer, ascent, descent, leading, startX = x, currentX, 
-	    	currentY, rlines = [], sb = E, maxW = x + w, maxH = y + h, words = [], next
-	    	newParagraph = false, forceBreak = false, firstLine = true, yPos = 0, rt = undef;
-	    
-	    if (!g || !g.p) rt = RiText(SP, 0, 0, pfont); // for ascent/descent in canvas renderer
-	    
+
+		var a = arguments, t = Type.get(a[0]);
+
+		if (t != S && t != A) {// ignore first (PApplet/window) argument
+			txt = a[1], x = a[2], y = a[3], w = a[4], 
+			h = a[5], pfont = a[6], leading = a[7];
+		}
+
+		if (!txt || !txt.length)
+			return EA;
+
+		w = w || Number.MAX_VALUE - x, h = h || Number.MAX_VALUE, pfont = pfont || RiText.defaultFont();
+		leading = leading || pfont.size * RiText.defaults.leadingFactor;
+
+		if (is(txt, A))
+			return RiText._layoutArray(txt, x, y, w, h, pfont, leading);
+
+		var g = RiText.renderer, ascent, descent, leading, startX = x, currentX, currentY, 
+			rlines = [], sb = E, maxW = x + w, maxH = y + h, words = [], next, yPos = 0,
+			newParagraph = false, forceBreak = false, firstLine = true, rt = undef;
+
+		// for ascent/descent in canvas renderer
+		if (!g || !g.p) rt = RiText(SP, 0, 0, pfont);
+		
+
 		// remove line breaks & add spaces around html
 		txt = txt.replace(/&gt;/g, '>');
 		txt = txt.replace(/&lt;/g, '<');
-		txt = txt.replace(/ ?(<[^>]+>) ?/, " $1 "); 
-		txt = txt.replace(/[\r\n]/, SP);
-		
+		txt = txt.replace(/ ?(<[^>]+>) ?/g, " $1 ");
+		txt = txt.replace(/[\r\n]/g, SP);
+
 		// split into reversed array of words
 		RiText._addToStack(txt, words);
-		if (!words.length) return RiText.EMPTY_ARRAY;
-	 
-	 	//log("txt.len="+txt.length+" x="+x+" y="+y+" w="+w+" h="+h+" lead="+leading);log(pfont);
-	 	
-	    g._textFont(pfont); // for ascent & descent
-	    
-	    ascent = g.p ? g.p.textAscent() : g._textAscent(rt,true); 
-	    descent = g.p ? g.p.textDescent() : g._textDescent(rt,true); 
-	    
-	    //log(g._type()+'.ascent/descent='+ascent+'/'+descent);
-	    
-	    currentY = y + ascent + 1;
-	
-	    if (RiText.defaults.indentFirstParagraph) 
-	    	startX += RiText.defaults.paragraphIndent;
-	        
-	    while (words.length>0)
-	    {
-	      next = words.pop();
+		if (!words.length)
+			return RiText.EMPTY_ARRAY;
 
-	      if (!next.length) continue;
-	      	
-	      // check for HTML-style tags 
-	      if (startsWith(next,'<') && endsWith(next,'>'))
-	      {
-	        if (next == RiText.NON_BREAKING_SPACE)
-	        {
-	          sb += SP;
-	        }
-	        else if (next == RiText.PARAGRAPH_BREAK)
-				//(RiText.PARAGRAPH_BREAK.test(next))
-	        {
-	            newParagraph = true;//sb.length;
-	        }
-	        else if (next == RiText.LINE_BREAK) {
-	          forceBreak = true;
-	        }
-	        continue;
-	      }
+		//log("txt.len="+txt.length+" x="+x+" y="+y+" w="+w+" h="+h+" lead="+leading);log(pfont);
 
-	      // re-calculate our X position
-	      currentX = startX + g._textWidth(pfont, sb + next);
-	
-	      // check it against the line-width 
-	      if (!newParagraph && !forceBreak && currentX < maxW)
-	      {
-	        sb += next + SP; // add-word
-	      }
-	      else 
-	      {
-	         // check yPosition for line break
-			if (RiText._withinBoundsY(currentY, leading, maxH, descent)) {
-	        
-	          yPos = firstLine ? currentY : currentY + leading;
-	          rt = RiText._newRiTextLine(sb, pfont, startX, yPos);
-	          rlines.push(rt);
-	          
-	          currentY = newParagraph ? rt.y + RiText.defaults.paragraphLeading : rt.y;
-	          startX = x + 1; // reset
-	
-	          if (newParagraph) startX += RiText.defaults.paragraphIndent;
-	          
-	          sb = next + SP; // reset with next word
-	          
-	          newParagraph = false;
-	          forceBreak = false;
-	          firstLine = false;
-	        }
-	        else {
-	        	
-	          words.push(next);
-	          break;
-	        }
-	      }
-	    }
-	    
-	    // check if leftover words can make a new line 
+		g._textFont(pfont);
+		// for ascent & descent
+
+		ascent = g.p ? g.p.textAscent() : g._textAscent(rt, true);
+		descent = g.p ? g.p.textDescent() : g._textDescent(rt, true);
+
+		//log(g._type()+'.ascent/descent='+ascent+'/'+descent);
+
+		currentY = y + ascent;
+
+		if (RiText.defaults.indentFirstParagraph)
+			startX += RiText.defaults.paragraphIndent;
+
+		while (words.length > 0) {
+			
+			next = words.pop();
+
+			if (!next.length) continue;
+
+			// check for HTML-style tags
+			if (/<[^>]+>/.test(next)) {
+				if (next == RiText.NON_BREAKING_SPACE) {
+					sb += SP;
+				} 
+				else if (next == RiText.PARAGRAPH_BREAK) {
+					newParagraph = true;
+				} 
+				else if (next == RiText.LINE_BREAK) {
+					forceBreak = true;
+				}
+				continue;
+			}
+
+			// re-calculate our X position
+			currentX = startX + g._textWidth(pfont, sb + next);
+
+			// check it against the line-width
+			if (!newParagraph && !forceBreak && currentX < maxW) {
+				sb += next + SP;
+				// add-word
+			} 
+			else {
+				
+				// check yPosition to see if its ok for another line?
+				if (RiText._withinBoundsY(currentY, leading, maxH, descent)) {
+
+					yPos = firstLine ? currentY : currentY + leading;
+					rt = RiText._newRiTextLine(sb, pfont, startX, yPos);
+					rlines.push(rt);
+
+					currentY = newParagraph ? rt.y + RiText.defaults.paragraphLeading : rt.y;
+					startX = x;
+					// reset
+
+					if (newParagraph)
+						startX += RiText.defaults.paragraphIndent;
+
+					sb = next + SP;
+					// reset with next word
+
+					newParagraph = false;
+					forceBreak = false;
+					firstLine = false
+				} 
+				else {
+
+					// we've run out of y-space, break the loop and finish
+					words.push(next);
+					// not needed
+					break;
+				}
+			}
+		}
+
+		// check if leftover words can make a new line
 		if (RiText._withinBoundsY(currentY, leading, maxH, descent)) {
-						
-			// TODO: what if there is are tags in here -- is it possible?)
-			rlines.push(RiText._newRiTextLine(sb, pfont, x + 1, leading + currentY));
-			sb = E;
-	    }
-	    else {
-	    	
-			RiText._addToStack(sb, words); // save for next
-	    }
 
-	    return rlines;
+			// TODO: what if there is are tags in here -- is it possible?)
+			rlines.push(RiText._newRiTextLine(sb, pfont, x, leading + currentY));
+			sb = E;
+		} 
+		else {
+
+			RiText._addToStack(sb, words);
+			// save for next (not needed?)
+		}
+
+		return rlines;
 	}
-	
-	RiText._withinBoundsY = function(currentY, leading, maxY, descent)
-  	{
+
+	RiText._withinBoundsY = function(currentY, leading, maxY, descent) {
+		
     	return currentY + leading <= maxY - descent;
   	}
   
@@ -5443,7 +5471,7 @@
 		
 		fill : { r : 0, g : 0, b : 0, a : 255 }, fontFamily: 'Times New Roman',  
 		alignment : RiTa.LEFT, motionType : RiTa.LINEAR, font: null, fontSize: 14,
-		paragraphLeading : 0, paragraphIndent: 20, indentFirstParagraph : false,
+		paragraphLeading : 0, paragraphIndent: 30, indentFirstParagraph : false,
 		boundingStroke : null, boundingStrokeWeight : 1, showBounds : false, leadingFactor: 1.2,
 		rotateX:0, rotateY:0, rotateZ:0, scaleX:1, scaleY:1, scaleZ:1
 	}
@@ -5459,7 +5487,7 @@
 		 * @returns {RiText}
 		 */
 		init : function(text, x, y, font) { 
-			
+						
 			if (!RiText.renderer) 
 				err("No graphics context, RiText unavailable");
 			
@@ -5549,7 +5577,7 @@
 					parsed[0] = String.fromCharCode(a[0]);
 					
 				else
-				  console.error("Unexpected Arg: "+a[0]+" (type="+(typeof a[0])+")");
+				  console.error("Unexpected arg in RiText("+a[0]+" [type="+(typeof a[0])+"])");
 			}
 			if (a.length > 1) parsed[1] = a[1];
 
@@ -6598,17 +6626,8 @@
 		 * @returns {boolean}
 		 */
 		contains : function(mx, my) {
-						
 
 		   var bb = this.boundingBox(false);
-		   //log('contains('+mx+','+my+') '+ bb.x + ","+bb.width+","+bb.y + ","+(bb.height));
-		   
-			//           // TODO: need to test this with point
-			//           if (!my && Type.get(mx.x) == 'Number' && Type.get(mx.y) == 'Number') {
-			//               mx = mx.x;
-			//               my = mx.y;
-			//           }
-			//           
 		   bb.x += this.x;
 		   bb.y += this.y;
 		   
@@ -6992,12 +7011,12 @@
 			}
 		},
 		
-		/** @private */
 		toString : function() {
 			
 			var s =  (this._rs && this._rs._text) || 'undefined';
 			return '['+Math.round(this.x)+","+Math.round(this.y)+",'"+s+"']";
 		}
+
 
 		//        updateMousePosition : function(curElement, event) {
 		//            var offset = calculateOffset(window, event);
@@ -7683,7 +7702,8 @@
 		_getBoundingBox : function(rt) {
 			
 			// bc of no translate(), we use the actual x,y
-			return { x: rt.x, y: rt.y-this._textAscent(), width: this._textWidth(), height: this._textHeight() };
+			return { x: rt.x, y: rt.y-this._textAscent()-1, 
+				width: this._textWidth(), height: this._textHeight()+1 };
 		},
 		
 		_type : function() {
@@ -7693,7 +7713,7 @@
 			
 		toString : function() {
 			
-			return "RiText_"+_type();
+			return "RiText_"+this._type();
 		}
 	}
 
@@ -7850,9 +7870,7 @@
 					break;
 			}
 		},
-		
-		_type : function() { return "Canvas"; },
-		
+			
 		// only applies the font to the context!
 		_textFont : function(fontObj) {
 			if (!is(fontObj,O))
@@ -7898,13 +7916,15 @@
 			
 			this._textFont(rt._font);
 			var w = this.ctx.measureText(rt.text()).width;
-			// this must be cached...
+			
+			// TODO: this must be cached...
 			var metrics = this._getMetrics(rt);
 			
 			//log('[CTX] ascent='+metrics.ascent+' descent='+metrics.descent+" h="+(metrics.ascent+metrics.descent));
 			//this.ctx.restore();
 			
-			return { x: 0, y: -metrics.ascent-1, width: w, height: metrics.ascent+metrics.descent+1 };
+			return { x: 0, y: -metrics.ascent-1, width: w, 
+				height: metrics.ascent+metrics.descent+1 };
 		},
 
 		_getOffset : function(elem) { // private, not in API 
@@ -7968,10 +7988,11 @@
 			return result;
 		},
 
-		/** @private */
+		_type : function() { return "Canvas"; },
+	
 		toString : function() {
 			
-			return "RiText_"+this._type;
+			return "RiText_"+this._type();
 		}
 		
 	}        
@@ -10684,10 +10705,12 @@
 			this.ctx.save();
 			
 			//this.p.pushMatrix();
+			
 			return this;
 		},
 		
 		_popState : function() {
+			
 			
 			//this.p.popMatrix();
 			
@@ -10704,12 +10727,12 @@
 		},
 		
 		_scale : function(sx, sy) {
-			
+			sy = sy || 1;
 			this.p.scale(sx, sy, 1);
 		},
 		
 		_translate : function(tx, ty) {
-			
+			ty = ty || 0;
 			this.p.translate(tx, ty, 0);
 		},
 		
@@ -10832,19 +10855,16 @@
 			this.ctx.save();
 			this.p.textFont(rt._font, rt._font.size);
 			
-			// var ascent  =   Math.round(this.p.textAscent()),
-				// descent =   Math.round(this.p.textDescent()),
-				// width   =   Math.round(this.p.textWidth(rt.text()));
-// 			
 			//this.p.popStyle(); ////////
 			
 			var ascent  =   this.p.textAscent(),
 				descent =   this.p.textDescent(),
 				width   =   this.p.textWidth(rt.text());
 			
-			this.ctx.restore();
+			this.ctx.restore();		
 
-			return { x: 0, y: -ascent, width: width, height: (ascent+descent) };
+			return { x: 0, y: -ascent-1, width: width, 
+				height: (ascent+descent+1) };
 		},
 		
 		_type : function() {
@@ -10854,7 +10874,7 @@
 		
 		toString : function() {
 			
-			return "RiText_"+this._type;
+			return "RiText_"+this._type();
 		}
 	}
 	
@@ -11742,7 +11762,7 @@
 		}
 	}
 
-// TODO: remove!
+    // TODO: remove
 	function replaceAll(theText, replace, withThis) {
 		
 		return theText && is(replace, S) ?  
@@ -11899,7 +11919,7 @@
 				//log("Processing.registerLibrary.detach");
 			}
 			
-			//exports : [] // export global function names?
+			// exports : [] // export global function names?
 		})
 	}
 	else {
@@ -11927,25 +11947,24 @@
 
 	if (window) { // for browser
 		
+		window['RiTa'] = RiTa;
 		window['RiText'] = RiText;
 		window['RiString'] = RiString;
 		window['RiLexicon'] = RiLexicon;
 		window['RiGrammar'] = RiGrammar;
 		window['RiMarkov'] = RiMarkov;
 		window['RiTaEvent'] = RiTaEvent;
-
-		window['RiTa'] = RiTa;
 	}
 	
 	if (typeof module != 'undefined' && module.exports) { // for node
-		
+
+		module.exports['RiTa'] = RiTa;		
 		module.exports['RiText'] = RiText;
 		module.exports['RiString'] = RiString;
 		module.exports['RiLexicon'] = RiLexicon;
 		module.exports['RiGrammar'] = RiGrammar;
 		module.exports['RiMarkov'] = RiMarkov;
 		module.exports['RiTaEvent'] = RiTaEvent;
-		module.exports['RiTa'] = RiTa;
 
 		module.vm = require("vm"); // TODO: reconsider, use deps?
 		module.vm && (RiTa._eval = module.vm.runInThisContext);
