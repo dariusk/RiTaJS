@@ -1551,7 +1551,7 @@
 			this.maxSentenceLength = 35;
 			this.maxDuplicatesToSkip = 10000;
 			this.root = new TextNode(null, 'ROOT');
-			this.sentenceAware = (arguments.length > 1 && !recognizeSentences) ? false : true;
+			this.isSentenceAware = (arguments.length > 1 && !recognizeSentences) ? false : true;
 			this.allowDuplicates = (arguments.length > 2 && !allowDuplicates) ? false : true;
 			this.printIgnoredText = false;
 			this.smoothing = false;
@@ -1801,7 +1801,7 @@
 			if (arguments.length>0)
 			  throw Error("sentenceAware() takes no arguments, instead "+
 			  	"use the constructor RiMarkov(n, recognizeSentences);");
-			return this.sentenceAware;
+			return this.isSentenceAware;
 		},
 
 		/**
@@ -1850,7 +1850,7 @@
 			if (multiplier < 1 || multiplier != Math.floor(multiplier))
 		    	err('multiplier must be an positive integer, found: '+multiplier); 
 
-			if (this.sentenceAware) 
+			if (this.isSentenceAware) 
 				return this._loadSentences(RiTa.splitSentences(text), multiplier);       
 			else        
 				return this.loadTokens(RiTa.tokenize(text,regex), multiplier);
@@ -1915,7 +1915,7 @@
 		 */
 		generateSentences: function(num) {
 
-		    if (!this.sentenceAware) {
+		    if (!this.isSentenceAware) {
 		      err("generateSentences() can only be called when the model is "
 		        + "in 'sentence-aware' mode, otherwise use generateTokens()");
 		    }
@@ -1997,7 +1997,7 @@
 		    
 		    if (!this.allowDuplicates) 
 		    {
-		      if (!this.sentenceAware) {
+		      if (!this.isSentenceAware) {
 		        err("[WARN] Invalid state: allowDuplicates must be"
 		        	 +" true when not generating sentences");
 		      }
@@ -2078,7 +2078,7 @@
 		          pTotal += child.probability();
 		          
 		          //System.out.println("pTotal="+pTotal);
-		          if (current.isRoot() && (this.sentenceAware && !child.isSentenceStart())) {
+		          if (current.isRoot() && (this.isSentenceAware && !child.isSentenceStart())) {
 		            //System.out.println("continuing...");
 		            continue;
 		          }
@@ -2173,7 +2173,7 @@
 		  
 		_validSentenceStart : function(word) {      
  
-			return (!this.sentenceAware || word && word.match(RiMarkov._SSRE)); 
+			return (!this.isSentenceAware || word && word.match(RiMarkov._SSRE)); 
 		},
 		
 		_addSentenceSequence : function(toAdd) {
@@ -2209,12 +2209,12 @@
 
 		_getSentenceStart : function() {
 			
-			if (!this.sentenceAware) {
+			if (!this.isSentenceAware) {
       			err("getSentenceStart() can only "
         			+ "be called when the model is in 'sentence-aware' mode...");
     		}
 			if (!this.sentenceStarts || !this.sentenceStarts.length)
-				err('No sentence starts found! genSen='+this.sentenceAware);
+				err('No sentence starts found! genSen='+this.isSentenceAware);
 			
 			var start = RiTa.randomItem(this.sentenceStarts);
 			
