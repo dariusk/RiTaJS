@@ -1045,14 +1045,6 @@
 			return inArray(this.ABBREVIATIONS, input);
 		},
 		
-		/*
-		 * Returns true if NodeJS is the current environment
-		 */
-		isNode : function() {
-
-			return (typeof module != 'undefined' && module.exports);
-		},
-		
 			
 		/**
    		 * Loads a file's contents froms its URL and calls back to the supplied
@@ -5028,9 +5020,9 @@
 	
 			if (typeof a[0] == O) {
 				
-				if (RiTa.isNode() && a[0].widths) {// use no-op
+				if (isNode() && a[0].widths) {// use no-op
 					RiText.renderer.font = a[0];
-					console.log('setting RiText.renderer.font');
+					//console.log('setting RiText.renderer.font');
 				}
 			  	RiText.defaults.font = a[0];
 			}	
@@ -5066,7 +5058,7 @@
 	 */
 	RiText._fontMetrics = function(chars) {
 		
-		var j, c, gwidths = {}, pf = RiText.defaultFont();
+		var i,j,c,gwidths={},pf=RiText.defaultFont();
 
 		if (!(chars && chars.length)) {
 	    	chars = [];
@@ -5076,25 +5068,18 @@
 	    }
 	    
 	    if (is(chars, S)) chars = chars.split(E); // split into array
-	    
-		for ( var i = 0; i < chars.length; i++) {
+	    	    
+		for (i = 0; i < chars.length; i++) {
 	      //console.log(c +" -> "+pf.measureTextWidth(c))
 	      c = chars[i];
 	      gwidths[c] = pf.measureTextWidth(c);
 	    }
 	    
-	    if (!gwidths[SP]) { // make sure we have a space
-	    	
-	    	gwidths[SP] = gwidths['i'] || pf.size/3.0;
-	    	console.warn("No SPACE character found, calculating width as "+gwidths[SP]+"px");
-		}   
-	   
+	    gwidths[SP] = pf.measureTextWidth(SP);
 	    
-	    var metrics =  { name: pf.name, size: pf.size, 
+	    return  { name: pf.name, size: pf.size, 
 	    	ascent: pf.ascent,  descent: pf.descent, widths: gwidths 
 	   	};
-	    	
-		return metrics;    
 	}
 	
 	RiText.createFont = function(fontName, fontSize) {
@@ -11872,6 +11857,14 @@
 		}
 		return newArray; 
 	}
+			
+	/*
+	 * Returns true if NodeJS is the current environment
+	 */
+	function isNode() {
+		
+		return (typeof module != 'undefined' && module.exports);
+	}
 	
 	// Array Remove - from John Resig (MIT Licensed)
 	function remove(array, from, to) {
@@ -11944,7 +11937,7 @@
 			console.warn("[RiTa] No object w' name='canvas' in DOM, renderer unavailable");
 		}
 	}
-	else if (RiTa.isNode()) {
+	else if (isNode()) {
 		RiText.renderer = RiText_NoOp();
 	}
 	else {
