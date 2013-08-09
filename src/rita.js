@@ -5042,9 +5042,9 @@
 		
 		// RiText.defaultFont();
 		else if (a.length == 0 && !RiText.defaults.font) { // 0-args
-			
-			
-			RiText.defaults.font = RiText.createFont(RiText.defaults.fontFamily);
+						
+			RiText.defaults.font = isNode() ? RiText.defaults.metrics 
+				: RiText.createFont(RiText.defaults.fontFamily);
 		}
 
 		return RiText.defaults.font;
@@ -5466,8 +5466,16 @@
 		fill : { r : 0, g : 0, b : 0, a : 255 }, fontFamily: 'Times New Roman',  
 		alignment : RiTa.LEFT, motionType : RiTa.LINEAR, font: null, fontSize: 14,
 		paragraphLeading : 0, paragraphIndent: 30, indentFirstParagraph : false,
-		boundingStroke : null, boundingStrokeWeight : 1, showBounds : false, leadingFactor: 1.2,
-		rotateX:0, rotateY:0, rotateZ:0, scaleX:1, scaleY:1, scaleZ:1
+		boundingStroke : null, boundingStrokeWeight : 1, showBounds : false, 
+		leadingFactor: 1.2, rotateX:0, rotateY:0, rotateZ:0, scaleX:1, scaleY:1, scaleZ:1, 
+		metrics : {"name":"Times New Roman","size":14,"ascent":9.744,"descent":3.024,"widths":
+		{ "0":7,"1":7,"2":7,"3":7,"4":7,"5":7,"6":7,"7":7,"8":7,"9":7,"!":5,"\"":6,"#":7,"$":7,
+		"%":12,"&":11,"'":3,"(":5,")":5,"*":7,"+":8,",":4,"-":5,".":4,"/":4,":":4,";":4,"<":8,
+		"=":8,">":8,"?":6,"@":13,"A":10,"B":9,"C":9,"D":10,"E":9,"F":8,"G":10,"H":10,"I":5,
+		"J":5,"K":10,"L":9,"M":12,"N":10,"O":10,"P":8,"Q":10,"R":9,"S":8,"T":9,"U":10,"V":10,
+		"W":13,"X":10,"Y":10,"Z":9,"[":5,"\\":4,"]":5,"^":7,"_":7,"`":5,"a":6,"b":7,"c":6,"d":7,
+		"e":6,"f":5,"g":7,"h":7,"i":4,"j":4,"k":7,"l":4,"m":11,"n":7,"o":7,"p":7,"q":7,"r":5,
+		"s":5,"t":4,"u":7,"v":7,"w":10,"x":7,"y":7,"z":6,"{":7,"|":3,"}":7," ":4 } }
 	}
 
 	RiText.prototype = {
@@ -7566,13 +7574,13 @@
 	////////////////////////// PRIVATE CLASSES ///////////////////////////////
 
 	// ///////////////////////////////////////////////////////////////////////
-	// RiText_NoOp Renderer (for headless operation, eg. in Node.js)
+	// RiText_Node Renderer (for headless operation, eg. in Node.js)
 	// ///////////////////////////////////////////////////////////////////////
 
 
-	var RiText_NoOp = makeClass();
+	var RiText_Node = makeClass();
 
-	RiText_NoOp.prototype = {
+	RiText_Node.prototype = {
 
 		init : function(metrics) {
 			
@@ -7586,7 +7594,7 @@
 		
 		_getGraphics : function() {
 			
-			console.warn("NoOpRenderer._getGraphics() returning null graphics context!");
+			console.warn("NodeRenderer._getGraphics() returning null graphics context!");
 			return null;
 		},
 		
@@ -7637,7 +7645,7 @@
 		// actual creation: only called from RiText.createDefaultFont();!
 		_createFont : function(fontName, fontSize) {
 			
-			//console.log("[NoOp] Creating font: "+fontName+"-"+fontSize);
+			//console.log("[Node] Creating font: "+fontName+"-"+fontSize);
 			// TODO: load json for a font here ???
 			// what to return
 			// this.font = loadJSONFont(fontName, fontSize); 
@@ -7702,7 +7710,7 @@
 		
 		_type : function() {
 			
-			return "NoOp";
+			return "Node";
 		},
 			
 		toString : function() {
@@ -11938,11 +11946,11 @@
 		}
 	}
 	else if (isNode()) {
-		RiText.renderer = RiText_NoOp();
+		RiText.renderer = RiText_Node();
 	}
 	else {
 		warn("Unknown env. (not Processing, Node, Canvas) -- renderer is null");
-		RiText.renderer = RiText_NoOp();
+		RiText.renderer = RiText_Node();
 	}
 	
 	if (!RiTa.SILENT)
