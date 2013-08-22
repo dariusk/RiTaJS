@@ -1049,25 +1049,30 @@
 		/**
    		 * Loads a file's contents froms its URL and calls back to the supplied
    		 * callback function with the loaded string as an argument
+   		 * @param linebreakChars the character(s) with which to replace line-breaks (optional, default=' ')
    		 */
-		loadString : function(url, callback) {
+		loadString : function(url, callback, linebreakChars) {
 			
-			//console.log('loadString('+url+')');
+			var lb = linebreakChars || SP, text;
+			
+			//console.log('loadString('+url+','+linebreakChars)');
 			
 			// TODO: test with URLS in all platforms...
 			
-			if ( typeof document === 'undefined') {// for node
+			if (isNode()) {
 				
 				// try with node file-system
 				var rq = require('fs');
 				rq.readFile(url, function(e, data) {
    					 if (e) throw e;
-					 callback.call(this, data.toString().replace(/[\r\n]+/g, SP));
+   					 text = data.toString().replace(/[\r\n]+/g, lb);
+					 callback.call(this, text);
 				});
 				return;
 			}
 			
-			var cwin, text, iframe = document.createElement("iframe");
+			// hack to load a text file from the DOM via an invisible iframe
+			var cwin, iframe = document.createElement("iframe");
 			iframe.setAttribute('src', url);
 			iframe.setAttribute('style', 'display: none');
 			if (!document.body) {
@@ -1083,7 +1088,7 @@
 					console.error('[RiTa] loadString() found no text!');
 					return E;
 				}
-				text = text.replace(/[\r\n]+/g, SP);
+				text = text.replace(/[\r\n]+/g, lb);
 				callback.call(this, text);
 			};			
 		},
