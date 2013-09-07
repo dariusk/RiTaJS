@@ -5176,33 +5176,33 @@
 	    
 	 	return result;
   	}
-  	
 
 	RiText.createLines = function(txt, x, y, w, h, pfont, leading) {
 
-		var a = arguments, t = Type.get(a[0]);
+		var a = arguments, t = Type.get(a[0]), g = RiText.renderer;
 
 		if (t != S && t != A) {// ignore first (PApplet/window) argument
 			txt = a[1], x = a[2], y = a[3], w = a[4], 
 			h = a[5], pfont = a[6], leading = a[7];
 		}
 
-		if (!txt || !txt.length)
-			return EA;
+		if (!txt || !txt.length) return EA;
 
-		w = w || Number.MAX_VALUE - x, h = h || Number.MAX_VALUE, pfont = pfont || RiText.defaultFont();
+		h = h || Number.MAX_VALUE;
+	    w = w || g ? g._width()-x : Number.MAX_VALUE-x;
+		pfont = pfont || RiText.defaultFont();
 		leading = leading || pfont.size * RiText.defaults.leadingFactor;
 
 		if (is(txt, A))
 			return RiText._layoutArray(txt, x, y, w, h, pfont, leading);
 
-		var g = RiText.renderer, ascent, descent, leading, startX = x, currentX, currentY, 
-			rlines = [], sb = E, maxW = x + w, maxH = y + h, words = [], next, yPos = 0,
-			newParagraph = false, forceBreak = false, firstLine = true, rt = undef;
+		var ascent, descent, leading, startX = x, currentX, currentY, 
+			rlines = [], sb = E, words = [], next, yPos = 0, rt = undef,
+			newParagraph = false, forceBreak = false, firstLine = true, 
+			maxW = x + w, maxH = y + h;
 
 		// for ascent/descent in canvas renderer
 		if (!g || !g.p) rt = RiText(SP, 0, 0, pfont);
-		
 
 		// remove line breaks & add spaces around html
 		txt = txt.replace(/&gt;/g, '>');
@@ -5218,8 +5218,8 @@
 		//log("txt.len="+txt.length+" x="+x+" y="+y+" w="+w+" h="+h+" lead="+leading);log(pfont);
 
 		g._textFont(pfont);
+		
 		// for ascent & descent
-
 		ascent = g.p ? g.p.textAscent() : g._textAscent(rt, true);
 		descent = g.p ? g.p.textDescent() : g._textDescent(rt, true);
 
@@ -5331,8 +5331,6 @@
 	
 	RiText._createRiTexts = function(txt, x, y, w, h, fontObj, lead, splitFun) {  
 
-		//if (!txt || !txt.length) return EA;
-
 		var rlines = RiText.createLines(txt, x, y, w, h, fontObj, lead);
 		if (!rlines || rlines.length < 1) return EA;
 
@@ -5341,7 +5339,7 @@
 		for (var i = 0; i < rlines.length; i++) {
 			
 			var rts = splitFun.call(rlines[i]);
-			for (var j = 0; j < rts.length; j++) {// add the words
+			for (var j = 0; j < rts.length; j++) {
 				
 				result.push(rts[j].font(fontObj)); 
 			}
