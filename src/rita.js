@@ -398,7 +398,6 @@
 		}
 	};
 	
-			// TIMER : 6, SCALE_TO : 7, ROTATE_TO: 8, TEXT_ENTERED : 9, LERP : 10,
 	// var EventType = {
 	  // MoveTo: {value: 0, name:"MoveTo"},
 	  // ColorTo: {value: 1, name:"ColorTo"},
@@ -5189,7 +5188,7 @@
 		if (!txt || !txt.length) return EA;
 
 		h = h || Number.MAX_VALUE;
-	    w = w || g ? g._width()-x : Number.MAX_VALUE-x;
+	    w = w || (g ? g._width()-x : Number.MAX_VALUE-x);
 		pfont = pfont || RiText.defaultFont();
 		leading = leading || pfont.size * RiText.defaults.leadingFactor;
 
@@ -11939,9 +11938,9 @@
 	// Canvas Renderer
 	else if (typeof document !== 'undefined') {
 		
-		var cnv = document.getElementsByTagName("canvas")[0];
+		var cnv = document.getElementsByTagName('canvas')[0];
 		try {
-			var context2d = cnv.getContext("2d");
+			var context2d = cnv.getContext('2d');
 			RiText.renderer = new RiText_Canvas(context2d);
 		}
 		catch(e) {
@@ -11952,12 +11951,12 @@
 		RiText.renderer = RiText_Node();
 	}
 	else {
-		warn("Unknown env. (not Processing, Node, Canvas) -- renderer is null");
+		warn('Unknown Env: not Processing, Node, or Canvas; renderer is null');
 		RiText.renderer = RiText_Node();
 	}
 	
 	if (!RiTa.SILENT)
-		console && console.log("[INFO] RiTaJS.version ["+RiTa.VERSION+"]");
+		console && console.log('[INFO] RiTaJS.version ['+RiTa.VERSION+']');
 	
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// Core RiTa objects (in global namespace)
