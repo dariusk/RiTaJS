@@ -43,7 +43,6 @@
 			None: function ( k ) {
 	
 				return k;
-	
 			}
 	
 		},
@@ -53,20 +52,17 @@
 			In: function ( k ) {
 	
 				return k * k;
-	
 			},
 	
 			Out: function ( k ) {
 	
 				return k * ( 2 - k );
-	
 			},
 	
 			InOut: function ( k ) {
 	
 				if ( ( k *= 2 ) < 1 ) return 0.5 * k * k;
 				return - 0.5 * ( --k * ( k - 2 ) - 1 );
-	
 			}
 	
 		},
@@ -1011,14 +1007,6 @@
 			
 		},
 
-		/**
-		 * Replaces all matches of 'pattern' in the 'string' with 'replacement'
-		 * 
-		 * @param {string} string to test
-		 * @param {string | regex } pattern object containing regular expression
-		 * @param {string} replacement the replacement
-		 * @returns {string} with replacements or thestring on error
-		 */
 		_regexReplace : function(string, pattern, replacement) {
 			
 			if (undef(string) || undef(pattern))
@@ -1029,14 +1017,6 @@
 			
 		},
 			 
-		/**
-		 * Returns true if 'input' is an abbreviation
-		 * 
-		 * @param {string} input
-		 * @param {boolean} caseSensitive (optional, default=false)
-		 * 
-		 * @returns {boolean} true if 'input' is an abbreviation
-		 */
 		isAbbreviation : function(input, caseSensitive) {
 			
 			caseSensitive = caseSensitive || false;
@@ -1054,18 +1034,22 @@
 			
 			var lb = linebreakChars || SP, text;
 			
-			//console.log('loadString('+url+','+linebreakChars)');
+			//log('loadString('+url+');');
 			
-			// TODO: test with URLS in all platforms...
+			// TODO: test with URLS and in all browser/platforms...
 			
 			if (isNode()) {
 				
 				// try with node file-system
 				var rq = require('fs');
 				rq.readFile(url, function(e, data) {
-   					 if (e) throw e;
-   					 text = data.toString().replace(/[\r\n]+/g, lb);
-					 callback.call(this, text);
+					if (e || !data) {
+						err("[Node] Error reading file: "+url);
+						throw e;
+					}	
+   					text = data.toString().replace(/[\r\n]+/g, lb);
+					text = htmlDecode(text);
+					callback.call(this, text);
 				});
 				return;
 			}
@@ -1079,6 +1063,12 @@
 				return E;
 			}
 			
+			function htmlDecode(input){
+				var e = document.createElement('div');
+				e.innerHTML = input;
+				return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+			}
+			
 			document.body.appendChild(iframe);
 			cwin = iframe.contentWindow || iframe.contentDocument.parentWindow;
 			cwin.onload = function() {
@@ -1088,6 +1078,7 @@
 					return E;
 				}
 				text = text.replace(/[\r\n]+/g, lb);
+				text = htmlDecode(text);
 				callback.call(this, text);
 			};			
 		},
@@ -4108,60 +4099,60 @@
 
 	RiGrammar.prototype = {
 
-		/**
-		 * Initializes a grammar, optionally accepting an object or JSON string containing the rules
-		 * 
-		 * @param  {none | string | object } grammar containing the grammar rules
-		 */
 		init : function(grammar) {
 			
 			(arguments.length == 0 || is(grammar,S) || ok(grammar, O)); 
 			
 			this._rules = {};
+			this.loading = false; // ?
 			this._execDisabled = false;
 			grammar && this.load(grammar);  
 		},
 	
-		/**
-		 * Loads a JSON grammar from a file or 'url', replacing any existing grammar. 
-		 * @param {string} url of file containing the grammar rules
-		 * @returns {object} this RiGrammar
-		 */
-		loadFromFile : function(url) {
+		loadFromFile : function(url, callback, forceNoJQuery) {
 			
-			err("RiGrammar.loadFromFile: not yet implemented in JS");
+			var g = this, cbfun = function(str) {
+				//console.log("loadFromFile: "+str);
+				g.load(str);
+				g.loading = false;
+				callback && (callback.call());
+			};
 			
-			// this.reset();
-			
+			if (!forceNoJQuery && is($.getJSON, F)) {
+				//log("using jquery: "+this.loading);
+				g.loading = true;
+				$.ajax({
+					url: url,
+					timeout: 2000,
+					dataType: "json",
+					success: cbfun
+				});
+			}
+			else {
+				//log("using RiTa!");
+				RiTa.loadString(url, cbfun);
+			}
+
 			return this;
-			
+		},
+		
+		openEditor : function() {
+			warn("Not yet implemented in JavaScript");
+			return this;
 		},
 	
-		/**
-		 * inits a grammar from an object or JSON string containing the rules (rather than a file)
-		 * and replacing any existing grammar. 
-		 * @param  {string | object} grammar containing the grammar rules
-		 * @returns {object} this RiGrammar
-		 */
 		load : function(grammar) {
 			
 			this.reset();
 			
-			grammar = (typeof grammar == S) ?  JSON.parse(grammar) : grammar 
+			grammar = (typeof grammar == S) ? JSON.parse(grammar) : grammar 
 			
 			for (var rule in grammar) 
 				this.addRule(rule, grammar[rule]);
 			
 			return this;
-			
 		},
 		
-		
-		/**
-		 * Deletes the named rule from the grammar
-		 * @param {String} the rule name
-		 * @returns {object} this RiGrammar
-		 */ 
 		removeRule : function(name)  {
 			
 			name = this._normalizeRuleName(name);
@@ -4179,13 +4170,6 @@
 
 		},
 		
-		/**
-		 * Adds a rule to the existing grammar, replacing any existing rule with the same name 
-		 * @param {string} name
-		 * @param {string} ruleStr
-		 * @param {number} weight
-		 * @returns {object} this RiGrammar
-		 */
 		addRule : function(name, ruleStr, weight) 
 		{
 			var dbug = false;
@@ -4194,10 +4178,10 @@
 
 			name = this._normalizeRuleName(name);
 
-			if (dbug) log("addRule: "+name+ " -> "+ruleStr+" ["+weight+"]");
-			
-			var ruleset = ruleStr.split(RiGrammar.OR_PATT);
+			if (dbug) log("addRule: "+name+ " -> '"+ruleStr+"'       ["+(typeof ruleStr)+"]");
 
+			var ruleset = is(ruleStr,A) ? ruleStr : ruleStr.split(RiGrammar.OR_PATT);
+			
 			for ( var i = 0; i < ruleset.length; i++) {
 				
 				var rule = ruleset[i];
@@ -4222,22 +4206,16 @@
 					temp[rule] = prob;
 				} 
 				else {
-					
-					// log("new rule");
 					var temp2 = {};
 					temp2[rule] = prob;
 					this._rules[name] = temp2;
 					if (dbug)log("added rule: "+name);
 				}
 			}
-			return this;
 			
+			return this;
 		},
-	  
-		/**
-		 * Clears all rules in the current grammar
-		 * @returns {object} this RiGrammar
-		 */
+	
 		reset : function() {
 			
 		   this._rules = {};
@@ -4245,11 +4223,6 @@
 		   
 		},
 
-		/**
-		 * Returns the requested rule
-		 * @param {string} rule name
-		 * @returns {string} the rule
-		 */
 		doRule : function(pre) {
 
 			var cnt = 0, name = E, result = E,
@@ -4263,12 +4236,7 @@
 			
 			return (cnt == 1) ? name : this._getStochasticRule(rules); 
 		},
-					  
-		/**
-		 * Returns the requested rule
-		 * @param {string} rule name
-		 * @returns {string} the rule
-		 */
+
 		getRule : function(pre) {
 
 			var cnt = 0, name = E, result = E,
@@ -4291,10 +4259,6 @@
 			return result;
 		},
 		
-		/**
-		 * Returns the grammar as a string 
-		 * @returns {string} representation of the grammar
-		 */
 		getGrammar : function() { 
 			var s = E;
 			for (var name in this._rules) {
@@ -4307,10 +4271,6 @@
 			return s;
 		},
 			
-		/**
-		 * Prints the grammar rules to the console in human-readable format (useful for debugging) 
-		 * @returns {object} this RiGrammar
-		 */
 		print : function() {  
 			
 			if (console) {
@@ -4322,11 +4282,6 @@
 			
 		},
 		
-		/**
-		 * Returns true if the requested rule exists in the grammar, else false
-		 * @param {string} the rule name
-		 * @returns {boolean} true if the rule exists in the grammar, else false
-		 */
 		hasRule : function(name) {
 			
 			//log("hasRule("+name+")");
@@ -4335,18 +4290,6 @@
 			
 		},
 		
-		/**
-		 * Expands the grammar after replacing an instance of the non-terminal
-		 * 'symbol' with the String in 'literal'.
-		 * <P>
-		 * Guarantees that 'literal' will be in the final expanded String, 
-		 * assuming at least one instance of 'symbol' in the Grammar.
-		 * 
-		 * @param literal
-		 * @param symbol
-		 * 
-		 * @returns {string} expanded text
-		 */
 		expandWith : function(literal, symbol) { // TODO: finish 
 
 			var gr = this._copy();
@@ -4375,10 +4318,6 @@
 			
 		},
 		
-		/**
-		 * @param input
-		 * @returns this
-		 */
 		_handleExec : function(input) { // TODO: private
 					   
 			//console.log("handleExec: "+input);
@@ -4405,13 +4344,6 @@
 			return input;
 		},
 		
-				
-		/**
-		 * Expands a grammar from its '<start>' symbol
-		 * @param {string} (optional) One or more function to be added to the current context BEFORE 
-		 * executing the expand() call. Useful for defining functions referenced in back-ticked rules.
-		 * @returns {string}
-		 */
 		expand : function(funs) {
 
 			funs && RiTa._eval(funs);
@@ -4420,15 +4352,7 @@
 		}, 
 		
 		// TODO: reconsider
-		
-		/**
-		 * Expands the grammar, starting from the given symbol.
-		 * RiGrammar.expand() is equivalent to RiGrammar.expandFrom('').
-		 * 
-		 * @param {string} rule
-		 * @returns {string}
-		 * 
-		 */
+
 		expandFrom : function(rule) {
 			
 			//log("expandFrom("+rule+")");
@@ -4488,8 +4412,6 @@
 
 					if (dbug) log("  pre=" + pre+"  expanded=" + expanded+"  post=" + post+"  result=" + pre + expanded + post);
 					
-//					var tmp = (pre + SP + expanded + SP + post);
-
 					result.push(pre,expanded,post);
 
 					var ok = result.join(SP);
@@ -4516,7 +4438,7 @@
 			if (!endsWith(pre,RiGrammar.CLOSE_RULE_CHAR))
 				pre += RiGrammar.CLOSE_RULE_CHAR;
 
-			if (pre.indexOf('>>')>0) err(">>");
+			if (pre.indexOf('>>')>0) err(">>"); // ?
 			
 			return pre;
 			
