@@ -46738,21 +46738,20 @@ _RiTa_LTS=[
 		
 		// From: http://javascriptweblog.wordpress.com/2011/08/08/fixing-the-javascript-typeof-operator/ 
 		get : function(obj) {
-			
+			if (typeof obj == 'undefined') return null;
 			return ({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase();
 		},
 		
 		// Returns true if the object is of type 'type', otherwise false
 		 
 		is : function(obj,type) {
-			
 			return Type.get(obj) === type;
 		},
 		
 		// Throws TypeError if not the correct type, else returns true
 		ok : function(obj,type) {
 			
-			if (Type.get(obj)!=type) {
+			if (Type.get(obj) != type) {
 				
 				throw TypeError('Expected '+(type ? type.toUpperCase() : type+E)
 					+ ", but received "+(obj ? Type.get(obj).toUpperCase() : obj+E));
@@ -46770,7 +46769,6 @@ _RiTa_LTS=[
 			None: function ( k ) {
 	
 				return k;
-	
 			}
 	
 		},
@@ -46780,20 +46778,17 @@ _RiTa_LTS=[
 			In: function ( k ) {
 	
 				return k * k;
-	
 			},
 	
 			Out: function ( k ) {
 	
 				return k * ( 2 - k );
-	
 			},
 	
 			InOut: function ( k ) {
 	
 				if ( ( k *= 2 ) < 1 ) return 0.5 * k * k;
 				return - 0.5 * ( --k * ( k - 2 ) - 1 );
-	
 			}
 	
 		},
@@ -47125,7 +47120,6 @@ _RiTa_LTS=[
 		}
 	};
 	
-			// TIMER : 6, SCALE_TO : 7, ROTATE_TO: 8, TEXT_ENTERED : 9, LERP : 10,
 	// var EventType = {
 	  // MoveTo: {value: 0, name:"MoveTo"},
 	  // ColorTo: {value: 1, name:"ColorTo"},
@@ -47454,7 +47448,7 @@ _RiTa_LTS=[
 			
 			var posArr = RiTa.getPosTags(words);
 
-			if (!undef(words) && posArr.length) {
+			if (words && posArr.length) {
 				for ( var i = 0; i < posArr.length; i++) {
 					var pos = posArr[i];
 					if (PosTagger.isNoun(pos))      posArr[i] =  "n";
@@ -47729,7 +47723,7 @@ _RiTa_LTS=[
 		 */
 		_regexMatch : function(string, pattern) {
 			
-			if (undef(string) || undef(pattern))
+			if (!string || !pattern)
 				return false;
 			
 			if (typeof pattern === S)
@@ -47739,17 +47733,9 @@ _RiTa_LTS=[
 			
 		},
 
-		/**
-		 * Replaces all matches of 'pattern' in the 'string' with 'replacement'
-		 * 
-		 * @param {string} string to test
-		 * @param {string | regex } pattern object containing regular expression
-		 * @param {string} replacement the replacement
-		 * @returns {string} with replacements or thestring on error
-		 */
 		_regexReplace : function(string, pattern, replacement) {
 			
-			if (undef(string) || undef(pattern))
+			if (!string || !pattern)
 				return E;
 			if (typeof pattern === S)
 				pattern = new RegExp(pattern); // TODO: is this necessary?
@@ -47757,14 +47743,6 @@ _RiTa_LTS=[
 			
 		},
 			 
-		/**
-		 * Returns true if 'input' is an abbreviation
-		 * 
-		 * @param {string} input
-		 * @param {boolean} caseSensitive (optional, default=false)
-		 * 
-		 * @returns {boolean} true if 'input' is an abbreviation
-		 */
 		isAbbreviation : function(input, caseSensitive) {
 			
 			caseSensitive = caseSensitive || false;
@@ -47782,18 +47760,22 @@ _RiTa_LTS=[
 			
 			var lb = linebreakChars || SP, text;
 			
-			//console.log('loadString('+url+','+linebreakChars)');
+			//log('loadString('+url+');');
 			
-			// TODO: test with URLS in all platforms...
+			// TODO: test with URLS and in all browser/platforms...
 			
 			if (isNode()) {
 				
 				// try with node file-system
 				var rq = require('fs');
 				rq.readFile(url, function(e, data) {
-   					 if (e) throw e;
-   					 text = data.toString().replace(/[\r\n]+/g, lb);
-					 callback.call(this, text);
+					if (e || !data) {
+						err("[Node] Error reading file: "+url);
+						throw e;
+					}	
+   					text = data.toString().replace(/[\r\n]+/g, lb);
+					text = htmlDecode(text);
+					callback.call(this, text);
 				});
 				return;
 			}
@@ -47807,6 +47789,12 @@ _RiTa_LTS=[
 				return E;
 			}
 			
+			function htmlDecode(input){
+				var e = document.createElement('div');
+				e.innerHTML = input;
+				return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+			}
+			
 			document.body.appendChild(iframe);
 			cwin = iframe.contentWindow || iframe.contentDocument.parentWindow;
 			cwin.onload = function() {
@@ -47816,6 +47804,7 @@ _RiTa_LTS=[
 					return E;
 				}
 				text = text.replace(/[\r\n]+/g, lb);
+				text = htmlDecode(text);
 				callback.call(this, text);
 			};			
 		},
@@ -48554,17 +48543,7 @@ _RiTa_LTS=[
 			if (console) console.log(this.root.asTree(false));
 			return this;
 		},
-		
-		/**
-		 * Loads a text string into the model after tokenizing it.
-		 * 
-		 * @param {string} text the string
-		 * @param {number} multiplier Weighting for text (optional, default=1) 
-		 * @param {string | regex} a regular expression to be used for tokenizing
-		 *   (optional, if not supplied, uses RiTa.tokenize())
-		 * @see RiTa.tokenize
-		 * @returns {object} this RiMarkov
-		 */
+
 		loadText : function(text, multiplier, regex) {
 
 			ok(text,S);
@@ -48579,16 +48558,7 @@ _RiTa_LTS=[
 			else        
 				return this.loadTokens(RiTa.tokenize(text,regex), multiplier);
 		},
-		
-		/**
-		 * Loads an array of tokens (or words) into the model; each 
-		 * element in the array must be a single token for proper 
-		 * construction of the model. 
-		 * 
-		 * @param {array} tokens the strings with which to load the model 
-		 * @param {number} multiplier Weighting for tokens in the array (optional, default=1)
-		 * @returns {object} this RiMarkov
-		 */
+
 		loadTokens: function(tokens, multiplier) {
 
 			//console.log("loadTokens: smooth="+this.smoothing);
@@ -48623,20 +48593,6 @@ _RiTa_LTS=[
 			return this;
 		},
 		
-   
-		/**
-		 * Generates some # (one or more) of sentences from the model.<P>
-		 * Note: multiple sentences generated by this method WILL follow
-		 * the model across sentence boundaries; thus the following two calls
-		 * are NOT equivalent:<pre>
-			String[] results = markov.generateSentences(10);
-				and
-			for (int i = 0; i < 10; i++)
-				results[i] = markov.generateSentence(1);</pre>
-		 * The latter will create 10 sentences with no explicit relationship
-		 * between one and the next; while the former will follow probabilities
-		 * from one sentence (across a boundary) to the next.
-		 */
 		generateSentences: function(num) {
 
 		    if (!this.isSentenceAware) {
@@ -48749,12 +48705,7 @@ _RiTa_LTS=[
 
 		    return true;
 		},
-		
-		// _checkPunctuation : function(sent) {    		
-			// var result = value.charAt(0).toUpperCase() + value.substring(1);
-			// return RiTa.untokenize(result.split(/\s+/));
-	    // },
- 
+
 		_tracePathFromRoot : function(node) { 
 		    
 		    // (TODO: change this
@@ -48982,10 +48933,7 @@ _RiTa_LTS=[
 	RiTaEvent._callbacksDisabled = false;
 	
 	RiTaEvent.prototype = {
-		
-		/**
-		 * Contructs a new RiTaEvent object with a source and type
-		 */
+ 
 		init : function(sourceRiText, eventType) {
 			
 			ok(sourceRiText,O);
@@ -48999,30 +48947,20 @@ _RiTa_LTS=[
 			//this._data = data;
 		},
 		
-		
 		/** @private  */
 		toString : function() {
 			
 			// TODO: implement typeToString() and uncomment below
-			
 			return "RiTaEvent[#"+this._id+" type="+ // typeToString(this._type)+ 
 				"("+this._type+") src="+this._source.toString()+"]";
 
 		},
-		
-		/**
-		 * Gets the source for this event (usually a RiText object)
-		 * @returns {object} the source
-		 */
+
 		source : function() {
 			
 			return this._source;  
 		},
 		
-		/**
-		 * Gets the type for this event
-		 * @returns {number} the type
-		 */
 		type : function() {
 			
 			return this._type;  
@@ -49079,12 +49017,6 @@ _RiTa_LTS=[
 	
 	RiLexicon.prototype = {
 		
-		/**
-		 * Constructs a (singleton) instance of the RiLexicon class.
-		 * <p> 
-		 * Note: For performance, the data for all RiLexicon instances
-		 * is shared (there is only 1 copy)
-		 */
 		init: function() {
 
 			if (!RiLexicon.data) {
@@ -49104,9 +49036,7 @@ _RiTa_LTS=[
 				}
 			}
 		},
-	
-		
-		/** Clears the lexicon */
+			
 		clear : function() {
 			
 			RiLexicon.data = undefined;
@@ -49115,47 +49045,18 @@ _RiTa_LTS=[
 				delete RiLexicon.data[word];
 		},
 	 
-		/**
-		 * Adds a word to the current lexicon. Note: will replace the word if it already exists
-		 *
-		 * @example lexicon.addWord('abandon','ax-b ae1-n-d ax-n','vb nn vbp');
-		 * 
-		 * @param {string} word
-		 * @param {string} pronunciationData
-		 * @param {string} posData
-		 * 
-		 * @returns {object} this RiLexicon  
-		 */
 		addWord : function(word, pronunciationData, posData) {
 			
 			RiLexicon.data[word.toLowerCase()] = [pronunciationData.toLowerCase(), posData.toLowerCase()];
 			return this;
 		},
-		
-		/**
-		 * Removes a word from the current lexicon 
-		 * 
-		 * @example removeWord('abandon');
-		 * 
-		 * @param {string} word
-		 * @returns {object} this RiLexicon  
-		 */
+
 		removeWord : function(word) {
 			
 			delete RiLexicon.data[word.toLowerCase()];
 			return this;
 		},
-		
-		/**
-		 * Compares the characters of the input string  (using a version of the min-edit distance algorithm)
-		 * to each word in the lexicon, returning the set of closest matches.        
-		 * 
-		 * @param {string} word
-		 * @param {number} minAllowedDist minimum edit distance for matches (optional, default=1)
-		 * @param {boolean} preserveLength whether to return only words that match the length of the input word (optional, default=true)
-		 * 
-		 * @returns {array} matching words 
-		 */
+
 		similarByLetter: function(input, minAllowedDist, preserveLength) {
 
 			var minVal = Number.MAX_VALUE, minLen = 2, result = [];
@@ -49196,15 +49097,6 @@ _RiTa_LTS=[
 			return result;
 		},
 
-		/**
-		 * Compares the phonemes of the input string 
-		 * (using a version of the min-edit distance algorithm)
-		 * to each word in the lexicon, returning the set of closest matches.        
-		 * 
-		 * @param {string} input
-		 * @param {number}  minEditDist (optional) minimum edit distance for matches 
-		 * @returns {array} matching words 
-		 */
 		similarBySound: function(input, minEditDist) { 
 
 			minEditDist = minEditDist || 1;
@@ -49255,14 +49147,6 @@ _RiTa_LTS=[
 			return result;
 		},
 
-		
-		/**
-		 * Returns all valid substrings of the input word in the lexicon 
-		 *
-		 * @param {string} word
-		 * @param {number} minLength (optional, default=4) minimum length of return word 
-		 * @returns {array} matching words 
-		 */
 		substrings: function(word, minLength) { 
 			
 			minLength = minLength || (minLength === 0) || 4;
@@ -49275,13 +49159,7 @@ _RiTa_LTS=[
 			
 			return result;
 		},
-		
-		/**
-		 * Returns all valid superstrings of the input word in the lexicon 
-		 *
-		 * @param {string} word
-		 * @returns {array} matching words 
-		 */
+
 		superstrings: function(word) { 
 			
 			var entry, result =[];
@@ -49295,15 +49173,6 @@ _RiTa_LTS=[
 			return result;
 		},
 		
-		/**
-		 * First calls similarBySound(), then filters the result set by the algorithm 
-		 * used in similarByLetter(); 
-		 * 
-		 * (useful when similarBySound() returns too large a result set)
-		 * 
-		 * @param {string} word
-		 * @returns {array} matching words 
-		 */
 		similarBySoundAndLetter: function(word) { 
 			
 			var simSound, simLetter, result = [];
@@ -49311,7 +49180,7 @@ _RiTa_LTS=[
 			simSound = this.similarBySound(word);
 			simLetter = this.similarByLetter(word);
 			
-			if (undef(simSound) || undef(simLetter)) 
+			if (!simSound || !simLetter) 
 				return result;
 			
 			for (var i=0; i<simSound.length; i++) {
@@ -49325,19 +49194,11 @@ _RiTa_LTS=[
 			
 			return result;
 		},
-		
-		/**
-		 * Returns the array of all words in the lexicon or those matching a specific regex. 
-		 * If specified, the order of the result array is randomized before return.
-		 *  
-		 * @param {regex} regex (string or object) pattern to match (optional)
-		 * @param {boolean} sorted In sorted order when true (optional, default=false)
-		 * @returns {array} words in the RiLexicon  
-		 */
+
 		words : function() {
 			
 			var a = arguments, sorted = false, regex = undefined, 
-				wordArr = [], words =  okeys(RiLexicon.data);
+				wordArr = [], words = okeys(RiLexicon.data);
 			
 			switch (a.length) {
 				
@@ -49384,8 +49245,6 @@ _RiTa_LTS=[
 		
 		/**
 		 * Returns true if c is a vowel
-		 * @param {char} c
-		 * @returns {boolean}
 		 */
 		_isVowel : function(c) {
 
@@ -49394,8 +49253,6 @@ _RiTa_LTS=[
 
 		/**
 		 * Returns true if c is a consonant
-		 * @param {char} p
-		 * @returns {boolean}
 		 */
 		_isConsonant : function(p) {
 
@@ -49403,30 +49260,11 @@ _RiTa_LTS=[
 				RiTa.VOWELS.indexOf(p) < 0 && /^[a-z\u00C0-\u00ff]+$/.test(p));  
 		},
 
-		/**
-		 * Returns true if the word exists in the lexicon (case-insensitive)
-		 * @param {string} word
-		 * @returns {boolean} 
-		 */
 		containsWord : function(word) {
 
 			return (strOk(word) && RiLexicon.data && !undef(RiLexicon.data[word.toLowerCase()]));
 		},
-		
-		/**
-		 * Returns true if the two words rhyme, that is, if their final stressed phoneme 
-		 * and all following phonemes are identical, else false.
-		 * <p>
-		 * Note: returns false if word1.equals(word2) or if either (or both) are null;
-		 * <p>
-		 * Note: at present doesn't use letter-to-sound engine if either word is not found in the lexicon, 
-		 * but instead just returns false. 
-		 * 
-		 * @param {string} word1
-		 * @param {string} word2
-		 * 
-		 * @returns {boolean} true if the two words rhyme, else false.
-		 */
+
 		isRhyme : function(word1, word2, useLTS) {
 
 			if ( !strOk(word1) || !strOk(word2) || equalsIgnoreCase(word1, word2))
@@ -49438,15 +49276,7 @@ _RiTa_LTS=[
 			return (strOk(p1) && strOk(p2) && p1 === p2);  
 		},
 
-		/**
-		 * 
-		 * Two words rhyme if their final stressed vowel and all following phonemes are identical.
-		 * @param {string} word
-		 * @returns {array} strings of the rhymes for a given word, or empty array if none are found
-		 */
 		rhymes : function(word) {
-
-			//this._buildWordlist_();
 
 			if (this.containsWord(word)) {
 
@@ -49468,12 +49298,6 @@ _RiTa_LTS=[
 			return EA; 
 		},
 
-		/**
-		 * Finds alliterations by comparing the phonemes of the input string to those of each word in the lexicon
-		 * 
-		 * @param {string} word input
-		 * @returns {array} strings of alliterations
-		 */
 		alliterations : function(word, matchMinLength) {
 			
 			matchMinLength = matchMinLength || 4;
@@ -49496,13 +49320,6 @@ _RiTa_LTS=[
 			return EA;
 		},
 
-		/**
-		 * Returns true if the first stressed consonant of the two words match, else false.
-		 * 
-		 * @param {string} word1
-		 * @param {string} word2
-		 * @returns {boolean} true if word1.equals(word2) and false if either (or both) are null;
-		 */
 		isAlliteration : function(word1, word2) {
 
 			if (!strOk(word1) || !strOk(word2)) return false;
@@ -49519,8 +49336,6 @@ _RiTa_LTS=[
 
 		/**
 		 * Returns the first stressed syllable of the input word
-		 * @param {string} word
-		 * @returns {string}   
 		 */
 		_firstStressedSyllable : function(word) {
 
@@ -49549,56 +49364,26 @@ _RiTa_LTS=[
 			return idx < 0 ? firstToEnd : firstToEnd.substring(0, idx);
 		},
 		
-		/**  
-		 * Returns true for 'word' if it has a verb form. That is, if any of its possible parts of speech 
-		 *  are any variant of a verb in the PENN part-of-speech tag set (e.g. vb, vbg, vbd, vbp, vbz));
-		 * @param {string} word the PENN part-of-speech tag
-		 * @returns {boolean} true if the word can be used as a verb 
-		 */
 		isVerb: function(word) {
 
 			return this._checkType(word, PosTagger.VERBS);
 		},
  
-		
-		/**
-		 * Returns true for 'word' if it has a noun form. That is, if any of its possible parts of speech 
-		 *  are any variant of a noun in the PENN part-of-speech tag set(e.g. nn, nns, nnp, nnps)
-		 * @param {string} word the PENN part-of-speech tag
-		 * @returns {boolean} true if the word can be used as a noun
-		 */
 		isNoun : function(word) {
 
 			return this._checkType(word, PosTagger.NOUNS);
 		},
 		
-		/**
-		 * Returns true for 'word' if it has an adverb form. That is, if any of its possible parts of speech 
-		 *  are any variant of an adverb in the PENN part-of-speech tag set (e.g. rb, rbr, rbs)
-		 * @param {string} word the PENN part-of-speech tag
-		 * @returns boolean} true if the word can be used as an adverb 
-		 */
 		isAdverb : function(word) {
-			//log("isAdverb("+word+")");
+
 			return this._checkType(word, PosTagger.ADV);
 		},
 		
-		/**
-		 * Returns true for 'word' if it has an adjective form. That is, if any of its possible parts of speech 
-		 *  are any variant of an adjective in the PENN part-of-speech tag set (e.g. jj, jjr, jjs)
-		 * @param {string} word the PENN part-of-speech tag
-		 * @returns {boolean} true if the word can be used as an adjective 
-		 */
 		isAdjective : function(word) {
 			
 			return this._checkType(word, PosTagger.ADJ);
 		},
 		
-		
-		/**
-		 * Returns the number of words currently in the lexicon 
-		 * @returns {number} words
-		 */
 		size : function() {
 			
 			return RiLexicon.data ? okeys(RiLexicon.data).length : 0
@@ -49816,7 +49601,7 @@ _RiTa_LTS=[
 			var phones = rawPhones.split(RiTa.PHONEME_BOUNDARY);
 			// var phones = rawPhones.split(PHONEME_BOUNDARY);
 			
-			if (!undef(phones)) {
+			if (phones) {
 				
 				for (var j = 0; j < phones.length; j++) {
 					if (this._isConsonant(phones[j].charAt(0))) // first letter only
@@ -50340,7 +50125,7 @@ _RiTa_LTS=[
 			
 			var tags = this.pos();
 
-			if (undef(tags) || tags.length == 0 || index < 0 || index >= tags.length)
+			if (!tags || !tags.length || index < 0 || index >= tags.length)
 				return E;
 			
 			return tags[index];
@@ -50428,8 +50213,7 @@ _RiTa_LTS=[
 		 */
 		match : function(regex) {
 			
-			var result = this._text.match(regex);
-			return undef(result) ?  [] : result;   
+			return this._text.match(regex) || [];
 		},
 		
 		
@@ -50677,7 +50461,7 @@ _RiTa_LTS=[
 			var parts = this._text.split(separator, limit);
 			var rs = [];
 			for ( var i = 0; i < parts.length; i++) {
-				if (!undef(parts[i]))
+				if (parts[i])
 					rs.push(new RiString(parts[i]));
 			}
 			return rs;  
@@ -50738,7 +50522,7 @@ _RiTa_LTS=[
 			var parts = this._text.split(E);
 			var rs = [];
 			for ( var i = 0; i < parts.length; i++) {
-				if (!undef(parts[i]))
+				if (parts[i])
 					rs.push(parts[i]);
 			}
 			return rs;
@@ -50836,60 +50620,61 @@ _RiTa_LTS=[
 
 	RiGrammar.prototype = {
 
-		/**
-		 * Initializes a grammar, optionally accepting an object or JSON string containing the rules
-		 * 
-		 * @param  {none | string | object } grammar containing the grammar rules
-		 */
 		init : function(grammar) {
 			
 			(arguments.length == 0 || is(grammar,S) || ok(grammar, O)); 
 			
 			this._rules = {};
+			this.loading = false; // ?
 			this._execDisabled = false;
 			grammar && this.load(grammar);  
 		},
 	
-		/**
-		 * Loads a JSON grammar from a file or 'url', replacing any existing grammar. 
-		 * @param {string} url of file containing the grammar rules
-		 * @returns {object} this RiGrammar
-		 */
-		loadFromFile : function(url) {
+		loadFromFile : function(url, callback, forceNoJQuery) {
 			
-			err("RiGrammar.loadFromFile: not yet implemented in JS");
+			var g = this, cbfun = function(str) {
+				//console.log("loadFromFile: "+str);
+				g.load(str);
+				g.loading = false;
+				callback && (callback.call());
+			};
 			
-			// this.reset();
-			
+			if (!forceNoJQuery && (typeof $ != 'undefined') && is($.getJSON, F)) {
+				
+				//log("using jquery: "+this.loading);
+				g.loading = true;
+				$.ajax({
+					url: url,
+					timeout: 2000,
+					dataType: "json",
+					success: cbfun
+				});
+			}
+			else {
+				//log("using RiTa!");
+				RiTa.loadString(url, cbfun);
+			}
+
 			return this;
-			
+		},
+		
+		openEditor : function() {
+			warn("Not yet implemented in JavaScript");
+			return this;
 		},
 	
-		/**
-		 * inits a grammar from an object or JSON string containing the rules (rather than a file)
-		 * and replacing any existing grammar. 
-		 * @param  {string | object} grammar containing the grammar rules
-		 * @returns {object} this RiGrammar
-		 */
 		load : function(grammar) {
 			
 			this.reset();
 			
-			grammar = (typeof grammar == S) ?  JSON.parse(grammar) : grammar 
+			grammar = (typeof grammar == S) ? JSON.parse(grammar) : grammar 
 			
 			for (var rule in grammar) 
 				this.addRule(rule, grammar[rule]);
 			
 			return this;
-			
 		},
 		
-		
-		/**
-		 * Deletes the named rule from the grammar
-		 * @param {String} the rule name
-		 * @returns {object} this RiGrammar
-		 */ 
 		removeRule : function(name)  {
 			
 			name = this._normalizeRuleName(name);
@@ -50907,25 +50692,18 @@ _RiTa_LTS=[
 
 		},
 		
-		/**
-		 * Adds a rule to the existing grammar, replacing any existing rule with the same name 
-		 * @param {string} name
-		 * @param {string} ruleStr
-		 * @param {number} weight
-		 * @returns {object} this RiGrammar
-		 */
 		addRule : function(name, ruleStr, weight) 
 		{
 			var dbug = false;
 	
-			weight = (undef(weight) ? 1.0 : weight); // default
+			weight = !weight ? 1.0 : weight; // default
 
 			name = this._normalizeRuleName(name);
 
-			if (dbug) log("addRule: "+name+ " -> "+ruleStr+" ["+weight+"]");
-			
-			var ruleset = ruleStr.split(RiGrammar.OR_PATT);
+			if (dbug) log("addRule: "+name+ " -> '"+ruleStr+"'       ["+(typeof ruleStr)+"]");
 
+			var ruleset = is(ruleStr,A) ? ruleStr : ruleStr.split(RiGrammar.OR_PATT);
+			
 			for ( var i = 0; i < ruleset.length; i++) {
 				
 				var rule = ruleset[i];
@@ -50950,22 +50728,16 @@ _RiTa_LTS=[
 					temp[rule] = prob;
 				} 
 				else {
-					
-					// log("new rule");
 					var temp2 = {};
 					temp2[rule] = prob;
 					this._rules[name] = temp2;
 					if (dbug)log("added rule: "+name);
 				}
 			}
-			return this;
 			
+			return this;
 		},
-	  
-		/**
-		 * Clears all rules in the current grammar
-		 * @returns {object} this RiGrammar
-		 */
+	
 		reset : function() {
 			
 		   this._rules = {};
@@ -50973,11 +50745,6 @@ _RiTa_LTS=[
 		   
 		},
 
-		/**
-		 * Returns the requested rule
-		 * @param {string} rule name
-		 * @returns {string} the rule
-		 */
 		doRule : function(pre) {
 
 			var cnt = 0, name = E, result = E,
@@ -50991,12 +50758,7 @@ _RiTa_LTS=[
 			
 			return (cnt == 1) ? name : this._getStochasticRule(rules); 
 		},
-					  
-		/**
-		 * Returns the requested rule
-		 * @param {string} rule name
-		 * @returns {string} the rule
-		 */
+
 		getRule : function(pre) {
 
 			var cnt = 0, name = E, result = E,
@@ -51019,10 +50781,6 @@ _RiTa_LTS=[
 			return result;
 		},
 		
-		/**
-		 * Returns the grammar as a string 
-		 * @returns {string} representation of the grammar
-		 */
 		getGrammar : function() { 
 			var s = E;
 			for (var name in this._rules) {
@@ -51035,10 +50793,6 @@ _RiTa_LTS=[
 			return s;
 		},
 			
-		/**
-		 * Prints the grammar rules to the console in human-readable format (useful for debugging) 
-		 * @returns {object} this RiGrammar
-		 */
 		print : function() {  
 			
 			if (console) {
@@ -51050,11 +50804,6 @@ _RiTa_LTS=[
 			
 		},
 		
-		/**
-		 * Returns true if the requested rule exists in the grammar, else false
-		 * @param {string} the rule name
-		 * @returns {boolean} true if the rule exists in the grammar, else false
-		 */
 		hasRule : function(name) {
 			
 			//log("hasRule("+name+")");
@@ -51063,18 +50812,6 @@ _RiTa_LTS=[
 			
 		},
 		
-		/**
-		 * Expands the grammar after replacing an instance of the non-terminal
-		 * 'symbol' with the String in 'literal'.
-		 * <P>
-		 * Guarantees that 'literal' will be in the final expanded String, 
-		 * assuming at least one instance of 'symbol' in the Grammar.
-		 * 
-		 * @param literal
-		 * @param symbol
-		 * 
-		 * @returns {string} expanded text
-		 */
 		expandWith : function(literal, symbol) { // TODO: finish 
 
 			var gr = this._copy();
@@ -51103,10 +50840,6 @@ _RiTa_LTS=[
 			
 		},
 		
-		/**
-		 * @param input
-		 * @returns this
-		 */
 		_handleExec : function(input) { // TODO: private
 					   
 			//console.log("handleExec: "+input);
@@ -51133,13 +50866,6 @@ _RiTa_LTS=[
 			return input;
 		},
 		
-				
-		/**
-		 * Expands a grammar from its '<start>' symbol
-		 * @param {string} (optional) One or more function to be added to the current context BEFORE 
-		 * executing the expand() call. Useful for defining functions referenced in back-ticked rules.
-		 * @returns {string}
-		 */
 		expand : function(funs) {
 
 			funs && RiTa._eval(funs);
@@ -51148,15 +50874,7 @@ _RiTa_LTS=[
 		}, 
 		
 		// TODO: reconsider
-		
-		/**
-		 * Expands the grammar, starting from the given symbol.
-		 * RiGrammar.expand() is equivalent to RiGrammar.expandFrom('').
-		 * 
-		 * @param {string} rule
-		 * @returns {string}
-		 * 
-		 */
+
 		expandFrom : function(rule) {
 			
 			//log("expandFrom("+rule+")");
@@ -51216,8 +50934,6 @@ _RiTa_LTS=[
 
 					if (dbug) log("  pre=" + pre+"  expanded=" + expanded+"  post=" + post+"  result=" + pre + expanded + post);
 					
-//					var tmp = (pre + SP + expanded + SP + post);
-
 					result.push(pre,expanded,post);
 
 					var ok = result.join(SP);
@@ -51244,7 +50960,7 @@ _RiTa_LTS=[
 			if (!endsWith(pre,RiGrammar.CLOSE_RULE_CHAR))
 				pre += RiGrammar.CLOSE_RULE_CHAR;
 
-			if (pre.indexOf('>>')>0) err(">>");
+			if (pre.indexOf('>>')>0) err(">>"); // ?
 			
 			return pre;
 			
@@ -51916,7 +51632,7 @@ _RiTa_LTS=[
 		if (!txt || !txt.length) return EA;
 
 		h = h || Number.MAX_VALUE;
-	    w = w || g ? g._width()-x : Number.MAX_VALUE-x;
+	    w = w || (g ? g._width()-x : Number.MAX_VALUE-x);
 		pfont = pfont || RiText.defaultFont();
 		leading = leading || pfont.size * RiText.defaults.leadingFactor;
 
@@ -51924,7 +51640,7 @@ _RiTa_LTS=[
 			return RiText._layoutArray(txt, x, y, w, h, pfont, leading);
 
 		var ascent, descent, leading, startX = x, currentX, currentY, 
-			rlines = [], sb = E, words = [], next, yPos = 0, rt = undef,
+			rlines = [], sb = E, words = [], next, yPos = 0, rt = null,
 			newParagraph = false, forceBreak = false, firstLine = true, 
 			maxW = x + w, maxH = y + h;
 
@@ -52947,7 +52663,7 @@ _RiTa_LTS=[
 			
 			var tags = this._rs.pos();
 
-			if (undef(tags) || tags.length == 0 || index < 0 || index >= tags.length)
+			if (!tags || !tags.length || index < 0 || index >= tags.length)
 				return E;
 			
 			return tags[index];
@@ -53131,7 +52847,7 @@ _RiTa_LTS=[
 			var parts = this._rs._text.split(separator, limit);
 			var rs = [];
 			for ( var i = 0; i < parts.length; i++) {
-				if (!undef(parts[i]))
+				if (parts[i])
 					rs.push(new RiText(parts[i]));
 			}
 			return rs;
@@ -54939,7 +54655,7 @@ _RiTa_LTS=[
 		
 		isRoot : function() {
 			
-			return undef(this.parent);
+			return !this.parent;
 		},
 		
 		isLeaf : function() {
@@ -55575,7 +55291,7 @@ _RiTa_LTS=[
 				
 				var data = lex._getPosArr(words[i]);
 
-				if (undef(data) || data.length == 0) {
+				if (!data || !data.length) {
 					
 					if (words[i].length == 1) {
 						
@@ -58401,12 +58117,10 @@ _RiTa_LTS=[
 	
 	function okeys(obj) {
 	
-		
 		var keys = [];  // replaces Object.keys();
 		for(var k in obj) keys.push(k);
 		return keys;
 	}
-
    
 	function dump(obj) {
 
@@ -58441,7 +58155,7 @@ _RiTa_LTS=[
 
 	function undef(obj) {
 		
-		return (typeof obj === 'undefined' || obj === null);
+		return (typeof obj=='undefined' || obj == null);
 	}
 
 	function err(msg) {
@@ -58666,9 +58380,9 @@ _RiTa_LTS=[
 	// Canvas Renderer
 	else if (typeof document !== 'undefined') {
 		
-		var cnv = document.getElementsByTagName("canvas")[0];
+		var cnv = document.getElementsByTagName('canvas')[0];
 		try {
-			var context2d = cnv.getContext("2d");
+			var context2d = cnv.getContext('2d');
 			RiText.renderer = new RiText_Canvas(context2d);
 		}
 		catch(e) {
@@ -58679,12 +58393,12 @@ _RiTa_LTS=[
 		RiText.renderer = RiText_Node();
 	}
 	else {
-		warn("Unknown env. (not Processing, Node, Canvas) -- renderer is null");
+		warn('Unknown Env: not Processing, Node, or Canvas; renderer is null');
 		RiText.renderer = RiText_Node();
 	}
 	
 	if (!RiTa.SILENT)
-		console && console.log("[INFO] RiTaJS.version ["+RiTa.VERSION+"]");
+		console && console.log('[INFO] RiTaJS.version ['+RiTa.VERSION+']');
 	
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// Core RiTa objects (in global namespace)
