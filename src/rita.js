@@ -1046,8 +1046,7 @@
 						err("[Node] Error reading file: "+url);
 						throw e;
 					}	
-   					text = data.toString().replace(/[\r\n]+/g, lb);
-					text = htmlDecode(text);
+   					text = data.toString().replace(/[\r\n]+/g, lb).trim();
 					callback.call(this, text);
 				});
 				return;
@@ -2296,11 +2295,11 @@
 
 				if (typeof _RiTa_DICT != 'undefined') {
 
-					log('[RiTa] Loading lexicon data...');
+					//log('[RiTa] Loading lexicon data...');
 
 					RiLexicon.data = {}; // TODO: test perf. of this
 					for (var word in _RiTa_DICT) {
-						RiLexicon.data[word] = _RiTa_DICT[word];
+						RiLexicon.data[word] = _RiTa_DICT[word]; // needed?
 					}
 				} else {
 
@@ -3937,7 +3936,7 @@
 		},
 	
 		load : function(grammar) {
-			
+
 			this.reset();
 			
 			grammar = (typeof grammar == S) ? JSON.parse(grammar) : grammar 
