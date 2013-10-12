@@ -438,6 +438,7 @@
 	    INTERNAL : "Internal",
 		LERP : "Lerp",
 
+	  	JAVA : 1, JS : 2, NODEJS : 3,
   			
 		// :::: RiText Constants  ::::::::: 
 
@@ -1279,12 +1280,7 @@
 			
 		},
 		
-		/**
-		 * Returns true if any character of 'text' is a punctuation character
-		 * 
-		 * @param {string} text input
-		 * @returns {boolean}
-		 */
+
 		// TEST: PUNCTUATION : "����`'""\",;:!?)([].#\"\\!@$%&}<>|+=-_\\/*{^",
 		hasPunctuation : function(text) { 
 			
@@ -1293,74 +1289,35 @@
 			return ONLY_PUNCT.test(text); 
 		},
 
-		/**
-		 * Returns a string containing all phonemes for the input text
-		 * 
-		 * @param {string | array} words to analyze
-		 * @returns {string}  e.g., "dh-ax-d-ao-g-r-ae-n-f-ae-s-t"
-		 */
+		env : function() {
+
+			return isNode() ? RiTa.NODE : RiTa.JS;
+			
+		},
+
 		getPhonemes : function(words) {
 
 			return RiString(words).analyze().get(RiTa.PHONEMES);
 			
 		},
 
-		/**
-		 * Analyzes the given string and returns a new string containing the stresses
-		 *  for each syllable of the input text 
-		 * 
-		 * @param {string | array} words to analyze
-		 * 
-		 * @returns {string}  e.g., "01-0-1", with 1's meaning 'stressed', 
-		 *      and 0's meaning 'unstressed', 
-		 */
 		getStresses : function(words) {
 
 			return RiString(words).analyze().get(RiTa.STRESSES);
 		},
 
-		/**
-		 * Analyzes the given string, Returns a String containing the phonemes for each syllable of
-		 * each word of the input text,  delimited by dashes (phonemes) and spaces (words) 
-		 * 
-		 * @param {string | array} words to analyze
-		 * 
-		 * @returns {string} e.g., "dh-ax d-ao-g r-ae-n f-ae-s-t" 
-		 *  for the 4 syllables of the phrase 'The dog ran fast'
-		 */
 		getSyllables : function(words) {
 
 			return RiString(words).analyze().get(RiTa.SYLLABLES);
 
 		},
 		
-		/**
-		 * Returns the # of words in the String according to the default tokenizer.
-		 * 
-		 * @param {string} words the string to analyze
-		 * 
-		 * @returns {number}
-		 */
 		getWordCount : function(words) {
 			
 			return RiTa.tokenize(words).length;
 
 		},
-		
-		/**
-		 * Extracts base roots from a word according to the specified stemming algorithm
-		 * <p>
-		 * Note: see http://text-processing.com/demo/stem/ for comparison of 
-		 * Lancaster and Porter algorithms or  http://mpii.de/yago-naga/javatools 
-		 * for info on PlingStemmer
-		 * 
-		 * @param {string} word the word to analyze
-		 * 
-		 * @param {string} type one of ['Lancaster' (the default), 'Porter', or 'Pling'] 
-		 *  to specify the stemming algorithm to use
-		 * 
-		 * @returns {string} the stemmed form of 'word'
-		 */
+
 		stem : function(word, type) {
 			
 			type = type || 'Lancaster';  // USE CONSTANTS
