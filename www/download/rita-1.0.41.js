@@ -49065,30 +49065,34 @@ _RiTa_LTS=[
 			input = input.toLowerCase();
 			minAllowedDist = minAllowedDist || 1;
 			preserveLength = preserveLength || false;
+			
+			var med, inputS = input + 's', inputES = input + 'es', inputLen = input.length;
 
 			for (var entry in RiLexicon.data) {
 
-				if (preserveLength && entry.length != input.length || entry.length < minLen) 
+				if (entry.length < minLen) 
+					continue;
+					
+				if (preserveLength && (entry.length != inputLen)) 
 					continue;
 
-				entry = entry.toLowerCase();
-
-				if (entry == input || entry == (input + "s") || entry == (input + "es")) 
+				if (entry == input || entry == inputS || entry == inputES) 
 					continue;
 
-				var med = MinEditDist.computeRaw(entry, input);
+				med = MinEditDist.computeRaw(entry, input);
 
-				if (med == 0) continue; // same word
+				if (!med) continue; // same word (shouldnt happen)
 
 				// we found something even closer
 				if (med >= minAllowedDist && med < minVal) {
 
 					minVal = med;
-					result = [entry];
+					result = [ entry ];
 				}
 
 				// we have another best to add
 				else if (med == minVal) {
+					
 					result.push(entry);
 				}
 			}
@@ -56747,11 +56751,9 @@ _RiTa_LTS=[
 
 			// Step 1 ----------------------------------------------
 
-			if (srcArr.length == 0) return trgArr.length;
+			if (!srcArr.length) return trgArr.length;
 
-			if (trgArr.length == 0) return srcArr.length;
-
-			//matrix = new var[srcArr.length + 1][trgArr.length + 1];
+			if (!trgArr.length) return srcArr.length;
 
 			// Step 2 ----------------------------------------------
 
@@ -56766,14 +56768,13 @@ _RiTa_LTS=[
 			// Step 3 ----------------------------------------------
 
 			//String[] srcArr = RiFreeTTSEngine.cleanPhonemes(srcArr);    
-			for (var i = 1; i <= srcArr.length; i++)
-			{
+			for (var i=1, j=srcArr.length; i<=j; i++) {
+			
 				sI = srcArr[i - 1];
 
 				// Step 4 --------------------------------------------
-
-				for (var j = 1; j <= trgArr.length; j++)
-				{
+				for (var j=1, k=trgArr.length; j<=k; j++) {
+				
 					tJ = trgArr[j - 1];
 
 					// Step 5 ------------------------------------------
@@ -56781,7 +56782,8 @@ _RiTa_LTS=[
 					cost = (sI === tJ) ? 0 : 1;
 
 					// Step 6 ------------------------------------------
-					matrix[i][j] = this._min3 (matrix[i - 1][j] + 1, 
+					matrix[i][j] = this._min3(
+						matrix[i - 1][j] + 1, 
 						matrix[i][j - 1] + 1, 
 						matrix[i - 1][j - 1] + cost);
 				}
@@ -56799,28 +56801,23 @@ _RiTa_LTS=[
 		 */ 
 		computeRaw : function(source, target) { 
 
-			var st = Type.get(source), tt = Type.get(source);
-			
-			if (st!=tt) err('Unexpected args: '+source+"/"+target);
-
-			if (tt===A) return this._computeRawArray(source, target);
+			if (Type.get(source)===A) return this._computeRawArray(source, target);
 			
 			if (!source.length && !target.length) return 0;
 
 			var matrix = []; // matrix
+			var cost; // cost
 			var sI; // ith character of s
 			var tJ; // jth character of t
-			var cost; // cost
-
+			
 			// Step 1 ----------------------------------------------
+			
 			var sourceLength = source.length;
 			var targetLength = target.length;
 
-			if (sourceLength == 0) return targetLength;
+			if (!sourceLength) return targetLength;
 
-			if (targetLength == 0) return sourceLength;
-
-			//matrix = new int[sourceLength + 1][targetLength + 1];
+			if (!targetLength) return sourceLength;
 
 			// Step 2 ----------------------------------------------
 
@@ -56836,7 +56833,6 @@ _RiTa_LTS=[
 
 			for (var i = 1; i <= sourceLength; i++)
 			{
-
 				sI = source.charAt(i - 1);
 
 				// Step 4 --------------------------------------------
@@ -56850,7 +56846,8 @@ _RiTa_LTS=[
 					cost = (sI == tJ) ? 0 : 1;
 
 					// Step 6 ------------------------------------------
-					matrix[i][j] = this._min3(matrix[i - 1][j] + 1, 
+					matrix[i][j] = this._min3(
+						matrix[i - 1][j] + 1, 
 						matrix[i][j - 1] + 1, 
 						matrix[i - 1][j - 1] + cost);
 				}
@@ -56872,20 +56869,21 @@ _RiTa_LTS=[
 			if (st===tt) {
 
 				if (tt===S) {
+					
 					if (!source.length && !target.length) return 0;
 					//log(this.computeRaw(source, target)+'/'+(source.length + target.length));
 					return this.computeRaw(source, target) / (source.length + target.length);
 				}
 				else if (tt===A) {
+					
 					if (!source.length && !target.length) return 0;
 					//log(_computeRawArray(source, target)+'/'+(source.length + target.length));
 					return this._computeRawArray(source, target) / (source.length + target.length);
 				}
 			}
-			err('Unexpected args: '+source+"/"+target);
 			
+			err('Unexpected args: '+source+"/"+target);
 		}
-		
 	}
 
 	//////////////////////////////////////////////////////////////////
