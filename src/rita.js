@@ -802,7 +802,7 @@
 			else if (PosTagger.isAdj(tag))
 				return  'a';
 			else  {
-				warn("[WARN] "+tag+" is not a valid pos-tag");
+				warn(tag+" is not a valid pos-tag");
 				return  '-';
 			}
 		},
@@ -1034,7 +1034,7 @@
 			
 			var lb = linebreakChars || SP, text;
 			
-			//log('loadString('+url+');');
+			// log('loadString('+url+');');
 			
 			// TODO: test with URLS and in all browser/platforms...
 			
@@ -1044,7 +1044,7 @@
 				var rq = require('fs');
 				rq.readFile(url, function(e, data) {
 					if (e || !data) {
-						err("[Node] Error reading file: "+url);
+						err("[Node] Error reading file: "+url+"\n"+e);
 						throw e;
 					}	
    					text = data.toString().replace(/[\r\n]+/g, lb).trim();
@@ -1291,7 +1291,7 @@
 
 		env : function() {
 
-			return isNode() ? RiTa.NODE : RiTa.JS;
+			return isNode() ? RiTa.NODEJS : RiTa.JS;
 			
 		},
 
@@ -1664,7 +1664,7 @@
 			
 			// uh-oh, we failed
 			if (tries >= maxTries) 
-				err("\n[WARN] RiMarkov failed to complete after "+tries+" attempts\n");
+				err("\nRiMarkov failed to complete after "+tries+" attempts\n");
 
 			return tokens;
 
@@ -1701,7 +1701,7 @@
 
 			// uh-oh, looks like we failed...
 			if (tokens.length < targetNumber) {
-				err("\n[WARN] RiMarkov failed to complete after " + tries 
+				err("\nRiMarkov failed to complete after " + tries 
 					+" tries, with only " + tokens.length + " successful generations...\n");
 			}
 
@@ -1907,14 +1907,14 @@
 		    if (!this.allowDuplicates) 
 		    {
 		      if (!this.isSentenceAware) {
-		        err("[WARN] Invalid state: allowDuplicates must be"
+		        err("Invalid state: allowDuplicates must be"
 		        	 +" true when not generating sentences");
 		      }
 		      
 		      if (this.sentenceList.indexOf(sent)>-1) 
 		      {
 		        if (++this.skippedDups == this.maxDuplicatesToSkip) {
-		          log("[WARN] Hit skip-maximum (RiMarkov.maxDuplicatesToSkip="+this.maxDuplicatesToSkip
+		          warn("Hit skip-maximum (RiMarkov.maxDuplicatesToSkip="+this.maxDuplicatesToSkip
 		              +") after skipping "+ this.maxDuplicatesToSkip+", now allowing duplicates!");
 		          this.allowDuplicates = true;	
 		        }
@@ -1993,9 +1993,9 @@
 		          //System.out.println("selector >= pTotal\n====================");
 		        }
 		        attempts++; 
-		        console.log("[WARN] Prob. miss (#"+attempts+") in RiMarkov.nextNode()."
+		        warn("Prob. miss (#"+attempts+") in RiMarkov.nextNode()."
 		        		+ " Make sure there are a sufficient\n       # of sentences"
-		        		+ " in the model that are longer than your minSentenceLength.");
+		        		+ " in the model that are longer than 'minSentenceLength'");
 		        if (attempts == MAX_PROB_MISSES)
 		          err  // should never happen
 		            ("PROB. MISS"+current+ " total="+pTotal+" selector="+selector);  
@@ -2009,8 +2009,8 @@
 		
 		_onGenerationIncomplete : function(tries, successes) {
 			
-    		if (!RiTa.SILENT) console.log("\n[WARN] RiMarkov failed to complete after "+tries
-      			+" tries\n       Giving up after "+successes+" successful generations...\n");
+    		if (!RiTa.SILENT) warn("\nRiMarkov failed to complete after " + tries +
+    			" tries\n       Giving up after "+successes+" successful generations\n");
   		},	
 
 		/**
@@ -2041,7 +2041,7 @@
 
 				if (!this._validSentenceStart(tokens[0])) {
 					if (this.printIgnoredText)
-						warn("[WARN] Skipping (bad sentence start): " + tokens);
+						warn("Skipping (bad sentence start): " + tokens);
 					continue;
 				}
 				
@@ -2535,7 +2535,7 @@
 			
 			matchMinLength = matchMinLength || 4;
 			
-			if (this.containsWord(word)) {
+			if (this.containsWord(word)) { // RODO: else useLTS ??
 
 				var c2, entry, results = [];
 				var c1 = this._firstConsonant(this._firstStressedSyllable(word));
@@ -2550,6 +2550,8 @@
 				}
 				return results; 
 			}
+
+			
 			return EA;
 		},
 
@@ -3494,7 +3496,7 @@
 			var s = this.text();
 			
 			if (idx > s.length || idx < -s.length) {
-				console.warn("RiString.insertChar: bad index="+idx);
+				warn("RiString.insertChar: bad index="+idx);
 				return this;
 			}
 
@@ -3519,7 +3521,7 @@
 			var s = this.text();
 			
 			if (idx > s.length || idx < -s.length) {
-				console.warn("RiString.removeChar: bad index="+idx);
+				warn("RiString.removeChar: bad index="+idx);
 				return this;
 			}
 			idx = idx < 0 ? idx += s.length : idx;
@@ -3542,7 +3544,7 @@
 			var s = this.text();
 			
 			if (idx > s.length || idx < -s.length) {
-				console.warn("RiString.replaceChar: bad index="+idx);
+				warn("RiString.replaceChar: bad index="+idx);
 				return this;
 			}
 			idx = idx < 0 ? idx += s.length : idx;
@@ -4069,7 +4071,7 @@
 				if (s.indexOf(literal)>-1)
 					return s;
 			}
-			err("\n[WARN] RiGrammar failed to complete after "+tries+" tries\n");
+			err("RiGrammar failed to complete after "+tries+" tries\n");
 			
 		},
 		
@@ -4400,7 +4402,7 @@
 			  } catch(ex) {
 				  
 				if (!an.callbackDisabled) {
-					console.warn("Unable to invoke callback: "+callback);
+					warn("Unable to invoke callback: "+callback);
 					an.callbackDisabled = true;
 				}
 				
@@ -4542,7 +4544,7 @@
 		if (!e) var e = window.event;
 		
 		if (!e && !RiText.mouse.printedWarning) { 
-			console.warn("No mouse-position without event!");
+			warn("No mouse-position without event!");
 			RiText.mouse.printedWarning = true;
 		}        
 		
@@ -5056,7 +5058,7 @@
 					xPos = rt.x - tw;
 					break;
 				case RiTa.CENTER:
-					console.warn("TODO: test center-align here");
+					warn("TODO: test center-align here");
 					xPos = rt.x; // ?
 					break;
 			}
@@ -6798,7 +6800,7 @@
 			if (!LetterToSound.RULES) LetterToSound.RULES = _RiTa_LTS;
 			
 			if (!LetterToSound.RULES.length) 
-				throw Error("No LTS-rules found!");
+				throw Error("[RiTa] No LTS-rules found!");
 			
 			// add the rules to the object (static?)
 			for ( var i = 0; i < LetterToSound.RULES.length; i++) {
@@ -6954,7 +6956,8 @@
 			
 			// must check for null here, not 0
 			if (startIndex==null) {
-				warn("Unable to generate LTS for '"+word+"'\nNo LTS index for character: '"+c + "', isDigit=" + isNum(c) + ", isPunct=" + RiTa.isPunctuation(c));
+				warn("Unable to generate LTS for '"+word+"'\n       No LTS index for character: '"
+					+ c + "', isDigit=" + isNum(c) + ", isPunct=" + RiTa.isPunctuation(c));
 				return null;
 			}
 
@@ -7273,7 +7276,7 @@
 		
 		_getGraphics : function() {
 			
-			console.warn("NodeRenderer._getGraphics() returning null graphics context!");
+			warn("NodeRenderer._getGraphics() returning null graphics context!");
 			return null;
 		},
 		
@@ -7294,15 +7297,15 @@
 		},
 		
 		_scale : function(sx, sy) {
-			//console.warn("scale("+sx+","+sy+") not yet implemented");
+			//warn("scale("+sx+","+sy+") not yet implemented");
 		},
 		
 		_translate : function(tx, ty) {
-			//console.warn("translate("+tx+","+ty+") not yet implemented");
+			//warn("translate("+tx+","+ty+") not yet implemented");
 		},
 		
 		_rotate : function(zRot) {
-			//console.warn("rotate() not yet implemented");
+			//warn("rotate() not yet implemented");
 		},
 		
 		_text : function(str, x, y) {
@@ -7355,7 +7358,7 @@
 					if (c == '\n' || c == '\r') continue;
 					var k = this.font.widths[c];
 					if (!k) {
-					  console.error("[WARN] No glyph for \""+c+"\"in word: "+str);
+					  warn("No glyph for \""+c+"\"in word: "+str);
 					  k = def;
 					}
 					w += k;
@@ -7504,7 +7507,7 @@
 			
 			this.ctx.canvas.width = w;
 			this.ctx.canvas.height = h;
-			if (renderer) console.warn("Renderer arg ignored");
+			if (renderer) warn("Renderer arg ignored");
 		},
 		
 		_createFont : function(fontName, fontSize) {
@@ -9675,11 +9678,12 @@
 		
 	})();
 	
-	// TODO: remove these 
+	// TODO: remove these eventually
 	
 	Array.prototype._arrayContains = function (searchElement ) {
 		return Array.prototype.indexOf(searchElement) > -1;
 	} 
+	
 	String.prototype._endsWith = function(suffix) {
 		return this.indexOf(suffix, this.length - suffix.length) !== -1;
 	};
@@ -9741,14 +9745,10 @@
 		var categoryIRR = ["beefs", "beef", "beeves", "beef", "brethren", "brother", "busses", "bus", "cattle", "cattlebeast", "children", "child", "corpora", "corpus", "ephemerides", "ephemeris", "firemen", "fireman", "genera", "genus", "genies", "genie", "genii", "genie", "kine", "cow", "lice", "louse", "men", "man", "mice", "mouse", "mongooses", "mongoose", "monies", "money", "mythoi", "mythos", "octopodes", "octopus", "octopuses", "octopus", "oxen", "ox", "people", "person", "soliloquies", "soliloquy", "throes", "throes", "trilbys", "trilby", "women", "woman"];
 	
 		/** Tells whether a noun is plural. */
-		function isPlural(s) {
-			return (!s === stem(s));
-		}
+		function isPlural(s) { return (!s === stem(s)); }
 	
 		/** Tells whether a word form is singular. Note that a word can be both plural and singular */
-		function isSingular(s) {
-			return (categorySP._arrayContains(s.toLowerCase()) || !isPlural(s));
-		}
+		function isSingular(s) { return (categorySP._arrayContains(s.toLowerCase()) || !isPlural(s)); }
 	
 		/**
 		 * Tells whether a word form is the singular form of one word and at
@@ -9939,11 +9939,6 @@
 		
 	})();
 
-
-	//////////////////////////////////////////////////////////////////
-	//////// MinEditDist (singleton)
-	////////////////////////////////////////////////////////////////
-
 	/**
 	 * Minimum-Edit-Distance (or Levenshtein distance) is a measure of the similarity 
 	 * between two strings, the source string and the target string (t). The distance 
@@ -9978,6 +9973,7 @@
 			var sI; // ith element of s
 			var tJ; // jth element of t
 			var cost; // cost
+			var i, j, sl, tl;
 
 			// Step 1 ----------------------------------------------
 
@@ -9987,23 +9983,24 @@
 
 			// Step 2 ----------------------------------------------
 
-			for (var i = 0; i <= srcArr.length; i++) {
+			for (i = 0, sl=srcArr.length; i<=sl; i++) {
+
 				matrix[i] = [];
 				matrix[i][0] = i;
 			}
 
-			for (var j = 0; j <= trgArr.length; j++)    
+			for (j=0, tl=trgArr.length; j<=tl; j++) 
 				matrix[0][j] = j;
 
 			// Step 3 ----------------------------------------------
 
-			//String[] srcArr = RiFreeTTSEngine.cleanPhonemes(srcArr);    
-			for (var i=1, j=srcArr.length; i<=j; i++) {
+			for (i=1, sl=srcArr.length; i<=sl; i++) {
 			
 				sI = srcArr[i - 1];
 
 				// Step 4 --------------------------------------------
-				for (var j=1, k=trgArr.length; j<=k; j++) {
+				
+				for (j=1, tl=trgArr.length; j<=tl; j++) {
 				
 					tJ = trgArr[j - 1];
 
@@ -10012,6 +10009,7 @@
 					cost = (sI === tJ) ? 0 : 1;
 
 					// Step 6 ------------------------------------------
+					
 					matrix[i][j] = this._min3(
 						matrix[i - 1][j] + 1, 
 						matrix[i][j - 1] + 1, 
@@ -10027,7 +10025,6 @@
 		
 		/**
 		 * Compute min-edit-distance between 2 strings
-		 * @see MinEditDist#computeAdjusted(java.lang.String,java.lang.String)
 		 */ 
 		computeRaw : function(source, target) { 
 
@@ -10096,7 +10093,7 @@
 		computeAdjusted : function(source, target) {
 
 			var st = Type.get(source), tt = Type.get(source);
-			if (st===tt) {
+			if (st === tt) {
 
 				if (tt===S) {
 					
@@ -10216,7 +10213,6 @@
 				if ( _valuesEnd[ property ] instanceof Array ) {
 	
 					if ( _valuesEnd[ property ].length === 0 ) {
-	
 						continue;
 					}
 	
@@ -10228,42 +10224,36 @@
 			}
 	
 			return this;
-	
 		}
 	
 		this.stop = function () {
 	
 			if (_parent) _parent.stopBehavior( this );
 			return this;
-	
 		}
 	
 		this.delay = function ( amount ) {
 	
 			_delayTime = amount;
 			return this;
-	
 		}
 	
 		this.easing = function ( easing ) {
 	
 			_easingFunction = easing;
 			return this;
-	
 		}
 	
 		this.interpolation = function ( interpolation ) {
 	
 			_interpolationFunction = interpolation;
 			return this;
-	
 		}
 	
 		this.chain = function ( chainedTween ) {
 	
 			_chainedTween = chainedTween;
 			return this;
-	
 		}
 	
 		this.onUpdate = function ( onUpdateCallback ) {
@@ -10277,7 +10267,6 @@
 	
 			_onCompleteCallback = onCompleteCallback;
 			return this;
-	
 		}
 	
 		this.update = function ( time ) {
@@ -11397,8 +11386,11 @@
 		
 		if (RiTa.SILENT || !console) return;
 		
-		for ( var i = 0; i < arguments.length; i++) 
-			console.warn(arguments[i]);
+		if (arguments && arguments.length) {
+			console.warn("[WARN] "+arguments[0]);
+			for (var i = 1; i < arguments.length; i++) 
+				console.warn('  '+arguments[i]);
+		}
 	}
  
 	function log() {
