@@ -1065,7 +1065,7 @@
 			function htmlDecode(input){
 				var e = document.createElement('div');
 				e.innerHTML = input;
-				return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+				return e.childNodes.length === 0 ? E : e.childNodes[0].nodeValue;
 			}
 			
 			document.body.appendChild(iframe);
@@ -2260,8 +2260,7 @@
 					}
 				} else {
 
-					err("Dictionary not found! Make sure to add it to your sketch:" 
-						+ ", e.g.,\n\n    <script src=\"path/to/rita_dict.js\"></script>");
+					err("Dictionary not found! Make sure to include it in your sketch...");
 				}
 			}
 		},
@@ -2358,7 +2357,7 @@
 					if (!phones) return EA;
 				}
 
-				phonesArr = phones.replace(/1/g, "").replace(/ /g, "-").split('-');
+				phonesArr = phones.replace(/1/g, E).replace(/ /g, "-").split('-');
 
 				med = MinEditDist.computeRaw(phonesArr, targetPhonesArr);
 
@@ -6938,17 +6937,18 @@
 		  }
 	
 		  // Create "000#word#000"
-		  tmp = "000#"+word.trim()+"#000", full_buff = tmp.split("");
+		  tmp = "000#"+word.trim()+"#000", full_buff = tmp.split(E);
 		  
 		  // For each character in the word, create a WINDOW_SIZE
 		  // context on each size of the character, and then ask the
-		  // state machine what's next. Its magic
+		  // state machine what's next
 		  for (var pos = 0; pos < word.length; pos++) {
 			  
 			for (var i = 0; i < LetterToSound.WINDOW_SIZE; i++) {
 				
 			  this.fval_buff[i] = full_buff[pos + i];
-			  this.fval_buff[i + LetterToSound.WINDOW_SIZE] = full_buff[i + pos + 1 + LetterToSound.WINDOW_SIZE];
+			  this.fval_buff[i + LetterToSound.WINDOW_SIZE] = 
+			  	full_buff[i + pos + 1 + LetterToSound.WINDOW_SIZE];
 			}
 			
 			c = word.charAt(pos);
@@ -8066,7 +8066,7 @@
 			this.person = RiTa.FIRST_PERSON;
 			this.number = RiTa.SINGULAR;
 			this.form = RiTa.NORMAL;
-			this.head = "";
+			this.head = E;
 
 		},
 
@@ -8675,58 +8675,51 @@
 	Stemmer.stem_Porter = (function() {
 		
 		var step2list = {
-				"ational" : "ate",
-				"tional" : "tion",
-				"enci" : "ence",
-				"anci" : "ance",
-				"izer" : "ize",
-				"bli" : "ble",
-				"alli" : "al",
-				"entli" : "ent",
-				"eli" : "e",
-				"ousli" : "ous",
-				"ization" : "ize",
-				"ation" : "ate",
-				"ator" : "ate",
-				"alism" : "al",
-				"iveness" : "ive",
-				"fulness" : "ful",
-				"ousness" : "ous",
-				"aliti" : "al",
-				"iviti" : "ive",
-				"biliti" : "ble",
-				"logi" : "log"
+				'ational' : 'ate',
+				'tional' : 'tion',
+				'enci' : 'ence',
+				'anci' : 'ance',
+				'izer' : 'ize',
+				'bli' : 'ble',
+				'alli' : 'al',
+				'entli' : 'ent',
+				'eli' : 'e',
+				'ousli' : 'ous',
+				'ization' : 'ize',
+				'ation' : 'ate',
+				'ator' : 'ate',
+				'alism' : 'al',
+				'iveness' : 'ive',
+				'fulness' : 'ful',
+				'ousness' : 'ous',
+				'aliti' : 'al',
+				'iviti' : 'ive',
+				'biliti' : 'ble',
+				'logi' : 'log'
 			},
 	
 			step3list = {
-				"icate" : "ic",
-				"ative" : "",
-				"alize" : "al",
-				"iciti" : "ic",
-				"ical" : "ic",
-				"ful" : "",
-				"ness" : ""
+				'icate' : 'ic',
+				'ative' : '',
+				'alize' : 'al',
+				'iciti' : 'ic',
+				'ical' : 'ic',
+				'ful' : '',
+				'ness' : ''
 			},
 	
-			c = "[^aeiou]",          // consonant
-			v = "[aeiouy]",          // vowel
-			C = c + "[^aeiouy]*",    // consonant sequence
-			V = v + "[aeiou]*",      // vowel sequence
+			c = '[^aeiou]',          // consonant
+			v = '[aeiouy]',          // vowel
+			C = c + '[^aeiouy]*',    // consonant sequence
+			V = v + '[aeiou]*',      // vowel sequence
 	
-			mgr0 = "^(" + C + ")?" + V + C,               // [C]VC... is m>0
-			meq1 = "^(" + C + ")?" + V + C + "(" + V + ")?$",  // [C]VC[V] is m=1
-			mgr1 = "^(" + C + ")?" + V + C + V + C,       // [C]VCVC... is m>1
-			s_v = "^(" + C + ")?" + v;                   // vowel in stem
+			mgr0 = '^(' + C + ')?' + V + C,                      // [C]VC... is m>0
+			meq1 = '^(' + C + ')?' + V + C + '(' + V + ')?$',  // [C]VC[V] is m=1
+			mgr1 = '^(' + C + ')?' + V + C + V + C,         // [C]VCVC... is m>1
+			s_v = '^(' + C + ')?' + v;                   // vowel in stem
 	
 		return function (w) {
-			var     stem,
-				suffix,
-				firstch,
-				re,
-				re2,
-				re3,
-				re4,
-				origword = w;
+			var stem, suffix, firstch, re, re2, re3, re4, origword = w;
 	
 			if (w.length < 3) { return w; }
 	
@@ -8750,7 +8743,7 @@
 				re = new RegExp(mgr0);
 				if (re.test(fp[1])) {
 					re = /.$/;
-					w = w.replace(re,"");
+					w = w.replace(re,E);
 				}
 			} else if (re2.test(w)) {
 				var fp = re2.exec(w);
@@ -8762,7 +8755,7 @@
 					re3 = new RegExp("([^aeiouylsz])\\1$");
 					re4 = new RegExp("^" + C + v + "[^aeiouwxy]$");
 					if (re2.test(w)) { w = w + "e"; }
-					else if (re3.test(w)) { re = /.$/; w = w.replace(re,""); }
+					else if (re3.test(w)) { re = /.$/; w = w.replace(re,E); }
 					else if (re4.test(w)) { w = w + "e"; }
 				}
 			}
@@ -8773,7 +8766,7 @@
 				var fp = re.exec(w);
 				stem = fp[1];
 				re = new RegExp(s_v);
-				if (re.test(stem)) { w = stem + "i"; }
+				if (re.test(stem)) w = stem + "i";
 			}
 	
 			// Step 2
@@ -8836,15 +8829,13 @@
 			re2 = new RegExp(mgr1);
 			if (re.test(w) && re2.test(w)) {
 				re = /.$/;
-				w = w.replace(re,"");
+				w = w.replace(re,E);
 			}
 	
 			// and turn initial Y back to y
 	
-			if (firstch == "y") {
-				w = firstch.toLowerCase() + w.substr(1);
-			}
-	
+			(firstch == "y") && (w = firstch.toLowerCase() + w.substr(1));
+				
 			return w;
 		}
 	})();
@@ -10145,7 +10136,7 @@
 		
 		analyze : function(word) {
 			
-			return ((this.suffix != "") && endsWith(word, this.suffix)) ? true : false;
+			return ((this.suffix != E) && endsWith(word, this.suffix)) ? true : false;
 		},
 		
 		truncate : function(word) {
@@ -10721,7 +10712,7 @@
 		RE("^brei", 0, "d", 0),
 		RE("^bring$", 3, "ought", 0),
 		RE("^build$", 1, "t", 0),
-		RE("^come", 0, "", 0),
+		RE("^come", 0, E, 0),
 		RE("^catch$", 3, "ught", 0),
 		RE("^chivy$", 1, "vied", 0),
 		RE("^choose$", 3, "sen", 0),
@@ -11032,7 +11023,7 @@
 			RE("^" + VERBAL_PREFIX + "?run$", 2, "an", 0),
 			RE("^ring$", 3, "ang", 0),
 			RE("^rebuild$", 3, "ilt", 0),
-			RE("^red", 0, "", 0),
+			RE("^red", 0, E, 0),
 			RE("^reave$", 4, "eft", 0),
 			RE("^remake$", 3, "ade", 0),
 			RE("^resit$", 3, "sat", 0),
@@ -11133,7 +11124,7 @@
 			RE("^" + VERBAL_PREFIX
 				+ "?(cast|thrust|typeset|cut|bid|upset|wet|bet|cut|hit|hurt|inset|"
 				+ "let|cost|burst|beat|beset|set|upset|offset|put|quit|wed|typeset|"
-				+ "wed|spread|split|slit|read|run|shut|shed|lay)$", 0, "", 0) ],
+				+ "wed|spread|split|slit|read|run|shut|shed|lay)$", 0, E, 0) ],
 
 		PRESENT_TENSE_RULES = [ 
 			RE("^aby$", 0, "es", 0),
@@ -11340,7 +11331,7 @@
    
 	function dump(obj) {
 
-		var properties = "";
+		var properties = E;
 		for ( var propertyName in obj) {
 
 			properties += propertyName + ": ";
