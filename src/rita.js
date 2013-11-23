@@ -600,37 +600,18 @@
 			
 		},
 		
-		/**
-		 * Returns a random item from the array
-		 */
 		 randomItem : function(arr) {
 			
 			return arr[Math.floor(Math.random()*arr.length)];
 		 }, 
-		
-		/**
-		 * Convenience method to get the distance between 2 points
-		 * @param {number} x1
-		 * @param {number} y1
-		 * @param {number} x2
-		 * @param {number} y2
-		 * 
-		 * @returns {number}
-		 */
+	
 		distance : function(x1,y1,x2,y2) {
 			
 			var dx = x1 - x2, dy = y1 - y2;
 			return Math.sqrt(dx * dx + dy * dy);
 		},
 		
-		/**
-		 * Starts a timer that calls 'onRiTaEvent', or the specified callback, 
-		 * every 'period' seconds
-		 * 
-		 * @param {number} period (in seconds)
-		 * @param {function} callback called every 'period' seconds (optional)
-		 * @returns {number} the unique id for the timer
-		 */
+		// TODO: THIS MAY BE BROKEN
 		timer : function(period, callback) {
 			 
 			var a = arguments;
@@ -656,10 +637,7 @@
 			return id;
 		}, 
 		
-		/**
-		 * Stops a timer according to its unique id
-		 * @param {number} the unique id for the timer
-		 */
+		// TODO: THIS MAY BE BROKEN
 		stopTimer : function(id) { 
 			
 			// TODO: THIS DEFINATELY BROKEN
@@ -668,17 +646,11 @@
 			else
 				warn('no timer with id: '+id);
 		}, 
-		
-		/**
-		 * Pauses a timer according to its unique id
-		 * @param {number} the unique id for the timer
-		 * @param {number} pause-time (in seconds) (optional)
-		 * @returns {number} the new unique id for the timer
-		 */
+
+		// TODO: THIS MAY BE BROKEN
 		 pauseTimer : function(id, pauseSec) {  
 			//console.log("pause");
 			
-			// TODO: THIS MAY BE BROKEN
 			pauseSec = is(pauseSec, N) ? pauseSec : Number.MAX_VALUE;
 			
 			if (timers[id])  {
@@ -735,13 +707,6 @@
 			return EA; 
 		},
 
-		//TODO: example
-		/**
-		 * Uses the default PosTagger to tag the input with a tag from the PENN tag set
-		 * @param {string | array} words the text to be tagged
-		 * @returns {array}
-		 * 
-		 */
 		getPosTags : function(words) {    
 			
 			var arr = is(words,S) ? RiTa.tokenize(words) : words;
@@ -749,15 +714,6 @@
 		},
 		
 		// TODO: example
-		
-		/**
-		 * Takes a string or string array of words and returns a 
-		 * combined String of the form:
-		 *  <pre>"The/dt doctor/nn treated/vbd dogs/nns"</pre>
-		 *
-		 * @param {string | array} words the text to tag
-		 * @returns {string} 
-		 */
 		getPosTagsInline : function(words, delimiter) { 
 			
 			if (!words || !words.length) return E;
@@ -779,16 +735,6 @@
 		},
 
 		// TODO: example
-		
-		/**
-		 * Converts a PENN part-of-speech tag to the simplified WordNet scheme 
-		 * (e.g. nn -> n, nns -> n, vbz -> v, rb -> r)
-		 * { "n" (noun), "v"(verb), "a"(adj), "r"(adverb), "-"(other) }
-		 * as a String.
-		 * 
-		 * @param {string} tag pos tag to convert
-		 * @returns {string} simplified WordNet tag
-		 */
 		posToWordNet : function(tag) {
 			
 			if (!strOk(tag)) return E;
@@ -806,23 +752,13 @@
 				return  '-';
 			}
 		},
-		
-		/**
-		 *  Returns the present participle form of the stemmed or non-stemmed 'verb'. 
-		 *  @param {string} verb the verb
-		 *  @returns {string} the present participle form of the verb
-		 */
+
 		getPresentParticiple : function(verb) { 
 			
 			// TODO: need to call stem() and try again if first try fails
 			return Conjugator().getPresentParticiple(verb);
 		},
 
-		/**
-		 *  Returns the past participle form of the stemmed or non-stemmed 'verb'. 
-		 *  @param {string} verb the verb
-		 *  @returns {string} the past participle form of the verb
-		 */
 		getPastParticiple : function(verb) { 
 			
 			// TODO: need to call stem() and try again if first try fails
@@ -830,27 +766,13 @@
 		},
 
 		// TODO: 2 examples
-		/**
-		 *  Conjugates the 'verb' according to the specified options
-		 *  @param {string} verb the verb stem
-		 *  @param {object} args containing the relevant options for the conjugator
-		 *  @returns {string}  the conjugated verb
-		 */
+
 		conjugate : function(verb, args) {
 
 			return Conjugator().conjugate(verb, args);            
 		},
 
 		// TODO: 2 examples (regular & irregular) in javadoc
-		
-		/** 
-		 * Pluralizes a word according to pluralization rules (see regexs in constants)
-		 * Returns the regular or irregular plural form of noun.       
-		 * 
-		 * @param {string} word the noun
-		 * 
-		 * @returns {string} the plural form of noun
-		 */
 		pluralize : function(word) {
 
 			if (!strOk(word)) return E;
@@ -873,12 +795,6 @@
 		
 		// TODO: 2 examples (regular & irregular) in javadoc        
 
-		/**
-		 *
-		 * Singularize a word according to singularization rules (see regexs in constants)
-		 * @param {string} word the noun
-		 * @returns {string}  the singular form of noun
-		 */ 
 		singularize : function(word) {
 
 			if (!strOk(word)) return E;
@@ -901,29 +817,11 @@
 			return this.stem(word, 'Pling');
 		},
 
-
-		/**
-		 *  Removes blank space from either side of a string
-		 *
-		 *  @param {string} the input string
-		 *  
-		 *  @returns {string}  
-		 */
 		trim : function(str) {
 			
 			return trim(str); // delegate to private
 		},
 
-	
-		/**
-		 *  Tokenizes the string according to Penn Treebank conventions
-		 *  See: http://www.cis.upenn.edu/~treebank/tokenization.html
-		 *  
-		 *  @param {string} words a sentence
-		 *  @param {string | regex} regex (optional) the pattern to be used for tozenization
-		 *  
-		 *  @returns {array} strings, which each element is a single token (or word) 
-		 */
 		tokenize : function(words, regex) {
 			
 			//TODO: 2 examples for doc comment, one with 1 arg, one with 2 (a regex that splits on spaces)
@@ -972,14 +870,6 @@
 
 		
 		// TODO: test and (probably) re-implement from RiTa (RiSplitter.java)
-		/**
-		 *  Splits the 'text' into sentences (according to PENN Treebank conventions)
-		 *  
-		 *  @param {string} text the text to be split
-		 *  @param {string | regex} regex (optional) the pattern to be used for tozenization
-		 *  
-		 *  @returns {array} of sentences 
-		 */
 		splitSentences : function(text, regex) {
 
 			var arr = text.match(/(\S.+?[.!?])(?=\s+|$)/g);
@@ -1025,11 +915,6 @@
 		},
 		
 			
-		/**
-   		 * Loads a file's contents froms its URL and calls back to the supplied
-   		 * callback function with the loaded string as an argument
-   		 * @param linebreakChars the character(s) with which to replace line-breaks (optional, default=' ')
-   		 */
 		loadString : function(url, callback, linebreakChars) {
 			
 			var lb = linebreakChars || SP, text;
@@ -1081,14 +966,7 @@
 				callback.call(this, text);
 			};			
 		},
-		
-		/**
-		 * Returns true if sentence starts with a question word.
-		 * 
-		 * @param {string} sentence
-		 * 
-		 * @returns {boolean} true if 'sentence' starts with a question word.
-		 */
+
 		isQuestion : function(sentence) {
 			
 			var sentenceArr = RiTa.tokenize((sentence));
@@ -1102,14 +980,6 @@
 			
 		},
 
-		/**
-		 * Returns true if 'currentWord' is the final word of a sentence.
-		 * This is a simplified version of the OAK/JET sentence splitter method.
-		 * 
-		 * @param {string} currentWord
-		 * @param {string} nextWord
-		 * @returns {boolean} true if 'currentWord' is the final word of a sentence.
-		 */
 		isSentenceEnd : function(currentWord, nextWord) {
 
 			if ( !is(currentWord,S) || !is(nextWord,S) )
@@ -1181,12 +1051,6 @@
 
 		},
 		
-		/**
-		 * Returns true if sentence starts with a w-question word, eg (who,what,why,where,when,etc.)
-		 * 
-		 * @param {string} sentence
-		 * @returns {boolean} true if sentence starts with a w-question word, eg (who,what,why,where,when,etc.)
-		 */
 		isW_Question : function(sentence) {    
 			var sentenceArr = RiTa.tokenize((sentence));
 			for (var i = 0; i < W_QUESTION_STARTS.length; i++)
@@ -1196,28 +1060,317 @@
 			
 		},
 
-		/**
-		 * Returns a randomly ordered array of unique integers from 0 to numElements. 
-		 * The size of the array will be numElements.
-		 * 
-		 * @param {number} numElements
-		 * @returns {array} unique integers from 0 to numElements. 
-		 */
-		randomOrdering : function(numElements) {    
+  		/*escapeHTML = function (text) {
+  					var entityTable = {
+				34 : 'quot',
+				38 : 'amp',
+				39 : 'apos',
+				60 : 'lt',
+				62 : 'gt',
+				160 : 'nbsp',
+				161 : 'iexcl',
+				162 : 'cent',
+				163 : 'pound',
+				164 : 'curren',
+				165 : 'yen',
+				166 : 'brvbar',
+				167 : 'sect',
+				168 : 'uml',
+				169 : 'copy',
+				170 : 'ordf',
+				171 : 'laquo',
+				172 : 'not',
+				173 : 'shy',
+				174 : 'reg',
+				175 : 'macr',
+				176 : 'deg',
+				177 : 'plusmn',
+				178 : 'sup2',
+				179 : 'sup3',
+				180 : 'acute',
+				181 : 'micro',
+				182 : 'para',
+				183 : 'middot',
+				184 : 'cedil',
+				185 : 'sup1',
+				186 : 'ordm',
+				187 : 'raquo',
+				188 : 'frac14',
+				189 : 'frac12',
+				190 : 'frac34',
+				191 : 'iquest',
+				192 : 'Agrave',
+				193 : 'Aacute',
+				194 : 'Acirc',
+				195 : 'Atilde',
+				196 : 'Auml',
+				197 : 'Aring',
+				198 : 'AElig',
+				199 : 'Ccedil',
+				200 : 'Egrave',
+				201 : 'Eacute',
+				202 : 'Ecirc',
+				203 : 'Euml',
+				204 : 'Igrave',
+				205 : 'Iacute',
+				206 : 'Icirc',
+				207 : 'Iuml',
+				208 : 'ETH',
+				209 : 'Ntilde',
+				210 : 'Ograve',
+				211 : 'Oacute',
+				212 : 'Ocirc',
+				213 : 'Otilde',
+				214 : 'Ouml',
+				215 : 'times',
+				216 : 'Oslash',
+				217 : 'Ugrave',
+				218 : 'Uacute',
+				219 : 'Ucirc',
+				220 : 'Uuml',
+				221 : 'Yacute',
+				222 : 'THORN',
+				223 : 'szlig',
+				224 : 'agrave',
+				225 : 'aacute',
+				226 : 'acirc',
+				227 : 'atilde',
+				228 : 'auml',
+				229 : 'aring',
+				230 : 'aelig',
+				231 : 'ccedil',
+				232 : 'egrave',
+				233 : 'eacute',
+				234 : 'ecirc',
+				235 : 'euml',
+				236 : 'igrave',
+				237 : 'iacute',
+				238 : 'icirc',
+				239 : 'iuml',
+				240 : 'eth',
+				241 : 'ntilde',
+				242 : 'ograve',
+				243 : 'oacute',
+				244 : 'ocirc',
+				245 : 'otilde',
+				246 : 'ouml',
+				247 : 'divide',
+				248 : 'oslash',
+				249 : 'ugrave',
+				250 : 'uacute',
+				251 : 'ucirc',
+				252 : 'uuml',
+				253 : 'yacute',
+				254 : 'thorn',
+				255 : 'yuml',
+				402 : 'fnof',
+				913 : 'Alpha',
+				914 : 'Beta',
+				915 : 'Gamma',
+				916 : 'Delta',
+				917 : 'Epsilon',
+				918 : 'Zeta',
+				919 : 'Eta',
+				920 : 'Theta',
+				921 : 'Iota',
+				922 : 'Kappa',
+				923 : 'Lambda',
+				924 : 'Mu',
+				925 : 'Nu',
+				926 : 'Xi',
+				927 : 'Omicron',
+				928 : 'Pi',
+				929 : 'Rho',
+				931 : 'Sigma',
+				932 : 'Tau',
+				933 : 'Upsilon',
+				934 : 'Phi',
+				935 : 'Chi',
+				936 : 'Psi',
+				937 : 'Omega',
+				945 : 'alpha',
+				946 : 'beta',
+				947 : 'gamma',
+				948 : 'delta',
+				949 : 'epsilon',
+				950 : 'zeta',
+				951 : 'eta',
+				952 : 'theta',
+				953 : 'iota',
+				954 : 'kappa',
+				955 : 'lambda',
+				956 : 'mu',
+				957 : 'nu',
+				958 : 'xi',
+				959 : 'omicron',
+				960 : 'pi',
+				961 : 'rho',
+				962 : 'sigmaf',
+				963 : 'sigma',
+				964 : 'tau',
+				965 : 'upsilon',
+				966 : 'phi',
+				967 : 'chi',
+				968 : 'psi',
+				969 : 'omega',
+				977 : 'thetasym',
+				978 : 'upsih',
+				982 : 'piv',
+				8226 : 'bull',
+				8230 : 'hellip',
+				8242 : 'prime',
+				8243 : 'Prime',
+				8254 : 'oline',
+				8260 : 'frasl',
+				8472 : 'weierp',
+				8465 : 'image',
+				8476 : 'real',
+				8482 : 'trade',
+				8501 : 'alefsym',
+				8592 : 'larr',
+				8593 : 'uarr',
+				8594 : 'rarr',
+				8595 : 'darr',
+				8596 : 'harr',
+				8629 : 'crarr',
+				8656 : 'lArr',
+				8657 : 'uArr',
+				8658 : 'rArr',
+				8659 : 'dArr',
+				8660 : 'hArr',
+				8704 : 'forall',
+				8706 : 'part',
+				8707 : 'exist',
+				8709 : 'empty',
+				8711 : 'nabla',
+				8712 : 'isin',
+				8713 : 'notin',
+				8715 : 'ni',
+				8719 : 'prod',
+				8721 : 'sum',
+				8722 : 'minus',
+				8727 : 'lowast',
+				8730 : 'radic',
+				8733 : 'prop',
+				8734 : 'infin',
+				8736 : 'ang',
+				8743 : 'and',
+				8744 : 'or',
+				8745 : 'cap',
+				8746 : 'cup',
+				8747 : 'int',
+				8756 : 'there4',
+				8764 : 'sim',
+				8773 : 'cong',
+				8776 : 'asymp',
+				8800 : 'ne',
+				8801 : 'equiv',
+				8804 : 'le',
+				8805 : 'ge',
+				8834 : 'sub',
+				8835 : 'sup',
+				8836 : 'nsub',
+				8838 : 'sube',
+				8839 : 'supe',
+				8853 : 'oplus',
+				8855 : 'otimes',
+				8869 : 'perp',
+				8901 : 'sdot',
+				8968 : 'lceil',
+				8969 : 'rceil',
+				8970 : 'lfloor',
+				8971 : 'rfloor',
+				9001 : 'lang',
+				9002 : 'rang',
+				9674 : 'loz',
+				9824 : 'spades',
+				9827 : 'clubs',
+				9829 : 'hearts',
+				9830 : 'diams',
+				338 : 'OElig',
+				339 : 'oelig',
+				352 : 'Scaron',
+				353 : 'scaron',
+				376 : 'Yuml',
+				710 : 'circ',
+				732 : 'tilde',
+				8194 : 'ensp',
+				8195 : 'emsp',
+				8201 : 'thinsp',
+				8204 : 'zwnj',
+				8205 : 'zwj',
+				8206 : 'lrm',
+				8207 : 'rlm',
+				8211 : 'ndash',
+				8212 : 'mdash',
+				8216 : 'lsquo',
+				8217 : 'rsquo',
+				8218 : 'sbquo',
+				8220 : 'ldquo',
+				8221 : 'rdquo',
+				8222 : 'bdquo',
+				8224 : 'dagger',
+				8225 : 'Dagger',
+				8240 : 'permil',
+				8249 : 'lsaquo',
+				8250 : 'rsaquo',
+				8364 : 'euro'
+			}; 
 			
-			if (!numElements || numElements < 1)// !isNum(numElements)) 
-				err("bad arg");
+            return text.replace(/[\u00A0-\u2666<>\&]/g, function(c) {
+                return '&' + (entityTable[c.charCodeAt(0)] || '#'+c.charCodeAt(0)) + ';';
+            });
+        },*/
+
+ 		unescapeHTML : function(input) {
+ 			
+ 			if (!input || !input.length) return input;
+ 			
+			var sfccp = String.fromCharCodePoint, answer = input
+ 				.replace(/&lt;/g, "<")
+		        .replace(/&gt;/g, ">")
+				.replace(/&amp;/g, "&")
+		        .replace(/&quot;/g, "\"");
+
+			String.fromCharCodePoint = function() { // uggh
+			    var codeunits= [];
+			    for (var i= 0; i<arguments.length; i++) {
+			        var c= arguments[i];
+			        if (arguments[i]<0x10000) {
+			            codeunits.push(arguments[i]);
+			        } else if (arguments[i]<0x110000) {
+			            c-= 0x10000;
+			            codeunits.push((c>>10 & 0x3FF) + 0xD800);
+			            codeunits.push((c&0x3FF) + 0xDC00);
+			        }
+			    }
+			    return String.fromCharCode.apply(String, codeunits);
+			};
+
+			answer = answer.replace(/&#(\d+);/g, function(_, n) {
+				return String.fromCharCodePoint(parseInt(n, 10));
+					}).replace(/&#x([0-9a-f]+);/gi, function(_, n) {
+						return String.fromCharCodePoint(parseInt(n, 16));
+			});
+
+		    String.fromCharCodePoint = sfccp;  // uggh
+	
+			return answer;
+		},
+
+		randomOrdering : function(num) {    
 			
 			var o = [];
-			for ( var z = 0; z < numElements; z++) {
-				o.push(z);
-			}
 			
-			// Array shuffle, from Jonas Raoni Soares Silva (http://jsfromhell.com/array/shuffle)
-			for (var j, x, i = o.length; i; j = parseInt(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x) {}
+			if (num) {
+				
+				for (var z = 0; z < num; z++) o.push(z);
+				
+				// Array shuffle, from Jonas Raoni Soares Silva (http://jsfromhell.com/array/shuffle)
+				for (var j, x, i = o.length; i; j = parseInt(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x) {}
+			}
 
 			return o;
-			
 		},
 
 		/**
@@ -1293,6 +1446,11 @@
 
 			return isNode() ? RiTa.NODEJS : RiTa.JS;
 			
+		},
+		
+		chomp : function(txt) {
+			
+			return txt.replace(/\s+$|^\s+/g, E);
 		},
 
 		getPhonemes : function(words) {
@@ -3836,22 +3994,9 @@
 	RiGrammar.CLOSE_RULE_CHAR = ">";
 	RiGrammar.PROB_PATT = /(.*[^\s])\s*\[([0-9.]+)\](.*)/;
 	RiGrammar.OR_PATT = /\s*\|\s*/;
-	RiGrammar.EXEC_PATT = /`[^`]+`/g;
+	RiGrammar.EXEC_PATT = /`[^`]+\(.*?\);?`/g;
 	RiGrammar.STRIP_TICKS = /`([^`]*)`/g;
 	
-	/**
-	 * Set/gets the execDisabled flag. Set to true (default=false) 
-	 * if you don't want to use the exec mechanism for callbacks. Useful if you want
-	 * to include backticks or method calls as terminals in your grammar.
-	RiGrammar._execDisabled = function(disableExec)
-	{
-		if (arguments.length==1) {
-			RiGrammar._execDisabled = disableExec;
-		}
-		return RiGrammar._execDisabled;
-	}    
-	*/
-
 	RiGrammar.prototype = {
 
 		init : function(grammar) {
@@ -3860,7 +4005,7 @@
 			
 			this._rules = {};
 			this.loading = false; // ?
-			this._execDisabled = false;
+			this.execDisabled = false;
 			grammar && this.load(grammar);  
 		},
 	
@@ -3981,8 +4126,7 @@
 
 		doRule : function(pre) {
 
-			var cnt = 0, name = E, result = E,
-				rules = this._rules[this._normalizeRuleName(pre)];
+			var cnt = 0, name = E, rules = this._rules[this._normalizeRuleName(pre)];
 			
 			if (!rules) return null;
 			
@@ -3992,30 +4136,9 @@
 			
 			return (cnt == 1) ? name : this._getStochasticRule(rules); 
 		},
-
-		getRule : function(pre) {
-
-			var cnt = 0, name = E, result = E,
-				rules = this._rules[this._normalizeRuleName(pre)];
-			
-			for (name in rules) cnt++;
-			
-			if (cnt <= 1) return name; // 0 or 1 rule
-
-			// multiple rules: concatenate into string
-			for (name in rules) {
-				result += name;
-				var pr = rules[name];
-				if (pr != 1.0)
-					result += " [" + pr + "]";
-				if (--cnt > 0)
-					result += " | ";
-			}
-
-			return result;
-		},
 		
 		getGrammar : function() { 
+			
 			var s = E;
 			for (var name in this._rules) {
 				s += (name + "\n");
@@ -4024,26 +4147,23 @@
 					s += ("  '" + p + "' [" + choices[p] + "]\n");
 				}
 			}
-			return s;
+			return RiTa.chomp(s);
 		},
 			
 		print : function() {  
 			
 			if (console) {
-				console.log("Grammar----------------");
-				console.log(this.getGrammar());
-				console.log("-----------------------");
+				var ln = "------------------------------";
+				console.log(ln+"\n"+this.getGrammar()+ln);
 			}
 			return this;
 			
 		},
 		
 		hasRule : function(name) {
-			
-			//log("hasRule("+name+")");
-			name = this._normalizeRuleName(name);
+			//this.print();
+			//log("hasRule("+name+") -> "+(typeof this._rules[name])+"\n");
 			return (typeof this._rules[name] !== 'undefined');
-			
 		},
 		
 		expandWith : function(literal, symbol) { // TODO: finish 
@@ -4089,12 +4209,6 @@
 			catch (e) {
 				
 				warn("RiGrammar._handleExec failed on '"+input+"'\n  -> "+e.message);
-				
-				// if (is(exports, O)) { // we are running in node
-					// console.log("found node! "+typeof module.vm);
-					// module.vm.runInThisContext(exec);
-					// //eval("function adj(){return 56;}") 
-				// }
 			}
 			
 			return input;
@@ -4107,15 +4221,15 @@
 			return this.expandFrom(RiGrammar.START_RULE);
 		}, 
 		
-		// TODO: reconsider
-
 		expandFrom : function(rule) {
 			
 			//log("expandFrom("+rule+")");
 			
+			rule = this._normalizeRuleName(rule);
+
 			if (!this.hasRule(rule)) {
-				warn("Rule not found: " + rule + "\nRules: ");
-				(!RiTa.SILENT) && this.print();
+				err("Rule not found: " + rule + "\nRules: ");
+				if (!RiTa.SILENT) this.print();
 			}
 	
 			var iterations = 0;
@@ -4126,10 +4240,12 @@
 				if (!next) {
 
 					//  we're done, check for back-ticked strings to eval
-					(!this._execDisabled && (rule = rule.replace
+					(!this.execDisabled && (rule = rule.replace
 						(RiGrammar.EXEC_PATT, this._handleExec)));
-								 
-					break;
+					
+					if (rule != null) continue;
+					
+					break;			 
 				} 
 				rule = next;
 			}
@@ -4137,7 +4253,7 @@
 			if (iterations >= maxIterations)
 				warn("max number of iterations reached: " + maxIterations);
 	
-			return rule;
+			return RiTa.unescapeHTML(rule);
 			
 		},
 			
