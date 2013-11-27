@@ -3990,12 +3990,10 @@
 	var RiGrammar = makeClass();
 	
 	RiGrammar.START_RULE = "<start>";
-	RiGrammar.OPEN_RULE_CHAR = "<";
-	RiGrammar.CLOSE_RULE_CHAR = ">";
 	RiGrammar.PROB_PATT = /(.*[^\s])\s*\[([0-9.]+)\](.*)/;
-	RiGrammar.OR_PATT = /\s*\|\s*/;
-	RiGrammar.EXEC_PATT = /`[^`]+\(.*?\);?`/g;
+	RiGrammar.EXEC_PATT = /(.*?)(`[^`]+?\(.*?\);?`)(.*)/;
 	RiGrammar.STRIP_TICKS = /`([^`]*)`/g;
+	RiGrammar.OR_PATT = /\s*\|\s*/;
 	
 	RiGrammar.prototype = {
 
@@ -4056,7 +4054,7 @@
 		
 		removeRule : function(name)  {
 			
-			name = this._normalizeRuleName(name);
+			//name = this._normalizeRuleName(name);
 			delete this._rules[name];
 			return this;
 			
@@ -4077,7 +4075,7 @@
 	
 			weight = !weight ? 1.0 : weight; // default
 
-			name = this._normalizeRuleName(name);
+			//name = this._normalizeRuleName(name);
 
 			if (dbug) log("addRule: "+name+ " -> '"+ruleStr+"'       ["+(typeof ruleStr)+"]");
 
@@ -4126,7 +4124,7 @@
 
 		doRule : function(pre) {
 
-			var cnt = 0, name = E, rules = this._rules[this._normalizeRuleName(pre)];
+			var cnt = 0, name = E, rules = this._rules[pre];//this._normalizeRuleName(pre)];
 			
 			if (!rules) return null;
 			
@@ -4194,128 +4192,117 @@
 			
 		},
 		
-		_handleExec : function(input) { // TODO: private
-					   
-			//console.log("handleExec: "+input);
-			
-			if (!input || !input.length) return E;
-			
-			// strip backticks and eval
-			var exec = input.replace(RiGrammar.STRIP_TICKS, "$1");
-			
-			try {
-				input = RiTa._eval(exec);
-			}
-			catch (e) {
-				
-				warn("RiGrammar._handleExec failed on '"+input+"'\n  -> "+e.message);
-			}
-			
-			return input;
-		},
-		
-		expand : function(funs) {
+		expand : function(context) {
 
-			funs && RiTa._eval(funs);
-			
-			return this.expandFrom(RiGrammar.START_RULE);
+			//funs && RiTa._eval(funs); // need to evaluate ON the object, not WITH the object
+			return this.expandFrom(RiGrammar.START_RULE, context);
 		}, 
 		
-		expandFrom : function(rule) {
-			
-			//log("expandFrom("+rule+")");
-			
-			rule = this._normalizeRuleName(rule);
-
-			if (!this.hasRule(rule)) {
-				err("Rule not found: " + rule + "\nRules: ");
-				if (!RiTa.SILENT) this.print();
-			}
-	
-			var iterations = 0;
-			var maxIterations = 1000;
-			while (++iterations < maxIterations) {
-				
-				var next = this._expandRule(rule);
-				if (!next) {
-
-					//  we're done, check for back-ticked strings to eval
-					(!this.execDisabled && (rule = rule.replace
-						(RiGrammar.EXEC_PATT, this._handleExec)));
-					
-					if (rule != null) continue;
-					
-					break;			 
-				} 
-				rule = next;
-			}
-	
-			if (iterations >= maxIterations)
-				warn("max number of iterations reached: " + maxIterations);
-	
-			return RiTa.unescapeHTML(rule);
-			
+		expandFrom : function(rule, context) {
+    
+		    if (!this.hasRule(rule))
+		      err("Rule not found: "+rule+"\nRules:\n"+this._rules);
+		    
+		    var parts, callResult, tries = 0, maxIterations = 1000;
+		    while (++tries < maxIterations)
+		    {
+		      var next = this._expandRule(rule);
+ 
+ 		      if (next && next.length) { // matched a rule
+		      	
+		        rule = next;
+		        continue;
+		      }
+		      
+		      // finished rules, check for exec strings
+		      
+		      if (this.execDisabled) break; // return
+		      
+		      // now check for back-ticked strings to eval
+		      parts = RiGrammar.EXEC_PATT.exec(rule);
+	      
+		      if (!parts || !parts.length) break; // return, no evals
+		      
+		      if (parts.length > 2) {
+		        
+		        callResult = this._handleExec(parts[2], context);
+		        
+		        if (!callResult) {
+		          
+		          if (0==1) console.log("[WARN] (RiGrammar.expandFrom) Unexpected"
+		              +" state: eval("+parts[2]+") :: returning '"+rule+"'");
+		          
+		          break; // return
+		        }
+		        
+		        rule = parts[1] + callResult;
+		            
+		        (parts.length > 3) && (rule += parts[3]);
+		      }
+		    }
+		    
+    		if (tries >= maxIterations && !RiTa.SILENT) 
+		      console.log("[WARN] max number of iterations reached: "+maxIterations);
+		
+		    return RiTa.unescapeHTML(rule); 
 		},
+		 
+		_handleExec : function(input, context) { 
+
+			if (!input || !input.length) return null;
 			
+			// strip backticks and eval
+			var res, exec = input.replace(RiGrammar.STRIP_TICKS, '$1');
+			
+			try {
+				// if (typeof module != 'undefined' && module.exports) { // for node
+ 
+// console.log("running in node: exec1="+exec);
+// console.log("running in node: temp="+(typeof temp));
+ 
+				// TODO: reconsider, deps?
+				// return require("vm").runInThisContext(exec,context);
+
+				res = eval(exec); // js or node eval
+				return res ? res+E : null;	
+			}
+			catch (e) {
+				warn("RiGrammar._handleExec failed on '"+input+"'\n  -> "+e.message);
+				return null;
+			}
+		},
+
 		_expandRule : function(prod) { 
 			
-			var dbug = 0, trimSpace = 1, result = [];
-			if (trimSpace) prod = prod.trim();
-
+			var entry, idx, pre, expanded, post, dbug = 0;
+			
 			if (dbug) log("_expandRule(" + prod + ")");
 			
 			for ( var name in this._rules) {
 				
-				var entry = this._rules[name];
-				if (dbug) log("  name=" + name+"  entry=" + entry+"  prod=" + prod+"  idx=" + idx);
-				var idx = prod.indexOf(name);
+				entry = this._rules[name];
 				
-				if (idx >= 0) {
+				if (dbug) log("  name=" + name+"  entry=" + entry+"  prod=" + prod+"  idx=" + idx);
+				
+				idx = prod.indexOf(name);
+				
+				if (idx >= 0) {  // got a match, split into 3 parts
 					
-					var pre = prod.substring(0, idx);
-					var expanded = this.doRule(name);
-					var post = prod.substring(idx + name.length);
+					pre = prod.substring(0, idx) || E;
+					expanded = this.doRule(name) || E;
+					post = prod.substring(idx + name.length) || E;
 					
-					if (trimSpace) {
-						pre = (pre || E).trim();
-						post = (post || E).trim();
-						expanded = (expanded || E).trim();
-					}
-
-					if (dbug) log("  pre=" + pre+"  expanded=" + expanded+"  post=" + post+"  result=" + pre + expanded + post);
-					
-					result.push(pre,expanded,post);
-
-					var ok = result.join(SP);
-					
-					if (dbug) console.log('Returns: '+ok);
-
-					if (trimSpace) ok = ok.trim();
-
-					return ok;
+					if (dbug) log("  pre=" + pre+"  expanded=" + expanded+
+						"  post=" + post+"  result=" + pre + expanded + post);
+	
+					return pre + expanded + post;
 				}
 				
-				// do the exec check here, in while loop()
 			}
-			// what happens if we get here? no expansions left, return?
+			
+			return null; // no rules matched
 		},
-		
-		_normalizeRuleName : function(pre) {
-			
-			if (!strOk(pre)) return pre;
-			
-			if (!startsWith(pre, RiGrammar.OPEN_RULE_CHAR))
-				pre = RiGrammar.OPEN_RULE_CHAR + pre;
-			
-			if (!endsWith(pre,RiGrammar.CLOSE_RULE_CHAR))
-				pre += RiGrammar.CLOSE_RULE_CHAR;
 
-			if (pre.indexOf('>>')>0) err(">>"); // ?
-			
-			return pre;
-			
-		},
-		
 		// private?? (add structure test case)
 		_getStochasticRule : function(temp)    { // map
 	 
@@ -11730,7 +11717,7 @@
 	// Core RiTa objects (in global namespace)
 	/////////////////////////////////////////////////////////////////////////////////////////
 
-	RiTa._eval = eval;
+	//RiTa._eval = eval;
 
 	if (window) { // for browser
 		
@@ -11752,9 +11739,6 @@
 		module.exports['RiGrammar'] = RiGrammar;
 		module.exports['RiMarkov'] = RiMarkov;
 		module.exports['RiTaEvent'] = RiTaEvent;
-
-		module.vm = require("vm"); // TODO: reconsider, use deps?
-		module.vm && (RiTa._eval = module.vm.runInThisContext);
 	}
 	
 
