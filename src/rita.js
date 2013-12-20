@@ -4010,7 +4010,7 @@
 		loadFromFile : function(url, callback, forceNoJQuery) {
 			
 			var g = this, cbfun = function(str) {
-				//console.log("loadFromFile: "+str);
+				
 				g.load(str);
 				g.loading = false;
 				callback && (callback.call());
@@ -4019,6 +4019,7 @@
 			if (!forceNoJQuery && (typeof $ != 'undefined') && is($.getJSON, F)) {
 				
 				//log("using jquery: "+this.loading);
+				
 				g.loading = true;
 				$.ajax({
 					url: url,
@@ -4028,6 +4029,7 @@
 				});
 			}
 			else {
+				
 				//log("using RiTa!");
 				RiTa.loadString(url, cbfun);
 			}
@@ -4036,6 +4038,7 @@
 		},
 		
 		openEditor : function() {
+			
 			warn("Not yet implemented in JavaScript");
 			return this;
 		},
@@ -4054,13 +4057,13 @@
 		
 		removeRule : function(name)  {
 			
-			//name = this._normalizeRuleName(name);
 			delete this._rules[name];
 			return this;
 			
 		},
 
 		_copy: function() {  // NIAPI
+			
 			var tmp = RiGrammar();
 			for(var name in this._rules) {
 				tmp._rules[name] = this._rules[name];
@@ -4073,9 +4076,7 @@
 		{
 			var dbug = false;
 	
-			weight = !weight ? 1.0 : weight; // default
-
-			//name = this._normalizeRuleName(name);
+			weight = weight || 1.0; // default
 
 			if (dbug) log("addRule: "+name+ " -> '"+ruleStr+"'       ["+(typeof ruleStr)+"]");
 
@@ -4094,20 +4095,25 @@
 						for (i = 0; i < m.length; i++)
 							log("  " + i + ") '" + m[i] + "'");
 					}
+					
 					rule = m[1] + m[3];
 					prob = m[2];
+					
 					if (dbug) log("weight=" + prob + " rule='" + rule + "'");
 				}
 	
 				if (this.hasRule(name)) {
+					
 					if (dbug)log("rule exists");
 					var temp = this._rules[name];
 					temp[rule] = prob;
 				} 
 				else {
+					
 					var temp2 = {};
 					temp2[rule] = prob;
 					this._rules[name] = temp2;
+					
 					if (dbug)log("added rule: "+name);
 				}
 			}
@@ -4124,7 +4130,7 @@
 
 		doRule : function(pre) {
 
-			var cnt = 0, name = E, rules = this._rules[pre];//this._normalizeRuleName(pre)];
+			var cnt = 0, name = E, rules = this._rules[pre];
 			
 			if (!rules) return null;
 			
@@ -4159,8 +4165,7 @@
 		},
 		
 		hasRule : function(name) {
-			//this.print();
-			//log("hasRule("+name+") -> "+(typeof this._rules[name])+"\n");
+
 			return (typeof this._rules[name] !== 'undefined');
 		},
 		
@@ -4214,11 +4219,10 @@
 		        continue;
 		      }
 		      
-		      // finished rules, check for exec strings
-		      
 		      if (this.execDisabled) break; // return
 		      
-		      // now check for back-ticked strings to eval
+		      // finished rules, check for back-ticked exec calls
+		      
 		      parts = RiGrammar.EXEC_PATT.exec(rule);
 	      
 		      if (!parts || !parts.length) break; // return, no evals
@@ -4229,7 +4233,7 @@
 		        
 		        if (!callResult) {
 		          
-		          if (0==1) console.log("[WARN] (RiGrammar.expandFrom) Unexpected"
+		          if (0) console.log("[WARN] (RiGrammar.expandFrom) Unexpected"
 		              +" state: eval("+parts[2]+") :: returning '"+rule+"'");
 		          
 		          break; // return
@@ -4255,18 +4259,16 @@
 			var res, exec = input.replace(RiGrammar.STRIP_TICKS, '$1');
 			
 			try {
-				// if (typeof module != 'undefined' && module.exports) { // for node
- 
-// console.log("running in node: exec1="+exec);
-// console.log("running in node: temp="+(typeof temp));
- 
-				// TODO: reconsider, deps?
-				// return require("vm").runInThisContext(exec,context);
-
-				res = eval(exec); // js or node eval
-				return res ? res+E : null;	
+				// TODO: See issue #9 [https://github.com/dhowe/RiTaJS/issues?state=open]
+				// if (typeof module != 'undefined' && module.exports) // for node	 
+				// 		return require("vm").runInThisContext(exec,context);
+				
+				res = eval(exec); // js or node eval?
+				
+				return res ? res + E : null;	
 			}
 			catch (e) {
+				
 				warn("RiGrammar._handleExec failed on '"+input+"'\n  -> "+e.message);
 				return null;
 			}
@@ -4297,7 +4299,6 @@
 	
 					return pre + expanded + post;
 				}
-				
 			}
 			
 			return null; // no rules matched
