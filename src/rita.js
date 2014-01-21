@@ -5301,14 +5301,7 @@
 			this.text(args[0]);
 
 			// center by default
-			this.x = is(args[1],N) ? args[1] : (this.g._width()  / 2);
-			
-			// to match java
-			if (this._alignment  == RiTa.LEFT)
-      			this.x -= (this.textWidth() / 2.0);
-    		else if (this._alignment == RiTa.RIGHT)
-      			this.x += (this.textWidth() / 2.0);
-      			
+			this.x = is(args[1], N) ? args[1] : this._screenCenterX();
 			this.y = is(args[2],N) ? args[2] : (this.g._height() / 2)  + (this.textHeight() / 2.0) ;
 			this.z = 0;
 			
@@ -5319,7 +5312,6 @@
 			return this;
 		},
 		
-	
 		_initArgs : function() {
 
 			var a = arguments, t = Type.get(a[0]);
@@ -5358,6 +5350,18 @@
 			return parsed;
 		},
 		
+		_screenCenterX : function() {  // to match java
+			
+			var scx = this.g._width() / 2.0;
+			
+			if (this._alignment == RiTa.LEFT)
+      			scx -= (this.textWidth() / 2.0);
+    		else if (this._alignment == RiTa.RIGHT)
+      			scx += (this.textWidth() / 2.0);
+      			
+      		return scx;
+		},
+
 		get : function(featureName) {
 			
 			return this._rs.get(featureName);
