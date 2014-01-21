@@ -1373,11 +1373,6 @@
 			return o;
 		},
 
-		/**
-		 * Strips all punctuation from the given string
-		 * @param {string} text input
-		 * @returns {string} result
-		 */
 		stripPunctuation : function(text) {    
 
 			return (text === E) ? E : text.replace(PUNCTUATION_CLASS, E); 
@@ -1385,12 +1380,7 @@
 		
 		// PUNCTUATION : "����`'""\",;:!?)([].#\"\\!@$%&}<>|+=-_\\/*{^",
 		
-		/**
-		 * Trims punctuation from each side of the token (does not trim whitespace or internal punctuation).
-		 * 
-		 * @param {string} text input
-		 * @returns {string} result
-		 */
+		//  Trims punctuation from each side of the token (does not trim whitespace or internal punctuation).
 		trimPunctuation : function(text) {
 			
 			// TODO: replace all this with 1 regex
@@ -1414,16 +1404,8 @@
 			}
 
 			return text;
-
-			
 		},
-
-		/**
-		 * Returns true if every character of 'text' is a punctuation character
-		 * 
-		 * @param {string} text input
-		 * @returns {boolean} 
-		 */
+		
 		// TEST: PUNCTUATION : "����`'""\",;:!?)([].#\"\\!@$%&}<>|+=-_\\/*{^",
 		isPunctuation : function(text) { 
 			
@@ -1433,7 +1415,6 @@
 			
 		},
 		
-
 		// TEST: PUNCTUATION : "����`'""\",;:!?)([].#\"\\!@$%&}<>|+=-_\\/*{^",
 		hasPunctuation : function(text) { 
 			
@@ -1441,7 +1422,12 @@
   
 			return ONLY_PUNCT.test(text); 
 		},
-
+		
+		asList : function(o) {    
+		
+    		return (!o) ? "[]" : o.join(", ").trim();
+		},
+		
 		env : function() {
 
 			return isNode() ? RiTa.NODEJS : RiTa.JS;
@@ -5291,15 +5277,7 @@
 				b : (bbs && bbs.b) || this._color.b, 
 				a : (bbs && bbs.a) || this._color.a
 			};
-			
-			/*var bbf = RiText.defaults.boundingFill;
-			this._boundingFill = { 
-				r : (bbf && bbf.r) || this._color.r, 
-				g : (bbf && bbf.g) || this._color.g, 
-				b : (bbf && bbf.b) || this._color.b, 
-				a : (bbf && bbf.a) || 0
-			};*/
-	
+
 			this._showBounds = RiText.defaults.showBounds;
 			this._motionType = RiText.defaults.motionType;
 			this._alignment = RiText.defaults.alignment;
@@ -5323,10 +5301,17 @@
 			this.text(args[0]);
 
 			// center by default
-			this.x = is(args[1],N) ? args[1] : this.g._width()  / 2 - this.textWidth()  / 2.0;
-			this.y = is(args[2],N) ? args[2] : this.g._height() / 2 + this.textHeight() / 2.0;
+			this.x = is(args[1],N) ? args[1] : (this.g._width()  / 2);
+			
+			// to match java
+			if (this._alignment  == RiTa.LEFT)
+      			this.x -= (this.textWidth() / 2.0);
+    		else if (this._alignment == RiTa.RIGHT)
+      			this.x += (this.textWidth() / 2.0);
+      			
+			this.y = is(args[2],N) ? args[2] : (this.g._height() / 2)  + (this.textHeight() / 2.0) ;
 			this.z = 0;
-
+			
 			//log('RiText: '+this._rs._text +"("+this.x+","+this.y+")"+" / "+ this._font.name);
 
 			RiText.instances.push(this);
@@ -5339,7 +5324,6 @@
 
 			var a = arguments, t = Type.get(a[0]);
 		
-			//console.error(a[0]);
 			//console.error("a[0]="+t+" a.length="+a.length+" type="+t+" analyze="+typeof a[0].text);
 			
 			if (a.length && (t===O || t==='global' || t==='window') && typeof a[0].analyze != F) {
@@ -5374,38 +5358,16 @@
 			return parsed;
 		},
 		
-		/**
-		 * Returns the specified feature, computing it first if necessary. <p>
-		 * 
-		 * Default features include RiTa.STRESSES, RiTa.PHONEMES, and RiTa.SYLLABLES.
-		 * 
-		 * @example myRiText.get('phonemes') ||  myRiText.get(RiTa.PHONEMES);
-		 * 
-		 * @returns {string} the requested feature
-		 */
 		get : function(featureName) {
 			
 			return this._rs.get(featureName);
 		},
 		
-		/**
-		 * Returns the full feature set for this object
-		 * 
-		 * @see #get
-		 * @see #analyze
-		 * 
-		 * @returns {array} the features 
-		 */
 		features : function() {
 			
 		   return this._rs.features();
 		},
-		
-		/**
-		 * Draws the object to the screen
-		 * 
-		 * @returns {object} this RiText
-		 */
+
 		draw : function() {
 		  this._update()._render();   
 		  if (this.textToCopy)
@@ -5476,57 +5438,7 @@
 		},
 		
 		///////////////////////////////// Text Behaviors ////////////////////////////////////
-	
-		/**
-		 * Sets/gets the animation <code>motionType</code> for this RiText
-		 * according to one of the following functions: <br>
-		 * <ul>
-		 * <li>RiText.LINEAR
-		 * <li>
-		 * <li>RiText.EASE_IN
-		 * <li>RiText.EASE_OUT
-		 * <li>RiText.EASE_IN_OUT
-		 * <li>
-		 * <li>RiText.EASE_IN_EXPO
-		 * <li>RiText.EASE_OUT_EXPO
-		 * <li>RiText.EASE_IN_OUT_EXPO
-		 * <li>
-		 * <li>RiText.EASE_IN_SINE
-		 * <li>RiText.EASE_OUT_SINE
-		 * <li>RiText.EASE_IN_OUT_SINE
-		 * <li>
-		 * <li>RiText.EASE_IN_CUBIC
-		 * <li>RiText.EASE_OUT_CUBIC
-		 * <li>RiText.EASE_IN_OUT_CUBIC
-		 * <li>
-		 * <li>RiText.EASE_IN_QUARTIC
-		 * <li>RiText.EASE_OUT_QUARTIC
-		 * <li>RiText.EASE_IN_OUT_QUARTIC
-		 * <li>
-		 * <li>RiText.EASE_IN_QUINTIC
-		 * <li>RiText.EASE_OUT_QUINTIC
-		 * <li>RiText.EASE_IN_OUT_QUINTIC
-		 * <li>
-		 * <li>RiText.BACK_IN
-		 * <li>RiText.BACK_OUT
-		 * <li>RiText.BACK_IN_OUT
-		 * <li>
-		 * <li>RiText.BOUNCE_IN
-		 * <li>RiText.BOUNCE_OUT
-		 * <li>RiText.BOUNCE_IN_OUT
-		 * <li>
-		 * <li>RiText.CIRCULAR_IN
-		 * <li>RiText.CIRCULAR_OUT
-		 * <li>RiText.CIRCULAR_IN_OUT
-		 * <li>
-		 * <li>RiText.ELASTIC_IN
-		 * <li>RiText.ELASTIC_OUT
-		 * <li>RiText.ELASTIC_IN_OUT                  
-		 * </ul>
-		 * 
-		 * @param {number} motionType (optional)
-		 * @returns {number} motionType
-		 */
+
 		motionType : function (motionType) {
 			if (arguments.length) {
 				this._motionType = motionType;
@@ -5534,42 +5446,13 @@
 			}
 			return this._motionType;
 		},
-		
-		/**
-		 * Fades in current text over <code>seconds</code> starting at
-		 * <code>startTime</code>. Interpolates from the current color {r,g,b,a}
-		 * to {r,g,b,255}.
-		 * 
-		 * @param {number} seconds start Time
-		 *          time in future to start
-		 * @param {number} delay seconds
-		 *          time for fade
-		 * @param {function} callback 
-		 * 
-		 * @returns {number} the unique id for this behavior
-		 */
+
 		fadeIn : function(seconds, delay, callback) {
 			
 			return this.colorTo([this._color.r, this._color.g, this._color.b, 255],
 				seconds, delay, null, RiTa.FADE_IN, false);
 		},
-	
-		/**
-		 * Fades out current text over <code>seconds</code> starting at
-		 * <code>startTime</code>. Interpolates from the current color {r,g,b,a} 
-		 * to {r,g,b,0}.
-		 *
-		 * @param {number} seconds
-		 *          time for fade
-		 * @param {number} delay 
-		 *          (optional, default=0),  # of seconds in the future that the fade will start 
-		 *          
-		 * @param {function} callback the callback to be invoked when the behavior has completed (optional: default=onRiTaEvent(e)
-		 * 
-		 * @param {boolean} destroyOnComplete
-		 *          (optional, default=false), destroys the object when the behavior completes
-		 * @returns {number} the unique id for this behavior
-		 */
+
 		fadeOut : function(seconds, delay, callback, destroyOnComplete) {
 	
 			destroyOnComplete = destroyOnComplete || false;
@@ -5577,20 +5460,6 @@
 				seconds, delay, null, RiTa.FADE_OUT, destroyOnComplete);
 		},
 
-		
-		/**
-		 * Scales to 'theScale' over 'seconds' starting at 'delay' seconds in the future
-		 * 
-		 * @param {number} theScale delay 
-		 *          (optional, default=0),  # of seconds in the future that the fade will start       
-		 * @param {number} seconds
-		 *          time for fade
-		 * @param {number} delay seconds
-		 *          time for fade
-		 * @param {function} callback the callback to be invoked when the behavior has completed (optional: default=onRiTaEvent(e)
-		 * 
-		 * @returns {number} the unique id for this behavior
-		 */
 		scaleTo : function(theScale, seconds, delay, callback) {
 
 			var rt = this;
@@ -5619,18 +5488,6 @@
 			return id;
 		},
 		
-		/**
-		 * Rotates to 'radians' over 'seconds' starting at 'delay' seconds in the future
-		 * 
-		 * @param {number} angleInRadians
-		 * @param {number} seconds
-		 *          time for fade  
-		 * @param {number} delay 
-		 *          (optional, default=0),  # of seconds in the future that the fade will start       
-		 * @param {function} callback the callback to be invoked when the behavior has completed (optional: default=onRiTaEvent(e)
-		 * 
-		 * @returns {number} the unique id for this behavior
-		 */
 		rotateTo : function(angleInRadians, seconds, delay, callback) {
 
 			var rt = this;
@@ -5659,24 +5516,6 @@
 			return id;
 		},
 		
-		/**
-		 * Fades out the current text and fades in the <code>newText</code> over
-		 * <code>seconds</code>
-		 * 
-		 * @param {string} newText
-		 *          to be faded in
-		 * 
-		 * @param {number} seconds
-		 *          time for fade
-		 * 
-		 * @param {number} endAlpha 
-		 *  (optional, default=255), the alpha to end on
-		 *  
-		 * @param {function} callback the callback to be invoked when the 
-		 * behavior has completed (optional: default=onRiTaEvent(e))
-		 * 
-		 * @returns {number} - the unique id for this behavior
-		 */
 		textTo: function(newText, seconds, endAlpha, callback) {
 			
 		  // grab the alphas if needed
@@ -5704,20 +5543,6 @@
 		  return this.colorTo([c.r, c.g, c.b, endAlpha], seconds * .95, 0, null, RiTa.TEXT_TO, false);
 		},
 
-
-		/**
-		 * Transitions to 'color' (rgba) over 'seconds' starting at 'delay' seconds in the future
-		 * 
-		 * @param {array} colors (length 1-4)  r,g,b,a (0-255)
-		 * @param {number} delay seconds
-		 *          time for fade
-		 * @param {number} seconds delay 
-		 *          (optional, default=0),  # of seconds in the future that the fade will start 
-		 * @param {function} callback the callback to be invoked when the behavior has completed
-		 *   (optional: default=onRiTaEvent(e))
-
-		 * @returns {number} the unique id for this behavior
-		 */
 		colorTo : function(colors, seconds, delay, callback, _type, _destroyOnComplete) {             
 
 			// DH: omitting last 2 args from docs as they are private!
@@ -5761,19 +5586,6 @@
 			return id;
 		},
 	   
-		/**
-		 * Move to new x,y position over 'seconds'
-		 * <p>
-		 * Note: uses the current <code>motionType</code> for this object, starting at 'delay' seconds in the future
-		 * 
-		 * @param {number} newX
-		 * @param {number} newY
-		 * @param {number} seconds
-		 * @param {number} delay
-		 * @param {function} callback the callback to be invoked when the behavior has completed (optional: default=onRiTaEvent(e)
-		 * 
-		 * @returns {number} the unique id for this behavior
-		 */
 		moveTo : function(newX,newY,seconds,delay,callback) {
 			
 			var rt = this;
@@ -5807,12 +5619,6 @@
 			return this;
 		},
 		
-		/**
-		 * Set/gets the text for this RiText
-		 * 
-		 * @param {string} txt the new text (optional)
-		 * @returns {object | string} this RiText (for sets) or the current text (for gets) 
-		 */
 		text : function(txt) {
 			
 			if (arguments.length == 1) {
@@ -5833,90 +5639,42 @@
 			return this._rs._text;
 		},
 		
-		/**
-		 * Searches for a match between a substring (or regular expression) and the contained
-		 * string, and returns the matches
-		 * 
-		 * @param {string | object} regex
-		 * @returns {array} strings matches or empty array if none are found
-		 */
 		match : function(regex) {
 			
 			return this._rs.match(regex);
 			
 		},
-		
-		 /**
-		 * Returns the character at the given 'index', or empty string if none is found
-		 * 
-		 * @param {number} index index of the character
-		 * @returns {string} the character
-		 */
+
 		charAt : function(index) {
 
 			return this._rs.charAt(index);
 			
 		},
 
-		
-		/**
-		 * Concatenates the text from another RiText at the end of this one
-		 * 
-		 * @returns {object} this RiText
-		 */
 		concat : function(riText) {
 
 			return this._rs._text.concat(riText.text());
 			
 		},
-		
-		 /**
-		 * Returns true if and only if this string contains the specified sequence of char values.
-		 * 
-		 * @param {string} text text to be checked
-		 * @returns {boolean}
-		 */
+
 		containsWord : function(text) {
 			
 			return this._rs.indexOf(text) > -1;
 			
 		},
-		
-		/**
-		 * Tests if this string ends with the specified suffix.
-		 * 
-		 * @param {string} substr string the suffix.
-		 * 
-		 * @returns {boolean} true if the character sequence represented by the argument is a suffix of
-		 *         the character sequence represented by this object; false otherwise.          * 
-		 */
+
 		endsWith : function(substr) {
 			
 			return endsWith(this._rs._text, substr);
 			
 		},
-		
-		/**
-		 * Compares this RiText to the specified object. The result is true if and only if the
-		 * argument is not null and is a RiText object that represents the same sequence of
-		 * characters as this object.
-		 * 
-		 * @param {object} RiText RiText object to compare this RiText against.
-		 * @returns {boolean} true if the RiText are equal; false otherwise.
-		 */
+
 		equals : function(RiText) {
 			
 			return RiText._rs._text === this._rs._text;
 			
 		},
 
-		/**
-		 * Compares this RiText to another RiText, ignoring case considerations.
-		 * 
-		 * @param {string | object} str String or RiText object to compare this RiText against
-		 * @returns {boolean} true if the argument is not null and the Strings are equal, ignoring
-		 *         case; false otherwise.
-		 */
 		equalsIgnoreCase : function(str) {
 			
 			if (typeof str === S) {
@@ -5929,54 +5687,25 @@
 			}
 			
 		},
-		
-		 /**
-		 * Returns the index within this string of the first occurrence of the specified character.
-		 * 
-		 * @param {string} searchstring or character to search for
-		 * @param {number} start (Optional) The start position in the string to start the search. If omitted,
-		 *        the search starts from position 0
-		 * @returns {number} the first index of the matching pattern or -1 if none are found
-		 */
+
 		indexOf : function(searchstring, start) {
 			
 			return this._rs._text.indexOf(searchstring, start);
 			
 		},
 
-		
-		 /**
-		 * Returns the index within this string of the last occurrence of the specified character.
-		 * 
-		 * @param {string} searchstring The string to search for
-		 * @param {number} start (Optional) The start position in the string to start the search. If omitted,
-		 *        the search starts from position 0
-		 *        
-		 * @returns {number} the last index of the matching pattern or -1 if none are found
-		 */
 		lastIndexOf : function(searchstring, start) {
 			
 			return this._rs._text.lastIndexOf(searchstring, start);
 			
 		},
-		
-		/**
-		 * Returns the length of this string.
-		 * 
-		 * @returns {number} the length
-		 */
+
 		length : function() {
 			
 			return this._rs._text.length;
 			
 		},
-		
-	
-		 /**
-		 * Returns an array of part-of-speech tags, one per word, using RiTa.tokenize() and RiTa.posTag().
-		 *
-		 * @returns {array} strings of pos, one per word
-		 */
+
 		pos : function() {
 				   
 			var words = RiTa.tokenize((this._rs._text)); // was getPlaintext()
@@ -5991,12 +5720,6 @@
 			
 		},
 
-		/**
-		 * Returns the part-of-speech tag for the word at 'index', using RiTa.tokenize() and RiTa.posTag().
-		 * 
-		 * @param {number} index the word index
-		 * @returns {string} the pos
-		 */
 		posAt : function(index) {
 			
 			var tags = this._rs.pos();
@@ -6008,26 +5731,13 @@
 			
 		},
 
-		 /**
-		 * Inserts the character at the specified index
-		 * 
-		 * @param {number} ind the index
-		 * @param {string} theChar the character(s)
-		 * @returns {object} RiText
-		 */
 		insertChar : function(ind, theChar) { 
 			
 			this._rs.insertChar(ind, theChar);
 			return this;
 			
 		},
-		
-		/**
-		 * Removes the character at the specified index
-		 * 
-		 * @param {number} ind the index
-		 * @returns {object} RiText
-		 */
+
 		removeChar : function(ind) { 
 			
 			this._rs.removeChar(ind);
@@ -6035,29 +5745,12 @@
 			
 		},
 		
-
-	  /**
-		 * Replaces the character at 'idx' with 'replaceWith'. If the specified 'idx' is less than
-		 * zero, or beyond the length of the current text, there will be no effect.
-		 * 
-		 * @param {number} idx the character index
-		 * @param {string} replaceWith the replacement
-		 * @returns {object} this RiText
-		 */
 		replaceChar : function(idx, replaceWith) {
 			
 			this._rs.replaceChar(idx, replaceWith);
 			return this;
 		},
 
-		/**
-		 * Replaces the first instance of 'regex' with 'replaceWith'
-		 * 
-		 * @param {string | regex} regex the pattern
-		 * @param {string} replaceWith the replacement
-		 * 
-		 * @returns this RiText
-		 */
 		replaceFirst : function(regex, replaceWith) {
 			
 			if (replaceWith) 
@@ -6066,14 +5759,6 @@
 			
 		},
 		
-		/**
-		 * Replaces the last instance of 'regex' with 'replaceWith'
-		 * 
-		 * @param {string | regex} regex the pattern
-		 * @param {string} replaceWith the replacement
-		 * 
-		 * @returns this RiText
-		 */
 		replaceLast : function(regex, replaceWith) {
 		   
 			if (replaceWith) {
@@ -6090,15 +5775,7 @@
 				}
 			};
 		},
-		
-		/**
-		 * Replaces each substring of this string that matches the given regular expression with the
-		 * given replacement.
-		 * 
-		 * @param {string | regex } pattern the pattern to be matched
-		 * @param {string} replacement the replacement sequence of char values
-		 * @returns {object} this RiText
-		 */
+
 		replaceAll : function(pattern, replacement) {
 			
 			// SHOULD BE: this._rs._text.replace(pattern, replacement)
@@ -6108,15 +5785,7 @@
 			return this;
 			
 		},
-		
-		 /**
-		 * Replaces the word at 'wordIdx' with 'newWord'
-		 * 
-		 * @param {number} wordIdx the index
-		 * @param {string} newWord the replacement
-		 * 
-		 * @returns {object} this RiText
-	     */
+
 		replaceWord : function(wordIdx, newWord) {
 
 			this._rs.replaceWord.apply(this,arguments);
@@ -6124,171 +5793,63 @@
 			return this; // TODO: check that all RiText methods use the delegate 
 						//  (like above) for methods that exist in RiString
 		},	 
-		
-		/**
-		 * Removes the word at 'wordIdx'.
-		 * 
-		 * @param {number} wordIdx the index
-		 * 
-		 * @returns {object} this RiText
-		 */
+
 		removeWord : function(wordIdx) {
 			
 			this._rs.removeWord.apply(this,arguments);
 			return this;
 		},   
-		
-		
-		/**
-		 * Inserts 'newWord' at 'wordIdx' and shifts each subsequent word accordingly.
-		 *
-		 * @returns {object} this RiText
-		 */
+
 		insertWord : function(wordIdx, newWord) {
 			
 			this._rs.insertWord.apply(this, arguments);
 			return this;            
 		},
-		
-	
-		 /**
-		 * Extracts a part of a string from this RiText
-		 * 
-		 * @param {number} begin (Required) The index where to begin the extraction. First character is at
-		 *        index 0
-		 * @param {number} end (Optional) Where to end the extraction. If omitted, slice() selects all
-		 *        characters from the begin position to the end of the string
-		 * @returns {object} this RiText
-		 */
+
 		slice : function(begin, end) {
 			
 			var res = this._rs._text.slice(begin, end) || E;
 			return this._rs.text(res);
 			 
 		},
-		
-		/**
-		 * Split a RiText into an array of sub-RiText and return the new array.
-		 * 
-		 * If an empty string ("") is used as the separator, the string is split between each character.
-		 * 
-		 * @param {string} separator (Optional) Specifies the character to use for splitting the string. If
-		 *        omitted, the entire string will be returned. If an empty string ("") is used as the separator, 
-		 *        the string is split between each character.
-		 *        
-		 * @param {number} limit (Optional) An integer that specifies the number of splits
-		 * 
-		 * @returns {array} RiText
-		 
-		split : function(separator, limit) {
-			
-			var parts = this._rs._text.split(separator, limit);
-			var rs = [];
-			for ( var i = 0; i < parts.length; i++) {
-				if (parts[i])
-					rs.push(new RiText(parts[i]));
-			}
-			return rs;
-		},*/
-		
-		 /**
-		 * Tests if this string starts with the specified prefix.
-		 * 
-		 * @param {string} substr string the prefix
-		 * 
-		 * @returns {boolean} true if the character sequence represented by the argument is a prefix of
-		 *         the character sequence represented by this string; false otherwise. Note also
-		 *         that true will be returned if the argument is an empty string or is equal to this
-		 *         RiText object as determined by the equals() method.
-		 */
+
 		startsWith : function(substr) {
 			
 			return this._rs.indexOf(substr) == 0;
 			
 		},
-		
-		 /**
-		 * Extracts the characters from a string, between two specified indices, and sets the
-		 * current text to be that string. 
-		 * 
-		 * @param {number} from  The index where to start the extraction. First character is at
-		 *        index 0
-		 * @param {number} to (optional) The index where to stop the extraction. If omitted, it extracts the
-		 *        rest of the string
-		 * @returns {object} this RiText
-		 */
+
 		substring : function(from, to) {
 
 			return this._rs.text(this._rs._text.substring(from, to));
 			
 		},
 
-		
-		 /**
-		 * Extracts the characters from this objects contained string, beginning at 'start' and
-		 * continuing through the specified number of characters, and sets the current text to be
-		 * that string. (from Javascript String)
-		 * 
-		 * @param {number} start  The index where to start the extraction. First character is at
-		 *        index 0
-		 * @param {number} length (optional) The index where to stop the extraction. If omitted, it extracts the
-		 *        rest of the string
-		 * @returns {object} this RiText
-		 */
 		substr : function(start, length) {
 			
 			var res = this._rs._text.substr(start, length);
 			return this._rs.text(res);
 			
 		},
-		
-		/**
-		 * Converts this object to an array of RiText objects, one per character
-		 * 
-		 * @returns {array} RiTexts with each letter as its own RiText element
-		toCharArray : function() {
-			return this._rs._text.split(E); // DCH: to match Java, 4/13/13
-		},		 */
-		
-		/**
-		 * Converts all of the characters in this RiText to lower case
-		 * 
-		 * @returns {object} this RiText
-		 */
+
 		toLowerCase : function() {
 			
 			return this._rs.text(this._rs._text.toLowerCase());
 			
 		},
-		 
-		/**
-		 * Converts all of the characters in this RiText to upper case
-		 * 
-		 * @returns {object} this RiText
-		 */
+
 		toUpperCase : function() {
 			
 			return this._rs.text(this._rs._text.toUpperCase());
 			
 		},
-		
-		/**
-		 * Returns a copy of the string, with leading and trailing whitespace omitted.
-		 * 
-		 * @returns {object} this RiText
-		 */
+
 		trim : function() {
 			
 			return this._rs.text(trim(this._rs._text));
 			
 		},
-		
-		/**
-		 * Returns the word at 'index', according to RiTa.tokenize()
-		 * 
-		 * @param {number} index the word index
-		 * @returns {string} the word
-		 */
+
 		wordAt : function(index) {
 			
 			var words = RiTa.tokenize((this._rs._text));
@@ -6297,31 +5858,18 @@
 			return words[index];
 			
 		},
-		
-		/**
-		 * Returns the number of words in the object, according to RiTa.tokenize().
-		 * 
-		 * @returns {number} number of words
-		 */
+
 		wordCount : function() {
 			
 			if (!this._rs._text.length) return 0;
 			return this.words().length;
 		},
-		
-		/**
-		 * Returns the array of words in the object, via a call to RiTa.tokenize().
-		 * @returns {array} strings, one per word
-		 */
+
 		words : function() { 
 			
 			return RiTa.tokenize(this._rs._text);
 		},
 
-		/**
-		 * Returns the distance between the center points of this and another RiText
-		 * @returns {number} the distance
-		 */
 		distanceTo : function(a,b) {
 			
 	      var p2x, p2y, p1 = this.center(), p1x = p1.x, p1y = p1.y;
@@ -6338,24 +5886,13 @@
 		  
 		  return RiTa.distance( p1.x,  p1.y,  p2x,  p2y);
 		},
-	  
-		/**
-		 * Returns the center point of this RiText as derived from its bounding box
-		 * @returns {object} { x, y }
-		 */
+
 		center : function() {
 			
 			var bb = this.boundingBox();
 			return { x: bb.x + bb.width/2.0, y: bb.y - bb.height/2.0 };
 		},
-		
-		/**
-		 * Splits the object into an array of RiTexts, one per word
-		 * tokenized with the supplied regex.
-		 * 
-		 * @param {regex | string} to split
-		 * @returns {array} RiTexts
-		 */
+
 		splitWords : function(regex) {
 			
 			regex = regex || SP;
@@ -6378,10 +5915,6 @@
 			return l;
 		},
 	
-		/**
-		 * Splits the object into an array of RiTexts, one per letter.
-		 * @returns {array} RiTexts
-		 */
 		splitLetters : function() {
 	
 			var l = [];
@@ -6403,14 +5936,7 @@
 	
 			return l;
 		},
-		
-		/**
-		 * Returns true if the bounding box for this RiText contains the point mx/my
-		 * 
-		 * @param {number} mx
-		 * @param {number} my
-		 * @returns {boolean}
-		 */
+
 		contains : function(mx, my) {
 
 		   var bb = this.boundingBox(false);
@@ -6419,11 +5945,7 @@
 		   
 		   return (!(mx<bb.x || mx > bb.x+bb.width || my < bb.y || my > bb.y+bb.height));
 		},
-		
-		/**
-		 * Creates and returns a new (copy) of this RiText
-		 * @returns {object} RiText
-		 */
+
 		copy : function() {
 
 			var c = new RiText(this.text(), this.x, this.y, this._font);
@@ -6437,13 +5959,7 @@
 
 			return c;
 		},
-		
-		/**
-		 * Set/gets the alignment for this RiText (RiTa.LEFT || RiTa.CENTER || RiTa.RIGHT)
-		 * 
-		 * @param {object} align (optional) the alignment 
-		 * @returns {object} this RiText (set) or the current font (get)
-		 */
+
 		align : function(align) {
 			if (arguments.length) {
 				this._alignment = align;
@@ -6452,15 +5968,6 @@
 			return this._alignment;
 		},
 
-		
-		/**
-		 * Set/gets the font for this RiText
-		 * 
-		 * @param {object} font (optional) containing the font data OR
-		 * @param {string} font containing the font name AND
-		 * @param {number} size (optional) containing the font size 
-		 * @returns {object} this RiText (set) or the current font (get)
-		 */
 		font : function(font, size) {
 			
 			var a = arguments;
@@ -6479,14 +5986,7 @@
 
 			return this._font;
 		},    
-		
 
-		/**
-		 * Set/gets the visibility of the bounding box for this RiText
-		 * 
-		 * @param {boolean} trueOrFalse (optional) true or false 
-		 * @returns {object | boolean} this RiText (set) or the current boolean value (get)
-		 */
 		showBounds : function(trueOrFalse) {
 		   if (arguments.length == 1) {
 			   this._showBounds = trueOrFalse;
@@ -6495,16 +5995,6 @@
 		   return this._showBounds;
 		},
 
-		/**
-		 * Set/gets the fill color for this RiText
-		 * 
-		 * @param {number | array} takes 1-4 number values for rgba, or an array of size 1-4
-		 * @param {number} cg
-		 * @param {number} cb
-		 * @param {number} ca
-		 * 
-		 * @returns {object} either this RiText (for sets) or the current color object (for gets)
-		 */
 		fill : function(cr, cg, cb, ca) {
 			//console.log("fill");
 			if (arguments.length == 0) 
@@ -6512,11 +6002,7 @@
 			this._color = parseColor.apply(this, arguments);
 			return this;
 		},
-	
-		/**
-		 * Returns false if the alpha value of this object is &lt;= 0, else true
-		 * @returns {boolean} 
-		 */
+
 		isVisible : function(b) { 
 			
 			if (arguments.length)
@@ -6524,13 +6010,7 @@
 			
 			return this._color.a > 0;
 		},
-		
-		/**
-		 * Set/gets the alpha (transparency) for this RiText
-		 *
-		 * @param {number} a (optional) input (0-255) 
-		 * @returns {object | number} either this RiText (for set) or the current alpha value (for get)
-		 */
+
 		alpha : function(a) {
 			if (arguments.length==1) {
 				this._color.a = a;
@@ -6538,15 +6018,7 @@
 			}
 			else return this._color.a;
 		},
-	
-		/**
-		 * Set/gets the position for this RiText
-		 * 
-		 * @param {number} x (optional) X coordinate
-		 * @param {number} y (optional) Y coordinate
-		 * 
-		 * @returns {object} either this RiText (for sets) or object {x, y} (for gets)
-		 */
+
 		position : function(x, y) {
 			
 			//TODO: add Z
@@ -6557,14 +6029,7 @@
 			this.y = y;
 			return this;
 		},
-	 
-		/**
-		 * Sets/gets the 2d rotation for this RiText
-		 * 
-		 * @param {number} rotate degree to rotate
-		 * 
-		 * @returns {object} either this RiText (for sets) or the current degree of rotation (for gets)
-		 */
+
 		rotate : function(rotate) {
 			
 			//TODO: add X,Y ??
@@ -6573,15 +6038,7 @@
 		  this._rotateZ = rotate;
 		  return this;
 		},
-	
-		/**
-		 * Sets/gets the scale factor for this RiText (takes 0-2 arguments) 
-		 * 
-		 * @param {number} theScaleX the ScaleX ratio
-		 * @param {number} theScaleY (optional) the ScaleY ratio 
-		 * 
-		 @returns { object } either this RiText (for sets) or the current scales (for gets)
-		 */
+
 		scale : function(theScaleX, theScaleY) {
 			
 			if (!arguments.length) return { x:this._scaleX, y:this._scaleY }; //TODO: add Z
@@ -6593,13 +6050,7 @@
 			
 			return this;
 		},
-	
-		/**
-		 * Returns the pixel x-offset for the character at 'charIdx'
-		 * 
-		 * @param {number} charIdx
-		 * @returns {number} the pixel x-offset
-		 */
+
 		charOffset : function(charIdx) {
 	
 			var theX = this.x;
@@ -6618,24 +6069,13 @@
 
 			return theX;
 		},
-		
-		/**
-		 * Returns the pixel x-offset for the word at 'wordIdx'
-		 * @param {number} wordIdx
-		 * @returns {number} the pixel x-offset
-		 */
+
 		wordOffset : function(wordIdx) { 
 			
 			var words =  this.text().split(' ');
 			return RiText._wordOffsetFor(this, words, wordIdx);
 		},
 
-		/**
-		 * Returns the relative bounding box for the current text
-		 * @param {boolean} (optional, default=false) 
-		 * 	if true, bounding box is first transformed (rotate,translate,scale) 
-		 * @returns {object} x,y,width,height 
-		 */
 		boundingBox : function(transformed) {
 
 			var g = this.g;
@@ -6663,34 +6103,16 @@
 			return bb;
 		},
 
-		/**
-		 * Returns the current width of the text (derived from the bounding box)
-		 * @returns {number} the width of the text
-		 */
-		//@param {boolean} (optional, default=false) if true, width is first scaled
 		textWidth : function() { 
 			
 			return this.g._textWidth(this._font,this._rs._text);
 		},
-		
-		/**
-		 * Returns the current height of the text (derived from the bounding box)
-		 * @returns {number} the current height of the text
-		 */
-		// * @param {boolean} (optional, default=false) if true, height is first scaled
+
 		textHeight : function() { 
 			
 			return this.g._textHeight(this);
 		},
-		
-		/**
-		 * Sets/gets the size of the current font. Note: this method only
-		 * effects only scaleX/Y, not the font's internal properties 
-		 * 
-		 * @param {number} sz (optional) font size 
-		 * 
-		 * @returns {object | number} either this RiText (for set) or the current font size (for get)
-		 */
+
 		fontSize : function(sz) {
  
 			// TODO: what to do if scaleX and scaleY are different?
@@ -6698,20 +6120,12 @@
 			return (arguments.length) ? this.scale( sz / this._font.size) 
 				: (this._font.size * this._scaleX);
 		},
-		
-		/**
-		 * Returns the ascent of the current font 
-		 * @returns {number} the ascent of the current font
-		 */
+
 		textAscent : function() { 
 			
 			return this.g._textAscent(this);
 		},
-		
-		/**
-		 * Returns the descent of the current font 
-		 * @returns {number} the descent of the current font 
-		 */
+
 		textDescent : function() { 
 			
 			return this.g._textDescent(this);
@@ -6740,13 +6154,7 @@
 			
 			return null;
 		},
-		
-		/**
-		 * Removes the specified text behavior for the object  
-		 * 
-		 * @param {number} the behavior id
-		 * @returns {object} this RiText
-		 */
+
 		stopBehavior: function ( id ) {
 
 			var behavior = this._getBehavior(id);
@@ -6761,12 +6169,7 @@
 			}
 			return this;
 		},
-		
-		/**
-		 * Removes all text behaviors for the object  
-		 * 
-		 * @returns {object} this RiText 
-		 */
+
 		stopBehaviors: function () {
 
 			this._behaviors = [];
@@ -6802,13 +6205,6 @@
 			var s =  (this._rs && this._rs._text) || 'undefined';
 			return '['+Math.round(this.x)+","+Math.round(this.y)+",'"+s+"']";
 		}
-
-
-		//        updateMousePosition : function(curElement, event) {
-		//            var offset = calculateOffset(window, event);
-		//            p.mouseX = event.pageX - offset.X;
-		//            p.mouseY = event.pageY - offset.Y
-		//        }
 	}
 	
 	/////////////////////////////////////////////////////////////////////////
@@ -6975,16 +6371,7 @@
 			this.stateMachineSize = parseInt(tokenizer.nextToken());
 		  }
 		},
-		
-		/**
-		 * Calculates the phone list for a given word. If a phone list cannot be
-		 * determined, <code>[]</code> is returned. 
-		 * 
-		 * @param {string | array } input the word or words to find
-		 * 
-		 * @return {string} phones for word, separated by delim,
-		 *   or <code>empty string</code>
-		 */
+
 		getPhones : function(input, delim) {
 			
 			var ph, result = []; 

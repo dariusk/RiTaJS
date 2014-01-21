@@ -92,7 +92,6 @@ _RiTa_DICT={
 'absentee': ['ae1-b-s ax-n-t iy1','jj nn'],
 'absenteeism': ['ae1-b-s ax-n-t iy1 ih-z ax-m','nn'],
 'absentees': ['ae1-b-s ax-n-t iy1-z','nns'],
-'absentia': ['ae-b-s eh1-n-sh ax','fw'],
 'absolute': ['ae1-b-s ax-l uw1-t','jj nn'],
 'absolutely': ['ae1-b-s ax-l uw1-t l-iy','rb'],
 'absoluteness': ['ae1-b-s ax-l uw1-t n-ax-s','nn'],
@@ -356,7 +355,7 @@ _RiTa_DICT={
 'acupuncture': ['ae1-k y-uw-p ah1-ng-k ch-er','nn'],
 'acute': ['ax-k y-uw1-t','jj nn'],
 'acutely': ['ax-k y-uw1-t l-iy','rb'],
-'ad': ['ae1-d','nn fw'],
+'ad': ['ae1-d','nn'],
 'adage': ['ae1-d ax-jh','nn'],
 'adagio': ['ax-d aa1-zh iy ow1','nn rb'],
 'adamant': ['ae1-d ax-m ax-n-t','jj'],
@@ -407,7 +406,6 @@ _RiTa_DICT={
 'adhering': ['ax-d-hh ih1-r ih-ng','vbg'],
 'adhesive': ['ae-d-hh iy1-s ih-v','jj nn'],
 'adhesives': ['ae-d-hh iy1-s ih-v-z','nns'],
-'adieu': ['ax-d uw1','fw'],
 'adjacent': ['ax-jh ey1-s ax-n-t','jj'],
 'adjective': ['ae1-jh ih-k t-ih-v','nn'],
 'adjectives': ['ae1-jh ax-k t-ih-v-z','nns'],
@@ -709,7 +707,6 @@ _RiTa_DICT={
 'agreements': ['ax-g r-iy1-m ax-n-t-s','nns'],
 'agrees': ['ax-g r-iy1-z','vbz'],
 'agressive': ['ax-g r-eh1-s ih-v','jj'],
-'agricole': ['ae1-g r-ih-k ow1-l','fw'],
 'agricultural': ['ae1-g r-ax-k ah1-l-ch er ax-l','jj'],
 'agriculturally': ['ae1-g r-ih-k ah1-l-ch er ax-l iy','rb'],
 'agriculture': ['ae1-g r-ih-k ah1-l-ch er','nn'],
@@ -946,7 +943,7 @@ _RiTa_DICT={
 'alveolar': ['ae-l-v iy1 ax-l er','nn jj'],
 'alveoli': ['ae-l-v iy1 ax-l ay1','nns'],
 'always': ['ao1-l w-ey1-z','rb'],
-'am': ['ae1-m','vbp fw rb'],
+'am': ['ae1-m','vbp rb'],
 'amalgam': ['ax-m ae1-l-g ax-m','nn'],
 'amalgamated': ['ax-m ae1-l-g ax-m ey1-t ih-d','vbn'],
 'amalgamation': ['ax-m ae1-l-g ax-m ey1-sh ax-n','nn'],
@@ -1000,8 +997,6 @@ _RiTa_DICT={
 'amicus': ['ax-m iy1-k ax-s','nn'],
 'amid': ['ax-m ih1-d','in'],
 'amidst': ['ax-m ih1-d-s-t','in'],
-'amigo': ['ax-m iy1-g ow1','fw'],
-'amino': ['ax-m iy1-n ow','jj'],
 'amiss': ['ax-m ih1-s','jj'],
 'amity': ['ae1-m ih-t iy','nn'],
 'ammo': ['ae1-m ow1','nn'],
@@ -1013,7 +1008,6 @@ _RiTa_DICT={
 'amok': ['ax-m ah1-k','rb'],
 'among': ['ax-m ah1-ng','in'],
 'amongst': ['ax-m ah1-ng-s-t','in'],
-'amor': ['ae1-m er','fw'],
 'amoral': ['ey-m ao1-r ax-l','jj'],
 'amorality': ['ey1-m er ae1-l ax-t iy','nn'],
 'amorist': ['ae1-m er ax-s-t','nn'],
@@ -1177,13 +1171,12 @@ _RiTa_DICT={
 'annuities': ['ax-n uw1 ih-t iy-z','nns'],
 'annuity': ['ax-n uw1 ax-t iy','nn'],
 'annulled': ['ae1-n ax-l-d','vbd'],
-'annum': ['ae1-n ax-m','nn fw'],
+'annum': ['ae1-n ax-m','nn'],
 'anode': ['ae1-n ow1-d','nn'],
 'anodes': ['ae1-n ow1-d-z','nns'],
 'anomalies': ['ax-n aa1-m ax-l iy-z','nns'],
 'anomalous': ['ax-n aa1-m ax-l ax-s','jj'],
 'anomaly': ['ax-n aa1-m ax-l iy','nn'],
-'anomie': ['ae1-n ax-m iy','fw'],
 'anonymity': ['ae1-n ax-n ih1-m ih-t iy','nn'],
 'anonymous': ['ax-n aa1-n ax-m ax-s','jj'],
 'anonymously': ['ax-n aa1-n ax-m ax-s l-iy','rb'],
@@ -1202,7 +1195,7 @@ _RiTa_DICT={
 'antagonistic': ['ae-n-t ae1-g ax-n ih1-s t-ih-k','jj'],
 'antagonists': ['ae-n-t ae1-g ax-n ax-s-t-s','nns'],
 'antagonize': ['ae-n-t ae1-g ax-n ay1-z','vb vbp'],
-'ante': ['ae1-n-t iy','nn fw vb'],
+'ante': ['ae1-n-t iy','nn vb'],
 'anteaters': ['ae1-n-t iy1-t er-z','nns'],
 'antebellum': ['ae1-n-t ih-b eh1-l ax-m','jj'],
 'antecedents': ['ae1-n-t ax-s iy1-d ax-n-t-s','nns'],
@@ -1320,7 +1313,6 @@ _RiTa_DICT={
 'appallingly': ['ax-p ao1-l ih-ng l-iy','rb'],
 'appalls': ['ax-p ao1-l-z','vbz'],
 'apparat': ['ae1-p ax-r ae-t','nn'],
-'apparatchiks': ['ae1-p er ae1-ch ih-k-s','fw'],
 'apparatus': ['ae1-p er ae1-t ax-s','nn'],
 'apparel': ['ax-p ae1-r ax-l','nn vb'],
 'apparent': ['ax-p eh1-r ax-n-t','jj nn'],
@@ -1896,7 +1888,6 @@ _RiTa_DICT={
 'attrition': ['ax-t r-ih1-sh ax-n','nn'],
 'attuned': ['ax-t uw1-n-d','vbn jj'],
 'atypical': ['ey-t ih1-p ih-k ax-l','jj'],
-'au': ['ow1','fw nn'],
 'auburn': ['aa1-b er-n','jj'],
 'auction': ['aa1-k sh-ax-n','nn vb'],
 'auctioned': ['ao1-k sh-ax-n-d','vbn vbd'],
@@ -1994,15 +1985,12 @@ _RiTa_DICT={
 'autos': ['ao1-t ow-z','nns'],
 'autumn': ['ao1-t ax-m','nn'],
 'autumnal': ['ao-t ah1-m n-ax-l','jj'],
-'aux': ['ow1','fw'],
 'auxiliary': ['aa-g z-ih1-l y-er iy','jj nn'],
 'avail': ['ax-v ey1-l','nn vb'],
-'availabilities': ['ax-v ey1-l ax-b ih1-l ih-t iy-z','nns'],
 'availability': ['ax-v ey1-l ax-b ih1-l ax-t iy','nn'],
 'available': ['ax-v ey1-l ax-b ax-l','jj'],
 'availed': ['ax-v ey1-l-d','vbd'],
 'avalanche': ['ae1-v ax-l ae1-n-ch','nn'],
-'avant': ['ax-v aa1-n-t','fw'],
 'avarice': ['ae1-v er ax-s','nn'],
 'avenge': ['ax-v eh1-n-jh','vb'],
 'avenger': ['ax-v eh1-n-jh er','nn'],
@@ -2026,7 +2014,6 @@ _RiTa_DICT={
 'avid': ['ae1-v ax-d','jj'],
 'avidly': ['ae1-v ax-d l-iy','rb'],
 'avionics': ['ey1-v iy aa1-n ih-k-s','nns nn'],
-'avions': ['ey1-v iy ax-n-z','fw'],
 'avocado': ['ae1-v ax-k aa1-d ow','nn'],
 'avocados': ['ae1-v ax-k aa1-d ow-z','nns'],
 'avocation': ['ae1-v ax-k ey1-sh ax-n','nn'],
@@ -2039,7 +2026,6 @@ _RiTa_DICT={
 'avowed': ['ax-v aw1-d','jj'],
 'avowedly': ['ax-v aw1 ax-d l-iy','rb'],
 'avuncular': ['ax-v ah1-ng-k y-ax-l er','jj'],
-'aw': ['ao1','uh'],
 'await': ['ax-w ey1-t','vb vbp'],
 'awaited': ['ax-w ey1-t ax-d','vbd jj vbn'],
 'awaiting': ['ax-w ey1-t ih-ng','vbg'],
@@ -2069,7 +2055,6 @@ _RiTa_DICT={
 'awkwardness': ['ao1-k w-er-d n-ax-s','nn'],
 'awoke': ['ax-w ow1-k','vbd'],
 'awry': ['er ay1','rb jj'],
-'ax': ['ae1-k-s','nn'],
 'axe': ['ae1-k-s','nn'],
 'axes': ['ae1-k s-ih-z','nns'],
 'axiom': ['ae1-k s-iy ax-m','nn'],
@@ -2079,8 +2064,6 @@ _RiTa_DICT={
 'axle': ['ae1-k s-ax-l','nn'],
 'axles': ['ae1-k s-ax-l-z','nns'],
 'ayatollah': ['ay1 ax-t ow1-l ax','nn'],
-'aye': ['ay1','rb'],
-'ayes': ['ay1-z','nns'],
 'azalea': ['ax-z ey1-l y-ax','nn'],
 'azaleas': ['ax-z ey1-l y-ax-z','nns'],
 'azure': ['ae1-zh er','jj'],
@@ -2204,7 +2187,7 @@ _RiTa_DICT={
 'balled': ['b-ao1-l-d','vbn'],
 'ballerina': ['b-ae1-l er iy1-n ax','nn'],
 'ballerinas': ['b-ae1-l er iy1-n ax-z','nns'],
-'ballet': ['b-ae-l ey1','nn fw'],
+'ballet': ['b-ae-l ey1','nn'],
 'ballets': ['b-ae-l ey1-z','nns'],
 'balling': ['b-ao1-l ih-ng','vbg'],
 'ballistic': ['b-ax-l ih1-s t-ih-k','jj'],
@@ -2592,10 +2575,8 @@ _RiTa_DICT={
 'beholden': ['b-ih-hh ow1-l-d ax-n','jj'],
 'beholder': ['b-iy-hh ow1-l-d er','nn'],
 'beige': ['b-ey1-zh','jj'],
-'bein': ['b-iy1-n','vbg fw'],
 'being': ['b-iy1 ih-ng','vbg jj nn'],
 'beings': ['b-iy1 ih-ng-z','nns'],
-'bel': ['b-eh1-l','fw'],
 'belaboring': ['b-ih-l ey1-b er ih-ng','vbg nn'],
 'belated': ['b-ih-l ey1-t ih-d','jj'],
 'belatedly': ['b-ih-l ey1-t ax-d l-iy','rb'],
@@ -2621,8 +2602,6 @@ _RiTa_DICT={
 'belittled': ['b-ih-l ih1-t ax-l-d','jj'],
 'belittling': ['b-ih-l ih1-t ax-l ih-ng','vbg'],
 'bell': ['b-eh1-l','nn'],
-'belle': ['b-eh1-l','fw nn'],
-'belles': ['b-eh1-l-z','nns'],
 'bellhops': ['b-eh1-l-hh aa1-p-s','nns'],
 'bellies': ['b-eh1-l iy-z','nns'],
 'belligerence': ['b-ax-l ih1-jh er ax-n-s','nn'],
@@ -2769,7 +2748,6 @@ _RiTa_DICT={
 'bidding': ['b-ih1-d ih-ng','nn vbg jj'],
 'bide': ['b-ay1-d','vb'],
 'bids': ['b-ih1-d-z','nns vbz'],
-'bien': ['b-iy1-n','fw'],
 'biennial': ['b-ay eh1-n iy ax-l','jj'],
 'bifocals': ['b-ay1-f ow-k ax-l-z','nns'],
 'bifurcated': ['b-ih1-f er-k ey1-t ih-d','jj'],
@@ -3153,7 +3131,6 @@ _RiTa_DICT={
 'boilers': ['b-oy1-l er-z','nns'],
 'boiling': ['b-oy1-l ih-ng','vbg nn'],
 'boils': ['b-oy1-l-z','vbz'],
-'bois': ['b-w-aa1','fw'],
 'boisterous': ['b-oy1-s t-er ax-s','jj'],
 'bold': ['b-ow1-l-d','jj'],
 'bolder': ['b-ow1-l-d er','jjr'],
@@ -3184,8 +3161,6 @@ _RiTa_DICT={
 'bombings': ['b-aa1-m ih-ng-z','nns'],
 'bombs': ['b-aa1-m-z','nns'],
 'bombshell': ['b-aa1-m-sh eh1-l','nn'],
-'bon': ['b-aa1-n','fw'],
-'bona': ['b-ow1-n ax','fw jj'],
 'bonanza': ['b-ax-n ae1-n-z ax','nn'],
 'bond': ['b-aa1-n-d','nn jj'],
 'bondage': ['b-aa1-n-d ih-jh','nn'],
@@ -3201,7 +3176,6 @@ _RiTa_DICT={
 'bonfires': ['b-aa1-n-f ay1 er-z','nns'],
 'bonkers': ['b-aa1-ng-k er-z','jj'],
 'bonnet': ['b-aa1-n ax-t','nn'],
-'bono': ['b-ow1-n ow','fw'],
 'bonus': ['b-ow1-n ax-s','nn'],
 'bonuses': ['b-ow1-n ax-s ih-z','nns vbz'],
 'bony': ['b-ow1-n iy','jj'],
@@ -3335,10 +3309,8 @@ _RiTa_DICT={
 'bouquets': ['b-ow-k ey1-z','nns'],
 'bourbon': ['b-er1-b ax-n','nn'],
 'bourbons': ['b-er1-b ax-n-z','nns'],
-'bourgeois': ['b-uh-r-zh w-aa1','jj nn'],
-'bourgeoisie': ['b-uh1-r-zh w-aa1-z iy1','nns fw'],
-'bourses': ['b-ao1-r-s ih-z','nns'],
-'bout': ['b-aw1-t','nn in'],
+'bourgeois': ['b-uh-r-zh w-aa1','jj'],
+'bourgeoisie': ['b-uh1-r-zh w-aa1-z iy1','nns'],
 'boutique': ['b-uw-t iy1-k','nn'],
 'boutiques': ['b-uw-t iy1-k-s','nns'],
 'bouts': ['b-aw1-t-s','nns'],
@@ -4100,8 +4072,6 @@ _RiTa_DICT={
 'cantaloupe': ['k-ae1-n-t ax-l ow1-p','nn'],
 'canteen': ['k-ae-n-t iy1-n','nn'],
 'canter': ['k-ae1-n-t er','nn'],
-'canto': ['k-ae1-n-t ow','fw nn'],
-'cantonal': ['k-ae1-n-t ax-n ax-l','jj'],
 'cantons': ['k-ae1-n-t ax-n-z','nns'],
 'canvas': ['k-ae1-n-v ax-s','nn'],
 'canvases': ['k-ae1-n-v ax-s ih-z','nns'],
@@ -4126,7 +4096,6 @@ _RiTa_DICT={
 'capers': ['k-ey1-p er-z','nns'],
 'capes': ['k-ey1-p-s','nns'],
 'capillary': ['k-ae1-p ax-l eh1-r iy','nn'],
-'capita': ['k-ae1-p ih-t ax','nns fw nn'],
 'capital': ['k-ae1-p ax-t ax-l','nn jj'],
 'capitalism': ['k-ae1-p ih-t ax-l ih1-z ax-m','nn'],
 'capitalist': ['k-ae1-p ax-t ax-l ax-s-t','jj nn'],
@@ -4229,16 +4198,13 @@ _RiTa_DICT={
 'carload': ['k-aa1-r l-ow1-d','nn'],
 'carnage': ['k-aa1-r-n ih-jh','nn'],
 'carnal': ['k-aa1-r-n ax-l','jj'],
-'carne': ['k-aa1-r-n','fw'],
 'carnival': ['k-aa1-r-n ax-v ax-l','nn'],
 'carnivores': ['k-aa1-r-n ax-v ao1-r-z','nns'],
 'carnivorous': ['k-aa-r-n ih1-v er ax-s','jj'],
-'caro': ['k-aa1-r ow','fw'],
 'carob': ['k-eh1-r ax-b','nn'],
 'carousel': ['k-eh1-r ax-s eh1-l','nn'],
 'carousing': ['k-ax-r aw1-z ax-ng','nn'],
-'carp': ['k-aa1-r-p','vbp nn'],
-'carpal': ['k-aa1-r-p ax-l','nn'],
+'carp': ['k-aa1-r-p','vbp vb nn'],
 'carpenter': ['k-aa1-r-p ax-n-t er','nn'],
 'carpenters': ['k-aa1-r-p ax-n-t er-z','nns'],
 'carpentry': ['k-aa1-r-p ax-n-t r-iy','nn'],
@@ -4247,7 +4213,7 @@ _RiTa_DICT={
 'carpeted': ['k-aa1-r-p ax-t ih-d','vbn vbd'],
 'carpeting': ['k-aa1-r-p ax-t ih-ng','nn'],
 'carpets': ['k-aa1-r-p ax-t-s','nns'],
-'carping': ['k-aa1-r-p ih-ng','vbg jj nn'],
+'carping': ['k-aa1-r-p ih-ng','vbg jj'],
 'carport': ['k-aa1-r-p ao1-r-t','nn'],
 'carriage': ['k-ae1-r ih-jh','nn'],
 'carriages': ['k-ae1-r ih-jh ih-z','nns'],
@@ -4287,7 +4253,6 @@ _RiTa_DICT={
 'carves': ['k-aa1-r-v-z','vbz'],
 'carving': ['k-aa1-r-v ih-ng','vbg'],
 'carvings': ['k-aa1-r-v ih-ng-z','nns'],
-'casbah': ['k-ae1-s b-ax','nn'],
 'cascade': ['k-ae-s k-ey1-d','nn vb'],
 'cascaded': ['k-ae-s k-ey1-d ih-d','vbd'],
 'cascades': ['k-ae-s k-ey1-d-z','vbz'],
@@ -4480,7 +4445,7 @@ _RiTa_DICT={
 'censured': ['s-eh1-n-sh er-d','vbd vbn'],
 'census': ['s-eh1-n-s ax-s','nn'],
 'censuses': ['s-eh1-n-s ax-s ih-z','nns'],
-'cent': ['s-eh1-n-t','nn fw'],
+'cent': ['s-eh1-n-t','nn'],
 'centaur': ['s-eh1-n-t ao1-r','nn'],
 'centenarians': ['s-eh1-n-t ax-n eh1-r iy ax-n-z','nns'],
 'centenary': ['s-eh1-n-t ax-n eh1-r iy','jj'],
@@ -4531,7 +4496,6 @@ _RiTa_DICT={
 'cervical': ['s-er1-v ax-k ax-l','jj'],
 'cervix': ['s-er1-v ih-k-s','nn'],
 'cessation': ['s-eh1-s ey1-sh ax-n','nn'],
-'cetera': ['s-eh1-t er ax','nn fw'],
 'chafe': ['ch-ey1-f','vbp vb'],
 'chafed': ['ch-ey1-f-t','vbn'],
 'chafes': ['ch-ey1-f-s','vbz'],
@@ -4761,7 +4725,6 @@ _RiTa_DICT={
 'chiefs': ['ch-iy1-f-s','nns'],
 'chieftain': ['ch-iy1-f t-ax-n','nn'],
 'chieftains': ['ch-iy1-f t-ax-n-z','nns'],
-'chien': ['ch-eh1-n','fw'],
 'child': ['ch-ay1-l-d','nn'],
 'childbearing': ['ch-ay1-l-d b-eh1-r ih-ng','vbg'],
 'childbirth': ['ch-ay1-l-d b-er1-th','nn'],
@@ -4806,8 +4769,6 @@ _RiTa_DICT={
 'chives': ['ch-ay1-v-z','nns'],
 'chloride': ['k-l-ao1-r ay-d','nn'],
 'chlorine': ['k-l-ao1-r iy-n','nn'],
-'chlorofluorocarbon': ['k-l-ao-r ow-f l-ao1-r ow-k aa1-r-b aa-n','nn'],
-'chlorofluorocarbons': ['k-l-ao1-r ow-f l-ao1-r ow-k aa1-r-b aa-n-z','nns'],
 'chocolate': ['ch-ao1-k l-ax-t','nn jj'],
 'chocolates': ['ch-ao1-k l-ax-t-s','nns'],
 'choice': ['ch-oy1-s','nn jj'],
@@ -4840,7 +4801,6 @@ _RiTa_DICT={
 'choreographed': ['k-ao1-r iy ax-g r-ae1-f-t','vbn jj'],
 'choreographer': ['k-ao1-r iy aa1-g r-ax-f er','nn'],
 'choreographers': ['k-ao1-r iy aa1-g r-ax-f er-z','nns'],
-'choreographic': ['k-ao1-r iy ax-g r-ae1-f ih-k','jj'],
 'choreography': ['k-ao1-r iy aa1-g r-ax-f iy','nn'],
 'chores': ['ch-ao1-r-z','nns'],
 'chortled': ['ch-ao1-r-t ax-l-d','vbd vbn'],
@@ -4913,9 +4873,7 @@ _RiTa_DICT={
 'cinematic': ['s-ih1-n ax-m ae1-t ih-k','jj'],
 'cinematographer': ['s-ih1-n ih-m ax-t aa1-g r-ax-f er','nn'],
 'cinematography': ['s-ih1-n ih-m ax-t aa1-g r-ax-f iy','nn'],
-'cinq': ['s-ih1-ng-k','fw'],
 'cipher': ['s-ay1-f er','vb'],
-'circa': ['s-er1-k ax','rb'],
 'circle': ['s-er1-k ax-l','nn vb'],
 'circled': ['s-er1-k ax-l-d','vbd'],
 'circles': ['s-er1-k ax-l-z','nns vbz'],
@@ -5355,8 +5313,6 @@ _RiTa_DICT={
 'coldly': ['k-ow1-l-d l-iy','rb'],
 'coldness': ['k-ow1-l-d n-ax-s','nn'],
 'colds': ['k-ow1-l-d-z','nns'],
-'cole': ['k-ow1-l','nn'],
-'coli': ['k-ow1-l iy','nns'],
 'coliseum': ['k-aa1-l ax-s iy1 ax-m','nn'],
 'collaborate': ['k-ax-l ae1-b er ey1-t','vb vbp'],
 'collaborated': ['k-ax-l ae1-b er ey1-t ax-d','vbd vbn'],
@@ -5446,11 +5402,10 @@ _RiTa_DICT={
 'columnist': ['k-aa1-l ax-m n-ax-s-t','nn'],
 'columnists': ['k-aa1-l ax-m n-ax-s-t-s','nns'],
 'columns': ['k-aa1-l ax-m-z','nns'],
-'com': ['k-aa1-m','nn'],
 'coma': ['k-ow1-m ax','nn'],
 'comas': ['k-ow1-m ax-z','nns'],
 'comb': ['k-ow1-m','nn vb'],
-'combat': ['k-aa1-m-b ae-t','nn fw vb'],
+'combat': ['k-aa1-m-b ae-t','nn vb'],
 'combatant': ['k-ax-m-b ae1-t ax-n-t','jj nn'],
 'combatants': ['k-ax-m-b ae1-t ax-n-t-s','nns'],
 'combating': ['k-ax-m-b ae1-t ih-ng','vbg'],
@@ -5494,7 +5449,6 @@ _RiTa_DICT={
 'comics': ['k-aa1-m ih-k-s','nns'],
 'coming': ['k-ah1-m ih-ng','vbg jj nn'],
 'comings': ['k-ah1-m ih-ng-z','nns'],
-'comity': ['k-ow1-m ih-t iy','nn'],
 'comma': ['k-aa1-m ax','nn'],
 'command': ['k-ax-m ae1-n-d','nn vbp vb'],
 'commandant': ['k-aa1-m ax-n-d aa1-n-t','nn'],
@@ -5575,7 +5529,7 @@ _RiTa_DICT={
 'commonwealth': ['k-aa1-m ax-n w-eh1-l-th','nn'],
 'commotion': ['k-ax-m ow1-sh ax-n','nn'],
 'communal': ['k-ax-m y-uw1-n ax-l','jj'],
-'commune': ['k-aa1-m y-uw-n','nn fw vb'],
+'commune': ['k-aa1-m y-uw-n','nn vb'],
 'communes': ['k-ax-m y-uw1-n-z','nns'],
 'communicable': ['k-ax-m y-uw1-n ax-k ax-b ax-l','jj'],
 'communicate': ['k-ax-m y-uw1-n ax-k ey1-t','vb vbp'],
@@ -5771,7 +5725,6 @@ _RiTa_DICT={
 'computing': ['k-ax-m-p y-uw1-t ih-ng','vbg nn'],
 'comrade': ['k-aa1-m r-ae1-d','nn'],
 'comrades': ['k-aa1-m r-ae1-d-z','nns'],
-'con': ['k-aa1-n','jj nn rb vb fw in'],
 'concave': ['k-aa-n-k ey1-v','jj'],
 'conceal': ['k-ax-n-s iy1-l','vb'],
 'concealed': ['k-ax-n-s iy1-l-d','vbn jj vbd'],
@@ -6451,7 +6404,7 @@ _RiTa_DICT={
 'corded': ['k-ao1-r-d ax-d','vbn'],
 'cordial': ['k-ao1-r-jh ax-l','jj nn'],
 'cordless': ['k-ao1-r-d l-ax-s','jj'],
-'cordon': ['k-ao1-r-d ax-n','fw nn'],
+'cordon': ['k-ao1-r-d ax-n','nn vb'],
 'cords': ['k-ao1-r-d-z','nns'],
 'corduroy': ['k-ao1-r-d er oy1','nn'],
 'core': ['k-ao1-r','nn jj'],
@@ -6490,11 +6443,10 @@ _RiTa_DICT={
 'corporations': ['k-ao1-r-p er ey1-sh ax-n-z','nns'],
 'corporatism': ['k-ao1-r-p er ax-t ih1-z ax-m','nn'],
 'corporatist': ['k-ao1-r-p er ax-t ih-s-t','nn'],
-'corps': ['k-ao1-r','nn fw'],
 'corpse': ['k-ao1-r-p-s','nn'],
 'corpses': ['k-ao1-r-p s-ax-z','nns'],
 'corpsman': ['k-ao1-r-m ax-n','nn'],
-'corpus': ['k-ao1-r-p ax-s','nn fw'],
+'corpus': ['k-ao1-r-p ax-s','nn'],
 'corral': ['k-er ae1-l','nn vb'],
 'corralled': ['k-er ae1-l-d','vbn'],
 'corralling': ['k-er ae1-l ih-ng','vbg'],
@@ -6643,7 +6595,7 @@ _RiTa_DICT={
 'countrywide': ['k-ah1-n-t r-iy-w ay1-d','jj'],
 'counts': ['k-aw1-n-t-s','nns vbz'],
 'county': ['k-aw1-n-t iy','nn'],
-'coup': ['k-uw1','nn fw'],
+'coup': ['k-uw1','nn'],
 'coupe': ['k-uw1-p','nn'],
 'coupes': ['k-uw1-p-s','nns'],
 'couple': ['k-ah1-p ax-l','nn jj vb'],
@@ -6658,7 +6610,6 @@ _RiTa_DICT={
 'courage': ['k-er1 ax-jh','nn'],
 'courageous': ['k-er ey1-jh ax-s','jj'],
 'courageously': ['k-er ey1-jh ax-s l-iy','rb'],
-'courant': ['k-uh1-r ax-n-t','fw'],
 'courier': ['k-er1 iy er','nn'],
 'couriers': ['k-er1 iy er-z','nns'],
 'course': ['k-ao1-r-s','nn rb'],
@@ -6683,7 +6634,7 @@ _RiTa_DICT={
 'courtyards': ['k-ao1-r-t y-aa1-r-d-z','nns'],
 'cousin': ['k-ah1-z ax-n','nn'],
 'cousins': ['k-ah1-z ax-n-z','nns'],
-'couture': ['k-uw-t uh1-r','fw'],
+'couture': ['k-uw-t uh1-r','nn'],
 'cove': ['k-ow1-v','nn'],
 'covenant': ['k-ah1-v ax-n ax-n-t','nn'],
 'covenants': ['k-ah1-v ax-n ax-n-t-s','nns vbz'],
@@ -7050,7 +7001,6 @@ _RiTa_DICT={
 'culminates': ['k-ah1-l-m ih-n ey1-t-s','vbz'],
 'culminating': ['k-ah1-l-m ax-n ey1-t ih-ng','vbg'],
 'culmination': ['k-ah1-l-m ax-n ey1-sh ax-n','nn'],
-'culpa': ['k-ah1-l-p ax','fw'],
 'culpable': ['k-ah1-l-p ax-b ax-l','jj'],
 'culprit': ['k-ah1-l-p r-ih-t','nn'],
 'culprits': ['k-ah1-l-p r-ih-t-s','nns'],
@@ -7185,8 +7135,7 @@ _RiTa_DICT={
 'cytoplasm': ['s-ay1-t ax-p l-ae1-z ax-m','nn'],
 'czar': ['z-aa1-r','nn'],
 'czars': ['z-aa1-r-z','nns'],
-'d': ['d-iy1','fw ls nn'],
-'da': ['d-aa1','nnp nn'],
+'d': ['d-iy1','ls nn'],
 'dabble': ['d-ae1-b ax-l','vb'],
 'dabbled': ['d-ae1-b ax-l-d','vbd'],
 'dabbles': ['d-ae1-b ax-l-z','vbz'],
@@ -7314,8 +7263,6 @@ _RiTa_DICT={
 'dazzle': ['d-ae1-z ax-l','vb'],
 'dazzled': ['d-ae1-z ax-l-d','vbn jj'],
 'dazzling': ['d-ae1-z ax-l ih-ng','jj vbg'],
-'de': ['d-iy1','fw in jj nnp'],
-'dea': ['d-iy1','nn'],
 'deacon': ['d-iy1-k ax-n','nn'],
 'deactivated': ['d-iy1 ae1-k t-ih-v ey1-t ih-d','vbn'],
 'dead': ['d-eh1-d','jj nn rb vbn'],
@@ -7625,8 +7572,6 @@ _RiTa_DICT={
 'deification': ['d-iy1 ax-f ax-k ey1-sh ax-n','nn'],
 'deinstitutionalization': ['d-iy ih1-n-s t-ih-t uw1-sh ax-n ax-l ax-z ey1-sh ax-n','nn'],
 'deities': ['d-iy1 ax-t iy-z','nns'],
-'deja': ['d-iy1-jh ax','fw nn rb'],
-'del': ['d-eh1-l','nnp dt fw'],
 'delay': ['d-ih-l ey1','nn vb vbp'],
 'delayed': ['d-ih-l ey1-d','vbn jj vbd'],
 'delaying': ['d-ih-l ey1 ih-ng','vbg jj nn'],
@@ -7889,7 +7834,6 @@ _RiTa_DICT={
 'depths': ['d-eh1-p-th-s','nns'],
 'deputies': ['d-eh1-p y-ax-t iy-z','nns'],
 'deputy': ['d-eh1-p y-ax-t iy','nn jj'],
-'der': ['d-er1','nnp jjr fw nn'],
 'derail': ['d-ih-r ey1-l','vb vbp'],
 'derailed': ['d-ih-r ey1-l-d','vbd vbn'],
 'derailing': ['d-ih-r ey1-l ih-ng','vbg'],
@@ -7919,7 +7863,6 @@ _RiTa_DICT={
 'derrick': ['d-eh1-r ih-k','nn'],
 'derring': ['d-eh1-r ih-ng','nn'],
 'dervish': ['d-er1-v ih-sh','nn'],
-'des': ['d-eh1','nnp fw'],
 'descend': ['d-ih-s eh1-n-d','vb vbp'],
 'descendant': ['d-ih-s eh1-n-d ax-n-t','nn'],
 'descendants': ['d-ih-s eh1-n-d ax-n-t-s','nns'],
@@ -8080,8 +8023,6 @@ _RiTa_DICT={
 'detriment': ['d-eh1-t r-ax-m ax-n-t','nn'],
 'detrimental': ['d-eh1-t r-ax-m eh1-n-t ax-l','jj'],
 'deuterium': ['d-uw-t iy1-r iy ax-m','nn'],
-'deutsche': ['d-oy1-ch','nn fw'],
-'deux': ['d-uw1','fw'],
 'devaluation': ['d-ih-v ae1-l y-uw ey1-sh ax-n','nn'],
 'devaluations': ['d-iy1-v ae-l y-uw ey1-sh ax-n-z','nns'],
 'devalue': ['d-ih-v ae1-l y-uw1','vb'],
@@ -8136,8 +8077,6 @@ _RiTa_DICT={
 'dew': ['d-uw1','nn'],
 'dexterity': ['d-eh-k s-t-eh1-r ax-t iy','nn'],
 'dextrous': ['d-eh1-k s-t-r-ax-s','jj'],
-'dey': ['d-ey1','prp'],
-'di': ['d-iy1','nnp fw'],
 'diabetes': ['d-ay1 ax-b iy1-t iy-z','nn'],
 'diabetic': ['d-ay1 ax-b eh1-t ih-k','jj nn'],
 'diabetics': ['d-ay1 ax-b eh1-t ih-k-s','nns'],
@@ -8202,11 +8141,10 @@ _RiTa_DICT={
 'dictum': ['d-ih1-k t-ax-m','nn'],
 'did': ['d-ih1-d','vbd'],
 'didactic': ['d-ay-d ae1-k t-ih-k','jj'],
-'die': ['d-ay1','vb vbp fw nn'],
+'die': ['d-ay1','vb vbp nn'],
 'died': ['d-ay1-d','vbd vbn'],
 'diehard': ['d-ay1-hh aa1-r-d','jj'],
 'diehards': ['d-ay1-hh aa1-r-d-z','nns'],
-'diem': ['d-iy1-m','fw nn'],
 'dies': ['d-ay1-z','vbz nns'],
 'diesel': ['d-iy1-s ax-l','nn jj'],
 'diesels': ['d-iy1-z ax-l-z','nns'],
@@ -8238,7 +8176,7 @@ _RiTa_DICT={
 'diffused': ['d-ih-f y-uw1-z-d','vbn'],
 'diffuses': ['d-ih-f y-uw1-z ax-z','vbz'],
 'diffusion': ['d-ih-f y-uw1-zh ax-n','nn'],
-'dig': ['d-ih1-g','vb fw nn vbp'],
+'dig': ['d-ih1-g','vb nn vbp'],
 'digest': ['d-ay-jh eh1-s-t','vb nn'],
 'digested': ['d-ay1-jh eh1-s t-ih-d','vbn'],
 'digestible': ['d-ay-jh eh1-s t-ax-b ax-l','jj'],
@@ -8331,7 +8269,7 @@ _RiTa_DICT={
 'dipping': ['d-ih1-p ih-ng','vbg'],
 'dippy': ['d-ih1-p iy','jj'],
 'dips': ['d-ih1-p-s','nns'],
-'dire': ['d-ay1-r','jj fw'],
+'dire': ['d-ay1-r','jj'],
 'direct': ['d-er eh1-k-t','jj vbp rb vb'],
 'directed': ['d-er eh1-k t-ax-d','vbn vbd jj'],
 'directing': ['d-er eh1-k t-ih-ng','vbg nn'],
@@ -8869,7 +8807,7 @@ _RiTa_DICT={
 'dizziness': ['d-ih1-z iy-n ax-s','nn'],
 'dizzy': ['d-ih1-z iy','jj'],
 'dizzying': ['d-ih1-z iy ih-ng','jj vbg'],
-'do': ['d-uw1','vbp fw nn vb nns vbz'],
+'do': ['d-uw1','vbp nn vb nns vbz'],
 'doable': ['d-uw1 ax-b ax-l','jj'],
 'doan': ['d-ow1-n','vbp'],
 'doble': ['d-ow1-b ax-l','nn'],
@@ -8926,11 +8864,8 @@ _RiTa_DICT={
 'dogmatism': ['d-aa1-g m-ax-t ih1-z ax-m','nn'],
 'dogs': ['d-aa1-g-z','nns vbz'],
 'dogwood': ['d-ao1-g w-uh1-d','nn'],
-'doi': ['d-oy1','fw'],
-'doin': ['d-uw1 ax-n','vbg'],
 'doing': ['d-uw1 ih-ng','vbg nn'],
 'doings': ['d-uw1 ih-ng-z','nns'],
-'dolce': ['d-ow1-l-ch ey1','fw'],
 'doldrums': ['d-ow1-l-d r-ax-m-z','nns nn'],
 'dole': ['d-ow1-l','vb nn vbp'],
 'doled': ['d-ow1-l-d','vbd vbn'],
@@ -9264,7 +9199,6 @@ _RiTa_DICT={
 'drying': ['d-r-ay1 ih-ng','vbg nn'],
 'dryly': ['d-r-ay1-l iy','rb'],
 'dryness': ['d-r-ay1-n ax-s','nn'],
-'du': ['d-uw1','nnp fw'],
 'dual': ['d-uw1 ax-l','jj'],
 'dualism': ['d-uw1 ax-l ih1-z ax-m','nn'],
 'dubbed': ['d-ah1-b-d','vbn vbd'],
@@ -9578,7 +9512,6 @@ _RiTa_DICT={
 'eighteenth': ['ey-t iy1-n-th','jj'],
 'eighth': ['ey1-t-th','jj nn'],
 'eighties': ['ey1-t iy-z','nns'],
-'ein': ['ay1-n','fw'],
 'either': ['iy1-dh er','dt cc in rb rbr'],
 'eject': ['ih-jh eh1-k-t','vb'],
 'ejected': ['ih-jh eh1-k t-ih-d','vbn vbd'],
@@ -9843,7 +9776,6 @@ _RiTa_DICT={
 'emulated': ['eh1-m y-ax-l ey1-t ih-d','vbn'],
 'emulating': ['eh1-m y-ax-l ey1-t ih-ng','vbg'],
 'emulsion': ['ih-m ah1-l-sh ax-n','nn'],
-'en': ['eh1-n','in fw rb'],
 'enable': ['eh-n ey1-b ax-l','vb vbp'],
 'enabled': ['eh-n ey1-b ax-l-d','vbd vbn'],
 'enables': ['eh-n ey1-b ax-l-z','vbz'],
@@ -9947,7 +9879,6 @@ _RiTa_DICT={
 'energized': ['eh1-n er-jh ay1-z-d','vbn'],
 'energizing': ['eh1-n er-jh ay1-z ih-ng','vbg'],
 'energy': ['eh1-n er-jh iy','nn'],
-'enfant': ['eh1-n-f aa1-n-t','fw'],
 'enforce': ['eh-n-f ao1-r-s','vb vbp'],
 'enforceable': ['eh-n-f ao1-r-s ax-b ax-l','jj'],
 'enforced': ['eh-n-f ao1-r-s-t','vbn vbd jj'],
@@ -10110,7 +10041,6 @@ _RiTa_DICT={
 'entrapment': ['ih-n-t r-ae1-p m-ax-n-t','nn'],
 'entre': ['aa1-n-t r-ey','nn'],
 'entreaties': ['eh-n-t r-iy1-t iy-z','nns'],
-'entree': ['aa1-n-t r-ey1','nn fw'],
 'entrench': ['eh-n-t r-eh1-n-ch','vb'],
 'entrenched': ['eh-n-t r-eh1-n-ch-t','vbn vbd jj'],
 'entrenchment': ['eh-n-t r-eh1-n-ch m-ax-n-t','nn'],
@@ -10305,16 +10235,13 @@ _RiTa_DICT={
 'espouses': ['ih-s p-aw1-z ih-z','vbz'],
 'espousing': ['ih-s p-aw1-z ih-ng','vbg'],
 'espresso': ['eh1-s p-r-eh1-s ow','nn'],
-'esprit': ['eh-s p-r-iy1','fw'],
 'essay': ['eh-s ey1','nn'],
 'essayist': ['eh-s ey1 ih-s-t','nn'],
 'essays': ['eh-s ey1-z','nns'],
-'esse': ['eh1-s','fw nn'],
 'essence': ['eh1-s ax-n-s','nn'],
 'essential': ['ih-s eh1-n-sh ax-l','jj nn'],
 'essentially': ['ih-s eh1-n-sh ax-l iy','rb'],
 'essentials': ['eh-s eh1-n-ch ax-l-z','nns'],
-'est': ['ax-s t-ey1-t','fw'],
 'establish': ['ih-s t-ae1-b l-ih-sh','vb vbp'],
 'established': ['ih-s t-ae1-b l-ih-sh-t','vbn jj vbd'],
 'establishes': ['ih-s t-ae1-b l-ih-sh ih-z','vbz'],
@@ -10338,9 +10265,7 @@ _RiTa_DICT={
 'estrogen': ['eh1-s t-r-ax-jh ax-n','nn'],
 'estuaries': ['eh1-s ch-uw eh1-r iy-z','nns'],
 'estuary': ['eh1-s ch-uw eh1-r iy','nn'],
-'et': ['eh1-t','fw vbd cc nnp'],
-'etc': ['eh1-t s-eh1-t er ax','fw nn'],
-'etcetera': ['eh1-t s-eh1-t er ax','nn fw'],
+'etcetera': ['eh1-t s-eh1-t er ax','nn'],
 'etch': ['eh1-ch','vb'],
 'etched': ['eh1-ch-t','vbd vbn'],
 'etching': ['eh1-ch ih-ng','nn'],
@@ -10448,7 +10373,6 @@ _RiTa_DICT={
 'evolved': ['ih-v aa1-l-v-d','vbn jj vbd'],
 'evolves': ['ih-v aa1-l-v-z','vbz'],
 'evolving': ['ih-v aa1-l-v ih-ng','vbg'],
-'ex': ['eh1-k-s','fw jj'],
 'exacerbate': ['ih-g z-ae1-s er-b ey1-t','vb vbp'],
 'exacerbated': ['ih-g z-ae1-s er-b ey1-t ax-d','vbn vbd'],
 'exacerbates': ['ih-g z-ae1-s er-b ey1-t-s','vbz'],
@@ -10492,7 +10416,7 @@ _RiTa_DICT={
 'exceeds': ['ih-k s-iy1-d-z','vbz'],
 'excel': ['ih-k s-eh1-l','vbp vb'],
 'excelled': ['ih-k s-eh1-l-d','vbd vbn'],
-'excellence': ['eh1-k s-ax-l ax-n-s','nn fw'],
+'excellence': ['eh1-k s-ax-l ax-n-s','nn'],
 'excellent': ['eh1-k s-ax-l ax-n-t','jj'],
 'excellently': ['eh1-k s-ax-l ax-n-t l-iy','rb'],
 'excels': ['ih-k s-eh1-l-z','vbz'],
@@ -10912,7 +10836,6 @@ _RiTa_DICT={
 'fact': ['f-ae1-k-t','nn'],
 'faction': ['f-ae1-k sh-ax-n','nn'],
 'factions': ['f-ae1-k sh-ax-n-z','nns'],
-'facto': ['f-ae1-k t-ow','fw jj nn'],
 'factor': ['f-ae1-k t-er','nn vb vbp'],
 'factored': ['f-ae1-k t-er-d','vbn jj'],
 'factories': ['f-ae1-k t-er iy-z','nns'],
@@ -11110,7 +11033,7 @@ _RiTa_DICT={
 'faults': ['f-ao1-l-t-s','nns vbz'],
 'faulty': ['f-ao1-l-t iy','jj'],
 'fauna': ['f-ao1-n ax','nns nn'],
-'faux': ['f-ao1-k-s','fw jj'],
+'faux': ['f-ao1-k-s','jj'],
 'favor': ['f-ey1-v er','nn vbp vb'],
 'favorable': ['f-ey1-v er ax-b ax-l','jj'],
 'favorably': ['f-ey1-v er ax-b l-iy','rb'],
@@ -11219,7 +11142,6 @@ _RiTa_DICT={
 'feminism': ['f-eh1-m ih-n ih1-z ax-m','nn'],
 'feminist': ['f-eh1-m ax-n ax-s-t','jj nn'],
 'feminists': ['f-eh1-m ax-n ax-s-t-s','nns'],
-'femme': ['f-eh1-m','fw'],
 'fence': ['f-eh1-n-s','nn'],
 'fenced': ['f-eh1-n-s-t','jj vbn'],
 'fences': ['f-eh1-n-s ax-z','nns'],
@@ -11322,7 +11244,6 @@ _RiTa_DICT={
 'fictitious': ['f-ih-k t-ih1-sh ax-s','jj'],
 'fiddle': ['f-ih1-d ax-l','nn vb'],
 'fiddling': ['f-ih1-d l-ih-ng','nn jj vbg'],
-'fide': ['f-ay1-d','fw jj'],
 'fidelity': ['f-ax-d eh1-l ax-t iy','nn'],
 'fidgeting': ['f-ih1-jh ax-t ih-ng','vbg'],
 'fiduciary': ['f-ax-d uw1-sh iy eh1-r iy','jj'],
@@ -11482,7 +11403,6 @@ _RiTa_DICT={
 'firing': ['f-ay1-r ih-ng','vbg jj nn'],
 'firings': ['f-ay1-r ih-ng-z','nns'],
 'firm': ['f-er1-m','nn jj vb'],
-'firma': ['f-er1-m ax','fw nn'],
 'firmed': ['f-er1-m-d','vbd vbn'],
 'firmer': ['f-er1-m er','jjr rb rbr'],
 'firming': ['f-er1-m ih-ng','vbg nn'],
@@ -11873,7 +11793,7 @@ _RiTa_DICT={
 'forbidden': ['f-ao1-r-b ih-d ax-n','vbn jj'],
 'forbidding': ['f-er-b ih1-d ih-ng','vbg jj'],
 'forbids': ['f-er-b ih1-d-z','vbz'],
-'force': ['f-ao1-r-s','nn fw vb nnp vbp'],
+'force': ['f-ao1-r-s','nn vb nnp vbp'],
 'forced': ['f-ao1-r-s-t','vbn jj vbd'],
 'forceful': ['f-ao1-r-s f-ax-l','jj'],
 'forcefully': ['f-ao1-r-s f-ax-l iy','rb'],
@@ -11973,7 +11893,6 @@ _RiTa_DICT={
 'forks': ['f-ao1-r-k-s','nns'],
 'forlorn': ['f-er-l ao1-r-n','jj'],
 'form': ['f-ao1-r-m','nn vbp jj vb'],
-'forma': ['f-ao1-r-m ax','fw'],
 'formal': ['f-ao1-r-m ax-l','jj'],
 'formaldehyde': ['f-ao-r-m ae1-l-d ax-hh ay1-d','nn'],
 'formalism': ['f-ao1-r-m ax-l ih1-z ax-m','nn'],
@@ -11991,7 +11910,7 @@ _RiTa_DICT={
 'formed': ['f-ao1-r-m-d','vbn vbd jj'],
 'former': ['f-ao1-r-m er','jj nn'],
 'formerly': ['f-ao1-r-m er-l iy','rb'],
-'formidable': ['f-ao1-r-m ax-d ax-b ax-l','jj fw'],
+'formidable': ['f-ao1-r-m ax-d ax-b ax-l','jj'],
 'formidably': ['f-ao1-r-m ax-d ax-b l-iy','rb'],
 'forming': ['f-ao1-r-m ih-ng','vbg nn'],
 'forms': ['f-ao1-r-m-z','nns vbz'],
@@ -12101,7 +12020,6 @@ _RiTa_DICT={
 'framework': ['f-r-ey1-m w-er1-k','nn'],
 'framing': ['f-r-ey1-m ih-ng','nn vbg'],
 'franc': ['f-r-ae1-ng-k','nn'],
-'franca': ['f-r-ae1-ng-k ax','fw'],
 'franchise': ['f-r-ae1-n-ch ay1-z','nn vb'],
 'franchised': ['f-r-ae1-n-ch ay-z-d','vbn jj'],
 'franchisee': ['f-r-ae1-n-ch ay1-z iy1','nn'],
@@ -12123,7 +12041,7 @@ _RiTa_DICT={
 'frantically': ['f-r-ae1-n-t ax-k ax-l iy','rb'],
 'fraternities': ['f-r-ax-t er1-n ax-t iy-z','nns'],
 'fraternity': ['f-r-ax-t er1-n ax-t iy','nn'],
-'frau': ['f-r-aw1','fw'],
+'frau': ['f-r-aw1','nn'],
 'fraud': ['f-r-ao1-d','nn'],
 'frauds': ['f-r-ao1-d-z','nns'],
 'fraudulent': ['f-r-ao1-jh ax-l ax-n-t','jj'],
@@ -12483,7 +12401,6 @@ _RiTa_DICT={
 'garbage': ['g-aa1-r-b ih-jh','nn'],
 'garbed': ['g-aa1-r-b-d','vbn'],
 'garbled': ['g-aa1-r-b ax-l-d','vbn'],
-'garde': ['g-aa1-r-d','fw'],
 'garden': ['g-aa1-r-d ax-n','nn vb'],
 'gardened': ['g-aa1-r-d ax-n-d','vbd'],
 'gardener': ['g-aa1-r-d ax-n er','nn'],
@@ -12755,7 +12672,7 @@ _RiTa_DICT={
 'glared': ['g-l-eh1-r-d','vbd'],
 'glares': ['g-l-eh1-r-z','vbz'],
 'glaring': ['g-l-eh1-r ih-ng','jj vbg'],
-'glasnost': ['g-l-ae1-s n-aa-s-t','fw nn'],
+'glasnost': ['g-l-ae1-s n-aa-s-t','nn'],
 'glass': ['g-l-ae1-s','nn'],
 'glasses': ['g-l-ae1-s ax-z','nns'],
 'glassware': ['g-l-ae1-s w-eh1-r','nn'],
@@ -13062,7 +12979,6 @@ _RiTa_DICT={
 'grassland': ['g-r-ae1-s l-ae1-n-d','nn'],
 'grassroots': ['g-r-ae1-s r-uw1-t-s','nns'],
 'grassy': ['g-r-ae1-s iy','jj'],
-'grata': ['g-r-aa1-t ax','fw'],
 'grate': ['g-r-ey1-t','nn'],
 'grated': ['g-r-ey1-t ih-d','vbd jj'],
 'grateful': ['g-r-ey1-t f-ax-l','jj'],
@@ -13401,8 +13317,6 @@ _RiTa_DICT={
 'gyros': ['jh-ay1-r ow1-z','nns'],
 'gyroscopes': ['jh-ay1-r ax-s k-ow1-p-s','nns'],
 'h': ['ey1-ch','nn'],
-'ha': ['hh-aa1','uh'],
-'habeas': ['hh-ae1-b iy ax-s','nns fw'],
 'haberdashery': ['hh-ae1-b er-d ae1-sh er iy','nn'],
 'habit': ['hh-ae1-b ax-t','nn'],
 'habitable': ['hh-ae1-b ax-t ax-b ax-l','jj'],
@@ -13686,7 +13600,6 @@ _RiTa_DICT={
 'haunting': ['hh-ao1-n-t ih-ng','jj vbg nn'],
 'hauntingly': ['hh-ao1-n-t ih-ng l-iy','rb'],
 'haunts': ['hh-ao1-n-t-s','nns vbz'],
-'haute': ['hh-ow1-t','fw jj'],
 'hauteur': ['hh-ow-t uh1-r','nn'],
 'have': ['hh-ae1-v','vbp jj nn vb vbn'],
 'haven': ['hh-ey1-v ax-n','nn'],
@@ -14087,7 +14000,6 @@ _RiTa_DICT={
 'hobbyist': ['hh-aa1-b iy ih-s-t','nn'],
 'hobbyists': ['hh-aa1-b iy ih-s-t-s','nns'],
 'hobnob': ['hh-aa1-b n-aa1-b','vb'],
-'hoc': ['hh-aa1-k','fw'],
 'hock': ['hh-aa1-k','nn vb'],
 'hockey': ['hh-aa1-k iy','nn'],
 'hocking': ['hh-aa1-k ih-ng','vbg'],
@@ -14259,7 +14171,6 @@ _RiTa_DICT={
 'horrifying': ['hh-ao1-r ax-f ay1 ih-ng','jj'],
 'horror': ['hh-ao1-r er','nn'],
 'horrors': ['hh-ao1-r er-z','nns'],
-'hors': ['hh-ao1-r-z','fw'],
 'horse': ['hh-ao1-r-s','nn'],
 'horseback': ['hh-ao1-r-s b-ae1-k','nn jj rb'],
 'horseflesh': ['hh-ao1-r-s f-l-eh1-sh','nn'],
@@ -14533,7 +14444,7 @@ _RiTa_DICT={
 'hysteria': ['hh-ih-s t-eh1-r iy ax','nn'],
 'hysterical': ['hh-ih-s t-eh1-r ih-k ax-l','jj'],
 'hysterically': ['hh-ih1-s t-eh1-r ih-k l-iy','rb'],
-'i': ['ay1','nn fw nnp nns'],
+'i': ['ay1','nn nnp nns'],
 'ibuprofen': ['ay1-b y-uw-p r-ow1-f ax-n','nn'],
 'ice': ['ay1-s','nn jj'],
 'iceberg': ['ay1-s b-er-g','nn'],
@@ -14641,7 +14552,7 @@ _RiTa_DICT={
 'illusion': ['ih-l uw1-zh ax-n','nn'],
 'illusionary': ['ih-l uw1-zh ax-n eh1-r iy','jj'],
 'illusionist': ['ih-l uw1-zh ax-n ax-s-t','nn'],
-'illusions': ['ih-l uw1-zh ax-n-z','nns fw'],
+'illusions': ['ih-l uw1-zh ax-n-z','nns'],
 'illusory': ['ih-l uw1-s er iy','jj'],
 'illustrate': ['ih1-l ax-s t-r-ey1-t','vb vbp'],
 'illustrated': ['ih1-l ax-s t-r-ey1-t ax-d','vbn jj vbd'],
@@ -14896,7 +14807,7 @@ _RiTa_DICT={
 'impurity': ['ih-m-p y-uh1-r ax-t iy','nn'],
 'imputation': ['ih1-m-p y-ax-t ey1-sh ax-n','nn'],
 'imputed': ['ih-m-p y-uw1-t ih-d','vbn jj'],
-'in': ['ih-n','in fw nn rb rp nnp rbr vbd'],
+'in': ['ih-n','in nn rb rp nnp rbr vbd'],
 'inability': ['ih1-n ax-b ih1-l ih-t iy','nn'],
 'inaccessible': ['ih1-n ax-k s-eh1-s ax-b ax-l','jj'],
 'inaccuracies': ['ih-n ae1-k y-er ae1-s iy-z','nns'],
@@ -15291,7 +15202,6 @@ _RiTa_DICT={
 'informer': ['ih-n-f ao1-r-m er','jj'],
 'informing': ['ih-n-f ao1-r-m ih-ng','vbg'],
 'informs': ['ih-n-f ao1-r-m-z','vbz'],
-'infra': ['ih1-n-f r-ax','fw'],
 'infraction': ['ih-n-f r-ae1-k sh-ax-n','nn'],
 'infractions': ['ih-n-f r-ae1-k sh-ax-n-z','nns'],
 'infrared': ['ih1-n-f r-er eh1-d','jj nn'],
@@ -15635,7 +15545,6 @@ _RiTa_DICT={
 'intentions': ['ih-n-t eh1-n-ch ax-n-z','nns'],
 'intently': ['ih-n-t eh1-n-t l-iy','rb'],
 'intents': ['ih-n-t eh1-n-t-s','nns'],
-'inter': ['ih-n-t er1','fw in'],
 'interact': ['ih1-n-t er ae1-k-t','vbp vb'],
 'interacting': ['ih1-n-t er ae1-k t-ih-ng','vbg nn'],
 'interaction': ['ih1-n-t er ae1-k sh-ax-n','nn'],
@@ -16081,7 +15990,6 @@ _RiTa_DICT={
 'jade': ['jh-ey1-d','nn'],
 'jaded': ['jh-ey1-d ax-d','jj vbn'],
 'jagged': ['jh-ae1-g-d','jj vbn'],
-'jai': ['jh-ay1','fw'],
 'jail': ['jh-ey1-l','nn vb'],
 'jailed': ['jh-ey1-l-d','vbn vbd jj'],
 'jailhouse': ['jh-ey1-l-hh aw1-s','nn'],
@@ -16114,7 +16022,6 @@ _RiTa_DICT={
 'jazz': ['jh-ae1-z','nn'],
 'jazzmen': ['jh-ae1-z m-ax-n','nns'],
 'jazzy': ['jh-ae1-z iy','jj'],
-'je': ['jh-iy1','fw'],
 'jealous': ['jh-eh1-l ax-s','jj'],
 'jealousies': ['jh-eh1-l ax-s iy-z','nns'],
 'jealously': ['jh-eh1-l ax-s l-iy','rb'],
@@ -16185,7 +16092,6 @@ _RiTa_DICT={
 'jogging': ['jh-aa1-g ih-ng','nn'],
 'jogs': ['jh-aa1-g-z','vbz'],
 'john': ['jh-aa1-n','nn'],
-'joie': ['zh-w-aa1','fw'],
 'join': ['jh-oy1-n','vb vbp'],
 'joined': ['jh-oy1-n-d','vbd vbn'],
 'joiner': ['jh-oy1-n er','nn'],
@@ -16212,7 +16118,6 @@ _RiTa_DICT={
 'jostling': ['jh-aa1-s ax-l ih-ng','vbg'],
 'jot': ['jh-aa1-t','nn'],
 'jotted': ['jh-aa1-t ih-d','jj'],
-'jour': ['jh-aw1-r','fw'],
 'journal': ['jh-er1-n ax-l','nn'],
 'journalese': ['jh-er1-n ax-l iy1-z','nn'],
 'journalism': ['jh-er1-n ax-l ih1-z ax-m','nn'],
@@ -16235,7 +16140,6 @@ _RiTa_DICT={
 'joyous': ['jh-oy1 ax-s','jj'],
 'joyride': ['jh-oy1-r ay1-d','nn'],
 'joys': ['jh-oy1-z','nns'],
-'jua': ['jh-uw1 ax','fw'],
 'jubilant': ['jh-uw1-b ax-l ax-n-t','jj'],
 'jubilation': ['jh-uw1-b ax-l ey1-sh ax-n','nn'],
 'judge': ['jh-ah1-jh','nn vb vbp'],
@@ -16291,7 +16195,6 @@ _RiTa_DICT={
 'junkies': ['jh-ah1-ng-k iy-z','nns'],
 'junkyard': ['jh-ah1-ng-k y-aa1-r-d','nn'],
 'junta': ['hh-uh1-n-t ax','nn'],
-'jure': ['jh-uh1-r','fw'],
 'juries': ['jh-uh1-r iy-z','nns'],
 'jurisdiction': ['jh-uh1-r ax-s d-ih1-k sh-ax-n','nn'],
 'jurisdictional': ['jh-uh1-r ax-s d-ih1-k sh-ax-n ax-l','jj'],
@@ -16325,8 +16228,7 @@ _RiTa_DICT={
 'kaleidoscope': ['k-ax-l ay1-d ax-s k-ow1-p','nn'],
 'kamikaze': ['k-aa1-m ax-k aa1-z iy','nn'],
 'kangaroo': ['k-ae1-ng-g er uw1','nn'],
-'kanji': ['k-ae1-n-jh iy','fw'],
-'karaoke': ['k-eh1-r iy ow1-k iy','fw nn'],
+'karaoke': ['k-eh1-r iy ow1-k iy','nn'],
 'kayo': ['k-ey ow1','vb'],
 'kazoo': ['k-ax-z uw1','nn'],
 'keel': ['k-iy1-l','nn vb'],
@@ -16366,10 +16268,7 @@ _RiTa_DICT={
 'keys': ['k-iy1-z','nns'],
 'keystone': ['k-iy1-s t-ow1-n','nn'],
 'khaki': ['k-aa1-k iy','jj'],
-'khan': ['k-aa1-n','fw'],
 'kibbutz': ['k-ih-b uh1-t-s','nn'],
-'kibbutzim': ['k-ih1-b uh-t s-ih1-m','nns fw'],
-'kibbutzniks': ['k-ih-b uh1-t s-n-ih-k-s','nns'],
 'kick': ['k-ih1-k','nn vb vbp'],
 'kickback': ['k-ih1-k b-ae1-k','nn'],
 'kickbacks': ['k-ih1-k b-ae1-k-s','nns'],
@@ -16411,8 +16310,8 @@ _RiTa_DICT={
 'kilowatts': ['k-ih1-l ax-w aa1-t-s','nns'],
 'kilter': ['k-ih1-l-t er','nn'],
 'kilts': ['k-ih1-l-t-s','nns'],
-'kimchi': ['k-ih1-m-ch iy','fw'],
-'kimono': ['k-ax-m ow1-n ax','fw'],
+'kimchi': ['k-ih1-m-ch iy','nn'],
+'kimono': ['k-ax-m ow1-n ax','nn'],
 'kin': ['k-ih1-n','nn jj md'],
 'kind': ['k-ay1-n-d','nn jj rb'],
 'kinda': ['k-ih1-n-d ax','rb'],
@@ -16436,7 +16335,6 @@ _RiTa_DICT={
 'kings': ['k-ih1-ng-z','nns'],
 'kinship': ['k-ih1-n-sh ih1-p','nn'],
 'kiosk': ['k-iy1 ao1-s-k','nn'],
-'kisha': ['k-ih1-sh ax','fw'],
 'kiss': ['k-ih1-s','nn vb vbp'],
 'kissed': ['k-ih1-s-t','vbd vbn'],
 'kisses': ['k-ih1-s ax-z','nns vbz'],
@@ -16505,11 +16403,9 @@ _RiTa_DICT={
 'kraut': ['k-r-aw1-t','nn'],
 'krona': ['k-r-ow1-n ax','nn'],
 'kroner': ['k-r-ow1-n er','nn'],
-'kronor': ['k-r-ow1-n er','nns fw nn'],
+'kronor': ['k-r-ow1-n er','nns nn'],
 'kudos': ['k-uw1-d ow-s','nns'],
-'kwon': ['k-w-aa1-n','fw'],
 'l': ['eh1-l','nn nns'],
-'la': ['l-aa1','fw nnp dt nn'],
 'lab': ['l-ae1-b','nn'],
 'label': ['l-ey1-b ax-l','nn vb vbp'],
 'labeled': ['l-ey1-b ax-l-d','vbn vbd'],
@@ -16584,7 +16480,6 @@ _RiTa_DICT={
 'lampoon': ['l-ae-m-p uw1-n','vb'],
 'lampposts': ['l-ae1-m-p p-ow1-s-t-s','nns'],
 'lamps': ['l-ae1-m-p-s','nns'],
-'lana': ['l-ae1-n ax','fw'],
 'lance': ['l-ae1-n-s','nn'],
 'land': ['l-ae1-n-d','nn vbp vb'],
 'landau': ['l-ae1-n-d aw1','nn'],
@@ -16614,7 +16509,6 @@ _RiTa_DICT={
 'landslides': ['l-ae1-n-d-s l-ay1-d-z','nns'],
 'lane': ['l-ey1-n','nn'],
 'lanes': ['l-ey1-n-z','nns'],
-'lange': ['l-ae1-ng','fw'],
 'language': ['l-ae1-ng-g w-ax-jh','nn'],
 'languages': ['l-ae1-ng-g w-ax-jh ax-z','nns vbz'],
 'languid': ['l-ae1-ng-g w-ax-d','jj'],
@@ -16768,7 +16662,6 @@ _RiTa_DICT={
 'lays': ['l-ey1-z','vbz nns'],
 'lazily': ['l-ae1-z ax-l iy','rb'],
 'lazy': ['l-ey1-z iy','jj'],
-'le': ['l-ax','fw dt'],
 'leach': ['l-iy1-ch','vb'],
 'leaches': ['l-iy1-ch ih-z','nns'],
 'leaching': ['l-iy1-ch ih-ng','nn'],
@@ -16928,7 +16821,6 @@ _RiTa_DICT={
 'lentils': ['l-eh1-n-t ax-l-z','nns'],
 'leopards': ['l-eh1-p er-d-z','nns'],
 'leprosy': ['l-eh1-p r-ax-s iy','nn'],
-'les': ['l-eh1-s','fw'],
 'lesbians': ['l-eh1-z b-iy ax-n-z','nns'],
 'lesion': ['l-iy1-zh ax-n','nn'],
 'lesions': ['l-iy1-zh ax-n-z','nns'],
@@ -16980,7 +16872,6 @@ _RiTa_DICT={
 'levy': ['l-eh1-v iy','nn vbp vb'],
 'levying': ['l-eh1-v iy ih-ng','vbg'],
 'lewd': ['l-uw1-d','jj'],
-'lex': ['l-eh1-k-s','fw'],
 'lexical': ['l-eh1-k s-ih-k ax-l','jj'],
 'lexicon': ['l-eh1-k s-ih-k aa1-n','nn'],
 'liabilities': ['l-ay1 ax-b ih1-l ax-t iy-z','nns .'],
@@ -17039,7 +16930,6 @@ _RiTa_DICT={
 'lien': ['l-iy1-n','nn'],
 'liens': ['l-iy1-n-z','nns'],
 'lies': ['l-ay1-z','vbz nns'],
-'lieu': ['l-uw1','nn fw in'],
 'lieutenant': ['l-uw-t eh1-n ax-n-t','nn'],
 'lieutenants': ['l-uw-t eh1-n ax-n-t-s','nns'],
 'life': ['l-ay1-f','nn rb'],
@@ -17152,7 +17042,6 @@ _RiTa_DICT={
 'lingering': ['l-ih1-ng-g er ih-ng','vbg jj'],
 'lingers': ['l-ih1-ng-g er-z','vbz'],
 'lingo': ['l-ih1-ng-g ow','nn'],
-'lingua': ['l-ih1-ng-g w-ax','fw'],
 'linguist': ['l-ih1-ng-g w-ax-s-t','nn'],
 'linguistic': ['l-ih-ng-g w-ih1-s t-ih-k','jj'],
 'linguistically': ['l-ih-ng-g w-ih1-s t-ih-k l-iy','rb'],
@@ -17174,7 +17063,6 @@ _RiTa_DICT={
 'lions': ['l-ay1 ax-n-z','nns'],
 'lip': ['l-ih1-p','nn jj'],
 'lipid': ['l-ay1-p ax-d','nn'],
-'lipoproteins': ['l-ih1-p ow-p r-ow1-t iy-n-z','nns'],
 'liposomes': ['l-ih1-p ax-s ow1-m-z','nns'],
 'lips': ['l-ih1-p-s','nns'],
 'lipstick': ['l-ih1-p s-t-ih1-k','nn'],
@@ -17195,8 +17083,6 @@ _RiTa_DICT={
 'liquids': ['l-ih1-k w-ax-d-z','nns'],
 'liquor': ['l-ih1-k er','nn'],
 'lira': ['l-ih1-r ax','nn nns'],
-'lire': ['l-ih1-r ax','nns fw nn'],
-'lise': ['l-ay1-z','nns'],
 'list': ['l-ih1-s-t','nn vbp vb'],
 'listed': ['l-ih1-s t-ax-d','vbn vbd jj'],
 'listen': ['l-ih1-s ax-n','vb vbp'],
@@ -17205,7 +17091,6 @@ _RiTa_DICT={
 'listeners': ['l-ih1-s ax-n er-z','nns'],
 'listening': ['l-ih1-s ax-n ih-ng','vbg nn'],
 'listens': ['l-ih1-s ax-n-z','vbz'],
-'listeria': ['l-ih-s t-ih1-r iy ax','fw'],
 'listing': ['l-ih1-s t-ih-ng','nn vbg'],
 'listings': ['l-ih1-s t-ih-ng-z','nns'],
 'listless': ['l-ih1-s t-l-ax-s','jj'],
@@ -17321,7 +17206,6 @@ _RiTa_DICT={
 'locks': ['l-aa1-k-s','nns vbz'],
 'lockstep': ['l-aa1-k s-t-eh1-p','nn'],
 'lockup': ['l-aa1-k ah1-p','nn'],
-'loco': ['l-ow1-k ow','fw'],
 'locomotive': ['l-ow1-k ax-m ow1-t ih-v','nn'],
 'locomotives': ['l-ow1-k ax-m ow1-t ih-v-z','nns'],
 'locus': ['l-ow1-k ax-s','nn'],
@@ -17493,7 +17377,6 @@ _RiTa_DICT={
 'luggage': ['l-ah1-g ax-jh','nn'],
 'lugging': ['l-ah1-g ih-ng','vbg'],
 'lugs': ['l-ah1-g-z','nns'],
-'lui': ['l-uw1 ih','fw'],
 'lukewarm': ['l-uw1-k w-ao1-r-m','jj'],
 'lull': ['l-ah1-l','nn vb'],
 'lullaby': ['l-ah1-l ax-b ay1','nn'],
@@ -17569,7 +17452,6 @@ _RiTa_DICT={
 'lyricist': ['l-ay1-r ih-s ih-s-t','nn'],
 'lyrics': ['l-ih1-r ih-k-s','nns'],
 'm': ['eh1-m','nn'],
-'ma': ['m-aa1','fw nn'],
 'macabre': ['m-ax-k aa1-b r-ax','jj'],
 'macaroni': ['m-ae1-k er ow1-n iy','nns nn'],
 'macaw': ['m-ax-k ao1','nn'],
@@ -17675,12 +17557,9 @@ _RiTa_DICT={
 'maintaining': ['m-ey-n-t ey1-n ih-ng','vbg'],
 'maintains': ['m-ey-n-t ey1-n-z','vbz'],
 'maintenance': ['m-ey1-n-t ax-n ax-n-s','nn'],
-'mais': ['m-ey1-z','fw'],
-'maitre': ['m-ey1-t r-ax','nnp fw'],
 'majestic': ['m-ax-jh eh1-s t-ih-k','jj'],
 'majestically': ['m-ax-jh eh1-s t-ih-k ax-l iy','rb'],
 'majesty': ['m-ae1-jh ax-s t-iy','nn'],
-'majeure': ['m-ax-jh uw1-r','nn fw'],
 'major': ['m-ey1-jh er','jj nn vbp'],
 'majored': ['m-ey1-jh er-d','vbn'],
 'majoring': ['m-ey1-jh er ih-ng','vbg'],
@@ -17839,8 +17718,6 @@ _RiTa_DICT={
 'mapping': ['m-ae1-p ih-ng','nn vbg'],
 'maps': ['m-ae1-p-s','nns'],
 'maquila': ['m-ax-k w-iy1-l ax','nn'],
-'maquiladora': ['m-ae1-k w-ih-l ae1-d er ax','nn'],
-'maquiladoras': ['m-ae-k iy1-y ax-d ao1-r ax-s','nns fw'],
 'maquilas': ['m-ae1-k w-ax-l ax-s','nns'],
 'mar': ['m-aa1-r','vb'],
 'marathon': ['m-eh1-r ax-th aa1-n','nn jj'],
@@ -17896,8 +17773,6 @@ _RiTa_DICT={
 'marketwide': ['m-aa1-r-k ax-t w-ay1-d','jj'],
 'marking': ['m-aa1-r-k ih-ng','vbg nn'],
 'markings': ['m-aa1-r-k ih-ng-z','nns'],
-'markka': ['m-aa1-r-k ax','fw nns nn'],
-'markkaa': ['m-aa-r-k aa1','nn'],
 'marks': ['m-aa1-r-k-s','nns vbz'],
 'marksmanship': ['m-aa1-r-k s-m-ax-n-sh ih-p','nn'],
 'markup': ['m-aa1-r-k ah1-p','nn'],
@@ -17962,7 +17837,6 @@ _RiTa_DICT={
 'massaged': ['m-ax-s aa1-zh-d','vbn'],
 'massages': ['m-ax-s aa1-zh ih-z','nns'],
 'massaging': ['m-ax-s aa1-zh ih-ng','vbg'],
-'masse': ['m-ae1-s','fw nn rb'],
 'massed': ['m-ae1-s-t','vbd vbn'],
 'masses': ['m-ae1-s ax-z','nns'],
 'massing': ['m-ae1-s ih-ng','vbg'],
@@ -18059,9 +17933,7 @@ _RiTa_DICT={
 'maxims': ['m-ae1-k s-ax-m-z','nns'],
 'maximum': ['m-ae1-k s-ax-m ax-m','jj nn'],
 'may': ['m-ey1','md nnp'],
-'maya': ['m-ay1 ax','fw'],
 'maybe': ['m-ey1-b iy','rb'],
-'maye': ['m-ey1','md'],
 'mayhem': ['m-ey1-hh eh1-m','nn'],
 'mayonnaise': ['m-ey1 ax-n ey1-z','nn'],
 'mayor': ['m-ey1 er','nn'],
@@ -18070,8 +17942,7 @@ _RiTa_DICT={
 'mayors': ['m-ey1 er-z','nns'],
 'maze': ['m-ey1-z','nn'],
 'mazes': ['m-ey1-z ih-z','nns'],
-'me': ['m-iy1','prp fw'],
-'mea': ['m-iy1','fw'],
+'me': ['m-iy1','prp'],
 'meadow': ['m-eh1-d ow1','nn'],
 'meadows': ['m-eh1-d ow1-z','nns'],
 'meager': ['m-iy1-g er','jj'],
@@ -18121,7 +17992,6 @@ _RiTa_DICT={
 'mechanistic': ['m-eh1-k ax-n ih1-s t-ih-k','jj'],
 'mechanization': ['m-eh1-k ax-n ax-z ey1-sh ax-n','nn'],
 'mechanized': ['m-eh1-k ax-n ay1-z-d','jj vbn'],
-'mecum': ['m-eh1-k ax-m','fw'],
 'medal': ['m-eh1-d ax-l','nn'],
 'medalist': ['m-eh1-d ax-l ih-s-t','nn'],
 'medallions': ['m-ax-d ae1-l y-ax-n-z','nns'],
@@ -18173,7 +18043,6 @@ _RiTa_DICT={
 'megalomaniac': ['m-eh1-g ax-l ow-m ey1-n iy ae1-k','nn'],
 'megawatt': ['m-eh1-g ax-w aa1-t','nn'],
 'megawatts': ['m-eh1-g ax-w aa1-t-s','nns'],
-'mei': ['m-ay1','fw'],
 'melamine': ['m-eh1-l ax-m iy1-n','nn'],
 'melancholy': ['m-eh1-l ax-n-k aa1-l iy','nn jj'],
 'melange': ['m-eh1-l ae-ng','nn'],
@@ -18553,7 +18422,7 @@ _RiTa_DICT={
 'minting': ['m-ih1-n-t ih-ng','vbg'],
 'mints': ['m-ih1-n-t-s','nns'],
 'minuet': ['m-ih1-n y-ax-w eh1-t','nn'],
-'minus': ['m-ay1-n ax-s','cc fw in jj nn'],
+'minus': ['m-ay1-n ax-s','cc in jj nn'],
 'minuscule': ['m-ih1-n ax-s k-y-uw1-l','jj'],
 'minuses': ['m-ay1-n ax-s ih-z','nns'],
 'minute': ['m-ih1-n ax-t','nn jj'],
@@ -18739,7 +18608,7 @@ _RiTa_DICT={
 'mocked': ['m-aa1-k-t','vbn vbd'],
 'mockery': ['m-aa1-k er iy','nn'],
 'mocking': ['m-aa1-k ih-ng','vbg jj'],
-'mode': ['m-ow1-d','nn fw'],
+'mode': ['m-ow1-d','nn'],
 'model': ['m-aa1-d ax-l','nn jj vb nnp'],
 'modeled': ['m-aa1-d ax-l-d','vbn vbd jj'],
 'modeling': ['m-aa1-d ax-l ih-ng','nn jj vbg'],
@@ -18779,10 +18648,8 @@ _RiTa_DICT={
 'modulation': ['m-aa1-jh ax-l ey1-sh ax-n','nn'],
 'module': ['m-aa1-jh uw-l','nn'],
 'modules': ['m-aa1-jh uw-l-z','nns'],
-'modus': ['m-ow1-d ax-s','fw'],
 'mogul': ['m-ow1-g ax-l','nn'],
 'moguls': ['m-ow1-g ax-l-z','nns'],
-'moi': ['m-w-aa1','fw'],
 'moist': ['m-oy1-s-t','jj'],
 'moistened': ['m-oy1-s ax-n-d','jj vbd'],
 'moisture': ['m-oy1-s ch-er','nn'],
@@ -18815,14 +18682,12 @@ _RiTa_DICT={
 'momentous': ['m-ow-m eh1-n-t ax-s','jj'],
 'moments': ['m-ow1-m ax-n-t-s','nns'],
 'momentum': ['m-ow-m eh1-n-t ax-m','nn'],
-'mon': ['m-ow1-n','fw'],
 'monarch': ['m-aa1-n aa1-r-k','nn'],
 'monarchy': ['m-aa1-n aa-r-k iy','nn'],
 'monasteries': ['m-aa1-n ax-s t-eh1-r iy-z','nns'],
 'monastery': ['m-aa1-n ax-s t-eh1-r iy','nn'],
 'monastic': ['m-ax-n ae1-s t-ih-k','jj'],
 'monasticism': ['m-ax-n ae1-s t-ax-s ih1-z ax-m','nn'],
-'monde': ['m-aa1-n-d','fw'],
 'monetarism': ['m-aa1-n ax-t er ih1-z ax-m','nn'],
 'monetarist': ['m-aa1-n ax-t er ih-s-t','nn jj'],
 'monetarists': ['m-aa1-n ax-t er ih1-s-t-s','nns'],
@@ -18921,7 +18786,6 @@ _RiTa_DICT={
 'more': ['m-ao1-r','jjr rbr nn jj rb rp'],
 'moreover': ['m-ao-r ow1-v er','rb'],
 'mores': ['m-ao1-r ey1-z','nns'],
-'morgen': ['m-ao1-r-g ax-n','fw'],
 'morgue': ['m-ao1-r-g','nn'],
 'moribund': ['m-ao1-r ax-b ax-n-d','jj'],
 'morning': ['m-ao1-r-n ih-ng','nn'],
@@ -18990,7 +18854,6 @@ _RiTa_DICT={
 'motorists': ['m-ow1-t er ax-s-t-s','nns'],
 'motorized': ['m-ow1-t er ay1-z-d','vbn jj'],
 'motors': ['m-ow1-t er-z','nns'],
-'mots': ['m-aa1-t-s','fw'],
 'mottled': ['m-aa1-t ax-l-d','vbn jj'],
 'motto': ['m-aa1-t ow','nn'],
 'mould': ['m-ow1-l-d','vb'],
@@ -19067,7 +18930,6 @@ _RiTa_DICT={
 'mugging': ['m-ah1-g ih-ng','nn'],
 'muggy': ['m-ah1-g iy','jj'],
 'mugs': ['m-ah1-g-z','nns'],
-'mujahideen': ['m-uw1-jh ax-hh eh-d iy1-n','fw'],
 'mulatto': ['m-ax-l aa1-t ow','nn'],
 'mulch': ['m-ah1-l-ch','nn'],
 'mulching': ['m-ah1-l-ch ih-ng','vbg'],
@@ -19278,7 +19140,6 @@ _RiTa_DICT={
 'narcos': ['n-aa1-r-k ow-s','nns'],
 'narcotic': ['n-aa-r-k aa1-t ih-k','jj'],
 'narcotics': ['n-aa-r-k aa1-t ih-k-s','nns nn'],
-'narcotraficantes': ['n-ae1-r-k ax-t r-ae1-f ax-k ae1-n-t iy-z','fw'],
 'narrated': ['n-eh1-r ey1-t ih-d','vbn'],
 'narration': ['n-eh-r ey1-sh ax-n','nn'],
 'narrative': ['n-ae1-r ax-t ih-v','nn jj'],
@@ -19347,7 +19208,6 @@ _RiTa_DICT={
 'navy': ['n-ey1-v iy','nn jj'],
 'nay': ['n-ey1','rb'],
 'naysayers': ['n-ey1-s ey1 er-z','nns'],
-'ne': ['n-iy1','fw'],
 'near': ['n-ih1-r','in rb vb jj'],
 'nearby': ['n-ih1-r-b ay1','jj rb'],
 'neared': ['n-ih1-r-d','vbd vbn'],
@@ -19422,7 +19282,6 @@ _RiTa_DICT={
 'neighboring': ['n-ey1-b er ih-ng','vbg jj'],
 'neighborly': ['n-ey1-b er-l iy','jj'],
 'neighbors': ['n-ey1-b er-z','nns'],
-'nein': ['n-iy1-n','fw'],
 'neither': ['n-iy1-dh er','dt nn rb cc'],
 'nemesis': ['n-eh1-m ax-s ih-s','nn'],
 'neo': ['n-iy1 ow','jj'],
@@ -19579,7 +19438,7 @@ _RiTa_DICT={
 'nixed': ['n-ih1-k-s-t','vbd'],
 'no': ['n-ow1','dt jj nn rb uh'],
 'nobility': ['n-ow-b ih1-l ax-t iy','nn'],
-'noble': ['n-ow1-b ax-l','jj fw'],
+'noble': ['n-ow1-b ax-l','jj'],
 'nobleman': ['n-ow1-b ax-l-m ax-n','nn'],
 'nobles': ['n-ow1-b ax-l-z','nns'],
 'noblesse': ['n-ow-b l-eh1-s','jj'],
@@ -19593,8 +19452,6 @@ _RiTa_DICT={
 'nods': ['n-aa1-d-z','vbz nns'],
 'nodular': ['n-aa1-jh ax-l er','jj'],
 'nodules': ['n-aa1-jh uw-l-z','nns'],
-'noes': ['n-ow1-z','nns'],
-'noir': ['n-oy1-r','fw'],
 'noire': ['n-ax-w ae1-r','nn'],
 'noise': ['n-oy1-z','nn'],
 'noises': ['n-oy1-z ih-z','nns'],
@@ -19604,7 +19461,6 @@ _RiTa_DICT={
 'nomadic': ['n-ow-m ae1-d ih-k','jj'],
 'nomads': ['n-ow1-m ae1-d-z','nns'],
 'nomenclature': ['n-ow1-m ax-n-k l-ey1-ch er','nn'],
-'nomenklatura': ['n-ow-m eh1-ng-k l-ax-ch uh1-r ax','fw'],
 'nominal': ['n-aa1-m ax-n ax-l','jj nn'],
 'nominally': ['n-aa1-m ax-n ax-l iy','rb'],
 'nominate': ['n-aa1-m ax-n ax-t','vb vbp'],
@@ -19614,13 +19470,7 @@ _RiTa_DICT={
 'nominations': ['n-aa1-m ax-n ey1-sh ax-n-z','nns'],
 'nominee': ['n-aa1-m ax-n iy1','nn'],
 'nominees': ['n-aa1-m ax-n iy1-z','nns'],
-'non': ['n-aa1-n','fw jj'],
-'nonagricultural': ['n-aa1-n ae1-g r-ih-k ah1-l-ch er ax-l','jj'],
-'nonbanking': ['n-aa1-n-b ae1-ng-k ih-ng','jj'],
 'nonbinding': ['n-aa1-n-b ay1-n-d ih-ng','jj'],
-'nonbusiness': ['n-aa1-n-b ih1-z n-ax-s','nn'],
-'noncallable': ['n-aa-n-k ao1-l ax-b ax-l','jj'],
-'noncash': ['n-aa1-n-k ae1-sh','jj nn'],
 'nonchalant': ['n-aa1-n-sh ax-l aa1-n-t','jj'],
 'noncombatant': ['n-aa1-n-k aa1-m-b ax-t ax-n-t','jj'],
 'noncommercial': ['n-aa1-n-k ax-m er1-sh ax-l','jj'],
@@ -19630,17 +19480,11 @@ _RiTa_DICT={
 'noncompliance': ['n-aa1-n-k ax-m-p l-ay1 ax-n-s','nn'],
 'nonconformist': ['n-aa1-n-k ax-n-f ao1-r-m ih-s-t','nn'],
 'nonconformists': ['n-aa1-n-k ax-n-f ao1-r-m ax-s-t-s','nns'],
-'noncontract': ['n-aa-n-k aa1-n-t r-ae1-k-t','jj'],
 'noncontroversial': ['n-aa-n-k aa1-n-t r-ax-v er1-sh ax-l','jj'],
 'nonconvertible': ['n-aa-n-k ax-n-v er1-t ax-b ax-l','jj'],
-'noncriminal': ['n-aa-n-k r-ih1-m ih-n ax-l','jj'],
-'noncumulative': ['n-aa-n-k y-uw1-m y-ax-l ax-t ih-v','jj'],
-'nondeductible': ['n-aa-n-d ih-d ah1-k t-ih-b ax-l','jj'],
-'nondefense': ['n-aa-n-d ih-f eh1-n-s','jj nn'],
 'nondescript': ['n-aa1-n-d ih-s k-r-ih1-p-t','jj'],
 'nondiscrimination': ['n-aa-n-d ih1-s k-r-ih-m ih-n ey1-sh ax-n','nn'],
 'nondiscriminatory': ['n-aa1-n-d ih-s k-r-ih1-m ax-n ax-t ao1-r iy','jj'],
-'nondollar': ['n-aa1-n-d aa1-l er','jj'],
 'nondurable': ['n-aa-n-d uh1-r ax-b ax-l','jj'],
 'nondurables': ['n-aa-n-d uh1-r ax-b ax-l-z','nns'],
 'none': ['n-ah1-n','nn'],
@@ -19797,7 +19641,6 @@ _RiTa_DICT={
 'novelty': ['n-aa1-v ax-l-t iy','nn'],
 'novice': ['n-aa1-v ax-s','nn jj'],
 'novices': ['n-aa1-v ax-s ih-z','nns'],
-'novo': ['n-ow1-v ow','fw'],
 'now': ['n-aw1','rb jj nn uh'],
 'nowadays': ['n-aw1 ax-d ey1-z','rb'],
 'nowhere': ['n-ow1-w eh1-r','rb nn'],
@@ -20008,7 +19851,6 @@ _RiTa_DICT={
 'oceanography': ['ow1-sh ax-n aa1-g r-ax-f iy','nn'],
 'oceans': ['ow1-sh ax-n-z','nns'],
 'ocelot': ['aa1-s ax-l aa1-t','nn'],
-'och': ['aa1-k','fw'],
 'ochre': ['ow1-k er','jj nn'],
 'octagonal': ['aa-k t-ae1-g ax-n ax-l','jj'],
 'octane': ['aa1-k t-ey-n','nn'],
@@ -20063,7 +19905,6 @@ _RiTa_DICT={
 'officiate': ['ax-f ih1-sh iy ey1-t','vb'],
 'officiated': ['ax-f ih1-sh iy ey1-t ax-d','vbd'],
 'officiating': ['ax-f ih1-sh iy ey1-t ih-ng','vbg'],
-'officio': ['ax-f ih1-s iy ow','fw'],
 'offing': ['ao1-f ih-ng','nn'],
 'offset': ['ao-f s-eh1-t','vb jj vbd vbn vbp'],
 'offsets': ['ao1-f s-eh1-t-s','vbz nns'],
@@ -20817,7 +20658,7 @@ _RiTa_DICT={
 'painting': ['p-ey1-n-t ih-ng','nn vbg'],
 'paintings': ['p-ey1-n-t ih-ng-z','nns'],
 'paints': ['p-ey1-n-t-s','nns vbz'],
-'pair': ['p-eh1-r','nn fw vb'],
+'pair': ['p-eh1-r','nn vb'],
 'paired': ['p-eh1-r-d','vbn jj vbd'],
 'pairing': ['p-eh1-r ih-ng','nn vbg'],
 'pairs': ['p-eh1-r-z','nns'],
@@ -20918,7 +20759,7 @@ _RiTa_DICT={
 'paperwork': ['p-ey1-p er-w er1-k','nn'],
 'papery': ['p-ey1-p er iy','jj'],
 'paprika': ['p-ae-p r-iy1-k ax','nn'],
-'par': ['p-aa1-r','nn fw in jj'],
+'par': ['p-aa1-r','nn in jj'],
 'parable': ['p-eh1-r ax-b ax-l','nn'],
 'parables': ['p-eh1-r ax-b ax-l-z','nns'],
 'parachute': ['p-eh1-r ax-sh uw1-t','nn vb'],
@@ -21065,9 +20906,6 @@ _RiTa_DICT={
 'parts': ['p-aa1-r-t-s','nns'],
 'party': ['p-aa1-r-t iy','nn'],
 'partying': ['p-aa1-r-t iy ih-ng','vbg'],
-'pas': ['p-aa1-z','fw'],
-'pasha': ['p-ax-sh aa1','nn'],
-'paso': ['p-ae1-s ow','nn'],
 'pass': ['p-ae1-s','vb vbp nn'],
 'passable': ['p-ae1-s ax-b ax-l','jj'],
 'passably': ['p-ae1-s ax-b l-iy','rb'],
@@ -21200,7 +21038,6 @@ _RiTa_DICT={
 'pawns': ['p-ao1-n-z','nns'],
 'pawnshop': ['p-ao1-n-sh aa1-p','nn'],
 'paws': ['p-ao1-z','nns'],
-'pax': ['p-ae1-k-s','fw'],
 'pay': ['p-ey1','vb vbd vbp nn'],
 'payable': ['p-ey1 ax-b ax-l','jj'],
 'payables': ['p-ey1 ax-b ax-l-z','nns'],
@@ -21364,7 +21201,7 @@ _RiTa_DICT={
 'peppy': ['p-eh1-p iy','jj'],
 'peptide': ['p-eh1-p t-ay1-d','nn'],
 'peptides': ['p-eh1-p t-ay1-d-z','nns'],
-'per': ['p-er1','in fw rp nnp'],
+'per': ['p-er1','in rp nnp'],
 'perceive': ['p-er-s iy1-v','vb vbp'],
 'perceived': ['p-er-s iy1-v-d','vbn vbd jj'],
 'perceives': ['p-er-s iy1-v-z','vbz'],
@@ -21386,7 +21223,7 @@ _RiTa_DICT={
 'perennial': ['p-er eh1-n iy ax-l','jj'],
 'perennially': ['p-er eh1-n iy ax-l iy','rb'],
 'perennials': ['p-er eh1-n iy ax-l-z','nns'],
-'perestroika': ['p-eh1-r ax-s t-r-oy1-k ax','fw nn'],
+'perestroika': ['p-eh1-r ax-s t-r-oy1-k ax','nn'],
 'perfect': ['p-er-f eh1-k-t','jj'],
 'perfected': ['p-er-f eh1-k t-ax-d','vbn'],
 'perfecting': ['p-er-f eh1-k t-ih-ng','vbg'],
@@ -21482,7 +21319,7 @@ _RiTa_DICT={
 'persisting': ['p-er-s ih1-s t-ih-ng','vbg jj'],
 'persists': ['p-er-s ih1-s-t-s','vbz'],
 'person': ['p-er1-s ax-n','nn'],
-'persona': ['p-er-s ow1-n ax','nn fw'],
+'persona': ['p-er-s ow1-n ax','nn'],
 'personal': ['p-er1-s ax-n ax-l','jj nn nnp'],
 'personalities': ['p-er1-s ax-n ae1-l ih-t iy-z','nns'],
 'personality': ['p-er1-s ax-n ae1-l ih-t iy','nn'],
@@ -21549,7 +21386,6 @@ _RiTa_DICT={
 'petals': ['p-eh1-t ax-l-z','nns'],
 'peter': ['p-iy1-t er','vb'],
 'petered': ['p-iy1-t er-d','vbn'],
-'petit': ['p-eh1-t iy','fw'],
 'petite': ['p-ax-t iy1-t','jj'],
 'petition': ['p-ax-t ih1-sh ax-n','nn vb'],
 'petitioned': ['p-ax-t ih1-sh ax-n-d','vbd vbn'],
@@ -21569,8 +21405,6 @@ _RiTa_DICT={
 'pew': ['p-y-uw1','nn'],
 'pews': ['p-y-uw1-z','nns'],
 'pewter': ['p-y-uw1-t er','nn'],
-'pfennig': ['f-eh1-n ih-g','nn fw'],
-'pfennigs': ['f-eh1-n ih-g-z','nns'],
 'phalanx': ['f-ey1-l ae-ng-k-s','nn'],
 'phantom': ['f-ae1-n-t ax-m','jj vbp nn'],
 'pharmaceutical': ['f-aa1-r-m ax-s uw1-t ih-k ax-l','jj nn'],
@@ -21698,7 +21532,7 @@ _RiTa_DICT={
 'picturing': ['p-ih1-k ch-er ih-ng','vbg nn'],
 'piddling': ['p-ih1-d ax-l ih-ng','jj'],
 'pie': ['p-ay1','nn rp'],
-'piece': ['p-iy1-s','nn fw vb'],
+'piece': ['p-iy1-s','nn vb'],
 'pieced': ['p-iy1-s-t','vbn'],
 'piecemeal': ['p-iy1-s m-iy1-l','rb nn'],
 'pieces': ['p-iy1-s ax-z','nns'],
@@ -22058,7 +21892,6 @@ _RiTa_DICT={
 'poignant': ['p-oy1-n y-ax-n-t','jj'],
 'poignantly': ['p-oy1-n y-ax-n-t l-iy','rb'],
 'point': ['p-oy1-n-t','nn vbp rb vb'],
-'pointe': ['p-oy1-n-t','fw'],
 'pointed': ['p-oy1-n-t ax-d','vbd vbn jj'],
 'pointedly': ['p-oy1-n-t ih-d l-iy','rb'],
 'pointer': ['p-oy1-n-t er','nn'],
@@ -22293,7 +22126,7 @@ _RiTa_DICT={
 'possiblity': ['p-aa1-s ax-b ih1-l ax-t iy','nn'],
 'possibly': ['p-aa1-s ax-b l-iy','rb'],
 'possum': ['p-aa1-s ax-m','nn'],
-'post': ['p-ow1-s-t','nn fw in jj vb vbd vbp'],
+'post': ['p-ow1-s-t','nn in jj vb vbd vbp'],
 'postage': ['p-ow1-s t-ax-jh','nn'],
 'postal': ['p-ow1-s t-ax-l','jj'],
 'postcard': ['p-ow1-s t-k-aa1-r-d','nn'],
@@ -22358,7 +22191,7 @@ _RiTa_DICT={
 'pounded': ['p-aw1-n-d ih-d','vbd vbn'],
 'pounding': ['p-aw1-n-d ih-ng','vbg nn'],
 'pounds': ['p-aw1-n-d-z','nns vbz'],
-'pour': ['p-ao1-r','vb fw in vbp'],
+'pour': ['p-ao1-r','vb in vbp'],
 'poured': ['p-ao1-r-d','vbd vbn'],
 'pouring': ['p-ao1-r ih-ng','vbg'],
 'pours': ['p-ao1-r-z','vbz'],
@@ -22762,7 +22595,6 @@ _RiTa_DICT={
 'prize': ['p-r-ay1-z','nn jj vbp'],
 'prized': ['p-r-ay1-z-d','vbn jj'],
 'prizes': ['p-r-ay1-z ax-z','nns vbz'],
-'pro': ['p-r-ow1','fw in jj nn'],
 'probabilities': ['p-r-aa1-b ax-b ih1-l ax-t iy-z','nns'],
 'probability': ['p-r-aa1-b ax-b ih1-l ax-t iy','nn'],
 'probable': ['p-r-aa1-b ax-b ax-l','jj'],
@@ -23377,7 +23209,6 @@ _RiTa_DICT={
 'pyramidal': ['p-er ae1-m ax-d ax-l','jj'],
 'pyramids': ['p-ih1-r ax-m ih-d-z','nns'],
 'python': ['p-ay1-th aa-n','nn'],
-'qua': ['k-w-aa1','fw'],
 'quack': ['k-w-ae1-k','nn uh'],
 'quackery': ['k-w-ae1-k er iy','nn'],
 'quacks': ['k-w-ae1-k-s','nns vbz'],
@@ -23402,7 +23233,7 @@ _RiTa_DICT={
 'qualities': ['k-w-aa1-l ax-t iy-z','nns'],
 'quality': ['k-w-aa1-l ax-t iy','nn jj'],
 'qualms': ['k-w-aa1-m-z','nns'],
-'quam': ['k-w-aa1-m','fw'],
+'quam': ['k-w-aa1-m','nn'],
 'quandary': ['k-w-aa1-n-d er iy','nn'],
 'quantified': ['k-w-aa1-n-t ih-f ay1-d','vbn'],
 'quantify': ['k-w-aa1-n-t ih-f ay1','vb'],
@@ -23430,7 +23261,6 @@ _RiTa_DICT={
 'quash': ['k-w-ao1-sh','vb'],
 'quashed': ['k-w-ao1-sh-t','vbd vbn'],
 'quashing': ['k-w-ao1-sh ih-ng','vbg'],
-'que': ['k-y-uw1','fw'],
 'queasiness': ['k-w-iy1-z iy-n ax-s','nn'],
 'queen': ['k-w-iy1-n','nn'],
 'queens': ['k-w-iy1-n-z','nns'],
@@ -23458,7 +23288,6 @@ _RiTa_DICT={
 'queue': ['k-y-uw1','nn'],
 'queues': ['k-y-uw1-z','nns'],
 'queuing': ['k-y-uw1 ih-ng','vbg'],
-'qui': ['k-w-iy1','fw'],
 'quibble': ['k-w-ih1-b ax-l','vb'],
 'quibbling': ['k-w-ih1-b ax-l ih-ng','vbg'],
 'quick': ['k-w-ih1-k','jj nn rb'],
@@ -23472,7 +23301,7 @@ _RiTa_DICT={
 'quickness': ['k-w-ih1-k n-ax-s','nn'],
 'quicksand': ['k-w-ih1-k s-ae1-n-d','nn'],
 'quicksilver': ['k-w-ih1-k s-ih1-l-v er','jj nn'],
-'quid': ['k-w-ih1-d','fw nn'],
+'quid': ['k-w-ih1-d','nn'],
 'quiescent': ['k-w-ay eh1-s ax-n-t','jj'],
 'quiet': ['k-w-ay1 ax-t','jj nn vb'],
 'quieted': ['k-w-ay1 ax-t ax-d','vbd vbn'],
@@ -23503,7 +23332,6 @@ _RiTa_DICT={
 'quixotic': ['k-w-ih-k s-aa1-t ih-k','jj'],
 'quiz': ['k-w-ih1-z','nn vb'],
 'quizzed': ['k-w-ih1-z-d','vbd'],
-'quo': ['k-w-ow1','fw wdt nn'],
 'quorum': ['k-w-ao1-r ax-m','nn'],
 'quota': ['k-w-ow1-t ax','nn'],
 'quotas': ['k-w-ow1-t ax-z','nns'],
@@ -23625,8 +23453,6 @@ _RiTa_DICT={
 'raises': ['r-ey1-z ax-z','vbz nns'],
 'raisin': ['r-ey1-z ih-n','nn'],
 'raising': ['r-ey1-z ih-ng','vbg nn rp'],
-'raison': ['r-ey1-s aa-n','fw nn'],
-'raj': ['r-aa1-zh','nn'],
 'rake': ['r-ey1-k','nn vb vbp'],
 'raked': ['r-ey1-k-t','vbd vbn'],
 'raking': ['r-ey1-k ih-ng','vbg'],
@@ -23718,7 +23544,6 @@ _RiTa_DICT={
 'rasps': ['r-ae1-s-p-s','nns'],
 'raspy': ['r-ae1-s p-iy','nn'],
 'rat': ['r-ae1-t','nn vb'],
-'rata': ['r-ae1-t ax','fw jj nn'],
 'ratchet': ['r-ae1-ch ax-t','vb'],
 'ratcheting': ['r-ae1-ch ax-t ih-ng','vbg nn'],
 'rate': ['r-ey1-t','nn vbp vb'],
@@ -23758,6 +23583,7 @@ _RiTa_DICT={
 'rattling': ['r-ae1-t l-ih-ng','vbg nn'],
 'ratty': ['r-ae1-t iy','jj'],
 'raucous': ['r-ao1-k ax-s','jj'],
+'ravage': ['r-ae1-v ih-jh','vb'],
 'ravaged': ['r-ae1-v ih-jh-d','vbn'],
 'ravages': ['r-ae1-v ih-jh ih-z','nns'],
 'ravaging': ['r-ae1-v ih-jh ih-ng','vbg'],
@@ -24933,7 +24759,7 @@ _RiTa_DICT={
 'resin': ['r-eh1-z ax-n','nn'],
 'resins': ['r-eh1-z ax-n-z','nns'],
 'resist': ['r-ih-z ih1-s-t','vb vbp'],
-'resistance': ['r-ih-z ih1-s t-ax-n-s','nn fw'],
+'resistance': ['r-ih-z ih1-s t-ax-n-s','nn'],
 'resistant': ['r-ih-z ih1-s t-ax-n-t','jj nn'],
 'resisted': ['r-ih-z ih1-s t-ih-d','vbn vbd'],
 'resisting': ['r-ih-z ih1-s t-ih-ng','vbg'],
@@ -25064,7 +24890,6 @@ _RiTa_DICT={
 'resuscitated': ['r-ih-s ah1-s ih-t ey1-t ih-d','vbn'],
 'resuscitating': ['r-ih-s ah1-s ih-t ey1-t ih-ng','vbg'],
 'resuscitation': ['r-ih-s ah1-s ih-t ey1-sh ax-n','nn'],
-'retablos': ['r-iy-t ae1-b l-ow-s','fw'],
 'retail': ['r-iy1-t ey1-l','jj nn vb vbp'],
 'retailed': ['r-iy1-t ey1-l-d','vbn'],
 'retailer': ['r-iy1-t ey1-l er','nn'],
@@ -25300,7 +25125,7 @@ _RiTa_DICT={
 'rice': ['r-ay1-s','nn'],
 'rich': ['r-ih1-ch','jj nns nn'],
 'richer': ['r-ih1-ch er','jjr'],
-'riches': ['r-ih1-ch ax-z','nns fw nn'],
+'riches': ['r-ih1-ch ax-z','nns nn'],
 'richest': ['r-ih1-ch ax-s-t','jjs'],
 'richly': ['r-ih1-ch l-iy','rb'],
 'richness': ['r-ih1-ch n-ax-s','nn'],
@@ -25361,7 +25186,6 @@ _RiTa_DICT={
 'rigorously': ['r-ih1-g er ax-s l-iy','rb'],
 'rigors': ['r-ih1-g er-z','nns'],
 'rigs': ['r-ih1-g-z','nns'],
-'rigueur': ['r-ih-g y-uw1-r','fw'],
 'rile': ['r-ay1-l','vbp vb'],
 'riled': ['r-ay1-l-d','vbn'],
 'riles': ['r-ay1-l-z','vbz'],
@@ -25496,7 +25320,6 @@ _RiTa_DICT={
 'roemer': ['r-ow1-m er','nn'],
 'rogue': ['r-ow1-g','jj'],
 'rogues': ['r-ow1-g-z','nns'],
-'roi': ['r-oy1','fw'],
 'roil': ['r-oy1-l','vb'],
 'roiled': ['r-oy1-l-d','vbn'],
 'roiling': ['r-oy1-l ih-ng','vbg jj'],
@@ -25586,7 +25409,7 @@ _RiTa_DICT={
 'rotting': ['r-aa1-t ih-ng','vbg'],
 'rotund': ['r-ow-t ah1-n-d','jj'],
 'rotunda': ['r-ow-t ah1-n-d ax','nn'],
-'rouge': ['r-uw1-zh','fw nn'],
+'rouge': ['r-uw1-zh','nn'],
 'rough': ['r-ah1-f','jj rb'],
 'roughed': ['r-ah1-f-t','vbd'],
 'rougher': ['r-ah1-f er','jjr'],
@@ -25611,7 +25434,7 @@ _RiTa_DICT={
 'roused': ['r-aw1-z-d','vbd'],
 'rousing': ['r-aw1-z ih-ng','jj nn'],
 'rout': ['r-aw1-t','nn'],
-'route': ['r-uw1-t','nn vbp fw in rb vb'],
+'route': ['r-uw1-t','nn vbp in rb vb'],
 'routed': ['r-uw1-t ax-d','vbn vbd'],
 'routes': ['r-uw1-t-s','nns vbz'],
 'routine': ['r-uw-t iy1-n','jj nn'],
@@ -25638,7 +25461,7 @@ _RiTa_DICT={
 'rubbish': ['r-ah1-b ih-sh','nn jj'],
 'rubble': ['r-ah1-b ax-l','nn'],
 'rubies': ['r-uw1-b iy-z','nns'],
-'ruble': ['r-uw1-b ax-l','nn fw'],
+'ruble': ['r-uw1-b ax-l','nn'],
 'rubles': ['r-uw1-b ax-l-z','nns'],
 'rubout': ['r-ah1-b aw1-t','nn'],
 'rubric': ['r-uw1-b r-ih-k','nn'],
@@ -25662,7 +25485,6 @@ _RiTa_DICT={
 'rugged': ['r-ah1-g ax-d','jj'],
 'ruggedly': ['r-ah1-g ax-d l-iy','rb'],
 'rugs': ['r-ah1-g-z','nns'],
-'ruh': ['r-ah1','fw'],
 'ruin': ['r-uw1 ax-n','nn vbp vb'],
 'ruined': ['r-uw1 ax-n-d','vbn jj vbd'],
 'ruining': ['r-uw1 ih-n ih-ng','vbg'],
@@ -25805,7 +25627,7 @@ _RiTa_DICT={
 'sainthood': ['s-ey1-n-t hh-uh1-d','nn'],
 'saintly': ['s-ey1-n-t l-iy','jj'],
 'saints': ['s-ey1-n-t-s','nns'],
-'sake': ['s-ey1-k','nn fw'],
+'sake': ['s-ey1-k','nn'],
 'salable': ['s-ey1-l ax-b ax-l','jj'],
 'salacious': ['s-ax-l ey1-sh ax-s','jj'],
 'salad': ['s-ae1-l ax-d','nn'],
@@ -25855,7 +25677,7 @@ _RiTa_DICT={
 'salvation': ['s-ae-l-v ey1-sh ax-n','nn'],
 'salve': ['s-aa1-v','nn vb'],
 'salves': ['s-aa1-v-z','nns'],
-'salvo': ['s-ae1-l-v ow','nn fw'],
+'salvo': ['s-ae1-l-v ow','nn'],
 'salvos': ['s-ae1-l-v ow-z','nns'],
 'sambuca': ['s-ae1-m-b y-uw1-k ax','nn'],
 'same': ['s-ey1-m','jj'],
@@ -25867,7 +25689,7 @@ _RiTa_DICT={
 'samples': ['s-ae1-m-p ax-l-z','nns vbz'],
 'sampling': ['s-ae1-m-p l-ih-ng','nn vbg'],
 'samplings': ['s-ae1-m-p l-ih-ng-z','nns'],
-'samurai': ['s-ae1-m uh-r ay1','fw nn'],
+'samurai': ['s-ae1-m uh-r ay1','nn'],
 'sanctimonious': ['s-ae1-ng-k t-ax-m ow1-n iy ax-s','jj'],
 'sanction': ['s-ae1-ng-k sh-ax-n','nn vbp vb'],
 'sanctioned': ['s-ae1-ng-k sh-ax-n-d','vbn'],
@@ -25875,7 +25697,7 @@ _RiTa_DICT={
 'sanctions': ['s-ae1-ng-k sh-ax-n-z','nns vbz'],
 'sanctity': ['s-ae1-ng-k t-ih-t iy','nn'],
 'sanctuary': ['s-ae1-ng-k ch-uw eh1-r iy','nn'],
-'sanctum': ['s-ae1-ng-k t-ax-m','fw'],
+'sanctum': ['s-ae1-ng-k t-ax-m','nn'],
 'sand': ['s-ae1-n-d','nn'],
 'sandals': ['s-ae1-n-d ax-l-z','nns'],
 'sandbox': ['s-ae1-n-d b-aa1-k-s','nn'],
@@ -25889,7 +25711,7 @@ _RiTa_DICT={
 'sandy': ['s-ae1-n-d iy','jj'],
 'sane': ['s-ey1-n','jj'],
 'saner': ['s-ey1-n er','jjr'],
-'sang': ['s-ae1-ng','vbd fw'],
+'sang': ['s-ae1-ng','vbd'],
 'sanguine': ['s-ae1-ng-g w-ih-n','jj nn'],
 'sanitary': ['s-ae1-n ih-t eh1-r iy','jj'],
 'sanitation': ['s-ae1-n ax-t ey1-sh ax-n','nn'],
@@ -25897,7 +25719,6 @@ _RiTa_DICT={
 'sanitizing': ['s-ae1-n ax-t ay1-z ih-ng','nn'],
 'sanity': ['s-ae1-n ax-t iy','nn'],
 'sank': ['s-ae1-ng-k','vbd'],
-'santos': ['s-ae1-n-t ow-s','fw'],
 'sap': ['s-ae1-p','vb nn'],
 'sapiens': ['s-ey1-p iy ax-n-z','jj'],
 'sapped': ['s-ae1-p-t','vbn vbd'],
@@ -25976,7 +25797,7 @@ _RiTa_DICT={
 'saxophone': ['s-ae1-k s-ax-f ow1-n','nn'],
 'saxophones': ['s-ae1-k s-ax-f ow1-n-z','nns'],
 'saxophonist': ['s-ae1-k s-ax-f ow1-n ih-s-t','nn'],
-'say': ['s-ey1','vbp fw nn nnp vb uh'],
+'say': ['s-ey1','vbp nn nnp vb uh'],
 'sayed': ['s-aa1-y eh1-d','vbd'],
 'saying': ['s-ey1 ih-ng','vbg nn'],
 'sayings': ['s-ey1 ih-ng-z','nns'],
@@ -26243,7 +26064,6 @@ _RiTa_DICT={
 'scuttle': ['s-k-ah1-t ax-l','vb'],
 'scuttled': ['s-k-ah1-t ax-l-d','vbd vbn jj'],
 'scuttling': ['s-k-ah1-t ax-l ih-ng','vbg'],
-'se': ['s-aw1-th iy1-s-t','fw in nn prp'],
 'sea': ['s-iy1','nn vb vbp'],
 'seaboard': ['s-iy1-b ao1-r-d','nn'],
 'seaborne': ['s-iy1-b ao1-r-n','jj'],
@@ -26823,7 +26643,6 @@ _RiTa_DICT={
 'shoemaker': ['sh-uw1-m ey1-k er','nn'],
 'shoes': ['sh-uw1-z','nns'],
 'shoestring': ['sh-uw1-s t-r-ih1-ng','nn'],
-'shoji': ['sh-ow1-jh iy','fw'],
 'shone': ['sh-ow1-n','vbd vbn'],
 'shooed': ['sh-uw1-d','vbn'],
 'shook': ['sh-uh1-k','vbd nn vbn'],
@@ -26989,7 +26808,7 @@ _RiTa_DICT={
 'shyly': ['sh-ay1-l iy','rb'],
 'sibling': ['s-ih1-b l-ih-ng','nn'],
 'siblings': ['s-ih1-b l-ih-ng-z','nns'],
-'sic': ['s-ih1-k','rb fw vb'],
+'sic': ['s-ih1-k','vb'],
 'sick': ['s-ih1-k','jj'],
 'sickened': ['s-ih1-k ax-n-d','vbn vbd jj'],
 'sickening': ['s-ih1-k ax-n ih-ng','jj'],
@@ -27019,7 +26838,6 @@ _RiTa_DICT={
 'sidewise': ['s-ay1-d w-ay1-z','rb jj'],
 'siding': ['s-ay1-d ih-ng','nn vbg'],
 'sidle': ['s-ay1-d ax-l','vb'],
-'sieben': ['s-iy1-b ax-n','fw'],
 'siege': ['s-iy1-jh','nn'],
 'sieve': ['s-ih1-v','nn'],
 'sift': ['s-ih1-f-t','vb vbp'],
@@ -27081,7 +26899,6 @@ _RiTa_DICT={
 'silly': ['s-ih1-l iy','jj nn rb'],
 'silo': ['s-ay1-l ow','nn'],
 'silos': ['s-ay1-l ow1-z','nns'],
-'silvas': ['s-ih1-l-v ax-z','fw'],
 'silver': ['s-ih1-l-v er','nn jj jjr'],
 'silverware': ['s-ih1-l-v er-w eh1-r','nn'],
 'silvery': ['s-ih1-l-v er iy','jj'],
@@ -27119,8 +26936,7 @@ _RiTa_DICT={
 'sincere': ['s-ax-n-s ih1-r','jj'],
 'sincerely': ['s-ih-n-s ih1-r l-iy','rb'],
 'sincerity': ['s-ax-n-s eh1-r ax-t iy','nn'],
-'sind': ['s-ih1-n-d','fw'],
-'sine': ['s-ay1-n','fw nn'],
+'sine': ['s-ay1-n','nn'],
 'sinewy': ['s-ih1-n y-uw iy','jj'],
 'sinful': ['s-ih1-n-f ax-l','jj'],
 'sing': ['s-ih1-ng','vb vbp'],
@@ -27161,7 +26977,7 @@ _RiTa_DICT={
 'sirens': ['s-ay1-r ax-n-z','nns'],
 'sister': ['s-ih1-s t-er','nn jj'],
 'sisters': ['s-ih1-s t-er-z','nns'],
-'sit': ['s-ih1-t','vb fw vbp'],
+'sit': ['s-ih1-t','vb vbp'],
 'sitcom': ['s-ih1-t k-aa1-m','nn'],
 'sitcoms': ['s-ih1-t k-aa-m-z','nns'],
 'site': ['s-ay1-t','nn'],
@@ -27609,7 +27425,7 @@ _RiTa_DICT={
 'snuffer': ['s-n-ah1-f er','nn'],
 'snug': ['s-n-ah1-g','jj'],
 'snugly': ['s-n-ah1-g l-iy','rb'],
-'so': ['s-ow1','rb cc fw in'],
+'so': ['s-ow1','rb cc in'],
 'soak': ['s-ow1-k','vb'],
 'soaked': ['s-ow1-k-t','vbn jj vbd'],
 'soaking': ['s-ow1-k ih-ng','vbg jj nn rb'],
@@ -28280,7 +28096,7 @@ _RiTa_DICT={
 'stable': ['s-t-ey1-b ax-l','jj nn'],
 'stables': ['s-t-ey1-b ax-l-z','nns'],
 'stabs': ['s-t-ae1-b-z','nns vbz'],
-'staccato': ['s-t-ax-k aa1-t ow1','nn fw'],
+'staccato': ['s-t-ax-k aa1-t ow1','jj'],
 'stack': ['s-t-ae1-k','nn vb'],
 'stacked': ['s-t-ae1-k-t','vbn vbd'],
 'stacker': ['s-t-ae1-k er','nn'],
@@ -28373,7 +28189,7 @@ _RiTa_DICT={
 'starches': ['s-t-aa1-r-ch ih-z','nns'],
 'starchy': ['s-t-aa1-r-ch iy','jj'],
 'stardom': ['s-t-aa1-r-d ax-m','nn'],
-'stare': ['s-t-eh1-r','vb vbp fw nn'],
+'stare': ['s-t-eh1-r','vb vbp nn'],
 'stared': ['s-t-eh1-r-d','vbd vbn'],
 'stares': ['s-t-eh1-r-z','nns'],
 'staring': ['s-t-eh1-r ih-ng','vbg'],
@@ -28439,7 +28255,7 @@ _RiTa_DICT={
 'statue': ['s-t-ae1-ch uw1','nn'],
 'statues': ['s-t-ae1-ch uw1-z','nns'],
 'stature': ['s-t-ae1-ch er','nn'],
-'status': ['s-t-ae1-t ax-s','nn fw'],
+'status': ['s-t-ae1-t ax-s','nn'],
 'statute': ['s-t-ae1-ch uw-t','nn'],
 'statutes': ['s-t-ae1-ch uw-t-s','nns'],
 'statutory': ['s-t-ae1-ch ax-t ao1-r iy','jj'],
@@ -28934,7 +28750,7 @@ _RiTa_DICT={
 'stymied': ['s-t-ay1-m iy-d','vbn jj'],
 'styrene': ['s-t-ay1-r iy1-n','nn'],
 'suave': ['s-w-aa1-v','jj'],
-'sub': ['s-ah1-b','nn fw'],
+'sub': ['s-ah1-b','nn'],
 'subatomic': ['s-ah1-b ax-t aa1-m ih-k','jj'],
 'subbing': ['s-ah1-b ih-ng','vbg'],
 'subcommittee': ['s-ah1-b-k ax-m ih1-t iy','nn'],
@@ -28984,7 +28800,7 @@ _RiTa_DICT={
 'subordinates': ['s-ax-b ao1-r-d ax-n ey1-t-s','nns vbz'],
 'subpar': ['s-ax-b-p aa1-r','jj'],
 'subplots': ['s-ah1-b-p l-aa-t-s','nns'],
-'subpoena': ['s-ax-p iy1-n ax','nn fw vb'],
+'subpoena': ['s-ax-p iy1-n ax','nn vb'],
 'subpoenaed': ['s-ax-p iy1-n ax-d','vbn vbd'],
 'subpoenas': ['s-ax-p iy1-n ax-z','nns'],
 'subs': ['s-ah1-b-z','nns'],
@@ -29151,7 +28967,7 @@ _RiTa_DICT={
 'suitably': ['s-uw1-t ax-b l-iy','rb'],
 'suitcase': ['s-uw1-t k-ey1-s','nn'],
 'suitcases': ['s-uw1-t k-ey1-s ih-z','nns'],
-'suite': ['s-w-iy1-t','nn fw'],
+'suite': ['s-w-iy1-t','nn'],
 'suited': ['s-uw1-t ax-d','vbn vbd'],
 'suites': ['s-w-iy1-t-s','nns'],
 'suitor': ['s-uw1-t er','nn'],
@@ -29215,9 +29031,7 @@ _RiTa_DICT={
 'sunshine': ['s-ah1-n-sh ay1-n','nn'],
 'sunshiny': ['s-ah1-n-sh ay1-n iy','jj'],
 'suntan': ['s-ah1-n-t ae1-n','nn'],
-'sup': ['s-ah1-p','vb'],
-'super': ['s-uw1-p er','jj fw'],
-'superagent': ['s-uw1-p er ey1-jh eh-n-t','nn'],
+'super': ['s-uw1-p er','jj nn'],
 'superb': ['s-uh-p er1-b','jj'],
 'superbly': ['s-uw1-p er-b l-iy','rb'],
 'supercharged': ['s-uw1-p er-ch aa1-r-jh-d','jj'],
@@ -29316,7 +29130,6 @@ _RiTa_DICT={
 'supremacy': ['s-ax-p r-eh1-m ax-s iy','nn'],
 'supreme': ['s-ax-p r-iy1-m','nn jj'],
 'supremely': ['s-uw-p r-iy1-m ax-l iy','rb'],
-'sur': ['s-er1','fw'],
 'surcharge': ['s-er-ch aa1-r-jh','nn'],
 'surcharges': ['s-er1-ch aa1-r-jh ih-z','nns'],
 'sure': ['sh-uh1-r','jj pdt rb uh'],
@@ -29400,7 +29213,7 @@ _RiTa_DICT={
 'survivors': ['s-er-v ay1-v er-z','nns'],
 'susceptibility': ['s-ax-s eh1-p t-ax-b ih1-l ax-t iy','nn'],
 'susceptible': ['s-ax-s eh1-p t-ax-b ax-l','jj nn'],
-'sushi': ['s-uw1-sh iy','nn fw'],
+'sushi': ['s-uw1-sh iy','nn'],
 'suspect': ['s-ax-s p-eh1-k-t','vbp jj nn vb'],
 'suspected': ['s-ax-s p-eh1-k t-ax-d','vbn vbd jj'],
 'suspecting': ['s-ax-s p-eh1-k t-ih-ng','vbg'],
@@ -29672,7 +29485,6 @@ _RiTa_DICT={
 'tactics': ['t-ae1-k t-ih-k-s','nns'],
 'tad': ['t-ae1-d','nn rb'],
 'tadpoles': ['t-ae1-d-p ow1-l-z','nns'],
-'tae': ['t-ey1','fw'],
 'taffeta': ['t-ae1-f ax-t ax','nn'],
 'taffy': ['t-ae1-f iy','jj'],
 'tag': ['t-ae1-g','nn vb'],
@@ -29726,7 +29538,7 @@ _RiTa_DICT={
 'tally': ['t-ae1-l iy','nn vbp vb'],
 'tallyho': ['t-ae1-l iy-hh ow1','nn'],
 'tallying': ['t-ae1-l iy ih-ng','vbg'],
-'tam': ['t-ae1-m','fw'],
+'tam': ['t-ae1-m','nn'],
 'tambourine': ['t-ae1-m-b er iy1-n','nn'],
 'tame': ['t-ey1-m','jj vb'],
 'tamer': ['t-ey1-m er','jjr'],
@@ -30029,7 +29841,7 @@ _RiTa_DICT={
 'terminology': ['t-er1-m ih-n aa1-l ax-jh iy','nn'],
 'termites': ['t-er1-m ay-t-s','nns'],
 'terms': ['t-er1-m-z','nns vbz'],
-'terra': ['t-eh1-r ax','fw nn'],
+'terra': ['t-eh1-r ax','nn'],
 'terrace': ['t-eh1-r ax-s','nn'],
 'terraced': ['t-eh1-r ax-s-t','vbn'],
 'terraces': ['t-eh1-r ax-s ax-z','nns'],
@@ -30110,13 +29922,10 @@ _RiTa_DICT={
 'the': ['dh-ax','dt'],
 'theater': ['th-iy1 ax-t er','nn'],
 'theatergoers': ['th-iy1-t er-g ow er-z','nns'],
-'theaters': ['th-iy1 ax-t er-z','nns vbd'],
-'theatre': ['th-iy1 ax-t er','nn fw'],
-'theatres': ['th-iy1 ax-t er-z','nns'],
+'theaters': ['th-iy1 ax-t er-z','nns'],
 'theatrical': ['th-iy ae1-t r-ih-k ax-l','jj nn'],
 'theatricality': ['th-iy ae1-t r-ax-k ae1-l ax-t iy','nn'],
 'theatrically': ['th-iy ae1-t r-ih-k ax-l iy','rb'],
-'thee': ['dh-iy1','prp'],
 'theft': ['th-eh1-f-t','nn'],
 'thefts': ['th-eh1-f-t-s','nns'],
 'their': ['dh-eh1-r','prp$ prp'],
@@ -30606,7 +30415,6 @@ _RiTa_DICT={
 'toted': ['t-ow1-t ih-d','vbn'],
 'totem': ['t-ow1-t ax-m','nn'],
 'toting': ['t-ow1-t ih-ng','vbg'],
-'toto': ['t-ow1-t ow','fw'],
 'tottering': ['t-aa1-t er ih-ng','jj vbg'],
 'touch': ['t-ah1-ch','nn rb vb vbp'],
 'touchdown': ['t-ah1-ch d-aw1-n','nn'],
@@ -30625,7 +30433,7 @@ _RiTa_DICT={
 'toughest': ['t-ah1-f ax-s-t','jjs'],
 'toughness': ['t-ah1-f n-ax-s','nn'],
 'toughs': ['t-ah1-f-s','nns'],
-'tour': ['t-uh1-r','nn fw vb'],
+'tour': ['t-uh1-r','nn vb'],
 'toured': ['t-uh1-r-d','vbd'],
 'touring': ['t-uh1-r ih-ng','vbg jj nn'],
 'tourism': ['t-uh1-r ih1-z ax-m','nn'],
@@ -30636,7 +30444,7 @@ _RiTa_DICT={
 'tourney': ['t-er1-n iy','nn'],
 'tours': ['t-uh1-r-z','nns vbz'],
 'tousled': ['t-ao1-s ax-l-d','vbn jj'],
-'tout': ['t-aw1-t','vb fw nn'],
+'tout': ['t-aw1-t','vb nn'],
 'touted': ['t-aw1-t ih-d','vbn vbd'],
 'touting': ['t-aw1-t ih-ng','vbg'],
 'touts': ['t-aw1-t-s','vbz'],
@@ -30741,7 +30549,7 @@ _RiTa_DICT={
 'tramples': ['t-r-ae1-m-p ax-l-z','vbz'],
 'trampling': ['t-r-ae1-m-p l-ih-ng','vbg nn'],
 'trance': ['t-r-ae1-n-s','nn'],
-'tranche': ['t-r-ae1-n-ch','nn fw'],
+'tranche': ['t-r-ae1-n-ch','nn'],
 'tranquil': ['t-r-ae1-ng-k w-ax-l','jj'],
 'tranquility': ['t-r-ae-ng-k w-ih1-l ih-t iy','nn'],
 'tranquilizer': ['t-r-ae1-ng-k w-ax-l ay1-z er','nn'],
@@ -31275,13 +31083,11 @@ _RiTa_DICT={
 'ultrasonic': ['ah1-l-t r-ax-s aa1-n ih-k','jj'],
 'ultrasound': ['ah1-l-t r-ax-s aw1-n-d','nn'],
 'ultraviolet': ['ah1-l-t r-ax-v ay1 ax-l ih-t','jj nn'],
-'um': ['ah1-m','fw uh prp'],
 'umbrage': ['ah1-m-b r-ih-jh','nn'],
 'umbrella': ['ax-m-b r-eh1-l ax','nn'],
 'umbrellas': ['ax-m-b r-eh1-l ax-z','nns'],
 'umpire': ['ah1-m-p ay1 er','nn'],
 'umpteenth': ['ah1-m-p t-iy1-n-th','jj'],
-'un': ['ah1-n','fw nn'],
 'unabashed': ['ah1-n ax-b ae1-sh-t','jj'],
 'unabated': ['ah1-n ax-b ey1-t ih-d','jj'],
 'unable': ['ax-n ey1-b ax-l','jj'],
@@ -31421,7 +31227,6 @@ _RiTa_DICT={
 'uncritical': ['ax-n-k r-ih1-t ih-k ax-l','jj'],
 'uncritically': ['ax-n-k r-ih1-t ih-k ax-l iy','rb'],
 'uncut': ['ah1-n-k ah1-t','jj'],
-'und': ['ah1-n-d','fw nn'],
 'undamaged': ['ah1-n-d ae1-m ax-jh-d','jj'],
 'undated': ['ah1-n-d ey1-t ih-d','jj'],
 'undaunted': ['ax-n-d ao1-n-t ih-d','jj'],
@@ -32304,7 +32109,6 @@ _RiTa_DICT={
 'verbally': ['v-er-b ae1-l iy','rb'],
 'verbatim': ['v-er-b ey1-t ax-m','rb jj'],
 'verbiage': ['v-er1-b iy ih-jh','nn'],
-'verboten': ['v-er-b ow1-t ax-n','fw'],
 'verbs': ['v-er1-b-z','nns'],
 'verdant': ['v-er1-d ax-n-t','jj'],
 'verdict': ['v-er1-d ih-k-t','nn'],
@@ -32323,7 +32127,6 @@ _RiTa_DICT={
 'vernacular': ['v-er-n ae1-k y-ax-l er','nn jj'],
 'vernal': ['v-er1-n ax-l','jj'],
 'vernier': ['v-er1-n iy er','nn'],
-'versa': ['v-er1-s ax','rb fw'],
 'versatile': ['v-er1-s ax-t ax-l','jj'],
 'versatility': ['v-er1-s ax-t ih1-l ax-t iy','nn'],
 'verse': ['v-er1-s','nn'],
@@ -32331,7 +32134,7 @@ _RiTa_DICT={
 'verses': ['v-er1-s ax-z','nns'],
 'version': ['v-er1-zh ax-n','nn'],
 'versions': ['v-er1-zh ax-n-z','nns'],
-'versus': ['v-er1-s ax-s','in cc fw'],
+'versus': ['v-er1-s ax-s','in cc'],
 'vertebrae': ['v-er1-t ax-b r-ey','nns'],
 'vertebral': ['v-er1-t ax-b r-ax-l','jj'],
 'vertebrates': ['v-er1-t ax-b r-ey1-t-s','nns'],
@@ -32381,7 +32184,7 @@ _RiTa_DICT={
 'vicarious': ['v-ay-k eh1-r iy ax-s','jj'],
 'vicariously': ['v-ay-k eh1-r iy ax-s l-iy','rb'],
 'vicars': ['v-ih1-k er-z','nns'],
-'vice': ['v-ay1-s','nn fw jj rb'],
+'vice': ['v-ay1-s','nn jj rb'],
 'vices': ['v-ay1-s ax-z','nns'],
 'vicinity': ['v-ax-s ih1-n ax-t iy','nn'],
 'vicious': ['v-ih1-sh ax-s','jj'],
@@ -32395,7 +32198,6 @@ _RiTa_DICT={
 'victories': ['v-ih1-k t-er iy-z','nns'],
 'victorious': ['v-ih-k t-ao1-r iy ax-s','jj'],
 'victory': ['v-ih1-k t-er iy','nn'],
-'vide': ['v-ay1-d','fw'],
 'video': ['v-ih1-d iy ow','nn jj'],
 'videocassette': ['v-ih1-d iy ow-k ae-s eh1-t','nn'],
 'videocassettes': ['v-ih1-d iy ow-k ae-s eh1-t-s','nns'],
@@ -32406,7 +32208,6 @@ _RiTa_DICT={
 'videotape': ['v-ih1-d iy ow-t ey1-p','nn vb'],
 'videotaped': ['v-ih1-d iy ow-t ey1-p-t','vbn vbd'],
 'videotapes': ['v-ih1-d iy ow-t ey1-p-s','nns'],
-'videotex': ['v-ih1-d iy ow-t eh1-k-s','nn'],
 'videotext': ['v-ih1-d iy ow-t eh1-k-s-t','nn'],
 'vie': ['v-ay1','vbp vb'],
 'vied': ['v-ay1-d','vbd vbn'],
@@ -32489,7 +32290,6 @@ _RiTa_DICT={
 'virulent': ['v-ih1-r ax-l ax-n-t','jj'],
 'virus': ['v-ay1-r ax-s','nn'],
 'viruses': ['v-ay1-r ax-s ax-z','nns'],
-'vis': ['v-ih1-s','fw'],
 'visa': ['v-iy1-z ax','nn'],
 'visage': ['v-ih1-z ax-jh','nn'],
 'visas': ['v-iy1-z ax-z','nns'],
@@ -32525,13 +32325,10 @@ _RiTa_DICT={
 'vitamins': ['v-ay1-t ax-m ax-n-z','nns'],
 'vitriol': ['v-ih1-t r-iy ax-l','nn'],
 'vitriolic': ['v-ih1-t r-iy aa1-l ih-k','jj'],
-'vitro': ['v-ih1-t r-ow','fw nn'],
-'viva': ['v-iy1-v ax','fw nn'],
 'vivacious': ['v-ax-v ey1-sh ax-s','jj'],
 'vivid': ['v-ih1-v ax-d','jj'],
 'vividly': ['v-ih1-v ax-d l-iy','rb'],
 'vividness': ['v-ih1-v ax-d n-ax-s','nn'],
-'vivo': ['v-iy1-v ow','nn fw'],
 'vocabulary': ['v-ow-k ae1-b y-ax-l eh1-r iy','nn'],
 'vocal': ['v-ow1-k ax-l','jj nn'],
 'vocalist': ['v-ow1-k ax-l ih-s-t','nn'],
@@ -32553,7 +32350,6 @@ _RiTa_DICT={
 'void': ['v-oy1-d','nn jj vb'],
 'voided': ['v-oy1-d ih-d','vbd vbn'],
 'voids': ['v-oy1-d-z','vbz'],
-'voir': ['v-w-aa1-r','fw'],
 'volatile': ['v-aa1-l ax-t ax-l','jj'],
 'volatility': ['v-aa1-l ax-t ih1-l ax-t iy','nn'],
 'volcanic': ['v-aa-l-k ae1-n ih-k','jj'],
@@ -32581,11 +32377,9 @@ _RiTa_DICT={
 'voluptuous': ['v-ax-l ah1-p ch-ax-w ax-s','jj'],
 'vomit': ['v-aa1-m ax-t','vbp'],
 'vomiting': ['v-aa1-m ax-t ih-ng','vbg nn'],
-'von': ['v-ao1-n','nnp'],
 'voodoo': ['v-uw1-d uw1','nn'],
 'voracious': ['v-ao-r ey1-sh ax-s','jj'],
 'vortex': ['v-ao1-r-t eh-k-s','nn'],
-'vos': ['v-aa1-s','fw'],
 'vote': ['v-ow1-t','nn vb vbp'],
 'voted': ['v-ow1-t ax-d','vbd vbn'],
 'voter': ['v-ow1-t er','nn'],
@@ -32600,12 +32394,10 @@ _RiTa_DICT={
 'vowels': ['v-aw1 ax-l-z','nns'],
 'vowing': ['v-aw1 ih-ng','vbg'],
 'vows': ['v-aw1-z','vbz nns'],
-'voyage': ['v-oy1 ax-jh','nn fw'],
+'voyage': ['v-oy1 ax-jh','nn'],
 'voyager': ['v-oy1 ax-jh er','nn'],
 'voyages': ['v-oy1 ax-jh ax-z','nns'],
 'voyeurism': ['v-oy1-y uw1-r ih-z ax-m','nn'],
-'vu': ['v-uw1','nn'],
-'vue': ['v-y-uw1','fw nn'],
 'vulgar': ['v-ah1-l-g er','jj'],
 'vulnerabilities': ['v-ah1-l-n er ax-b ih1-l ih-t iy-z','nns'],
 'vulnerability': ['v-ah1-l-n er ax-b ih1-l ih-t iy','nn'],
@@ -46728,7 +46520,7 @@ _RiTa_LTS=[
 
 (function(window, undefined) {
 	
-	var _VERSION_ = '1.0.42';	
+	var _VERSION_ = '1.0.44';	
 
 	/**  @private Simple type-checking functions */ 
 	
@@ -47327,37 +47119,18 @@ _RiTa_LTS=[
 			
 		},
 		
-		/**
-		 * Returns a random item from the array
-		 */
 		 randomItem : function(arr) {
 			
 			return arr[Math.floor(Math.random()*arr.length)];
 		 }, 
-		
-		/**
-		 * Convenience method to get the distance between 2 points
-		 * @param {number} x1
-		 * @param {number} y1
-		 * @param {number} x2
-		 * @param {number} y2
-		 * 
-		 * @returns {number}
-		 */
+	
 		distance : function(x1,y1,x2,y2) {
 			
 			var dx = x1 - x2, dy = y1 - y2;
 			return Math.sqrt(dx * dx + dy * dy);
 		},
 		
-		/**
-		 * Starts a timer that calls 'onRiTaEvent', or the specified callback, 
-		 * every 'period' seconds
-		 * 
-		 * @param {number} period (in seconds)
-		 * @param {function} callback called every 'period' seconds (optional)
-		 * @returns {number} the unique id for the timer
-		 */
+		// TODO: THIS MAY BE BROKEN
 		timer : function(period, callback) {
 			 
 			var a = arguments;
@@ -47383,10 +47156,7 @@ _RiTa_LTS=[
 			return id;
 		}, 
 		
-		/**
-		 * Stops a timer according to its unique id
-		 * @param {number} the unique id for the timer
-		 */
+		// TODO: THIS MAY BE BROKEN
 		stopTimer : function(id) { 
 			
 			// TODO: THIS DEFINATELY BROKEN
@@ -47395,17 +47165,11 @@ _RiTa_LTS=[
 			else
 				warn('no timer with id: '+id);
 		}, 
-		
-		/**
-		 * Pauses a timer according to its unique id
-		 * @param {number} the unique id for the timer
-		 * @param {number} pause-time (in seconds) (optional)
-		 * @returns {number} the new unique id for the timer
-		 */
+
+		// TODO: THIS MAY BE BROKEN
 		 pauseTimer : function(id, pauseSec) {  
 			//console.log("pause");
 			
-			// TODO: THIS MAY BE BROKEN
 			pauseSec = is(pauseSec, N) ? pauseSec : Number.MAX_VALUE;
 			
 			if (timers[id])  {
@@ -47462,13 +47226,6 @@ _RiTa_LTS=[
 			return EA; 
 		},
 
-		//TODO: example
-		/**
-		 * Uses the default PosTagger to tag the input with a tag from the PENN tag set
-		 * @param {string | array} words the text to be tagged
-		 * @returns {array}
-		 * 
-		 */
 		getPosTags : function(words) {    
 			
 			var arr = is(words,S) ? RiTa.tokenize(words) : words;
@@ -47476,15 +47233,6 @@ _RiTa_LTS=[
 		},
 		
 		// TODO: example
-		
-		/**
-		 * Takes a string or string array of words and returns a 
-		 * combined String of the form:
-		 *  <pre>"The/dt doctor/nn treated/vbd dogs/nns"</pre>
-		 *
-		 * @param {string | array} words the text to tag
-		 * @returns {string} 
-		 */
 		getPosTagsInline : function(words, delimiter) { 
 			
 			if (!words || !words.length) return E;
@@ -47506,16 +47254,6 @@ _RiTa_LTS=[
 		},
 
 		// TODO: example
-		
-		/**
-		 * Converts a PENN part-of-speech tag to the simplified WordNet scheme 
-		 * (e.g. nn -> n, nns -> n, vbz -> v, rb -> r)
-		 * { "n" (noun), "v"(verb), "a"(adj), "r"(adverb), "-"(other) }
-		 * as a String.
-		 * 
-		 * @param {string} tag pos tag to convert
-		 * @returns {string} simplified WordNet tag
-		 */
 		posToWordNet : function(tag) {
 			
 			if (!strOk(tag)) return E;
@@ -47529,27 +47267,17 @@ _RiTa_LTS=[
 			else if (PosTagger.isAdj(tag))
 				return  'a';
 			else  {
-				warn("[WARN] "+tag+" is not a valid pos-tag");
+				warn(tag+" is not a valid pos-tag");
 				return  '-';
 			}
 		},
-		
-		/**
-		 *  Returns the present participle form of the stemmed or non-stemmed 'verb'. 
-		 *  @param {string} verb the verb
-		 *  @returns {string} the present participle form of the verb
-		 */
+
 		getPresentParticiple : function(verb) { 
 			
 			// TODO: need to call stem() and try again if first try fails
 			return Conjugator().getPresentParticiple(verb);
 		},
 
-		/**
-		 *  Returns the past participle form of the stemmed or non-stemmed 'verb'. 
-		 *  @param {string} verb the verb
-		 *  @returns {string} the past participle form of the verb
-		 */
 		getPastParticiple : function(verb) { 
 			
 			// TODO: need to call stem() and try again if first try fails
@@ -47557,27 +47285,13 @@ _RiTa_LTS=[
 		},
 
 		// TODO: 2 examples
-		/**
-		 *  Conjugates the 'verb' according to the specified options
-		 *  @param {string} verb the verb stem
-		 *  @param {object} args containing the relevant options for the conjugator
-		 *  @returns {string}  the conjugated verb
-		 */
+
 		conjugate : function(verb, args) {
 
 			return Conjugator().conjugate(verb, args);            
 		},
 
 		// TODO: 2 examples (regular & irregular) in javadoc
-		
-		/** 
-		 * Pluralizes a word according to pluralization rules (see regexs in constants)
-		 * Returns the regular or irregular plural form of noun.       
-		 * 
-		 * @param {string} word the noun
-		 * 
-		 * @returns {string} the plural form of noun
-		 */
 		pluralize : function(word) {
 
 			if (!strOk(word)) return E;
@@ -47600,12 +47314,6 @@ _RiTa_LTS=[
 		
 		// TODO: 2 examples (regular & irregular) in javadoc        
 
-		/**
-		 *
-		 * Singularize a word according to singularization rules (see regexs in constants)
-		 * @param {string} word the noun
-		 * @returns {string}  the singular form of noun
-		 */ 
 		singularize : function(word) {
 
 			if (!strOk(word)) return E;
@@ -47628,29 +47336,11 @@ _RiTa_LTS=[
 			return this.stem(word, 'Pling');
 		},
 
-
-		/**
-		 *  Removes blank space from either side of a string
-		 *
-		 *  @param {string} the input string
-		 *  
-		 *  @returns {string}  
-		 */
 		trim : function(str) {
 			
 			return trim(str); // delegate to private
 		},
 
-	
-		/**
-		 *  Tokenizes the string according to Penn Treebank conventions
-		 *  See: http://www.cis.upenn.edu/~treebank/tokenization.html
-		 *  
-		 *  @param {string} words a sentence
-		 *  @param {string | regex} regex (optional) the pattern to be used for tozenization
-		 *  
-		 *  @returns {array} strings, which each element is a single token (or word) 
-		 */
 		tokenize : function(words, regex) {
 			
 			//TODO: 2 examples for doc comment, one with 1 arg, one with 2 (a regex that splits on spaces)
@@ -47699,14 +47389,6 @@ _RiTa_LTS=[
 
 		
 		// TODO: test and (probably) re-implement from RiTa (RiSplitter.java)
-		/**
-		 *  Splits the 'text' into sentences (according to PENN Treebank conventions)
-		 *  
-		 *  @param {string} text the text to be split
-		 *  @param {string | regex} regex (optional) the pattern to be used for tozenization
-		 *  
-		 *  @returns {array} of sentences 
-		 */
 		splitSentences : function(text, regex) {
 
 			var arr = text.match(/(\S.+?[.!?])(?=\s+|$)/g);
@@ -47752,16 +47434,11 @@ _RiTa_LTS=[
 		},
 		
 			
-		/**
-   		 * Loads a file's contents froms its URL and calls back to the supplied
-   		 * callback function with the loaded string as an argument
-   		 * @param linebreakChars the character(s) with which to replace line-breaks (optional, default=' ')
-   		 */
 		loadString : function(url, callback, linebreakChars) {
 			
 			var lb = linebreakChars || SP, text;
 			
-			//log('loadString('+url+');');
+			// log('loadString('+url+');');
 			
 			// TODO: test with URLS and in all browser/platforms...
 			
@@ -47771,7 +47448,7 @@ _RiTa_LTS=[
 				var rq = require('fs');
 				rq.readFile(url, function(e, data) {
 					if (e || !data) {
-						err("[Node] Error reading file: "+url);
+						err("[Node] Error reading file: "+url+"\n"+e);
 						throw e;
 					}	
    					text = data.toString().replace(/[\r\n]+/g, lb).trim();
@@ -47792,7 +47469,7 @@ _RiTa_LTS=[
 			function htmlDecode(input){
 				var e = document.createElement('div');
 				e.innerHTML = input;
-				return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+				return e.childNodes.length === 0 ? E : e.childNodes[0].nodeValue;
 			}
 			
 			document.body.appendChild(iframe);
@@ -47808,14 +47485,7 @@ _RiTa_LTS=[
 				callback.call(this, text);
 			};			
 		},
-		
-		/**
-		 * Returns true if sentence starts with a question word.
-		 * 
-		 * @param {string} sentence
-		 * 
-		 * @returns {boolean} true if 'sentence' starts with a question word.
-		 */
+
 		isQuestion : function(sentence) {
 			
 			var sentenceArr = RiTa.tokenize((sentence));
@@ -47829,14 +47499,6 @@ _RiTa_LTS=[
 			
 		},
 
-		/**
-		 * Returns true if 'currentWord' is the final word of a sentence.
-		 * This is a simplified version of the OAK/JET sentence splitter method.
-		 * 
-		 * @param {string} currentWord
-		 * @param {string} nextWord
-		 * @returns {boolean} true if 'currentWord' is the final word of a sentence.
-		 */
 		isSentenceEnd : function(currentWord, nextWord) {
 
 			if ( !is(currentWord,S) || !is(nextWord,S) )
@@ -47908,12 +47570,6 @@ _RiTa_LTS=[
 
 		},
 		
-		/**
-		 * Returns true if sentence starts with a w-question word, eg (who,what,why,where,when,etc.)
-		 * 
-		 * @param {string} sentence
-		 * @returns {boolean} true if sentence starts with a w-question word, eg (who,what,why,where,when,etc.)
-		 */
 		isW_Question : function(sentence) {    
 			var sentenceArr = RiTa.tokenize((sentence));
 			for (var i = 0; i < W_QUESTION_STARTS.length; i++)
@@ -47923,35 +47579,319 @@ _RiTa_LTS=[
 			
 		},
 
-		/**
-		 * Returns a randomly ordered array of unique integers from 0 to numElements. 
-		 * The size of the array will be numElements.
-		 * 
-		 * @param {number} numElements
-		 * @returns {array} unique integers from 0 to numElements. 
-		 */
-		randomOrdering : function(numElements) {    
+  		/*escapeHTML = function (text) {
+  					var entityTable = {
+				34 : 'quot',
+				38 : 'amp',
+				39 : 'apos',
+				60 : 'lt',
+				62 : 'gt',
+				160 : 'nbsp',
+				161 : 'iexcl',
+				162 : 'cent',
+				163 : 'pound',
+				164 : 'curren',
+				165 : 'yen',
+				166 : 'brvbar',
+				167 : 'sect',
+				168 : 'uml',
+				169 : 'copy',
+				170 : 'ordf',
+				171 : 'laquo',
+				172 : 'not',
+				173 : 'shy',
+				174 : 'reg',
+				175 : 'macr',
+				176 : 'deg',
+				177 : 'plusmn',
+				178 : 'sup2',
+				179 : 'sup3',
+				180 : 'acute',
+				181 : 'micro',
+				182 : 'para',
+				183 : 'middot',
+				184 : 'cedil',
+				185 : 'sup1',
+				186 : 'ordm',
+				187 : 'raquo',
+				188 : 'frac14',
+				189 : 'frac12',
+				190 : 'frac34',
+				191 : 'iquest',
+				192 : 'Agrave',
+				193 : 'Aacute',
+				194 : 'Acirc',
+				195 : 'Atilde',
+				196 : 'Auml',
+				197 : 'Aring',
+				198 : 'AElig',
+				199 : 'Ccedil',
+				200 : 'Egrave',
+				201 : 'Eacute',
+				202 : 'Ecirc',
+				203 : 'Euml',
+				204 : 'Igrave',
+				205 : 'Iacute',
+				206 : 'Icirc',
+				207 : 'Iuml',
+				208 : 'ETH',
+				209 : 'Ntilde',
+				210 : 'Ograve',
+				211 : 'Oacute',
+				212 : 'Ocirc',
+				213 : 'Otilde',
+				214 : 'Ouml',
+				215 : 'times',
+				216 : 'Oslash',
+				217 : 'Ugrave',
+				218 : 'Uacute',
+				219 : 'Ucirc',
+				220 : 'Uuml',
+				221 : 'Yacute',
+				222 : 'THORN',
+				223 : 'szlig',
+				224 : 'agrave',
+				225 : 'aacute',
+				226 : 'acirc',
+				227 : 'atilde',
+				228 : 'auml',
+				229 : 'aring',
+				230 : 'aelig',
+				231 : 'ccedil',
+				232 : 'egrave',
+				233 : 'eacute',
+				234 : 'ecirc',
+				235 : 'euml',
+				236 : 'igrave',
+				237 : 'iacute',
+				238 : 'icirc',
+				239 : 'iuml',
+				240 : 'eth',
+				241 : 'ntilde',
+				242 : 'ograve',
+				243 : 'oacute',
+				244 : 'ocirc',
+				245 : 'otilde',
+				246 : 'ouml',
+				247 : 'divide',
+				248 : 'oslash',
+				249 : 'ugrave',
+				250 : 'uacute',
+				251 : 'ucirc',
+				252 : 'uuml',
+				253 : 'yacute',
+				254 : 'thorn',
+				255 : 'yuml',
+				402 : 'fnof',
+				913 : 'Alpha',
+				914 : 'Beta',
+				915 : 'Gamma',
+				916 : 'Delta',
+				917 : 'Epsilon',
+				918 : 'Zeta',
+				919 : 'Eta',
+				920 : 'Theta',
+				921 : 'Iota',
+				922 : 'Kappa',
+				923 : 'Lambda',
+				924 : 'Mu',
+				925 : 'Nu',
+				926 : 'Xi',
+				927 : 'Omicron',
+				928 : 'Pi',
+				929 : 'Rho',
+				931 : 'Sigma',
+				932 : 'Tau',
+				933 : 'Upsilon',
+				934 : 'Phi',
+				935 : 'Chi',
+				936 : 'Psi',
+				937 : 'Omega',
+				945 : 'alpha',
+				946 : 'beta',
+				947 : 'gamma',
+				948 : 'delta',
+				949 : 'epsilon',
+				950 : 'zeta',
+				951 : 'eta',
+				952 : 'theta',
+				953 : 'iota',
+				954 : 'kappa',
+				955 : 'lambda',
+				956 : 'mu',
+				957 : 'nu',
+				958 : 'xi',
+				959 : 'omicron',
+				960 : 'pi',
+				961 : 'rho',
+				962 : 'sigmaf',
+				963 : 'sigma',
+				964 : 'tau',
+				965 : 'upsilon',
+				966 : 'phi',
+				967 : 'chi',
+				968 : 'psi',
+				969 : 'omega',
+				977 : 'thetasym',
+				978 : 'upsih',
+				982 : 'piv',
+				8226 : 'bull',
+				8230 : 'hellip',
+				8242 : 'prime',
+				8243 : 'Prime',
+				8254 : 'oline',
+				8260 : 'frasl',
+				8472 : 'weierp',
+				8465 : 'image',
+				8476 : 'real',
+				8482 : 'trade',
+				8501 : 'alefsym',
+				8592 : 'larr',
+				8593 : 'uarr',
+				8594 : 'rarr',
+				8595 : 'darr',
+				8596 : 'harr',
+				8629 : 'crarr',
+				8656 : 'lArr',
+				8657 : 'uArr',
+				8658 : 'rArr',
+				8659 : 'dArr',
+				8660 : 'hArr',
+				8704 : 'forall',
+				8706 : 'part',
+				8707 : 'exist',
+				8709 : 'empty',
+				8711 : 'nabla',
+				8712 : 'isin',
+				8713 : 'notin',
+				8715 : 'ni',
+				8719 : 'prod',
+				8721 : 'sum',
+				8722 : 'minus',
+				8727 : 'lowast',
+				8730 : 'radic',
+				8733 : 'prop',
+				8734 : 'infin',
+				8736 : 'ang',
+				8743 : 'and',
+				8744 : 'or',
+				8745 : 'cap',
+				8746 : 'cup',
+				8747 : 'int',
+				8756 : 'there4',
+				8764 : 'sim',
+				8773 : 'cong',
+				8776 : 'asymp',
+				8800 : 'ne',
+				8801 : 'equiv',
+				8804 : 'le',
+				8805 : 'ge',
+				8834 : 'sub',
+				8835 : 'sup',
+				8836 : 'nsub',
+				8838 : 'sube',
+				8839 : 'supe',
+				8853 : 'oplus',
+				8855 : 'otimes',
+				8869 : 'perp',
+				8901 : 'sdot',
+				8968 : 'lceil',
+				8969 : 'rceil',
+				8970 : 'lfloor',
+				8971 : 'rfloor',
+				9001 : 'lang',
+				9002 : 'rang',
+				9674 : 'loz',
+				9824 : 'spades',
+				9827 : 'clubs',
+				9829 : 'hearts',
+				9830 : 'diams',
+				338 : 'OElig',
+				339 : 'oelig',
+				352 : 'Scaron',
+				353 : 'scaron',
+				376 : 'Yuml',
+				710 : 'circ',
+				732 : 'tilde',
+				8194 : 'ensp',
+				8195 : 'emsp',
+				8201 : 'thinsp',
+				8204 : 'zwnj',
+				8205 : 'zwj',
+				8206 : 'lrm',
+				8207 : 'rlm',
+				8211 : 'ndash',
+				8212 : 'mdash',
+				8216 : 'lsquo',
+				8217 : 'rsquo',
+				8218 : 'sbquo',
+				8220 : 'ldquo',
+				8221 : 'rdquo',
+				8222 : 'bdquo',
+				8224 : 'dagger',
+				8225 : 'Dagger',
+				8240 : 'permil',
+				8249 : 'lsaquo',
+				8250 : 'rsaquo',
+				8364 : 'euro'
+			}; 
 			
-			if (!numElements || numElements < 1)// !isNum(numElements)) 
-				err("bad arg");
-			
-			var o = [];
-			for ( var z = 0; z < numElements; z++) {
-				o.push(z);
-			}
-			
-			// Array shuffle, from Jonas Raoni Soares Silva (http://jsfromhell.com/array/shuffle)
-			for (var j, x, i = o.length; i; j = parseInt(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x) {}
+            return text.replace(/[\u00A0-\u2666<>\&]/g, function(c) {
+                return '&' + (entityTable[c.charCodeAt(0)] || '#'+c.charCodeAt(0)) + ';';
+            });
+        },*/
 
-			return o;
-			
+ 		unescapeHTML : function(input) {
+ 			
+ 			if (!input || !input.length) return input;
+ 			
+			var sfccp = String.fromCharCodePoint, answer = input
+ 				.replace(/&lt;/g, "<")
+		        .replace(/&gt;/g, ">")
+				.replace(/&amp;/g, "&")
+		        .replace(/&quot;/g, "\"");
+
+			String.fromCharCodePoint = function() { // uggh
+			    var codeunits= [];
+			    for (var i= 0; i<arguments.length; i++) {
+			        var c= arguments[i];
+			        if (arguments[i]<0x10000) {
+			            codeunits.push(arguments[i]);
+			        } else if (arguments[i]<0x110000) {
+			            c-= 0x10000;
+			            codeunits.push((c>>10 & 0x3FF) + 0xD800);
+			            codeunits.push((c&0x3FF) + 0xDC00);
+			        }
+			    }
+			    return String.fromCharCode.apply(String, codeunits);
+			};
+
+			answer = answer.replace(/&#(\d+);/g, function(_, n) {
+				return String.fromCharCodePoint(parseInt(n, 10));
+					}).replace(/&#x([0-9a-f]+);/gi, function(_, n) {
+						return String.fromCharCodePoint(parseInt(n, 16));
+			});
+
+		    String.fromCharCodePoint = sfccp;  // uggh
+	
+			return answer;
 		},
 
-		/**
-		 * Strips all punctuation from the given string
-		 * @param {string} text input
-		 * @returns {string} result
-		 */
+		randomOrdering : function(num) {    
+			
+			var o = [];
+			
+			if (num) {
+				
+				for (var z = 0; z < num; z++) o.push(z);
+				
+				// Array shuffle, from Jonas Raoni Soares Silva (http://jsfromhell.com/array/shuffle)
+				for (var j, x, i = o.length; i; j = parseInt(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x) {}
+			}
+
+			return o;
+		},
+
 		stripPunctuation : function(text) {    
 
 			return (text === E) ? E : text.replace(PUNCTUATION_CLASS, E); 
@@ -47959,12 +47899,7 @@ _RiTa_LTS=[
 		
 		// PUNCTUATION : "����`'""\",;:!?)([].#\"\\!@$%&}<>|+=-_\\/*{^",
 		
-		/**
-		 * Trims punctuation from each side of the token (does not trim whitespace or internal punctuation).
-		 * 
-		 * @param {string} text input
-		 * @returns {string} result
-		 */
+		//  Trims punctuation from each side of the token (does not trim whitespace or internal punctuation).
 		trimPunctuation : function(text) {
 			
 			// TODO: replace all this with 1 regex
@@ -47988,16 +47923,8 @@ _RiTa_LTS=[
 			}
 
 			return text;
-
-			
 		},
-
-		/**
-		 * Returns true if every character of 'text' is a punctuation character
-		 * 
-		 * @param {string} text input
-		 * @returns {boolean} 
-		 */
+		
 		// TEST: PUNCTUATION : "����`'""\",;:!?)([].#\"\\!@$%&}<>|+=-_\\/*{^",
 		isPunctuation : function(text) { 
 			
@@ -48007,7 +47934,6 @@ _RiTa_LTS=[
 			
 		},
 		
-
 		// TEST: PUNCTUATION : "����`'""\",;:!?)([].#\"\\!@$%&}<>|+=-_\\/*{^",
 		hasPunctuation : function(text) { 
 			
@@ -48015,11 +47941,21 @@ _RiTa_LTS=[
   
 			return ONLY_PUNCT.test(text); 
 		},
-
+		
+		asList : function(o) {    
+		
+    		return (!o) ? "[]" : o.join(", ").trim();
+		},
+		
 		env : function() {
 
-			return isNode() ? RiTa.NODE : RiTa.JS;
+			return isNode() ? RiTa.NODEJS : RiTa.JS;
 			
+		},
+		
+		chomp : function(txt) {
+			
+			return txt.replace(/\s+$|^\s+/g, E);
 		},
 
 		getPhonemes : function(words) {
@@ -48391,7 +48327,7 @@ _RiTa_LTS=[
 			
 			// uh-oh, we failed
 			if (tries >= maxTries) 
-				err("\n[WARN] RiMarkov failed to complete after "+tries+" attempts\n");
+				err("\nRiMarkov failed to complete after "+tries+" attempts\n");
 
 			return tokens;
 
@@ -48428,7 +48364,7 @@ _RiTa_LTS=[
 
 			// uh-oh, looks like we failed...
 			if (tokens.length < targetNumber) {
-				err("\n[WARN] RiMarkov failed to complete after " + tries 
+				err("\nRiMarkov failed to complete after " + tries 
 					+" tries, with only " + tokens.length + " successful generations...\n");
 			}
 
@@ -48634,14 +48570,14 @@ _RiTa_LTS=[
 		    if (!this.allowDuplicates) 
 		    {
 		      if (!this.isSentenceAware) {
-		        err("[WARN] Invalid state: allowDuplicates must be"
+		        err("Invalid state: allowDuplicates must be"
 		        	 +" true when not generating sentences");
 		      }
 		      
 		      if (this.sentenceList.indexOf(sent)>-1) 
 		      {
 		        if (++this.skippedDups == this.maxDuplicatesToSkip) {
-		          log("[WARN] Hit skip-maximum (RiMarkov.maxDuplicatesToSkip="+this.maxDuplicatesToSkip
+		          warn("Hit skip-maximum (RiMarkov.maxDuplicatesToSkip="+this.maxDuplicatesToSkip
 		              +") after skipping "+ this.maxDuplicatesToSkip+", now allowing duplicates!");
 		          this.allowDuplicates = true;	
 		        }
@@ -48720,9 +48656,9 @@ _RiTa_LTS=[
 		          //System.out.println("selector >= pTotal\n====================");
 		        }
 		        attempts++; 
-		        console.log("[WARN] Prob. miss (#"+attempts+") in RiMarkov.nextNode()."
+		        warn("Prob. miss (#"+attempts+") in RiMarkov.nextNode()."
 		        		+ " Make sure there are a sufficient\n       # of sentences"
-		        		+ " in the model that are longer than your minSentenceLength.");
+		        		+ " in the model that are longer than 'minSentenceLength'");
 		        if (attempts == MAX_PROB_MISSES)
 		          err  // should never happen
 		            ("PROB. MISS"+current+ " total="+pTotal+" selector="+selector);  
@@ -48736,8 +48672,8 @@ _RiTa_LTS=[
 		
 		_onGenerationIncomplete : function(tries, successes) {
 			
-    		if (!RiTa.SILENT) console.log("\n[WARN] RiMarkov failed to complete after "+tries
-      			+" tries\n       Giving up after "+successes+" successful generations...\n");
+    		if (!RiTa.SILENT) warn("\nRiMarkov failed to complete after " + tries +
+    			" tries\n       Giving up after "+successes+" successful generations\n");
   		},	
 
 		/**
@@ -48768,7 +48704,7 @@ _RiTa_LTS=[
 
 				if (!this._validSentenceStart(tokens[0])) {
 					if (this.printIgnoredText)
-						warn("[WARN] Skipping (bad sentence start): " + tokens);
+						warn("Skipping (bad sentence start): " + tokens);
 					continue;
 				}
 				
@@ -48987,8 +48923,7 @@ _RiTa_LTS=[
 					}
 				} else {
 
-					err("Dictionary not found! Make sure to add it to your sketch:" 
-						+ ", e.g.,\n\n    <script src=\"path/to/rita_dict.js\"></script>");
+					err("Dictionary not found! Make sure to include it in your sketch...");
 				}
 			}
 		},
@@ -49085,7 +49020,7 @@ _RiTa_LTS=[
 					if (!phones) return EA;
 				}
 
-				phonesArr = phones.replace(/1/g, "").replace(/ /g, "-").split('-');
+				phonesArr = phones.replace(/1/g, E).replace(/ /g, "-").split('-');
 
 				med = MinEditDist.computeRaw(phonesArr, targetPhonesArr);
 
@@ -49262,7 +49197,7 @@ _RiTa_LTS=[
 			
 			matchMinLength = matchMinLength || 4;
 			
-			if (this.containsWord(word)) {
+			if (this.containsWord(word)) { // RODO: else useLTS ??
 
 				var c2, entry, results = [];
 				var c1 = this._firstConsonant(this._firstStressedSyllable(word));
@@ -49277,6 +49212,8 @@ _RiTa_LTS=[
 				}
 				return results; 
 			}
+
+			
 			return EA;
 		},
 
@@ -50221,7 +50158,7 @@ _RiTa_LTS=[
 			var s = this.text();
 			
 			if (idx > s.length || idx < -s.length) {
-				console.warn("RiString.insertChar: bad index="+idx);
+				warn("RiString.insertChar: bad index="+idx);
 				return this;
 			}
 
@@ -50246,7 +50183,7 @@ _RiTa_LTS=[
 			var s = this.text();
 			
 			if (idx > s.length || idx < -s.length) {
-				console.warn("RiString.removeChar: bad index="+idx);
+				warn("RiString.removeChar: bad index="+idx);
 				return this;
 			}
 			idx = idx < 0 ? idx += s.length : idx;
@@ -50269,7 +50206,7 @@ _RiTa_LTS=[
 			var s = this.text();
 			
 			if (idx > s.length || idx < -s.length) {
-				console.warn("RiString.replaceChar: bad index="+idx);
+				warn("RiString.replaceChar: bad index="+idx);
 				return this;
 			}
 			idx = idx < 0 ? idx += s.length : idx;
@@ -50558,26 +50495,11 @@ _RiTa_LTS=[
 	var RiGrammar = makeClass();
 	
 	RiGrammar.START_RULE = "<start>";
-	RiGrammar.OPEN_RULE_CHAR = "<";
-	RiGrammar.CLOSE_RULE_CHAR = ">";
 	RiGrammar.PROB_PATT = /(.*[^\s])\s*\[([0-9.]+)\](.*)/;
-	RiGrammar.OR_PATT = /\s*\|\s*/;
-	RiGrammar.EXEC_PATT = /`[^`]+`/g;
+	RiGrammar.EXEC_PATT = /(.*?)(`[^`]+?\(.*?\);?`)(.*)/;
 	RiGrammar.STRIP_TICKS = /`([^`]*)`/g;
+	RiGrammar.OR_PATT = /\s*\|\s*/;
 	
-	/**
-	 * Set/gets the execDisabled flag. Set to true (default=false) 
-	 * if you don't want to use the exec mechanism for callbacks. Useful if you want
-	 * to include backticks or method calls as terminals in your grammar.
-	RiGrammar._execDisabled = function(disableExec)
-	{
-		if (arguments.length==1) {
-			RiGrammar._execDisabled = disableExec;
-		}
-		return RiGrammar._execDisabled;
-	}    
-	*/
-
 	RiGrammar.prototype = {
 
 		init : function(grammar) {
@@ -50586,14 +50508,14 @@ _RiTa_LTS=[
 			
 			this._rules = {};
 			this.loading = false; // ?
-			this._execDisabled = false;
+			this.execDisabled = false;
 			grammar && this.load(grammar);  
 		},
 	
 		loadFromFile : function(url, callback, forceNoJQuery) {
 			
 			var g = this, cbfun = function(str) {
-				//console.log("loadFromFile: "+str);
+				
 				g.load(str);
 				g.loading = false;
 				callback && (callback.call());
@@ -50602,6 +50524,7 @@ _RiTa_LTS=[
 			if (!forceNoJQuery && (typeof $ != 'undefined') && is($.getJSON, F)) {
 				
 				//log("using jquery: "+this.loading);
+				
 				g.loading = true;
 				$.ajax({
 					url: url,
@@ -50611,6 +50534,7 @@ _RiTa_LTS=[
 				});
 			}
 			else {
+				
 				//log("using RiTa!");
 				RiTa.loadString(url, cbfun);
 			}
@@ -50619,6 +50543,7 @@ _RiTa_LTS=[
 		},
 		
 		openEditor : function() {
+			
 			warn("Not yet implemented in JavaScript");
 			return this;
 		},
@@ -50637,13 +50562,13 @@ _RiTa_LTS=[
 		
 		removeRule : function(name)  {
 			
-			name = this._normalizeRuleName(name);
 			delete this._rules[name];
 			return this;
 			
 		},
 
 		_copy: function() {  // NIAPI
+			
 			var tmp = RiGrammar();
 			for(var name in this._rules) {
 				tmp._rules[name] = this._rules[name];
@@ -50656,9 +50581,7 @@ _RiTa_LTS=[
 		{
 			var dbug = false;
 	
-			weight = !weight ? 1.0 : weight; // default
-
-			name = this._normalizeRuleName(name);
+			weight = weight || 1.0; // default
 
 			if (dbug) log("addRule: "+name+ " -> '"+ruleStr+"'       ["+(typeof ruleStr)+"]");
 
@@ -50677,20 +50600,25 @@ _RiTa_LTS=[
 						for (i = 0; i < m.length; i++)
 							log("  " + i + ") '" + m[i] + "'");
 					}
+					
 					rule = m[1] + m[3];
 					prob = m[2];
+					
 					if (dbug) log("weight=" + prob + " rule='" + rule + "'");
 				}
 	
 				if (this.hasRule(name)) {
+					
 					if (dbug)log("rule exists");
 					var temp = this._rules[name];
 					temp[rule] = prob;
 				} 
 				else {
+					
 					var temp2 = {};
 					temp2[rule] = prob;
 					this._rules[name] = temp2;
+					
 					if (dbug)log("added rule: "+name);
 				}
 			}
@@ -50707,8 +50635,7 @@ _RiTa_LTS=[
 
 		doRule : function(pre) {
 
-			var cnt = 0, name = E, result = E,
-				rules = this._rules[this._normalizeRuleName(pre)];
+			var cnt = 0, name = E, rules = this._rules[pre];
 			
 			if (!rules) return null;
 			
@@ -50718,30 +50645,9 @@ _RiTa_LTS=[
 			
 			return (cnt == 1) ? name : this._getStochasticRule(rules); 
 		},
-
-		getRule : function(pre) {
-
-			var cnt = 0, name = E, result = E,
-				rules = this._rules[this._normalizeRuleName(pre)];
-			
-			for (name in rules) cnt++;
-			
-			if (cnt <= 1) return name; // 0 or 1 rule
-
-			// multiple rules: concatenate into string
-			for (name in rules) {
-				result += name;
-				var pr = rules[name];
-				if (pr != 1.0)
-					result += " [" + pr + "]";
-				if (--cnt > 0)
-					result += " | ";
-			}
-
-			return result;
-		},
 		
 		getGrammar : function() { 
+			
 			var s = E;
 			for (var name in this._rules) {
 				s += (name + "\n");
@@ -50750,26 +50656,22 @@ _RiTa_LTS=[
 					s += ("  '" + p + "' [" + choices[p] + "]\n");
 				}
 			}
-			return s;
+			return RiTa.chomp(s);
 		},
 			
 		print : function() {  
 			
 			if (console) {
-				console.log("Grammar----------------");
-				console.log(this.getGrammar());
-				console.log("-----------------------");
+				var ln = "------------------------------";
+				console.log(ln+"\n"+this.getGrammar()+ln);
 			}
 			return this;
 			
 		},
 		
 		hasRule : function(name) {
-			
-			//log("hasRule("+name+")");
-			name = this._normalizeRuleName(name);
+
 			return (typeof this._rules[name] !== 'undefined');
-			
 		},
 		
 		expandWith : function(literal, symbol) { // TODO: finish 
@@ -50796,136 +50698,117 @@ _RiTa_LTS=[
 				if (s.indexOf(literal)>-1)
 					return s;
 			}
-			err("\n[WARN] RiGrammar failed to complete after "+tries+" tries\n");
+			err("RiGrammar failed to complete after "+tries+" tries\n");
 			
 		},
 		
-		_handleExec : function(input) { // TODO: private
-					   
-			//console.log("handleExec: "+input);
-			
-			if (!input || !input.length) return E;
+		expand : function(context) {
+
+			//funs && RiTa._eval(funs); // need to evaluate ON the object, not WITH the object
+			return this.expandFrom(RiGrammar.START_RULE, context);
+		}, 
+		
+		expandFrom : function(rule, context) {
+    
+		    if (!this.hasRule(rule))
+		      err("Rule not found: "+rule+"\nRules:\n"+this._rules);
+		    
+		    var parts, callResult, tries = 0, maxIterations = 1000;
+		    while (++tries < maxIterations)
+		    {
+		      var next = this._expandRule(rule);
+ 
+ 		      if (next && next.length) { // matched a rule
+		      	
+		        rule = next;
+		        continue;
+		      }
+		      
+		      if (this.execDisabled) break; // return
+		      
+		      // finished rules, check for back-ticked exec calls
+		      
+		      parts = RiGrammar.EXEC_PATT.exec(rule);
+	      
+		      if (!parts || !parts.length) break; // return, no evals
+		      
+		      if (parts.length > 2) {
+		        
+		        callResult = this._handleExec(parts[2], context);
+		        
+		        if (!callResult) {
+		          
+		          if (0) console.log("[WARN] (RiGrammar.expandFrom) Unexpected"
+		              +" state: eval("+parts[2]+") :: returning '"+rule+"'");
+		          
+		          break; // return
+		        }
+		        
+		        rule = parts[1] + callResult;
+		            
+		        (parts.length > 3) && (rule += parts[3]);
+		      }
+		    }
+		    
+    		if (tries >= maxIterations && !RiTa.SILENT) 
+		      console.log("[WARN] max number of iterations reached: "+maxIterations);
+		
+		    return RiTa.unescapeHTML(rule); 
+		},
+		 
+		_handleExec : function(input, context) { 
+
+			if (!input || !input.length) return null;
 			
 			// strip backticks and eval
-			var exec = input.replace(RiGrammar.STRIP_TICKS, "$1");
+			var res, exec = input.replace(RiGrammar.STRIP_TICKS, '$1');
 			
 			try {
-				input = RiTa._eval(exec);
+				// TODO: See issue #9 [https://github.com/dhowe/RiTaJS/issues?state=open]
+				// if (typeof module != 'undefined' && module.exports) // for node	 
+				// 		return require("vm").runInThisContext(exec,context);
+				
+				res = eval(exec); // js or node eval?
+				
+				return res ? res + E : null;	
 			}
 			catch (e) {
 				
 				warn("RiGrammar._handleExec failed on '"+input+"'\n  -> "+e.message);
-				
-				// if (is(exports, O)) { // we are running in node
-					// console.log("found node! "+typeof module.vm);
-					// module.vm.runInThisContext(exec);
-					// //eval("function adj(){return 56;}") 
-				// }
+				return null;
 			}
-			
-			return input;
 		},
-		
-		expand : function(funs) {
 
-			funs && RiTa._eval(funs);
-			
-			return this.expandFrom(RiGrammar.START_RULE);
-		}, 
-		
-		// TODO: reconsider
-
-		expandFrom : function(rule) {
-			
-			//log("expandFrom("+rule+")");
-			
-			if (!this.hasRule(rule)) {
-				warn("Rule not found: " + rule + "\nRules: ");
-				(!RiTa.SILENT) && this.print();
-			}
-	
-			var iterations = 0;
-			var maxIterations = 1000;
-			while (++iterations < maxIterations) {
-				
-				var next = this._expandRule(rule);
-				if (!next) {
-
-					//  we're done, check for back-ticked strings to eval
-					(!this._execDisabled && (rule = rule.replace
-						(RiGrammar.EXEC_PATT, this._handleExec)));
-								 
-					break;
-				} 
-				rule = next;
-			}
-	
-			if (iterations >= maxIterations)
-				warn("max number of iterations reached: " + maxIterations);
-	
-			return rule;
-			
-		},
-			
 		_expandRule : function(prod) { 
 			
-			var dbug = 0, trimSpace = 1, result = [];
-			if (trimSpace) prod = prod.trim();
-
+			var entry, idx, pre, expanded, post, dbug = 0;
+			
 			if (dbug) log("_expandRule(" + prod + ")");
 			
 			for ( var name in this._rules) {
 				
-				var entry = this._rules[name];
+				entry = this._rules[name];
+				
 				if (dbug) log("  name=" + name+"  entry=" + entry+"  prod=" + prod+"  idx=" + idx);
-				var idx = prod.indexOf(name);
 				
-				if (idx >= 0) {
+				idx = prod.indexOf(name);
+				
+				if (idx >= 0) {  // got a match, split into 3 parts
 					
-					var pre = prod.substring(0, idx);
-					var expanded = this.doRule(name);
-					var post = prod.substring(idx + name.length);
+					pre = prod.substring(0, idx) || E;
+					expanded = this.doRule(name) || E;
+					post = prod.substring(idx + name.length) || E;
 					
-					if (trimSpace) {
-						pre = (pre || E).trim();
-						post = (post || E).trim();
-						expanded = (expanded || E).trim();
-					}
-
-					if (dbug) log("  pre=" + pre+"  expanded=" + expanded+"  post=" + post+"  result=" + pre + expanded + post);
-					
-					result.push(pre,expanded,post);
-
-					var ok = result.join(SP);
-					
-					if (dbug) console.log('Returns: '+ok);
-
-					if (trimSpace) ok = ok.trim();
-
-					return ok;
+					if (dbug) log("  pre=" + pre+"  expanded=" + expanded+
+						"  post=" + post+"  result=" + pre + expanded + post);
+	
+					return pre + expanded + post;
 				}
-				
-				// do the exec check here, in while loop()
 			}
-			// what happens if we get here? no expansions left, return?
+			
+			return null; // no rules matched
 		},
-		
-		_normalizeRuleName : function(pre) {
-			
-			if (!strOk(pre)) return pre;
-			
-			if (!startsWith(pre, RiGrammar.OPEN_RULE_CHAR))
-				pre = RiGrammar.OPEN_RULE_CHAR + pre;
-			
-			if (!endsWith(pre,RiGrammar.CLOSE_RULE_CHAR))
-				pre += RiGrammar.CLOSE_RULE_CHAR;
 
-			if (pre.indexOf('>>')>0) err(">>"); // ?
-			
-			return pre;
-			
-		},
-		
 		// private?? (add structure test case)
 		_getStochasticRule : function(temp)    { // map
 	 
@@ -51127,7 +51010,7 @@ _RiTa_LTS=[
 			  } catch(ex) {
 				  
 				if (!an.callbackDisabled) {
-					console.warn("Unable to invoke callback: "+callback);
+					warn("Unable to invoke callback: "+callback);
 					an.callbackDisabled = true;
 				}
 				
@@ -51269,7 +51152,7 @@ _RiTa_LTS=[
 		if (!e) var e = window.event;
 		
 		if (!e && !RiText.mouse.printedWarning) { 
-			console.warn("No mouse-position without event!");
+			warn("No mouse-position without event!");
 			RiText.mouse.printedWarning = true;
 		}        
 		
@@ -51783,7 +51666,7 @@ _RiTa_LTS=[
 					xPos = rt.x - tw;
 					break;
 				case RiTa.CENTER:
-					console.warn("TODO: test center-align here");
+					warn("TODO: test center-align here");
 					xPos = rt.x; // ?
 					break;
 			}
@@ -51913,15 +51796,7 @@ _RiTa_LTS=[
 				b : (bbs && bbs.b) || this._color.b, 
 				a : (bbs && bbs.a) || this._color.a
 			};
-			
-			/*var bbf = RiText.defaults.boundingFill;
-			this._boundingFill = { 
-				r : (bbf && bbf.r) || this._color.r, 
-				g : (bbf && bbf.g) || this._color.g, 
-				b : (bbf && bbf.b) || this._color.b, 
-				a : (bbf && bbf.a) || 0
-			};*/
-	
+
 			this._showBounds = RiText.defaults.showBounds;
 			this._motionType = RiText.defaults.motionType;
 			this._alignment = RiText.defaults.alignment;
@@ -51945,10 +51820,17 @@ _RiTa_LTS=[
 			this.text(args[0]);
 
 			// center by default
-			this.x = is(args[1],N) ? args[1] : this.g._width()  / 2 - this.textWidth()  / 2.0;
-			this.y = is(args[2],N) ? args[2] : this.g._height() / 2 + this.textHeight() / 2.0;
+			this.x = is(args[1],N) ? args[1] : (this.g._width()  / 2);
+			
+			// to match java
+			if (this._alignment  == RiTa.LEFT)
+      			this.x -= (this.textWidth() / 2.0);
+    		else if (this._alignment == RiTa.RIGHT)
+      			this.x += (this.textWidth() / 2.0);
+      			
+			this.y = is(args[2],N) ? args[2] : (this.g._height() / 2)  + (this.textHeight() / 2.0) ;
 			this.z = 0;
-
+			
 			//log('RiText: '+this._rs._text +"("+this.x+","+this.y+")"+" / "+ this._font.name);
 
 			RiText.instances.push(this);
@@ -51961,7 +51843,6 @@ _RiTa_LTS=[
 
 			var a = arguments, t = Type.get(a[0]);
 		
-			//console.error(a[0]);
 			//console.error("a[0]="+t+" a.length="+a.length+" type="+t+" analyze="+typeof a[0].text);
 			
 			if (a.length && (t===O || t==='global' || t==='window') && typeof a[0].analyze != F) {
@@ -51996,38 +51877,16 @@ _RiTa_LTS=[
 			return parsed;
 		},
 		
-		/**
-		 * Returns the specified feature, computing it first if necessary. <p>
-		 * 
-		 * Default features include RiTa.STRESSES, RiTa.PHONEMES, and RiTa.SYLLABLES.
-		 * 
-		 * @example myRiText.get('phonemes') ||  myRiText.get(RiTa.PHONEMES);
-		 * 
-		 * @returns {string} the requested feature
-		 */
 		get : function(featureName) {
 			
 			return this._rs.get(featureName);
 		},
 		
-		/**
-		 * Returns the full feature set for this object
-		 * 
-		 * @see #get
-		 * @see #analyze
-		 * 
-		 * @returns {array} the features 
-		 */
 		features : function() {
 			
 		   return this._rs.features();
 		},
-		
-		/**
-		 * Draws the object to the screen
-		 * 
-		 * @returns {object} this RiText
-		 */
+
 		draw : function() {
 		  this._update()._render();   
 		  if (this.textToCopy)
@@ -52098,57 +51957,7 @@ _RiTa_LTS=[
 		},
 		
 		///////////////////////////////// Text Behaviors ////////////////////////////////////
-	
-		/**
-		 * Sets/gets the animation <code>motionType</code> for this RiText
-		 * according to one of the following functions: <br>
-		 * <ul>
-		 * <li>RiText.LINEAR
-		 * <li>
-		 * <li>RiText.EASE_IN
-		 * <li>RiText.EASE_OUT
-		 * <li>RiText.EASE_IN_OUT
-		 * <li>
-		 * <li>RiText.EASE_IN_EXPO
-		 * <li>RiText.EASE_OUT_EXPO
-		 * <li>RiText.EASE_IN_OUT_EXPO
-		 * <li>
-		 * <li>RiText.EASE_IN_SINE
-		 * <li>RiText.EASE_OUT_SINE
-		 * <li>RiText.EASE_IN_OUT_SINE
-		 * <li>
-		 * <li>RiText.EASE_IN_CUBIC
-		 * <li>RiText.EASE_OUT_CUBIC
-		 * <li>RiText.EASE_IN_OUT_CUBIC
-		 * <li>
-		 * <li>RiText.EASE_IN_QUARTIC
-		 * <li>RiText.EASE_OUT_QUARTIC
-		 * <li>RiText.EASE_IN_OUT_QUARTIC
-		 * <li>
-		 * <li>RiText.EASE_IN_QUINTIC
-		 * <li>RiText.EASE_OUT_QUINTIC
-		 * <li>RiText.EASE_IN_OUT_QUINTIC
-		 * <li>
-		 * <li>RiText.BACK_IN
-		 * <li>RiText.BACK_OUT
-		 * <li>RiText.BACK_IN_OUT
-		 * <li>
-		 * <li>RiText.BOUNCE_IN
-		 * <li>RiText.BOUNCE_OUT
-		 * <li>RiText.BOUNCE_IN_OUT
-		 * <li>
-		 * <li>RiText.CIRCULAR_IN
-		 * <li>RiText.CIRCULAR_OUT
-		 * <li>RiText.CIRCULAR_IN_OUT
-		 * <li>
-		 * <li>RiText.ELASTIC_IN
-		 * <li>RiText.ELASTIC_OUT
-		 * <li>RiText.ELASTIC_IN_OUT                  
-		 * </ul>
-		 * 
-		 * @param {number} motionType (optional)
-		 * @returns {number} motionType
-		 */
+
 		motionType : function (motionType) {
 			if (arguments.length) {
 				this._motionType = motionType;
@@ -52156,42 +51965,13 @@ _RiTa_LTS=[
 			}
 			return this._motionType;
 		},
-		
-		/**
-		 * Fades in current text over <code>seconds</code> starting at
-		 * <code>startTime</code>. Interpolates from the current color {r,g,b,a}
-		 * to {r,g,b,255}.
-		 * 
-		 * @param {number} seconds start Time
-		 *          time in future to start
-		 * @param {number} delay seconds
-		 *          time for fade
-		 * @param {function} callback 
-		 * 
-		 * @returns {number} the unique id for this behavior
-		 */
+
 		fadeIn : function(seconds, delay, callback) {
 			
 			return this.colorTo([this._color.r, this._color.g, this._color.b, 255],
 				seconds, delay, null, RiTa.FADE_IN, false);
 		},
-	
-		/**
-		 * Fades out current text over <code>seconds</code> starting at
-		 * <code>startTime</code>. Interpolates from the current color {r,g,b,a} 
-		 * to {r,g,b,0}.
-		 *
-		 * @param {number} seconds
-		 *          time for fade
-		 * @param {number} delay 
-		 *          (optional, default=0),  # of seconds in the future that the fade will start 
-		 *          
-		 * @param {function} callback the callback to be invoked when the behavior has completed (optional: default=onRiTaEvent(e)
-		 * 
-		 * @param {boolean} destroyOnComplete
-		 *          (optional, default=false), destroys the object when the behavior completes
-		 * @returns {number} the unique id for this behavior
-		 */
+
 		fadeOut : function(seconds, delay, callback, destroyOnComplete) {
 	
 			destroyOnComplete = destroyOnComplete || false;
@@ -52199,20 +51979,6 @@ _RiTa_LTS=[
 				seconds, delay, null, RiTa.FADE_OUT, destroyOnComplete);
 		},
 
-		
-		/**
-		 * Scales to 'theScale' over 'seconds' starting at 'delay' seconds in the future
-		 * 
-		 * @param {number} theScale delay 
-		 *          (optional, default=0),  # of seconds in the future that the fade will start       
-		 * @param {number} seconds
-		 *          time for fade
-		 * @param {number} delay seconds
-		 *          time for fade
-		 * @param {function} callback the callback to be invoked when the behavior has completed (optional: default=onRiTaEvent(e)
-		 * 
-		 * @returns {number} the unique id for this behavior
-		 */
 		scaleTo : function(theScale, seconds, delay, callback) {
 
 			var rt = this;
@@ -52241,18 +52007,6 @@ _RiTa_LTS=[
 			return id;
 		},
 		
-		/**
-		 * Rotates to 'radians' over 'seconds' starting at 'delay' seconds in the future
-		 * 
-		 * @param {number} angleInRadians
-		 * @param {number} seconds
-		 *          time for fade  
-		 * @param {number} delay 
-		 *          (optional, default=0),  # of seconds in the future that the fade will start       
-		 * @param {function} callback the callback to be invoked when the behavior has completed (optional: default=onRiTaEvent(e)
-		 * 
-		 * @returns {number} the unique id for this behavior
-		 */
 		rotateTo : function(angleInRadians, seconds, delay, callback) {
 
 			var rt = this;
@@ -52281,24 +52035,6 @@ _RiTa_LTS=[
 			return id;
 		},
 		
-		/**
-		 * Fades out the current text and fades in the <code>newText</code> over
-		 * <code>seconds</code>
-		 * 
-		 * @param {string} newText
-		 *          to be faded in
-		 * 
-		 * @param {number} seconds
-		 *          time for fade
-		 * 
-		 * @param {number} endAlpha 
-		 *  (optional, default=255), the alpha to end on
-		 *  
-		 * @param {function} callback the callback to be invoked when the 
-		 * behavior has completed (optional: default=onRiTaEvent(e))
-		 * 
-		 * @returns {number} - the unique id for this behavior
-		 */
 		textTo: function(newText, seconds, endAlpha, callback) {
 			
 		  // grab the alphas if needed
@@ -52326,20 +52062,6 @@ _RiTa_LTS=[
 		  return this.colorTo([c.r, c.g, c.b, endAlpha], seconds * .95, 0, null, RiTa.TEXT_TO, false);
 		},
 
-
-		/**
-		 * Transitions to 'color' (rgba) over 'seconds' starting at 'delay' seconds in the future
-		 * 
-		 * @param {array} colors (length 1-4)  r,g,b,a (0-255)
-		 * @param {number} delay seconds
-		 *          time for fade
-		 * @param {number} seconds delay 
-		 *          (optional, default=0),  # of seconds in the future that the fade will start 
-		 * @param {function} callback the callback to be invoked when the behavior has completed
-		 *   (optional: default=onRiTaEvent(e))
-
-		 * @returns {number} the unique id for this behavior
-		 */
 		colorTo : function(colors, seconds, delay, callback, _type, _destroyOnComplete) {             
 
 			// DH: omitting last 2 args from docs as they are private!
@@ -52383,19 +52105,6 @@ _RiTa_LTS=[
 			return id;
 		},
 	   
-		/**
-		 * Move to new x,y position over 'seconds'
-		 * <p>
-		 * Note: uses the current <code>motionType</code> for this object, starting at 'delay' seconds in the future
-		 * 
-		 * @param {number} newX
-		 * @param {number} newY
-		 * @param {number} seconds
-		 * @param {number} delay
-		 * @param {function} callback the callback to be invoked when the behavior has completed (optional: default=onRiTaEvent(e)
-		 * 
-		 * @returns {number} the unique id for this behavior
-		 */
 		moveTo : function(newX,newY,seconds,delay,callback) {
 			
 			var rt = this;
@@ -52429,12 +52138,6 @@ _RiTa_LTS=[
 			return this;
 		},
 		
-		/**
-		 * Set/gets the text for this RiText
-		 * 
-		 * @param {string} txt the new text (optional)
-		 * @returns {object | string} this RiText (for sets) or the current text (for gets) 
-		 */
 		text : function(txt) {
 			
 			if (arguments.length == 1) {
@@ -52455,90 +52158,42 @@ _RiTa_LTS=[
 			return this._rs._text;
 		},
 		
-		/**
-		 * Searches for a match between a substring (or regular expression) and the contained
-		 * string, and returns the matches
-		 * 
-		 * @param {string | object} regex
-		 * @returns {array} strings matches or empty array if none are found
-		 */
 		match : function(regex) {
 			
 			return this._rs.match(regex);
 			
 		},
-		
-		 /**
-		 * Returns the character at the given 'index', or empty string if none is found
-		 * 
-		 * @param {number} index index of the character
-		 * @returns {string} the character
-		 */
+
 		charAt : function(index) {
 
 			return this._rs.charAt(index);
 			
 		},
 
-		
-		/**
-		 * Concatenates the text from another RiText at the end of this one
-		 * 
-		 * @returns {object} this RiText
-		 */
 		concat : function(riText) {
 
 			return this._rs._text.concat(riText.text());
 			
 		},
-		
-		 /**
-		 * Returns true if and only if this string contains the specified sequence of char values.
-		 * 
-		 * @param {string} text text to be checked
-		 * @returns {boolean}
-		 */
+
 		containsWord : function(text) {
 			
 			return this._rs.indexOf(text) > -1;
 			
 		},
-		
-		/**
-		 * Tests if this string ends with the specified suffix.
-		 * 
-		 * @param {string} substr string the suffix.
-		 * 
-		 * @returns {boolean} true if the character sequence represented by the argument is a suffix of
-		 *         the character sequence represented by this object; false otherwise.          * 
-		 */
+
 		endsWith : function(substr) {
 			
 			return endsWith(this._rs._text, substr);
 			
 		},
-		
-		/**
-		 * Compares this RiText to the specified object. The result is true if and only if the
-		 * argument is not null and is a RiText object that represents the same sequence of
-		 * characters as this object.
-		 * 
-		 * @param {object} RiText RiText object to compare this RiText against.
-		 * @returns {boolean} true if the RiText are equal; false otherwise.
-		 */
+
 		equals : function(RiText) {
 			
 			return RiText._rs._text === this._rs._text;
 			
 		},
 
-		/**
-		 * Compares this RiText to another RiText, ignoring case considerations.
-		 * 
-		 * @param {string | object} str String or RiText object to compare this RiText against
-		 * @returns {boolean} true if the argument is not null and the Strings are equal, ignoring
-		 *         case; false otherwise.
-		 */
 		equalsIgnoreCase : function(str) {
 			
 			if (typeof str === S) {
@@ -52551,54 +52206,25 @@ _RiTa_LTS=[
 			}
 			
 		},
-		
-		 /**
-		 * Returns the index within this string of the first occurrence of the specified character.
-		 * 
-		 * @param {string} searchstring or character to search for
-		 * @param {number} start (Optional) The start position in the string to start the search. If omitted,
-		 *        the search starts from position 0
-		 * @returns {number} the first index of the matching pattern or -1 if none are found
-		 */
+
 		indexOf : function(searchstring, start) {
 			
 			return this._rs._text.indexOf(searchstring, start);
 			
 		},
 
-		
-		 /**
-		 * Returns the index within this string of the last occurrence of the specified character.
-		 * 
-		 * @param {string} searchstring The string to search for
-		 * @param {number} start (Optional) The start position in the string to start the search. If omitted,
-		 *        the search starts from position 0
-		 *        
-		 * @returns {number} the last index of the matching pattern or -1 if none are found
-		 */
 		lastIndexOf : function(searchstring, start) {
 			
 			return this._rs._text.lastIndexOf(searchstring, start);
 			
 		},
-		
-		/**
-		 * Returns the length of this string.
-		 * 
-		 * @returns {number} the length
-		 */
+
 		length : function() {
 			
 			return this._rs._text.length;
 			
 		},
-		
-	
-		 /**
-		 * Returns an array of part-of-speech tags, one per word, using RiTa.tokenize() and RiTa.posTag().
-		 *
-		 * @returns {array} strings of pos, one per word
-		 */
+
 		pos : function() {
 				   
 			var words = RiTa.tokenize((this._rs._text)); // was getPlaintext()
@@ -52613,12 +52239,6 @@ _RiTa_LTS=[
 			
 		},
 
-		/**
-		 * Returns the part-of-speech tag for the word at 'index', using RiTa.tokenize() and RiTa.posTag().
-		 * 
-		 * @param {number} index the word index
-		 * @returns {string} the pos
-		 */
 		posAt : function(index) {
 			
 			var tags = this._rs.pos();
@@ -52630,26 +52250,13 @@ _RiTa_LTS=[
 			
 		},
 
-		 /**
-		 * Inserts the character at the specified index
-		 * 
-		 * @param {number} ind the index
-		 * @param {string} theChar the character(s)
-		 * @returns {object} RiText
-		 */
 		insertChar : function(ind, theChar) { 
 			
 			this._rs.insertChar(ind, theChar);
 			return this;
 			
 		},
-		
-		/**
-		 * Removes the character at the specified index
-		 * 
-		 * @param {number} ind the index
-		 * @returns {object} RiText
-		 */
+
 		removeChar : function(ind) { 
 			
 			this._rs.removeChar(ind);
@@ -52657,29 +52264,12 @@ _RiTa_LTS=[
 			
 		},
 		
-
-	  /**
-		 * Replaces the character at 'idx' with 'replaceWith'. If the specified 'idx' is less than
-		 * zero, or beyond the length of the current text, there will be no effect.
-		 * 
-		 * @param {number} idx the character index
-		 * @param {string} replaceWith the replacement
-		 * @returns {object} this RiText
-		 */
 		replaceChar : function(idx, replaceWith) {
 			
 			this._rs.replaceChar(idx, replaceWith);
 			return this;
 		},
 
-		/**
-		 * Replaces the first instance of 'regex' with 'replaceWith'
-		 * 
-		 * @param {string | regex} regex the pattern
-		 * @param {string} replaceWith the replacement
-		 * 
-		 * @returns this RiText
-		 */
 		replaceFirst : function(regex, replaceWith) {
 			
 			if (replaceWith) 
@@ -52688,14 +52278,6 @@ _RiTa_LTS=[
 			
 		},
 		
-		/**
-		 * Replaces the last instance of 'regex' with 'replaceWith'
-		 * 
-		 * @param {string | regex} regex the pattern
-		 * @param {string} replaceWith the replacement
-		 * 
-		 * @returns this RiText
-		 */
 		replaceLast : function(regex, replaceWith) {
 		   
 			if (replaceWith) {
@@ -52712,15 +52294,7 @@ _RiTa_LTS=[
 				}
 			};
 		},
-		
-		/**
-		 * Replaces each substring of this string that matches the given regular expression with the
-		 * given replacement.
-		 * 
-		 * @param {string | regex } pattern the pattern to be matched
-		 * @param {string} replacement the replacement sequence of char values
-		 * @returns {object} this RiText
-		 */
+
 		replaceAll : function(pattern, replacement) {
 			
 			// SHOULD BE: this._rs._text.replace(pattern, replacement)
@@ -52730,15 +52304,7 @@ _RiTa_LTS=[
 			return this;
 			
 		},
-		
-		 /**
-		 * Replaces the word at 'wordIdx' with 'newWord'
-		 * 
-		 * @param {number} wordIdx the index
-		 * @param {string} newWord the replacement
-		 * 
-		 * @returns {object} this RiText
-	     */
+
 		replaceWord : function(wordIdx, newWord) {
 
 			this._rs.replaceWord.apply(this,arguments);
@@ -52746,171 +52312,63 @@ _RiTa_LTS=[
 			return this; // TODO: check that all RiText methods use the delegate 
 						//  (like above) for methods that exist in RiString
 		},	 
-		
-		/**
-		 * Removes the word at 'wordIdx'.
-		 * 
-		 * @param {number} wordIdx the index
-		 * 
-		 * @returns {object} this RiText
-		 */
+
 		removeWord : function(wordIdx) {
 			
 			this._rs.removeWord.apply(this,arguments);
 			return this;
 		},   
-		
-		
-		/**
-		 * Inserts 'newWord' at 'wordIdx' and shifts each subsequent word accordingly.
-		 *
-		 * @returns {object} this RiText
-		 */
+
 		insertWord : function(wordIdx, newWord) {
 			
 			this._rs.insertWord.apply(this, arguments);
 			return this;            
 		},
-		
-	
-		 /**
-		 * Extracts a part of a string from this RiText
-		 * 
-		 * @param {number} begin (Required) The index where to begin the extraction. First character is at
-		 *        index 0
-		 * @param {number} end (Optional) Where to end the extraction. If omitted, slice() selects all
-		 *        characters from the begin position to the end of the string
-		 * @returns {object} this RiText
-		 */
+
 		slice : function(begin, end) {
 			
 			var res = this._rs._text.slice(begin, end) || E;
 			return this._rs.text(res);
 			 
 		},
-		
-		/**
-		 * Split a RiText into an array of sub-RiText and return the new array.
-		 * 
-		 * If an empty string ("") is used as the separator, the string is split between each character.
-		 * 
-		 * @param {string} separator (Optional) Specifies the character to use for splitting the string. If
-		 *        omitted, the entire string will be returned. If an empty string ("") is used as the separator, 
-		 *        the string is split between each character.
-		 *        
-		 * @param {number} limit (Optional) An integer that specifies the number of splits
-		 * 
-		 * @returns {array} RiText
-		 
-		split : function(separator, limit) {
-			
-			var parts = this._rs._text.split(separator, limit);
-			var rs = [];
-			for ( var i = 0; i < parts.length; i++) {
-				if (parts[i])
-					rs.push(new RiText(parts[i]));
-			}
-			return rs;
-		},*/
-		
-		 /**
-		 * Tests if this string starts with the specified prefix.
-		 * 
-		 * @param {string} substr string the prefix
-		 * 
-		 * @returns {boolean} true if the character sequence represented by the argument is a prefix of
-		 *         the character sequence represented by this string; false otherwise. Note also
-		 *         that true will be returned if the argument is an empty string or is equal to this
-		 *         RiText object as determined by the equals() method.
-		 */
+
 		startsWith : function(substr) {
 			
 			return this._rs.indexOf(substr) == 0;
 			
 		},
-		
-		 /**
-		 * Extracts the characters from a string, between two specified indices, and sets the
-		 * current text to be that string. 
-		 * 
-		 * @param {number} from  The index where to start the extraction. First character is at
-		 *        index 0
-		 * @param {number} to (optional) The index where to stop the extraction. If omitted, it extracts the
-		 *        rest of the string
-		 * @returns {object} this RiText
-		 */
+
 		substring : function(from, to) {
 
 			return this._rs.text(this._rs._text.substring(from, to));
 			
 		},
 
-		
-		 /**
-		 * Extracts the characters from this objects contained string, beginning at 'start' and
-		 * continuing through the specified number of characters, and sets the current text to be
-		 * that string. (from Javascript String)
-		 * 
-		 * @param {number} start  The index where to start the extraction. First character is at
-		 *        index 0
-		 * @param {number} length (optional) The index where to stop the extraction. If omitted, it extracts the
-		 *        rest of the string
-		 * @returns {object} this RiText
-		 */
 		substr : function(start, length) {
 			
 			var res = this._rs._text.substr(start, length);
 			return this._rs.text(res);
 			
 		},
-		
-		/**
-		 * Converts this object to an array of RiText objects, one per character
-		 * 
-		 * @returns {array} RiTexts with each letter as its own RiText element
-		toCharArray : function() {
-			return this._rs._text.split(E); // DCH: to match Java, 4/13/13
-		},		 */
-		
-		/**
-		 * Converts all of the characters in this RiText to lower case
-		 * 
-		 * @returns {object} this RiText
-		 */
+
 		toLowerCase : function() {
 			
 			return this._rs.text(this._rs._text.toLowerCase());
 			
 		},
-		 
-		/**
-		 * Converts all of the characters in this RiText to upper case
-		 * 
-		 * @returns {object} this RiText
-		 */
+
 		toUpperCase : function() {
 			
 			return this._rs.text(this._rs._text.toUpperCase());
 			
 		},
-		
-		/**
-		 * Returns a copy of the string, with leading and trailing whitespace omitted.
-		 * 
-		 * @returns {object} this RiText
-		 */
+
 		trim : function() {
 			
 			return this._rs.text(trim(this._rs._text));
 			
 		},
-		
-		/**
-		 * Returns the word at 'index', according to RiTa.tokenize()
-		 * 
-		 * @param {number} index the word index
-		 * @returns {string} the word
-		 */
+
 		wordAt : function(index) {
 			
 			var words = RiTa.tokenize((this._rs._text));
@@ -52919,31 +52377,18 @@ _RiTa_LTS=[
 			return words[index];
 			
 		},
-		
-		/**
-		 * Returns the number of words in the object, according to RiTa.tokenize().
-		 * 
-		 * @returns {number} number of words
-		 */
+
 		wordCount : function() {
 			
 			if (!this._rs._text.length) return 0;
 			return this.words().length;
 		},
-		
-		/**
-		 * Returns the array of words in the object, via a call to RiTa.tokenize().
-		 * @returns {array} strings, one per word
-		 */
+
 		words : function() { 
 			
 			return RiTa.tokenize(this._rs._text);
 		},
 
-		/**
-		 * Returns the distance between the center points of this and another RiText
-		 * @returns {number} the distance
-		 */
 		distanceTo : function(a,b) {
 			
 	      var p2x, p2y, p1 = this.center(), p1x = p1.x, p1y = p1.y;
@@ -52960,24 +52405,13 @@ _RiTa_LTS=[
 		  
 		  return RiTa.distance( p1.x,  p1.y,  p2x,  p2y);
 		},
-	  
-		/**
-		 * Returns the center point of this RiText as derived from its bounding box
-		 * @returns {object} { x, y }
-		 */
+
 		center : function() {
 			
 			var bb = this.boundingBox();
 			return { x: bb.x + bb.width/2.0, y: bb.y - bb.height/2.0 };
 		},
-		
-		/**
-		 * Splits the object into an array of RiTexts, one per word
-		 * tokenized with the supplied regex.
-		 * 
-		 * @param {regex | string} to split
-		 * @returns {array} RiTexts
-		 */
+
 		splitWords : function(regex) {
 			
 			regex = regex || SP;
@@ -53000,10 +52434,6 @@ _RiTa_LTS=[
 			return l;
 		},
 	
-		/**
-		 * Splits the object into an array of RiTexts, one per letter.
-		 * @returns {array} RiTexts
-		 */
 		splitLetters : function() {
 	
 			var l = [];
@@ -53025,14 +52455,7 @@ _RiTa_LTS=[
 	
 			return l;
 		},
-		
-		/**
-		 * Returns true if the bounding box for this RiText contains the point mx/my
-		 * 
-		 * @param {number} mx
-		 * @param {number} my
-		 * @returns {boolean}
-		 */
+
 		contains : function(mx, my) {
 
 		   var bb = this.boundingBox(false);
@@ -53041,11 +52464,7 @@ _RiTa_LTS=[
 		   
 		   return (!(mx<bb.x || mx > bb.x+bb.width || my < bb.y || my > bb.y+bb.height));
 		},
-		
-		/**
-		 * Creates and returns a new (copy) of this RiText
-		 * @returns {object} RiText
-		 */
+
 		copy : function() {
 
 			var c = new RiText(this.text(), this.x, this.y, this._font);
@@ -53059,13 +52478,7 @@ _RiTa_LTS=[
 
 			return c;
 		},
-		
-		/**
-		 * Set/gets the alignment for this RiText (RiTa.LEFT || RiTa.CENTER || RiTa.RIGHT)
-		 * 
-		 * @param {object} align (optional) the alignment 
-		 * @returns {object} this RiText (set) or the current font (get)
-		 */
+
 		align : function(align) {
 			if (arguments.length) {
 				this._alignment = align;
@@ -53074,15 +52487,6 @@ _RiTa_LTS=[
 			return this._alignment;
 		},
 
-		
-		/**
-		 * Set/gets the font for this RiText
-		 * 
-		 * @param {object} font (optional) containing the font data OR
-		 * @param {string} font containing the font name AND
-		 * @param {number} size (optional) containing the font size 
-		 * @returns {object} this RiText (set) or the current font (get)
-		 */
 		font : function(font, size) {
 			
 			var a = arguments;
@@ -53101,14 +52505,7 @@ _RiTa_LTS=[
 
 			return this._font;
 		},    
-		
 
-		/**
-		 * Set/gets the visibility of the bounding box for this RiText
-		 * 
-		 * @param {boolean} trueOrFalse (optional) true or false 
-		 * @returns {object | boolean} this RiText (set) or the current boolean value (get)
-		 */
 		showBounds : function(trueOrFalse) {
 		   if (arguments.length == 1) {
 			   this._showBounds = trueOrFalse;
@@ -53117,16 +52514,6 @@ _RiTa_LTS=[
 		   return this._showBounds;
 		},
 
-		/**
-		 * Set/gets the fill color for this RiText
-		 * 
-		 * @param {number | array} takes 1-4 number values for rgba, or an array of size 1-4
-		 * @param {number} cg
-		 * @param {number} cb
-		 * @param {number} ca
-		 * 
-		 * @returns {object} either this RiText (for sets) or the current color object (for gets)
-		 */
 		fill : function(cr, cg, cb, ca) {
 			//console.log("fill");
 			if (arguments.length == 0) 
@@ -53134,11 +52521,7 @@ _RiTa_LTS=[
 			this._color = parseColor.apply(this, arguments);
 			return this;
 		},
-	
-		/**
-		 * Returns false if the alpha value of this object is &lt;= 0, else true
-		 * @returns {boolean} 
-		 */
+
 		isVisible : function(b) { 
 			
 			if (arguments.length)
@@ -53146,13 +52529,7 @@ _RiTa_LTS=[
 			
 			return this._color.a > 0;
 		},
-		
-		/**
-		 * Set/gets the alpha (transparency) for this RiText
-		 *
-		 * @param {number} a (optional) input (0-255) 
-		 * @returns {object | number} either this RiText (for set) or the current alpha value (for get)
-		 */
+
 		alpha : function(a) {
 			if (arguments.length==1) {
 				this._color.a = a;
@@ -53160,15 +52537,7 @@ _RiTa_LTS=[
 			}
 			else return this._color.a;
 		},
-	
-		/**
-		 * Set/gets the position for this RiText
-		 * 
-		 * @param {number} x (optional) X coordinate
-		 * @param {number} y (optional) Y coordinate
-		 * 
-		 * @returns {object} either this RiText (for sets) or object {x, y} (for gets)
-		 */
+
 		position : function(x, y) {
 			
 			//TODO: add Z
@@ -53179,14 +52548,7 @@ _RiTa_LTS=[
 			this.y = y;
 			return this;
 		},
-	 
-		/**
-		 * Sets/gets the 2d rotation for this RiText
-		 * 
-		 * @param {number} rotate degree to rotate
-		 * 
-		 * @returns {object} either this RiText (for sets) or the current degree of rotation (for gets)
-		 */
+
 		rotate : function(rotate) {
 			
 			//TODO: add X,Y ??
@@ -53195,15 +52557,7 @@ _RiTa_LTS=[
 		  this._rotateZ = rotate;
 		  return this;
 		},
-	
-		/**
-		 * Sets/gets the scale factor for this RiText (takes 0-2 arguments) 
-		 * 
-		 * @param {number} theScaleX the ScaleX ratio
-		 * @param {number} theScaleY (optional) the ScaleY ratio 
-		 * 
-		 @returns { object } either this RiText (for sets) or the current scales (for gets)
-		 */
+
 		scale : function(theScaleX, theScaleY) {
 			
 			if (!arguments.length) return { x:this._scaleX, y:this._scaleY }; //TODO: add Z
@@ -53215,13 +52569,7 @@ _RiTa_LTS=[
 			
 			return this;
 		},
-	
-		/**
-		 * Returns the pixel x-offset for the character at 'charIdx'
-		 * 
-		 * @param {number} charIdx
-		 * @returns {number} the pixel x-offset
-		 */
+
 		charOffset : function(charIdx) {
 	
 			var theX = this.x;
@@ -53240,24 +52588,13 @@ _RiTa_LTS=[
 
 			return theX;
 		},
-		
-		/**
-		 * Returns the pixel x-offset for the word at 'wordIdx'
-		 * @param {number} wordIdx
-		 * @returns {number} the pixel x-offset
-		 */
+
 		wordOffset : function(wordIdx) { 
 			
 			var words =  this.text().split(' ');
 			return RiText._wordOffsetFor(this, words, wordIdx);
 		},
 
-		/**
-		 * Returns the relative bounding box for the current text
-		 * @param {boolean} (optional, default=false) 
-		 * 	if true, bounding box is first transformed (rotate,translate,scale) 
-		 * @returns {object} x,y,width,height 
-		 */
 		boundingBox : function(transformed) {
 
 			var g = this.g;
@@ -53285,34 +52622,16 @@ _RiTa_LTS=[
 			return bb;
 		},
 
-		/**
-		 * Returns the current width of the text (derived from the bounding box)
-		 * @returns {number} the width of the text
-		 */
-		//@param {boolean} (optional, default=false) if true, width is first scaled
 		textWidth : function() { 
 			
 			return this.g._textWidth(this._font,this._rs._text);
 		},
-		
-		/**
-		 * Returns the current height of the text (derived from the bounding box)
-		 * @returns {number} the current height of the text
-		 */
-		// * @param {boolean} (optional, default=false) if true, height is first scaled
+
 		textHeight : function() { 
 			
 			return this.g._textHeight(this);
 		},
-		
-		/**
-		 * Sets/gets the size of the current font. Note: this method only
-		 * effects only scaleX/Y, not the font's internal properties 
-		 * 
-		 * @param {number} sz (optional) font size 
-		 * 
-		 * @returns {object | number} either this RiText (for set) or the current font size (for get)
-		 */
+
 		fontSize : function(sz) {
  
 			// TODO: what to do if scaleX and scaleY are different?
@@ -53320,20 +52639,12 @@ _RiTa_LTS=[
 			return (arguments.length) ? this.scale( sz / this._font.size) 
 				: (this._font.size * this._scaleX);
 		},
-		
-		/**
-		 * Returns the ascent of the current font 
-		 * @returns {number} the ascent of the current font
-		 */
+
 		textAscent : function() { 
 			
 			return this.g._textAscent(this);
 		},
-		
-		/**
-		 * Returns the descent of the current font 
-		 * @returns {number} the descent of the current font 
-		 */
+
 		textDescent : function() { 
 			
 			return this.g._textDescent(this);
@@ -53362,13 +52673,7 @@ _RiTa_LTS=[
 			
 			return null;
 		},
-		
-		/**
-		 * Removes the specified text behavior for the object  
-		 * 
-		 * @param {number} the behavior id
-		 * @returns {object} this RiText
-		 */
+
 		stopBehavior: function ( id ) {
 
 			var behavior = this._getBehavior(id);
@@ -53383,12 +52688,7 @@ _RiTa_LTS=[
 			}
 			return this;
 		},
-		
-		/**
-		 * Removes all text behaviors for the object  
-		 * 
-		 * @returns {object} this RiText 
-		 */
+
 		stopBehaviors: function () {
 
 			this._behaviors = [];
@@ -53424,13 +52724,6 @@ _RiTa_LTS=[
 			var s =  (this._rs && this._rs._text) || 'undefined';
 			return '['+Math.round(this.x)+","+Math.round(this.y)+",'"+s+"']";
 		}
-
-
-		//        updateMousePosition : function(curElement, event) {
-		//            var offset = calculateOffset(window, event);
-		//            p.mouseX = event.pageX - offset.X;
-		//            p.mouseY = event.pageY - offset.Y
-		//        }
 	}
 	
 	/////////////////////////////////////////////////////////////////////////
@@ -53525,7 +52818,7 @@ _RiTa_LTS=[
 			if (!LetterToSound.RULES) LetterToSound.RULES = _RiTa_LTS;
 			
 			if (!LetterToSound.RULES.length) 
-				throw Error("No LTS-rules found!");
+				throw Error("[RiTa] No LTS-rules found!");
 			
 			// add the rules to the object (static?)
 			for ( var i = 0; i < LetterToSound.RULES.length; i++) {
@@ -53597,16 +52890,7 @@ _RiTa_LTS=[
 			this.stateMachineSize = parseInt(tokenizer.nextToken());
 		  }
 		},
-		
-		/**
-		 * Calculates the phone list for a given word. If a phone list cannot be
-		 * determined, <code>[]</code> is returned. 
-		 * 
-		 * @param {string | array } input the word or words to find
-		 * 
-		 * @return {string} phones for word, separated by delim,
-		 *   or <code>empty string</code>
-		 */
+
 		getPhones : function(input, delim) {
 			
 			var ph, result = []; 
@@ -53663,17 +52947,18 @@ _RiTa_LTS=[
 		  }
 	
 		  // Create "000#word#000"
-		  tmp = "000#"+word.trim()+"#000", full_buff = tmp.split("");
+		  tmp = "000#"+word.trim()+"#000", full_buff = tmp.split(E);
 		  
 		  // For each character in the word, create a WINDOW_SIZE
 		  // context on each size of the character, and then ask the
-		  // state machine what's next. Its magic
+		  // state machine what's next
 		  for (var pos = 0; pos < word.length; pos++) {
 			  
 			for (var i = 0; i < LetterToSound.WINDOW_SIZE; i++) {
 				
 			  this.fval_buff[i] = full_buff[pos + i];
-			  this.fval_buff[i + LetterToSound.WINDOW_SIZE] = full_buff[i + pos + 1 + LetterToSound.WINDOW_SIZE];
+			  this.fval_buff[i + LetterToSound.WINDOW_SIZE] = 
+			  	full_buff[i + pos + 1 + LetterToSound.WINDOW_SIZE];
 			}
 			
 			c = word.charAt(pos);
@@ -53681,7 +52966,8 @@ _RiTa_LTS=[
 			
 			// must check for null here, not 0
 			if (startIndex==null) {
-				warn("Unable to generate LTS for '"+word+"'\nNo LTS index for character: '"+c + "', isDigit=" + isNum(c) + ", isPunct=" + RiTa.isPunctuation(c));
+				warn("Unable to generate LTS for '"+word+"'\n       No LTS index for character: '"
+					+ c + "', isDigit=" + isNum(c) + ", isPunct=" + RiTa.isPunctuation(c));
 				return null;
 			}
 
@@ -54000,7 +53286,7 @@ _RiTa_LTS=[
 		
 		_getGraphics : function() {
 			
-			console.warn("NodeRenderer._getGraphics() returning null graphics context!");
+			warn("NodeRenderer._getGraphics() returning null graphics context!");
 			return null;
 		},
 		
@@ -54021,15 +53307,15 @@ _RiTa_LTS=[
 		},
 		
 		_scale : function(sx, sy) {
-			//console.warn("scale("+sx+","+sy+") not yet implemented");
+			//warn("scale("+sx+","+sy+") not yet implemented");
 		},
 		
 		_translate : function(tx, ty) {
-			//console.warn("translate("+tx+","+ty+") not yet implemented");
+			//warn("translate("+tx+","+ty+") not yet implemented");
 		},
 		
 		_rotate : function(zRot) {
-			//console.warn("rotate() not yet implemented");
+			//warn("rotate() not yet implemented");
 		},
 		
 		_text : function(str, x, y) {
@@ -54082,7 +53368,7 @@ _RiTa_LTS=[
 					if (c == '\n' || c == '\r') continue;
 					var k = this.font.widths[c];
 					if (!k) {
-					  console.error("[WARN] No glyph for \""+c+"\"in word: "+str);
+					  warn("No glyph for \""+c+"\"in word: "+str);
 					  k = def;
 					}
 					w += k;
@@ -54231,7 +53517,7 @@ _RiTa_LTS=[
 			
 			this.ctx.canvas.width = w;
 			this.ctx.canvas.height = h;
-			if (renderer) console.warn("Renderer arg ignored");
+			if (renderer) warn("Renderer arg ignored");
 		},
 		
 		_createFont : function(fontName, fontSize) {
@@ -54790,7 +54076,7 @@ _RiTa_LTS=[
 			this.person = RiTa.FIRST_PERSON;
 			this.number = RiTa.SINGULAR;
 			this.form = RiTa.NORMAL;
-			this.head = "";
+			this.head = E;
 
 		},
 
@@ -55399,58 +54685,51 @@ _RiTa_LTS=[
 	Stemmer.stem_Porter = (function() {
 		
 		var step2list = {
-				"ational" : "ate",
-				"tional" : "tion",
-				"enci" : "ence",
-				"anci" : "ance",
-				"izer" : "ize",
-				"bli" : "ble",
-				"alli" : "al",
-				"entli" : "ent",
-				"eli" : "e",
-				"ousli" : "ous",
-				"ization" : "ize",
-				"ation" : "ate",
-				"ator" : "ate",
-				"alism" : "al",
-				"iveness" : "ive",
-				"fulness" : "ful",
-				"ousness" : "ous",
-				"aliti" : "al",
-				"iviti" : "ive",
-				"biliti" : "ble",
-				"logi" : "log"
+				'ational' : 'ate',
+				'tional' : 'tion',
+				'enci' : 'ence',
+				'anci' : 'ance',
+				'izer' : 'ize',
+				'bli' : 'ble',
+				'alli' : 'al',
+				'entli' : 'ent',
+				'eli' : 'e',
+				'ousli' : 'ous',
+				'ization' : 'ize',
+				'ation' : 'ate',
+				'ator' : 'ate',
+				'alism' : 'al',
+				'iveness' : 'ive',
+				'fulness' : 'ful',
+				'ousness' : 'ous',
+				'aliti' : 'al',
+				'iviti' : 'ive',
+				'biliti' : 'ble',
+				'logi' : 'log'
 			},
 	
 			step3list = {
-				"icate" : "ic",
-				"ative" : "",
-				"alize" : "al",
-				"iciti" : "ic",
-				"ical" : "ic",
-				"ful" : "",
-				"ness" : ""
+				'icate' : 'ic',
+				'ative' : '',
+				'alize' : 'al',
+				'iciti' : 'ic',
+				'ical' : 'ic',
+				'ful' : '',
+				'ness' : ''
 			},
 	
-			c = "[^aeiou]",          // consonant
-			v = "[aeiouy]",          // vowel
-			C = c + "[^aeiouy]*",    // consonant sequence
-			V = v + "[aeiou]*",      // vowel sequence
+			c = '[^aeiou]',          // consonant
+			v = '[aeiouy]',          // vowel
+			C = c + '[^aeiouy]*',    // consonant sequence
+			V = v + '[aeiou]*',      // vowel sequence
 	
-			mgr0 = "^(" + C + ")?" + V + C,               // [C]VC... is m>0
-			meq1 = "^(" + C + ")?" + V + C + "(" + V + ")?$",  // [C]VC[V] is m=1
-			mgr1 = "^(" + C + ")?" + V + C + V + C,       // [C]VCVC... is m>1
-			s_v = "^(" + C + ")?" + v;                   // vowel in stem
+			mgr0 = '^(' + C + ')?' + V + C,                      // [C]VC... is m>0
+			meq1 = '^(' + C + ')?' + V + C + '(' + V + ')?$',  // [C]VC[V] is m=1
+			mgr1 = '^(' + C + ')?' + V + C + V + C,         // [C]VCVC... is m>1
+			s_v = '^(' + C + ')?' + v;                   // vowel in stem
 	
 		return function (w) {
-			var     stem,
-				suffix,
-				firstch,
-				re,
-				re2,
-				re3,
-				re4,
-				origword = w;
+			var stem, suffix, firstch, re, re2, re3, re4, origword = w;
 	
 			if (w.length < 3) { return w; }
 	
@@ -55474,7 +54753,7 @@ _RiTa_LTS=[
 				re = new RegExp(mgr0);
 				if (re.test(fp[1])) {
 					re = /.$/;
-					w = w.replace(re,"");
+					w = w.replace(re,E);
 				}
 			} else if (re2.test(w)) {
 				var fp = re2.exec(w);
@@ -55486,7 +54765,7 @@ _RiTa_LTS=[
 					re3 = new RegExp("([^aeiouylsz])\\1$");
 					re4 = new RegExp("^" + C + v + "[^aeiouwxy]$");
 					if (re2.test(w)) { w = w + "e"; }
-					else if (re3.test(w)) { re = /.$/; w = w.replace(re,""); }
+					else if (re3.test(w)) { re = /.$/; w = w.replace(re,E); }
 					else if (re4.test(w)) { w = w + "e"; }
 				}
 			}
@@ -55497,7 +54776,7 @@ _RiTa_LTS=[
 				var fp = re.exec(w);
 				stem = fp[1];
 				re = new RegExp(s_v);
-				if (re.test(stem)) { w = stem + "i"; }
+				if (re.test(stem)) w = stem + "i";
 			}
 	
 			// Step 2
@@ -55560,15 +54839,13 @@ _RiTa_LTS=[
 			re2 = new RegExp(mgr1);
 			if (re.test(w) && re2.test(w)) {
 				re = /.$/;
-				w = w.replace(re,"");
+				w = w.replace(re,E);
 			}
 	
 			// and turn initial Y back to y
 	
-			if (firstch == "y") {
-				w = firstch.toLowerCase() + w.substr(1);
-			}
-	
+			(firstch == "y") && (w = firstch.toLowerCase() + w.substr(1));
+				
 			return w;
 		}
 	})();
@@ -56402,11 +55679,12 @@ _RiTa_LTS=[
 		
 	})();
 	
-	// TODO: remove these 
+	// TODO: remove these eventually
 	
 	Array.prototype._arrayContains = function (searchElement ) {
 		return Array.prototype.indexOf(searchElement) > -1;
 	} 
+	
 	String.prototype._endsWith = function(suffix) {
 		return this.indexOf(suffix, this.length - suffix.length) !== -1;
 	};
@@ -56468,14 +55746,10 @@ _RiTa_LTS=[
 		var categoryIRR = ["beefs", "beef", "beeves", "beef", "brethren", "brother", "busses", "bus", "cattle", "cattlebeast", "children", "child", "corpora", "corpus", "ephemerides", "ephemeris", "firemen", "fireman", "genera", "genus", "genies", "genie", "genii", "genie", "kine", "cow", "lice", "louse", "men", "man", "mice", "mouse", "mongooses", "mongoose", "monies", "money", "mythoi", "mythos", "octopodes", "octopus", "octopuses", "octopus", "oxen", "ox", "people", "person", "soliloquies", "soliloquy", "throes", "throes", "trilbys", "trilby", "women", "woman"];
 	
 		/** Tells whether a noun is plural. */
-		function isPlural(s) {
-			return (!s === stem(s));
-		}
+		function isPlural(s) { return (!s === stem(s)); }
 	
 		/** Tells whether a word form is singular. Note that a word can be both plural and singular */
-		function isSingular(s) {
-			return (categorySP._arrayContains(s.toLowerCase()) || !isPlural(s));
-		}
+		function isSingular(s) { return (categorySP._arrayContains(s.toLowerCase()) || !isPlural(s)); }
 	
 		/**
 		 * Tells whether a word form is the singular form of one word and at
@@ -56666,11 +55940,6 @@ _RiTa_LTS=[
 		
 	})();
 
-
-	//////////////////////////////////////////////////////////////////
-	//////// MinEditDist (singleton)
-	////////////////////////////////////////////////////////////////
-
 	/**
 	 * Minimum-Edit-Distance (or Levenshtein distance) is a measure of the similarity 
 	 * between two strings, the source string and the target string (t). The distance 
@@ -56705,6 +55974,7 @@ _RiTa_LTS=[
 			var sI; // ith element of s
 			var tJ; // jth element of t
 			var cost; // cost
+			var i, j, sl, tl;
 
 			// Step 1 ----------------------------------------------
 
@@ -56714,23 +55984,24 @@ _RiTa_LTS=[
 
 			// Step 2 ----------------------------------------------
 
-			for (var i = 0; i <= srcArr.length; i++) {
+			for (i = 0, sl=srcArr.length; i<=sl; i++) {
+
 				matrix[i] = [];
 				matrix[i][0] = i;
 			}
 
-			for (var j = 0; j <= trgArr.length; j++)    
+			for (j=0, tl=trgArr.length; j<=tl; j++) 
 				matrix[0][j] = j;
 
 			// Step 3 ----------------------------------------------
 
-			//String[] srcArr = RiFreeTTSEngine.cleanPhonemes(srcArr);    
-			for (var i=1, j=srcArr.length; i<=j; i++) {
+			for (i=1, sl=srcArr.length; i<=sl; i++) {
 			
 				sI = srcArr[i - 1];
 
 				// Step 4 --------------------------------------------
-				for (var j=1, k=trgArr.length; j<=k; j++) {
+				
+				for (j=1, tl=trgArr.length; j<=tl; j++) {
 				
 					tJ = trgArr[j - 1];
 
@@ -56739,6 +56010,7 @@ _RiTa_LTS=[
 					cost = (sI === tJ) ? 0 : 1;
 
 					// Step 6 ------------------------------------------
+					
 					matrix[i][j] = this._min3(
 						matrix[i - 1][j] + 1, 
 						matrix[i][j - 1] + 1, 
@@ -56754,7 +56026,6 @@ _RiTa_LTS=[
 		
 		/**
 		 * Compute min-edit-distance between 2 strings
-		 * @see MinEditDist#computeAdjusted(java.lang.String,java.lang.String)
 		 */ 
 		computeRaw : function(source, target) { 
 
@@ -56823,7 +56094,7 @@ _RiTa_LTS=[
 		computeAdjusted : function(source, target) {
 
 			var st = Type.get(source), tt = Type.get(source);
-			if (st===tt) {
+			if (st === tt) {
 
 				if (tt===S) {
 					
@@ -56875,7 +56146,7 @@ _RiTa_LTS=[
 		
 		analyze : function(word) {
 			
-			return ((this.suffix != "") && endsWith(word, this.suffix)) ? true : false;
+			return ((this.suffix != E) && endsWith(word, this.suffix)) ? true : false;
 		},
 		
 		truncate : function(word) {
@@ -56943,7 +56214,6 @@ _RiTa_LTS=[
 				if ( _valuesEnd[ property ] instanceof Array ) {
 	
 					if ( _valuesEnd[ property ].length === 0 ) {
-	
 						continue;
 					}
 	
@@ -56955,42 +56225,36 @@ _RiTa_LTS=[
 			}
 	
 			return this;
-	
 		}
 	
 		this.stop = function () {
 	
 			if (_parent) _parent.stopBehavior( this );
 			return this;
-	
 		}
 	
 		this.delay = function ( amount ) {
 	
 			_delayTime = amount;
 			return this;
-	
 		}
 	
 		this.easing = function ( easing ) {
 	
 			_easingFunction = easing;
 			return this;
-	
 		}
 	
 		this.interpolation = function ( interpolation ) {
 	
 			_interpolationFunction = interpolation;
 			return this;
-	
 		}
 	
 		this.chain = function ( chainedTween ) {
 	
 			_chainedTween = chainedTween;
 			return this;
-	
 		}
 	
 		this.onUpdate = function ( onUpdateCallback ) {
@@ -57004,7 +56268,6 @@ _RiTa_LTS=[
 	
 			_onCompleteCallback = onCompleteCallback;
 			return this;
-	
 		}
 	
 		this.update = function ( time ) {
@@ -57459,7 +56722,7 @@ _RiTa_LTS=[
 		RE("^brei", 0, "d", 0),
 		RE("^bring$", 3, "ought", 0),
 		RE("^build$", 1, "t", 0),
-		RE("^come", 0, "", 0),
+		RE("^come", 0, E, 0),
 		RE("^catch$", 3, "ught", 0),
 		RE("^chivy$", 1, "vied", 0),
 		RE("^choose$", 3, "sen", 0),
@@ -57770,7 +57033,7 @@ _RiTa_LTS=[
 			RE("^" + VERBAL_PREFIX + "?run$", 2, "an", 0),
 			RE("^ring$", 3, "ang", 0),
 			RE("^rebuild$", 3, "ilt", 0),
-			RE("^red", 0, "", 0),
+			RE("^red", 0, E, 0),
 			RE("^reave$", 4, "eft", 0),
 			RE("^remake$", 3, "ade", 0),
 			RE("^resit$", 3, "sat", 0),
@@ -57871,7 +57134,7 @@ _RiTa_LTS=[
 			RE("^" + VERBAL_PREFIX
 				+ "?(cast|thrust|typeset|cut|bid|upset|wet|bet|cut|hit|hurt|inset|"
 				+ "let|cost|burst|beat|beset|set|upset|offset|put|quit|wed|typeset|"
-				+ "wed|spread|split|slit|read|run|shut|shed|lay)$", 0, "", 0) ],
+				+ "wed|spread|split|slit|read|run|shut|shed|lay)$", 0, E, 0) ],
 
 		PRESENT_TENSE_RULES = [ 
 			RE("^aby$", 0, "es", 0),
@@ -58078,7 +57341,7 @@ _RiTa_LTS=[
    
 	function dump(obj) {
 
-		var properties = "";
+		var properties = E;
 		for ( var propertyName in obj) {
 
 			properties += propertyName + ": ";
@@ -58124,8 +57387,11 @@ _RiTa_LTS=[
 		
 		if (RiTa.SILENT || !console) return;
 		
-		for ( var i = 0; i < arguments.length; i++) 
-			console.warn(arguments[i]);
+		if (arguments && arguments.length) {
+			console.warn("[WARN] "+arguments[0]);
+			for (var i = 1; i < arguments.length; i++) 
+				console.warn('  '+arguments[i]);
+		}
 	}
  
 	function log() {
@@ -58358,7 +57624,7 @@ _RiTa_LTS=[
 	// Core RiTa objects (in global namespace)
 	/////////////////////////////////////////////////////////////////////////////////////////
 
-	RiTa._eval = eval;
+	//RiTa._eval = eval;
 
 	if (window) { // for browser
 		
@@ -58380,9 +57646,6 @@ _RiTa_LTS=[
 		module.exports['RiGrammar'] = RiGrammar;
 		module.exports['RiMarkov'] = RiMarkov;
 		module.exports['RiTaEvent'] = RiTaEvent;
-
-		module.vm = require("vm"); // TODO: reconsider, use deps?
-		module.vm && (RiTa._eval = module.vm.runInThisContext);
 	}
 	
 
