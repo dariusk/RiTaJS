@@ -50711,7 +50711,7 @@ _RiTa_LTS=[
 		expandFrom : function(rule, context) {
     
 		    if (!this.hasRule(rule))
-		      err("Rule not found: "+rule+"\nRules:\n"+this._rules);
+		      err("Rule not found: "+rule+"\nRules:\n"+JSON.stringify(this._rules));
 		    
 		    var parts, callResult, tries = 0, maxIterations = 1000;
 		    while (++tries < maxIterations)
