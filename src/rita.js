@@ -1888,7 +1888,7 @@
 			RiTa.loadString(url, function(data) {
 	
 				me.loadText(data, multiplier, regex);
-				callback && (callback(data));
+				callback && is(callback, F) && (callback(data));
 			});
 		},
 
@@ -3703,18 +3703,19 @@
 			return (Object.keys(this._rules).length > 0);
 		},
 		
-		loadFrom : function(url, callback) {
-			
+		loadFrom : function(url, callback) { // today, can this be synchronous?
+
 			var me = this;
 			
 			RiTa.loadString(url, function(data) {
 	
 				me.load(data);
-				callback && (callback(data));
+				is(callback, F) && (callback(data));
 			});
 		},
 
 		load : function(grammar) {
+//console.log('load: '+grammar);
 
 			var ex; 
 			
@@ -3898,14 +3899,14 @@
 		}, 
 		
 		expandFrom : function(rule, context) {
-    
+ 
     		if (!Object.keys(this._rules).length)
 		      err("(RiGrammar) No grammar rules found!");
 		      
 		    if (!this.hasRule(rule))
 		      err("Rule not found: "+rule+"\nRules:\n"+JSON.stringify(this._rules));
 		    
-		    var parts, callResult, tries = 0, maxIterations = 1000;
+		    var parts, theCall, callResult, tries = 0, maxIterations = 1000;
 		    while (++tries < maxIterations)
 		    {
 		      var next = this._expandRule(rule);
@@ -3926,12 +3927,20 @@
 		      
 		      if (parts.length > 2) {
 		        
-		        callResult = this._handleExec(parts[2], context);
+		        theCall = parts[2];
+				
+				if (this._countTicks(theCall) != 2) {
+				
+					warn("Unable to parse recursive exec: " + theCall + "...");
+					return null;
+				}
+
+		        callResult = this._handleExec(theCall, context);
 		        
 		        if (!callResult) {
 		          
 		          if (0==1) console.log("[WARN] (RiGrammar.expandFrom) Unexpected"
-		              +" state: eval("+parts[2]+") :: returning '"+rule+"'");
+		              +" state: eval("+theCall+") :: returning '"+rule+"'");
 		          
 		          break; // return
 		        }
@@ -3947,7 +3956,17 @@
 		
 		    return RiTa.unescapeHTML(rule); 
 		},
-				
+		
+		_countTicks : function(theCall) {
+	
+			var count = 0;
+		    for (var i = 0; i < theCall.length; i++) {
+		      if (theCall.charAt(i) == '`')
+		        count ++;
+		    }
+		    return count;	
+		},
+		
 		openEditor : function() {
 			
 			warn("Editor not yet implemented in JavaScript");
@@ -3955,6 +3974,8 @@
 		},
 	 
 		_handleExec : function(input, context) { 
+
+			//console.log("_handleExec: "+input+ " "+ (typeof eval));
 
 			if (!input || !input.length) return null;
 			
@@ -3966,13 +3987,31 @@
 				// if (typeof module != 'undefined' && module.exports) // for node	 
 				// 		return require("vm").runInThisContext(exec,context);
 				
-				res = eval(exec); // js or node eval?
+				res = eval(exec); // try in global context
 				
 				return res ? res + E : null;	
 			}
 			catch (e) {
+
+				// try with the PApplet context
+				// TODO: clean this up
+				// TODO: do we need to explicitly check window[funName] in the browser? 
+				var parts = exec.split('(');
+				if (parts && parts.length == 2) {
+					
+					var funName = parts[0];
+					var argStr = parts[1].replace(/\)/,E);
+					var g = context || RiText._graphics();
+					if (g && g[funName] && is(g[funName],F)) {
+						
+						var args = argStr.split(',');
+						//log("calling "+funName + "("+argStr+");");
+						res = g[funName].apply(g, args);
+						return res ? res + E : null;	
+					}		
+				}
 				
-				warn("RiGrammar._handleExec failed on '"+input+"'\n  -> "+e.message);
+				warn("RiGrammar failed parsing: "+input+"\n  -> "+e.message);
 				return null;
 			}
 		},
@@ -4258,7 +4297,6 @@
 	 * in a cross-browser compatible fashion
 	 * @param {MouseEvent} e mouseEvent
 	 * @returns {object} mouse position with x,y properties
-	 */
 	RiText.mouse = function(e) { // TODO: broken for canvas (see contains-test)  // TODO: REMOVE
 		
 		var posX = -1,posY = -1;
@@ -4271,9 +4309,11 @@
 		}        
 		
 		if (e.pageX) {
+			
 			posX = e.pageX;
 		}
 		else if (e.clientX)    {
+			
 			posX = e.clientX + document.body.scrollLeft
 				+ document.documentElement.scrollLeft;
 		}
@@ -4289,7 +4329,7 @@
 		}
  
 		return {x:posX,y:posY};
-	}
+	}	 */
 	
 	/**
 	 * Convenience method to draw a crisp line on the drawing surface
