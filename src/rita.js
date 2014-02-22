@@ -947,7 +947,7 @@
 					
 				if (!data) {
 					
-					console.error('[RiTa] loadString('+url+') found no text!');
+					console.error('[RiTa] loadString('+url+') unable to load text from: '+url);
 					return E;
 				}
 				
@@ -1656,9 +1656,11 @@
 		 */
 		init : function(nFactor, recognizeSentences, allowDuplicates) {
 
-			ok(nFactor, N);
-
-			this._n = nFactor;
+			var a = this._initArgs.apply(this, arguments);
+			
+			ok(a[0], N);
+			
+			this._n = a[0];
 			this.pathTrace = [];
 			this.sentenceList = [];
 			this.sentenceStarts = [];
@@ -1666,20 +1668,29 @@
 			this.maxSentenceLength = 35;
 			this.maxDuplicatesToSkip = 10000;
 			this.root = new TextNode(null, 'ROOT');
-			this.isSentenceAware = (arguments.length > 1 && !recognizeSentences) ? false : true;
-			this.allowDuplicates = (arguments.length > 2 && !allowDuplicates) ? false : true;
+			this.isSentenceAware = (a.length > 1 && !a[1]) ? false : true;
+			this.allowDuplicates = (a.length > 2 && !a[2]) ? false : true;
 			this.printIgnoredText = false;
 			this.smoothing = false;
 		},
+		
+		_initArgs : function() {
 
-		/**
-		 * Returns either the raw (unigram) probability for a single token in the model (0 if it does not exist)
-		 * OR (for an array) the probability of obtaining a sequence of k tokens where k <= nFactor,
-		 * e.g., if nFactor = 3, then valid lengths for the data array are 1, 2 & 3.
-		 * @param {string | array} data the string (or sequence of strings) to search for
-		 * 
-		 * @returns {number} from 0-1
-		 */
+			var a = arguments, t = Type.get(a[0]);
+		
+			//console.error("a[0]="+t+" a.length="+a.length+" type="+t+" analyze="+typeof a[0].text);
+			
+			if (a.length && (t===O || t==='global' || t==='window')) {
+				
+				// recurse, ignore 'this'
+				var shifted = Array.prototype.slice.call(a, 1);
+
+				return this._initArgs.apply(this, shifted);
+			}
+			
+			return a;
+		},
+
 		getProbability : function(data) {
 			
 			if (!this.root) err("Model not initd: null root!");
@@ -1690,18 +1701,6 @@
 			
 		},
 		
-		/** 
-		 * Returns the full set of possible next tokens, as an associative array, 
-		 * (mapping string -> number (probability)) given an array of tokens 
-		 * representing the path down the tree (with length less than n).
-		 * 
-		 * <p>  Note: seed arrays of any size (>0) may be input, but only 
-		 * the last n-1 elements will be considered.   
-		 *
-		 * @param {string | array} a single token or array of tokens (strings)
-		 *
-		 * @returns {object} associative array mapping tokens to probabilities
-		 */
 		getProbabilities : function(path) {
 			
 			//log('getProbabilities: '+path);
@@ -3684,6 +3683,7 @@
 	RiGrammar.OR_PATT = /\s*\|\s*/;
 	
 	RiGrammar.prototype = {
+		
 
 		init : function(grammar) {
 
@@ -4954,11 +4954,10 @@
 				else
 				  console.error("Unexpected arg in RiText("+a[0]+" [type="+(typeof a[0])+"])");
 			}
+			
 			if (a.length > 1) parsed[1] = a[1];
-
-			if (a.length> 2) parsed[2] = a[2];
-
-			if (a.length> 3) parsed[3] = a[3];
+			if (a.length > 2) parsed[2] = a[2];
+			if (a.length > 3) parsed[3] = a[3];
 
 			return parsed;
 		},
@@ -6905,11 +6904,13 @@
 
 		  //  add first instance of this token 
 		  if (!node) {
+		  	
 			node = new TextNode(this, newToken);
 			node.count = initialCount;
 			this.children[key] = node;   
 		  }
-		  else {         
+		  else {      
+		  	   
 			node.count++;
 		  }
 		  
