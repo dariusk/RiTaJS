@@ -568,7 +568,7 @@
 			return Math.sqrt(dx * dx + dy * dy);
 		},
 		
-		// TODO: THIS MAY BE BROKEN
+		// TODO: BROKEN?
 		timer : function(period, callback) {
 			 
 			var a = arguments;
@@ -594,7 +594,7 @@
 			return id;
 		}, 
 		
-		// TODO: THIS MAY BE BROKEN
+		// TODO: BROKEN?
 		stopTimer : function(id) { 
 			
 			// TODO: THIS DEFINATELY BROKEN
@@ -604,10 +604,9 @@
 				warn('no timer with id: '+id);
 		}, 
 
-		// TODO: THIS MAY BE BROKEN
-		 pauseTimer : function(id, pauseSec) {  
-			//console.log("pause");
-			
+		// TODO: BROKEN?
+		pauseTimer : function(id, pauseSec) {  
+		 
 			pauseSec = is(pauseSec, N) ? pauseSec : Number.MAX_VALUE;
 			
 			if (timers[id])  {
@@ -623,51 +622,43 @@
 			else {
 				warn('no timer with id: '+id);
 			}
-			
 			 
 			return -1; 
 		},   
 
-		/**
-		 * Returns true if 'tag' is a valid PENN part-of-speech tag (e.g. cd, fw, jj, ls, nn, sym, vbg, wp)
-		 * @param {string} tag the PENN part-of-speech tag
-		 * @returns {boolean} true if the tag a valid PENN part-of-speech tag
-		 */
 		_isPosTag : function(tag) {
+		
 			return PosTagger.isTag(tag);
-			
 		},
-			 
-		// TODO: example
-		/**
-		 * Tags the word (as usual) with a part-of-speech from the Penn tagset, 
-		 * then returns the corresponding part-of-speech for WordNet from the
-		 * set { 'n', 'v', 'a', 'r' } as a string. 
-		 * 
-		 * @param {string | array} words the text to be tagged
-		 * @returns {array} the corresponding parts-of-speech for WordNet
-		 */
+	
+		_tagForPENN : function(words) {
+		
+			if (!words || !words.length) return EA;
+			var arr = is(words,S) ? RiTa.tokenize(words) : words;
+			return PosTagger.tag(arr);
+		},
+		
 		_tagForWordNet  : function(words) {
 			
-			var posArr = RiTa.getPosTags(words);
-
+			posArr = RiTa._tagForPENN(words);
 			if (words && posArr.length) {
+			
 				for ( var i = 0; i < posArr.length; i++) {
 					var pos = posArr[i];
-					if (PosTagger.isNoun(pos))      posArr[i] =  "n";
-					if (PosTagger.isVerb(pos))      posArr[i] =  "v";
-					if (PosTagger.isAdverb(pos))    posArr[i] =  "r";
-					if (PosTagger.isAdj(pos))      posArr[i] =  "a";
-				}
+					posArr[i] = '-'; // default=other
+					if (PosTagger.isNoun(pos))      	posArr[i] =  'n';
+					else if (PosTagger.isVerb(pos))		posArr[i] =  'v';
+					else if (PosTagger.isAdverb(pos))	posArr[i] =  'r';
+					else if (PosTagger.isAdj(pos))		posArr[i] =  'a';
+				}	
 				return posArr;  
 			}
 			return EA; 
 		},
 
-		getPosTags : function(words) {    
+		getPosTags : function(words, useWordNetTags) {    
 			
-			var arr = is(words,S) ? RiTa.tokenize(words) : words;
-			return PosTagger.tag(arr);
+			return (useWordNetTags)  ? RiTa._tagForWordNet(words) : RiTa._tagForPENN(words);
 		},
 		
 		// TODO: example
@@ -1454,7 +1445,7 @@
 		
 		asList : function(o) {    
 		
-    		return (!o) ? "[]" : o.join(", ").trim();
+    		return (!o) ? '[]' : o.join(', ').trim();
 		},
 		
 		env : function() {
@@ -2306,17 +2297,15 @@
 			this._type = eventType || RiTa.UNKNOWN;
 		},
 		
-		/** @private  */
 		toString : function() {
 			
-			// TODO: implement typeToString() and uncomment below
-			var s = "RiTaEvent[#"+this._id+" type="+ // typeToString(this._type)+ 
-				"("+this._type+") src="+this._source.toString();
-			if (this._data)
-				(s += " data-length="+this._data.toString().length);
-			else
-				s += " data=null";
-			return s + "]";
+			var s = 'RiTaEvent[#'+this._id+' type=' + 
+				'(' + this._type + ') src='+this._source.toString();
+				
+			s += !this._data ? s += ' data=null' :
+				(' data-length='+this._data.toString().length);
+
+			return s + ']';
 		},
 
 		source : function() {
@@ -2329,7 +2318,6 @@
 			return this._data;  
 		},
 		
-		
 		type : function() {
 			
 			return this._type;  
@@ -2340,7 +2328,6 @@
 			return this._type === t;  
 		},
 		
-		 // Fires an event and directs it to the appropriate callback implementation
 		_fire: function(callback) {
 			
 			callback = callback || window.onRiTaEvent;
@@ -2368,8 +2355,7 @@
 			 
 			RiTaEvent._callbacksDisabled = true; 
 
-			/*else if (!RiTaEvent._callbacksDisabled)
-				warn("RiTaEvent: no '"+callback+"' callback found...");*/
+			//else if (!RiTaEvent._callbacksDisabled) warn("RiTaEvent: no '"+callback+"' callback found...");
 				
 			return this;
 		}
@@ -2774,11 +2760,11 @@
 		_checkType: function(word, tagArray) {
 
 			if (word && word.indexOf(SP) != -1) 
-				 throw Error("_checkType() expects a single word, found: "+word); 
+				 throw Error("[RiTa] _checkType() expects a single word, found: "+word); 
 
 			var psa = this._getPosArr(word);
 			for (var i = 0; i < psa.length; i++) {
-				if (tagArray.indexOf(psa[i].toUpperCase()) > -1)
+				if (tagArray.indexOf(psa[i]) > -1)
 					return true;
 			} 
 			
@@ -3021,7 +3007,7 @@
 					
 				case 2: //a[0]=pos  a[1]=syllableCount
 					
-						a[0] = trim(a[0].toUpperCase()); 
+						a[0] = trim(a[0]); 
 						
 						for (var j = 0; j < PosTagger.TAGS.length; j++) { 
 							
@@ -3052,7 +3038,7 @@
 					
 					if (is(a[0],S)) { // a[0] = pos
 						
-						a[0] = trim(a[0].toUpperCase()); 
+						a[0] = trim(a[0]); 
 						
 						for(var j = 0; j < PosTagger.TAGS.length; j++) {
 							
@@ -7412,78 +7398,76 @@
 
 		// Penn Pos types ------------------------------ (40+UKNOWN)
 
-		UNKNOWN : [ '???', 'UNKNOWN' ],
-		N : [ 'N', 'NOUN_KEY' ],
-		V : [ 'V', 'VERB_KEY' ],
-		R : [ 'R', 'ADVERB_KEY' ],
-		A : [ 'A', 'ADJECTIVE_KEY' ],
-		CC : [ 'CC', 'Coordinating conjunction' ],
-		CD : [ 'CD', 'Cardinal number' ],
-		DT : [ 'DT', 'Determiner' ],
-		EX : [ 'EX', 'Existential there' ],
-		FW : [ 'FW', 'Foreign word' ],
-		IN : [ 'IN', 'Preposition or subordinating conjunction' ],
-		JJ : [ 'JJ', 'Adjective' ],
-		JJR : [ 'JJR', 'Adjective, comparative' ],
-		JJS : [ 'JJS', 'Adjective, superlative' ],
-		LS : [ 'LS', 'List item marker' ],
-		MD : [ 'MD', 'Modal' ],
-		NN : [ 'NN', 'Noun, singular or mass' ],
-		NNS : [ 'NNS', 'Noun, plural' ],
-		NNP : [ 'NNP', 'Proper noun, singular' ],
-		NNPS : [ 'NNPS', 'Proper noun, plural' ],
-		PDT : [ 'PDT', 'Predeterminer' ],
-		POS : [ 'POS', 'Possessive ending' ],
-		PRP : [ 'PRP', 'Personal pronoun' ],
-		PRP$ : [ 'PRP$', 'Possessive pronoun (prolog version PRP-S)' ],
-		RB : [ 'RB', 'Adverb' ],
-		RBR : [ 'RBR', 'Adverb, comparative' ],
-		RBS : [ 'RBS', 'Adverb, superlative' ],
-		RP : [ 'RP', 'Particle' ],
-		SYM : [ 'SYM', 'Symbol' ],
-		TO : [ 'TO', 'to' ],
-		UH : [ 'UH', 'Interjection' ],
-		VB : [ 'VB', 'Verb, base form' ],
-		VBD : [ 'VBD', 'Verb, past tense' ],
-		VBG : [ 'VBG', 'Verb, gerund or present participle' ],
-		VBN : [ 'VBN', 'Verb, past participle' ],
-		VBP : [ 'VBP', 'Verb, non-3rd person singular present' ],
-		VBZ : [ 'VBZ', 'Verb, 3rd person singular present' ],
-		WDT : [ 'WDT', 'Wh-determiner' ],
-		WP : [ 'WP', 'Wh-pronoun' ],
-		WP$ : [ 'WP$', 'Possessive wh-pronoun (prolog version WP-S)' ],
-		WRB : [ 'WRB', 'Wh-adverb' ],
+		UNKNOWN : [ '???', 'unknown' ],
+		N : [ 'n', 'NOUN_KEY' ],
+		V : [ 'v', 'VERB_KEY' ],
+		R : [ 'r', 'ADVERB_KEY' ],
+		A : [ 'a', 'ADJECTIVE_KEY' ],
+		CC : [ 'cc', 'Coordinating conjunction' ],
+		CD : [ 'cd', 'Cardinal number' ],
+		DT : [ 'dt', 'Determiner' ],
+		EX : [ 'ex', 'Existential there' ],
+		FW : [ 'fw', 'Foreign word' ],
+		IN : [ 'in', 'Preposition or subordinating conjunction' ],
+		JJ : [ 'jj', 'Adjective' ],
+		JJR : [ 'jjr', 'Adjective, comparative' ],
+		JJS : [ 'jjs', 'Adjective, superlative' ],
+		LS : [ 'ls', 'List item marker' ],
+		MD : [ 'md', 'Modal' ],
+		NN : [ 'nn', 'Noun, singular or mass' ],
+		NNS : [ 'nns', 'Noun, plural' ],
+		NNP : [ 'nnp', 'Proper noun, singular' ],
+		NNPS : [ 'nnps', 'Proper noun, plural' ],
+		PDT : [ 'pdt', 'Predeterminer' ],
+		POS : [ 'pos', 'Possessive ending' ],
+		PRP : [ 'prp', 'Personal pronoun' ],
+		PRP$ : [ 'prp$', 'Possessive pronoun (prolog version PRP-S)' ],
+		RB : [ 'rb', 'Adverb' ],
+		RBR : [ 'rbr', 'Adverb, comparative' ],
+		RBS : [ 'rbs', 'Adverb, superlative' ],
+		RP : [ 'rp', 'Particle' ],
+		SYM : [ 'sym', 'Symbol' ],
+		TO : [ 'to', 'to' ],
+		UH : [ 'uh', 'Interjection' ],
+		VB : [ 'vb', 'Verb, base form' ],
+		VBD : [ 'vbd', 'Verb, past tense' ],
+		VBG : [ 'vbg', 'Verb, gerund or present participle' ],
+		VBN : [ 'vbn', 'Verb, past participle' ],
+		VBP : [ 'vbp', 'Verb, non-3rd person singular present' ],
+		VBZ : [ 'vbz', 'Verb, 3rd person singular present' ],
+		WDT : [ 'wdt', 'Wh-determiner' ],
+		WP : [ 'wp', 'Wh-pronoun' ],
+		WP$ : [ 'wp$', 'Possessive wh-pronoun (prolog version WP-S)' ],
+		WRB : [ 'wrb', 'Wh-adverb' ],
 
-		TAGS : [ 'CC', 'CD', 'DT', 'EX', 'FW', 'IN', 'JJ', 
-				'JJR', 'JJS', 'LS', 'MD', 'NN', 'NNS', 'NNP', 
-				'NNPS', 'PDT', 'POS', 'PRP', 'PRP$', 'RB', 
-				'RBR', 'RBS', 'RP', 'SYM', 'TO', 
-				 'UH', 'VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ', 'WDT', 
-				 'WP', 'WP$', 'WRB', 'UNKNOWN' ],
+		TAGS : [ 'cc', 'cd', 'dt', 'ex', 'fw', 'in', 'jj', 
+				'jjr', 'jjs', 'ls', 'md', 'nn', 'nns', 'nnp', 
+				'nnps', 'pdt', 'pos', 'prp', 'prp$', 'rb', 
+				'rbr', 'rbs', 'rp', 'sym', 'to', 
+				 'uh', 'vb', 'vbd', 'vbg', 'vbn', 'vbp', 'vbz', 'wdt', 
+				 'wp', 'wp$', 'wrb', 'unknown' ],
 
-		NOUNS : [ 'NN', 'NNS', 'NNP', 'NNPS' ],
-		VERBS : [ 'VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ' ],
-		ADJ : [ 'JJ', 'JJR', 'JJS' ],
-		ADV : [ 'RB', 'RBR', 'RBS', 'RP' ],
+		NOUNS : [ 'nn', 'nns', 'nnp', 'nnps' ],
+		VERBS : [ 'vb', 'vbd', 'vbg', 'vbn', 'vbp', 'vbz' ],
+		ADJ : [ 'jj', 'jjr', 'jjs' ],
+		ADV : [ 'rb', 'rbr', 'rbs', 'rp' ],
 
-   
 		isVerb : function(tag) {
 			
-			return inArray(this.VERBS, tag.toUpperCase());
+			return inArray(this.VERBS, tag);
 		},
 
 		isNoun : function(tag) {
 			
-			return inArray(this.NOUNS, tag.toUpperCase());
+			return inArray(this.NOUNS, tag);
 		},
 
 		isAdverb : function(tag) {
-			//log('tag='+tag+' count='+this.TAGS.length);
-			return inArray(this.ADV, tag.toUpperCase());
+			return inArray(this.ADV, tag);
 		},
 
 		isAdj : function(tag) {
-			return inArray(this.ADJ, tag.toUpperCase());
+			return inArray(this.ADJ, tag);
 		},
 
 		isTag : function(tag) {
@@ -7705,7 +7689,7 @@
 	
 			firstch = w.substr(0,1);
 			if (firstch == "y") {
-				w = firstch.toUpperCase() + w.substr(1);
+				w = firstch + w.substr(1);
 			}
 	
 			// Step 1a
@@ -10256,7 +10240,7 @@
 		doubling : false
 	};
 
-	//////// Utility functions ///////////////////////////////////////////////////////
+	//////// Utility functions (private) /////////////////////////////////////////////
 		
 	function isNum(n) {
 		
@@ -10287,23 +10271,10 @@
 		}
 		return properties;
 	}
-	
-	function asList(array) {
-		
-		var s="[";
-		for ( var i = 0; i < array.length; i++) {
-			var el = array[i];
-			if (array[i] instanceof Array)
-				el = asList(array[i]);
-			s += el;
-			if (i < array.length-1) s += ", ";
-		}
-		return s+"]";
-	}
 
 	function undef(obj) {
 		
-		return (typeof obj=='undefined' || obj == null);
+		return (typeof obj=='undefined' || obj == null || !obj);
 	}
 
 	function err(msg) {
