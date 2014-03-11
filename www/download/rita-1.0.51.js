@@ -48880,6 +48880,19 @@ _RiTa_LTS=[
 		}
 	}
 	
+	// ////////////////////////////////////////////////////////////
+	// RiWordNet (stub)
+	// ////////////////////////////////////////////////////////////
+	
+	var RiWordNet = makeClass();
+
+	RiWordNet.prototype = {
+		
+		init: function() {
+			
+			throw Error("RiWordNet is not yet implemented in JavaScript!");
+		}
+	}
 	
 	// ////////////////////////////////////////////////////////////
 	// RiLexicon
@@ -49603,15 +49616,14 @@ _RiTa_LTS=[
 		}
 	}
 	
-	
-	var Phones =        
-	{
+	var Phones = {
+		
 		  consonants: [ 'b', 'ch', 'd', 'dh', 'f', 'g', 'hh', 'jh', 'k', 'l', 'm', 'n', 
 						'ng', 'p', 'r', 's', 'sh', 't', 'th', 'v', 'w', 'y', 'z', 'zh' ],
 
 		  vowels: [ 'aa', 'ae', 'ah', 'ao', 'aw', 'ax', 'ay', 'eh', 'er', 'ey', 'ih', 'iy',
 					'ow', 'oy', 'uh', 'uw' ],
-	
+
 		  onsets: [ 'p', 't', 'k', 'b', 'd', 'g', 'f', 'v', 'th', 'dh', 's', 'z', 'sh', 'ch', 'jh', 'm',
 					'n', 'r', 'l', 'hh', 'w', 'y', 'p r', 't r', 'k r', 'b r', 'd r', 'g r', 'f r',
 					'th r', 'sh r', 'p l', 'k l', 'b l', 'g l', 'f l', 's l', 't w', 'k w', 'd w', 
@@ -49629,7 +49641,7 @@ _RiTa_LTS=[
 	
 	var RiString = makeClass();
 	
-	RiString._syllabify = function(input) {
+	RiString._syllabify = function(input) { // adapted from FreeTTS
 	   
 		var dbug, None=undefined, internuclei = [], syllables = [],   // returned data structure.
 			sylls = ((typeof (input) == 'string') ? input.split('-') : input);
@@ -49726,7 +49738,7 @@ _RiTa_LTS=[
 	  
 	/*
 	 * Takes a syllabification and turns it into a string of phonemes, 
-	 * delimited with dashes, and spaces between syllables 
+	 * delimited with dashes, with spaces between syllables 
 	 */
 	RiString._stringify = function(syllables) {
 			

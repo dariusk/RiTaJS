@@ -2361,6 +2361,19 @@
 		}
 	}
 	
+	// ////////////////////////////////////////////////////////////
+	// RiWordNet (stub)
+	// ////////////////////////////////////////////////////////////
+	
+	var RiWordNet = makeClass();
+
+	RiWordNet.prototype = {
+		
+		init: function() {
+			
+			throw Error("RiWordNet is not yet implemented in JavaScript!");
+		}
+	}
 	
 	// ////////////////////////////////////////////////////////////
 	// RiLexicon
@@ -3084,15 +3097,22 @@
 		}
 	}
 	
+
 	
-	var Phones =        
-	{
+	////////////////////////////////////////////////////////////////
+	// RiString
+	////////////////////////////////////////////////////////////////
+	
+	var RiString = makeClass();
+	
+	RiString.phones = {
+		
 		  consonants: [ 'b', 'ch', 'd', 'dh', 'f', 'g', 'hh', 'jh', 'k', 'l', 'm', 'n', 
 						'ng', 'p', 'r', 's', 'sh', 't', 'th', 'v', 'w', 'y', 'z', 'zh' ],
 
 		  vowels: [ 'aa', 'ae', 'ah', 'ao', 'aw', 'ax', 'ay', 'eh', 'er', 'ey', 'ih', 'iy',
 					'ow', 'oy', 'uh', 'uw' ],
-	
+
 		  onsets: [ 'p', 't', 'k', 'b', 'd', 'g', 'f', 'v', 'th', 'dh', 's', 'z', 'sh', 'ch', 'jh', 'm',
 					'n', 'r', 'l', 'hh', 'w', 'y', 'p r', 't r', 'k r', 'b r', 'd r', 'g r', 'f r',
 					'th r', 'sh r', 'p l', 'k l', 'b l', 'g l', 'f l', 's l', 't w', 'k w', 'd w', 
@@ -3104,13 +3124,7 @@
 					's-eh1-v-ax-n', 'ey-t', 'n-ih-n' ]
 	}
 	
-	////////////////////////////////////////////////////////////////
-	// RiString
-	////////////////////////////////////////////////////////////////
-	
-	var RiString = makeClass();
-	
-	RiString._syllabify = function(input) {
+	RiString._syllabify = function(input) { // adapted from FreeTTS
 	   
 		var dbug, None=undefined, internuclei = [], syllables = [],   // returned data structure.
 			sylls = ((typeof (input) == 'string') ? input.split('-') : input);
@@ -3129,7 +3143,7 @@
 			
 			if (dbug)console.log(i+")"+phoneme + ' stress='+stress+' inter='+internuclei.join(':'));
 			
-			if (inArray(Phones.vowels, phoneme)) {
+			if (inArray(RiString.phones.vowels, phoneme)) {
 	 
 				// Split the consonants seen since the last nucleus into coda and onset.            
 				var coda = None, onset = None;
@@ -3147,7 +3161,7 @@
 					// (in which case an invalid onset is better than a coda that doesn't follow
 					// a nucleus), or if we've gone through all of the onsets and we didn't find
 					// any that are valid, then split the nonvowels we've seen at this location.
-					var bool = inArray(Phones.onsets, onset.join(" "));
+					var bool = inArray(RiString.phones.onsets, onset.join(" "));
 					if (bool || syllables.length == 0 || onset.length == 0) {
 						if (dbug)console.log('  break '+phoneme);
 					   break;
@@ -3175,7 +3189,7 @@
 				internuclei = [];
 			}
 			
-			else if (!inArray(Phones.consonants, phoneme) && phoneme != " ") {
+			else if (!inArray(RiString.phones.consonants, phoneme) && phoneme != " ") {
 				throw Error('Invalid phoneme: ' + phoneme);
 			}
 				
@@ -3207,7 +3221,7 @@
 	  
 	/*
 	 * Takes a syllabification and turns it into a string of phonemes, 
-	 * delimited with dashes, and spaces between syllables 
+	 * delimited with dashes, with spaces between syllables 
 	 */
 	RiString._stringify = function(syllables) {
 			
@@ -6014,7 +6028,7 @@
 				  if (dig < 0 || dig > 9)
 					  throw Error("Attempt to pass multi-digit number to LTS: '"+word+"'");
 				  
-				  phoneList.push(Phones.digits[dig]);
+				  phoneList.push(RiString.phones.digits[dig]);
 			  }
 			  
 			  return phoneList;
@@ -10536,6 +10550,7 @@
 		window['RiGrammar'] = RiGrammar;
 		window['RiMarkov'] = RiMarkov;
 		window['RiTaEvent'] = RiTaEvent;
+		window['RiWordNet'] = RiWordNet;
 	}
 	
 	if (typeof module != 'undefined' && module.exports) { // for node
@@ -10547,8 +10562,8 @@
 		module.exports['RiGrammar'] = RiGrammar;
 		module.exports['RiMarkov'] = RiMarkov;
 		module.exports['RiTaEvent'] = RiTaEvent;
+		module.exports['RiWordNet'] = RiWordNet;
 	}
-	
 
 	RiTa.p5Compatible(false);
 
