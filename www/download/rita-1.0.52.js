@@ -47116,7 +47116,7 @@ _RiTa_LTS=[
 		// TODO: BROKEN?
 		stopTimer : function(id) { 
 			
-			// TODO: THIS DEFINATELY BROKEN
+			// TODO: THIS DEFINITELY BROKEN
 			if (timers[id])  
 				timers[id].stop();
 			else
@@ -50611,9 +50611,7 @@ _RiTa_LTS=[
 	// RiText statics
 	////////////////////////////////////////////////////////////////////// 
 	
-	/**
-	 * Static container for properties related to the update/render loop
-	 */
+	/* Static container for properties related to the update/render loop */
 	RiText._animator = {
 		
 		loopId : -1,
@@ -50636,17 +50634,17 @@ _RiTa_LTS=[
 		return RiText.renderer ? RiText.renderer._getGraphics() : null;
 	}
 
-	RiText.timer = function(period, callback) {
+	RiText.timer = function(period, callback) { // TODO: need these? remove
 
 		return RiTa.timer.apply(this,arguments);
 	}
 
-	RiText.stopTimer = function(id) {
+	RiText.stopTimer = function(id) {  // TODO: need these? remove
 
 		RiTa.stopTimer.apply(this,arguments);
 	} 
 
-	RiText.pauseTimer = function(id, pauseSec) {
+	RiText.pauseTimer = function(id, pauseSec) { // TODO: need these? remove
 		
 		return RiTa.pauseTimer.apply(this,arguments);
 	}   
