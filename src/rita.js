@@ -4,7 +4,6 @@
 	var _VERSION_ = '##version##';	
 
 	/**  @private Simple type-checking functions */ 
-	
 	var Type = {
 		
 		N : 'number', S : 'string', O : 'object', A :'array', B : 'boolean', R : 'regexp', F : 'function',
@@ -37,7 +36,7 @@
 		
 	},  is = Type.is, ok = Type.ok; // alias
 
-	var Easing = {
+	var Easing = { // Penner's canonical set
 	
 		Linear: {
 	
@@ -349,22 +348,6 @@
 			}
 		}
 	};
-	
-	// var EventType = {
-	  // MoveTo: {value: 0, name:"MoveTo"},
-	  // ColorTo: {value: 1, name:"ColorTo"},
-	  // FadeIn: {value: 2, name:"FadeIn"},
-	  // FadeOut: {value: 3, name:"FadeOut"},
-	  // TextTo: {value: 4, name:"TextTo"} ,
-	  // Timer: {value: 5, 	name:"Timer"},
-	  // ScaleTo: {value: 6, name:"ScaleTo"},
-	  // RotateTo: {value: 7, name:"RotateTo"},
-	  // TextEntered: {value: 8, name:"TextEntered"},
-	  // Lerp: {value: 9, name:"Lerp"},
-	  // BoundingAlpha: {value: 10, name:"BoundingAlpha"},
-	  // TextToCopy: {value: 11, name:"TextToCopy"},
-	  // Unknown: {value: 12, name:"Unknown"}
-	// }
 		
 	// ////////////////////////////////////////////////////////////
 	// RiTa object (singleton)
@@ -719,6 +702,8 @@
 
 			return Conjugator().conjugate(verb, args);            
 		},
+		
+		//upperCaseFirst : function(phrase) {},
 
 		// TODO: 2 examples (regular & irregular) in javadoc
 		pluralize : function(word) {
@@ -5617,10 +5602,10 @@
 			return this;
 		},
 
-		isVisible : function(b) { 
+		isVisible : function() { 
 			
 			if (arguments.length)
-				 err('visible() takes no arguments');
+				 err('isVisible() takes no arguments');
 			
 			return this._color.a > 0;
 		},
