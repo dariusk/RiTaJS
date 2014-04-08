@@ -378,7 +378,7 @@
 	    INTERNAL : "Internal",
 		LERP : "Lerp",
 
-	  	JAVA : 1, JS : 2, NODEJS : 3,
+	  	JAVA : 1, JS : 2, NODE : 3,
 
 		// :::: RiText Constants  ::::::::: 
 
@@ -1435,8 +1435,7 @@
 		
 		env : function() {
 
-			return isNode() ? RiTa.NODEJS : RiTa.JS;
-			
+			return isNode() ? RiTa.NODE : RiTa.JS;
 		},
 		
 		chomp : function(txt) {
