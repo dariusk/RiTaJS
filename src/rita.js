@@ -853,7 +853,22 @@
 			
 			//log("Using Node for: "+url +" isUrl="+isUrl);
 			
-			if (isUrl) {  // TODO: test this!
+			if (isUrl) {  // TODO: switch to 'http' and test
+			
+				/*var http = require('http');
+				var options = {
+				  host: 'example.com',
+				  port: 80,
+				  path: '/foo.html'
+				};
+
+				http.get(options, function(resp){
+				  resp.on('data', function(chunk){
+					//do something with chunk
+				  });
+				}).on("error", function(e){
+				  console.log("Got error: " + e.message);
+				});*/
 				
 				// try with node request 
 				var request = require('request');
@@ -932,6 +947,14 @@
 				me.fireDataLoaded(url, callback, data);
 			}
 		},	
+		
+		loadStrings : function(url, callback) {
+			var fireDataLoaded = this.fireDataLoaded;
+			this.loadString(url, function(d) {
+				 var lines = d.split('\n');
+				 fireDataLoaded(url, callback, lines); 
+			}, '\n');
+		},
 						
 		loadString : function(url, callback, linebreakChars) {
 			
@@ -968,7 +991,7 @@
 		fireDataLoaded : function(url, callback, data) {
 
 			//console.log('fireDataLoaded: '+url);
-			return (callback) ? callback(data,url) :
+			return (callback) ? callback(data, url) :
 				RiTaEvent({ name: 'RiTaLoader', urls: is(url, S) ? [url] : url }, RiTa.DATA_LOADED, data)._fire();
 		},
 
@@ -3277,7 +3300,7 @@
 		_initFeatureMap : function() {
 
 			this._features = {};					    
-		    this._features.mutable = "true";
+		    //this._features.mutable = "true";
 		    this._features.text = this.text();
 		},
 		
