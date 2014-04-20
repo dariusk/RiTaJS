@@ -1,3 +1,4 @@
+// TODO: register bower package: http://bob.yexley.net/creating-and-maintaining-your-own-bower-package/
 
 (function(window, undefined) {
 	
