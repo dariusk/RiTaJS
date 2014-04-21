@@ -3300,10 +3300,22 @@
 		
 		_initFeatureMap : function() {
 
-			this._features = {};					    
+			if (!this._features) {
+				
+				this._features = {};
+			}
+			else {
+				delete this._features.tokens;
+				delete this._features.stresses;
+				delete this._features.phonemes;
+				delete this._features.syllables;
+				delete this._features.pos;
+			}			
+					    
 		    //this._features.mutable = "true";
 		    this._features.text = this.text();
 		},
+
 		
 		analyze : function() {
 	
@@ -3374,7 +3386,20 @@
 		get : function(featureName) {
 			
 			this._features || this.analyze();
-			return this._features[featureName.toLowerCase()];  
+			var s = this._features[featureName]; 
+			if (!s && !this._features.hasOwnProperty(featureName)) {
+				this.analyze();
+				s = this._features[featureName]; 
+			}
+			return s;
+		},
+		
+		set : function(featureName, featureValue) {
+			
+			this._features || (this._features = {}); 
+			this._features[featureName] = featureValue;
+			//console.log(this._features);  
+			return this;
 		},
 
 		endsWith : function(substr) {
@@ -4593,7 +4618,8 @@
 			txt = txt.join(SP); // else join into single string
 		}
 		
-	    w = w || (g ? g._width()-x : Number.MAX_VALUE-x);
+		if (!w || w < 0) // 
+	    	w = (g ? g._width()-x : Number.MAX_VALUE-x);
 
 		var ascent, descent, leading, startX = x, currentX, currentY, 
 			rlines = [], sb = E, words = [], next, yPos = 0, rt = null,
