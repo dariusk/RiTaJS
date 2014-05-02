@@ -1623,6 +1623,8 @@
 			
 		loadFrom : function(url, multiplier, regex, callback) {
 			
+			// TODO: check multiplier and regex, if function, then use as callback
+			
 			var me = this;
 			
 			is(url,S) || ok(url,A);
@@ -1720,6 +1722,9 @@
 						
 						var candidate = RiTa.untokenize(s.trim().split(/\s+/));
 						
+						// deals with incorrect output: "word( next" -> "word (next" 
+						candidate = candidate.replace(/(.)\( /,"$1 ("); // added DCH: 5/2/14
+
 						if (this._validateSentence(candidate)) {
 							
 							// got one, store and reset the counters
@@ -1754,7 +1759,8 @@
 		
 		_validateSentence : function(sent) {
 			
-		    var tokens = RiTa.tokenize(sent), first = tokens[0], last = tokens[tokens.length-1];
+		    var tokens = RiTa.tokenize(sent), first = tokens[0],
+				last = tokens[tokens.length-1];
  
 		    if (!first.match(/[A-Z]\S*/)) {
 		      if (this.printIgnoredText)
@@ -8763,7 +8769,7 @@
 
 		
 		/**
-		 * Compute min-edit-distance between 2 strings
+		 * Compute min-edit-distance between 2 strings (or 2 arrays)
 		 */ 
 		computeRaw : function(source, target) { 
 
@@ -8827,7 +8833,7 @@
 
 		/**
 		 * Compute min-edit-distance between 2 strings (or 2 arrays of strings) 
-		 * divided by their average length.
+		 * divided by the max of their lengths.
 		 */ 
 		computeAdjusted : function(source, target) {
 
@@ -8838,13 +8844,13 @@
 					
 					if (!source.length && !target.length) return 0;
 					//log(this.computeRaw(source, target)+'/'+(source.length + target.length));
-					return this.computeRaw(source, target) / (source.length + target.length);
+					return this.computeRaw(source, target) / Math.max(source.length, target.length);
 				}
 				else if (tt===A) {
 					
 					if (!source.length && !target.length) return 0;
 					//log(_computeRawArray(source, target)+'/'+(source.length + target.length));
-					return this._computeRawArray(source, target) / (source.length + target.length);
+					return this._computeRawArray(source, target) / Math.max(source.length,target.length);
 				}
 			}
 			
@@ -10346,6 +10352,7 @@
 		module.exports['RiMarkov'] = RiMarkov;
 		module.exports['RiTaEvent'] = RiTaEvent;
 		module.exports['RiWordNet'] = RiWordNet;
+		module.exports['MinEditDist'] = MinEditDist;
 	}
 
 	RiTa.p5Compatible(false);
