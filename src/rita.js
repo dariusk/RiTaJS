@@ -1,5 +1,3 @@
-// TODO: register bower package: http://bob.yexley.net/creating-and-maintaining-your-own-bower-package/
-
 (function(window, undefined) {
 	
 	var _VERSION_ = '##version##';	
@@ -540,7 +538,6 @@
 			var aMin = arguments[0], aMax = arguments[1];
 			
 			return currentRandom * (aMax - aMin) + aMin;
-			
 		},
 		
 		 randomItem : function(arr) {
@@ -706,7 +703,10 @@
 			return Conjugator().conjugate(verb, args);            
 		},
 		
-		//upperCaseFirst : function(phrase) {},
+		upperCaseFirst : function(s) {
+			
+    		return s.charAt(0).toUpperCase() + s.substring(1);
+		},
 
 		// TODO: 2 examples (regular & irregular) in javadoc
 		pluralize : function(word) {
@@ -735,6 +735,7 @@
 
 			if (!strOk(word)) return E;
 
+			//// TODO: WHY IS THIS NOT IN JAVA? ////
 			var i, rule, rules = SINGULAR_RULES;
 
 			if (inArray(MODALS, word.toLowerCase())) {
@@ -748,8 +749,8 @@
 					return rule.fire(word);
 				}
 			}
+			////////////////////////////////////////
 
-			
 			return this.stem(word, 'Pling');
 		},
 
@@ -850,41 +851,38 @@
 			return inArray(this.ABBREVIATIONS, input);
 		},
 		
+		// TODO: add tests
 		_loadStringNode : function(url, callback, linebreakChars) {
 			
-			var lb = linebreakChars || SP, isUrl = /.+?:\/\/.+/.test(url), me = this;
+			var data='', lb = linebreakChars || SP, isUrl = /.+?:\/\/.+/.test(url), me = this;
 			
 			//log("Using Node for: "+url +" isUrl="+isUrl);
 			
-			if (isUrl) {  // TODO: switch to 'http' and test
-			
-				/*var http = require('http');
-				var options = {
-				  host: 'example.com',
-				  port: 80,
-				  path: '/foo.html'
-				};
+			if (isUrl) {
 
-				http.get(options, function(resp){
-				  resp.on('data', function(chunk){
-					//do something with chunk
-				  });
-				}).on("error", function(e){
-				  console.log("Got error: " + e.message);
-				});*/
-				
-				// try with node request 
-				var request = require('request');
-
-				request('http://www.google.com', function(e, response, data) {
-					if (e || !data || response.statusCode != 200) {
-						err("[Node] Error reading file: " + url + "\n" + e);
+				var httpcb = function(response) {
+					response.on('data', function(chunk) {
+						data += chunk;
+					});
+					response.on('error', function(e) {
 						throw e;
-					}
-					//console.log(data)// Print the web page.
-					data = data.toString('utf-8').replace(/[\r\n]+/g, lb).trim();
-					me.fireDataLoaded(url, callback, data);
-				}); 
+					});					
+					response.on('end', function() {
+						data = data.toString('utf-8').replace(/[\r\n]+/g, lb).trim();
+						me.fireDataLoaded(url, callback, data);
+					});
+				}
+
+				//var req = require('http').get(url, httpcb); // or this?
+				var req = require('http').request(url, httpcb);
+				req.on('socket', function (socket) { // shouldnt be needded
+			    	socket.setTimeout(3000);  // ?
+			    	socket.on('timeout', function() {
+			    		req.abort();
+			    		throw Error("[RiTa] loadString timed-out and aborted request");
+			      	});
+			    });
+			    req.end();
 			}
 			else {
 				
@@ -930,7 +928,7 @@
 			cwin = iframe.contentWindow || iframe.contentDocument.parentWindow;
 			cwin.onload = function() {
 								
-				var data = "[RiTa] loadString() error";
+				var data = "[RiTa] loadString() unexpected error!";
 				if (cwin && cwin.document && cwin.document.body && 
 					cwin.document.body.childNodes && cwin.document.body.childNodes.length) 
 				{
@@ -963,6 +961,7 @@
 			}, '\n');
 		},
 						
+		// TODO: add NodeJS tests for all loadXX methods
 		loadString : function(url, callback, linebreakChars) {
 			
 			var lb = linebreakChars || SP, cwin, iframe;// me = this;
@@ -997,7 +996,7 @@
 		
 		fireDataLoaded : function(url, callback, data) {
 
-			//console.log('fireDataLoaded: '+url);
+			//log('fireDataLoaded: '+url);
 			return (callback) ? callback(data, url) :
 				RiTaEvent({ name: 'RiTaLoader', urls: is(url, S) ? [url] : url }, RiTa.DATA_LOADED, data)._fire();
 		},
@@ -1267,7 +1266,7 @@
 		 */
 		p5Compatible : function(value) {  // TODO: remove? yes, no one cares
 			
-			//console.log('p5Compatible('+value+'['+window+'])');
+			//log('p5Compatible('+value+'['+window+'])');
 			
 			if (!arguments.callee.setupAndDraw) {
 				
@@ -1360,14 +1359,21 @@
 			}
 		},
 		
-		/**
-		 * Converts 'input' to Titlecase (1st letter upper, rest lower)
-		 */
+		// Converts 'input' to Titlecase (1st letter upper, rest lower)
 		_titleCase : function(input) {
 			
 			if (!input || !input.length) return input;
 			
 			return input.substring(0,1).toUpperCase() + input.substring(1);
+		},
+		
+		/**
+		 * Takes pair of strings or string-arrays and returns the min-edit distance
+		 * @param normalized based on max-length if 3rd (optional) parameter is true (default=f).
+		 */
+		minEditDist : function(a, b, adjusted) { // TODO: add to docs/tests
+			
+			return (!adjusted ? MinEditDist.computeRaw : MinEditDist.computeAdjusted)(a,b);
 		}
 		
 	}; // end RiTa object
@@ -1445,9 +1451,7 @@
 		},
 		
 		getProbabilities : function(path) {
-			
-			//log('getProbabilities: '+path);
-			
+
 			if (is(path,S)) path = [path];
 
 			if (path.length > this._n) {
@@ -1471,9 +1475,7 @@
 		},
 		
 		getCompletions : function(pre, post) {
-			
-			//  log(pre+" :: "+post);
-			
+
 			var tn, result=[], node, atest, nexts;
 			
 			if (post) { // fill the center
@@ -1638,7 +1640,7 @@
 
 		loadText : function(text, multiplier, regex) {
 			
-			//console.log("loadText: "+text.length + " "+this.isSentenceAware);
+			//log("loadText: "+text.length + " "+this.isSentenceAware);
 			
 			ok(text,S);
 			
@@ -1656,7 +1658,7 @@
 
 		loadTokens: function(tokens, multiplier) {
 
-			//console.log("loadTokens: smooth="+this.smoothing);
+			//log("loadTokens: smooth="+this.smoothing);
 			
 			multiplier = multiplier || 1;
 
@@ -1798,7 +1800,7 @@
 		    
 		    var words = sent.split(/\s+/);
 		    if (RiTa.isAbbreviation(words[words.length-1])) {
-      			//console.log("BAD SENTENCE: "+sent);
+      			//log("BAD SENTENCE: "+sent);
       			return false;
       		}
 
@@ -2058,7 +2060,7 @@
 		toString : function() {
 			
 			var s = 'RiTaEvent[#'+this._id+' type=' + 
-				'(' + this._type + ') src='+this._source.toString();
+				'(' + this._type + ') source='+this._source.toString();
 				
 			s += !this._data ? s += ' data=null' :
 				(' data-length='+this._data.toString().length);
@@ -2899,7 +2901,7 @@
 				phoneme = phoneme.substring(0, phoneme.length-1);
 			}
 			
-			if (dbug)console.log(i+")"+phoneme + ' stress='+stress+' inter='+internuclei.join(':'));
+			if (dbug)log(i+")"+phoneme + ' stress='+stress+' inter='+internuclei.join(':'));
 			
 			if (inArray(RiString.phones.vowels, phoneme)) {
 	 
@@ -2912,7 +2914,7 @@
 					coda  = internuclei.slice(0, split);
 					onset = internuclei.slice(split, internuclei.length);
 					
-					if (dbug)console.log('  '+split+') onset='+onset.join(':')+
+					if (dbug)log('  '+split+') onset='+onset.join(':')+
 						'  coda='+coda.join(':')+'  inter='+internuclei.join(':'));
 					
 					// If we are looking at a valid onset, or if we're at the start of the word
@@ -2921,21 +2923,21 @@
 					// any that are valid, then split the nonvowels we've seen at this location.
 					var bool = inArray(RiString.phones.onsets, onset.join(" "));
 					if (bool || syllables.length == 0 || onset.length == 0) {
-						if (dbug)console.log('  break '+phoneme);
+						if (dbug)log('  break '+phoneme);
 					   break;
 					}
 				}
 				
-				//if (dbug)console.log('  onset='+join(',',onset)+'  coda='+join(',',coda));
+				//if (dbug)log('  onset='+join(',',onset)+'  coda='+join(',',coda));
 				
 				// Tack the coda onto the coda of the last syllable. Can't do it if this
 				// is the first syllable.
 				if (syllables.length > 0 ) {
 					
 					//syllables[syllables.length-1][3] = syllables[syllables.length-1][3] || [];
-					//console.log('  len='+syllables[syllables.length-1][3].length);
+					//log('  len='+syllables[syllables.length-1][3].length);
 					extend(syllables[syllables.length-1][3], coda);
-					if (dbug) console.log('  tack: '+coda+' -> len='+syllables[syllables.length-1][3].length+" ["+syllables[syllables.length-1][3]+"]");
+					if (dbug) log('  tack: '+coda+' -> len='+syllables[syllables.length-1][3].length+" ["+syllables[syllables.length-1][3]+"]");
 				}
 				
 				// Make a new syllable out of the onset and nucleus.
@@ -2953,7 +2955,7 @@
 				
 			else { // a consonant
 				
-				//console.log('inter.push: '+phoneme);
+				//log('inter.push: '+phoneme);
 				internuclei.push(phoneme)
 			}
 		}
@@ -3148,7 +3150,7 @@
 			
 			this._features || (this._features = {}); 
 			this._features[featureName] = featureValue;
-			//console.log(this._features);  
+			//log(this._features);  
 			return this;
 		},
 
@@ -3375,7 +3377,7 @@
 
 		replaceWord : function(wordIdx, newWord) {
 			
-			//console.log("replaceWord: "+wordIdx+", '"+newWord+"'");
+			//log("replaceWord: "+wordIdx+", '"+newWord+"'");
 			
 			var words = this.words(); //  tokenize
 			
@@ -3486,19 +3488,17 @@
 			return (Object.keys(this._rules).length > 0);
 		},
 		
-		loadFrom : function(url, callback) { // today, can this be synchronous?
+		loadFrom : function(url, callback) {
 
-			var me = this;
-			
 			RiTa.loadString(url, function(data) {
 	
-				me.load(data);
+				this.load(data);
 				is(callback, F) && (callback(data));
-			});
+				
+			}.bind(this));
 		},
 
 		load : function(grammar) {
-//console.log('load: '+grammar);
 
 			var ex; 
 			
@@ -3722,7 +3722,7 @@
 		        
 		        if (!callResult) {
 		          
-		          if (0==1) console.log("[WARN] (RiGrammar.expandFrom) Unexpected"
+		          if (0==1) log("[WARN] (RiGrammar.expandFrom) Unexpected"
 		              +" state: eval("+theCall+") :: returning '"+rule+"'");
 		          
 		          break; // return
@@ -3735,7 +3735,7 @@
 		    }
 		    
     		if (tries >= maxIterations && !RiTa.SILENT) 
-		      console.log("[WARN] max number of iterations reached: "+maxIterations);
+		      log("[WARN] max number of iterations reached: "+maxIterations);
 		
 		    return RiTa.unescapeHTML(rule); 
 		},
@@ -3758,7 +3758,7 @@
 	 
 		_handleExec : function(input, context) { 
 
-			//console.log("_handleExec: "+input+ " "+ (typeof eval));
+			//log("_handleExec: "+input+ " "+ (typeof eval));
 
 			if (!input || !input.length) return null;
 			
@@ -3870,6 +3870,23 @@
 	////////////////////////////////////////////////////////////////////// 
 	
 	var RiText = makeClass();
+			
+	RiText._defaults = { 
+		// TODO(v2.0): change fontSize to _fontSize; 
+		fill : { r : 0, g : 0, b : 0, a : 255 }, fontFamily: 'Times New Roman',  
+		alignment : RiTa.LEFT, motionType : RiTa.LINEAR, _font: null, fontSize: 14,
+		paragraphLeading : 0, paragraphIndent: 30, indentFirstParagraph : false,
+		boundingStroke : null, boundingStrokeWeight : 1, showBounds : false, 
+		leadingFactor: 1.2, rotateX:0, rotateY:0, rotateZ:0, scaleX:1, scaleY:1, scaleZ:1, 
+		metrics : {"name":"Times New Roman","size":14,"ascent":9.744,"descent":3.024,"widths":
+		{ "0":7,"1":7,"2":7,"3":7,"4":7,"5":7,"6":7,"7":7,"8":7,"9":7,"!":5,"\"":6,"#":7,"$":7,
+		"%":12,"&":11,"'":3,"(":5,")":5,"*":7,"+":8,",":4,"-":5,".":4,"/":4,":":4,";":4,"<":8,
+		"=":8,">":8,"?":6,"@":13,"A":10,"B":9,"C":9,"D":10,"E":9,"F":8,"G":10,"H":10,"I":5,
+		"J":5,"K":10,"L":9,"M":12,"N":10,"O":10,"P":8,"Q":10,"R":9,"S":8,"T":9,"U":10,"V":10,
+		"W":13,"X":10,"Y":10,"Z":9,"[":5,"\\":4,"]":5,"^":7,"_":7,"`":5,"a":6,"b":7,"c":6,"d":7,
+		"e":6,"f":5,"g":7,"h":7,"i":4,"j":4,"k":7,"l":4,"m":11,"n":7,"o":7,"p":7,"q":7,"r":5,
+		"s":5,"t":4,"u":7,"v":7,"w":10,"x":7,"y":7,"z":6,"{":7,"|":3,"}":7," ":4 } }
+	};
 		
 	//////////////////////////////////////////////////////////////////////
 	// RiText statics
@@ -4191,7 +4208,19 @@
 
 		return RiText._createRiTexts(txt, x, y, w, h, fontObj, leading, RiText.prototype.splitLetters);
 	}
-
+	
+	RiText.defaultFontSize = function(size) {
+		
+		if (!arguments.length) 
+			return RiText.defaults.fontSize;
+    	
+    	if (RiText.defaults.fontSize != size) { 
+    	
+			RiText.defaults.fontSize = size;
+			RiText.defaults._font = null;
+		}
+	}
+  
 	RiText.defaultFont = function(font, size) {
 
 		var a = arguments;
@@ -4207,32 +4236,39 @@
 				
 				if (isNode() && a[0].widths) {// use no-op
 					RiText.renderer.font = a[0];
-					//console.log('setting RiText.renderer.font');
+					
+					//log('setting RiText.renderer.font');
 				}
-			  	RiText.defaults.font = a[0];
+				a[0].name && (RiText.defaults.fontFamily = a[0].name);
+			  	RiText.defaults._font = a[0];
 			}	
 			
 			// RiText.defaultFont(name);
-			if (typeof a[0] == S) 
-				RiText.defaults.font = RiText.renderer._createFont(a[0], RiText.defaults.fontSize);
-
+			if (typeof a[0] == S) {
+				
+				RiText.defaults.fontFamily = a[0];
+				RiText.defaults._font = RiText.renderer._createFont(a[0], RiText.defaults.fontSize);
+			}
 		}
 
 		// RiText.defaultFont(name, size);
 		else if (a.length > 1) { // > 1 args
 			  
-			if (typeof a[0] == S)
-			  RiText.defaults.font = RiText.renderer._createFont(a[0], a[1]);
+			if (typeof a[0] == S) {
+			  RiText.defaults.fontFamily = a[0];
+			  RiText.defaults._font = RiText.renderer._createFont(a[0], a[1]);
+			}
 		}
 		
 		// RiText.defaultFont();
-		else if (a.length == 0 && !RiText.defaults.font) { // 0-args
+		else if (a.length == 0 && !RiText.defaults._font) { // 0-args
 						
-			RiText.defaults.font = isNode() ? RiText.defaults.metrics 
-				: RiText.createFont(RiText.defaults.fontFamily);
+			// TODO: What if defaults.fontSize has changed since defaults.font was created? 
+			RiText.defaults._font = isNode() ? RiText.defaults.metrics 
+				: RiText.createFont(RiText.defaults.fontFamily, RiText.defaults.fontSize);
 		}
 
-		return RiText.defaults.font;
+		return RiText.defaults._font;
 	}
 	
 	/**
@@ -4243,7 +4279,7 @@
 	 */
 	RiText._fontMetrics = function(chars) {
 		
-		var i,j,c,gwidths={},pf=RiText.defaultFont();
+		var i, j, c, gwidths={}, pf=RiText.defaultFont();
 
 		if (!(chars && chars.length)) {
 	    	chars = [];
@@ -4255,7 +4291,7 @@
 	    if (is(chars, S)) chars = chars.split(E); // split into array
 	    	    
 		for (i = 0; i < chars.length; i++) {
-	      //console.log(c +" -> "+pf.measureTextWidth(c))
+	      //log(c +" -> "+pf.measureTextWidth(c))
 	      c = chars[i];
 	      gwidths[c] = pf.measureTextWidth(c);
 	    }
@@ -4326,7 +4362,7 @@
 	    {
 	      next = ritexts[lastOk];
 	      next.y = currentY; 
-	      //console.log(lastOk+") "+currentY);
+	      //log(lastOk+") "+currentY);
 	      if (!RiText._withinBoundsY(currentY, leading, maxY, descent))
 	        break;
 	      currentY += leading;
@@ -4339,16 +4375,17 @@
 	    	    	      
 	 	var result = ritexts.slice(0, lastOk);
 	 	
-	 	//console.log("lastOk="+lastOk+"/"+ritexts.length + " toKill="+toKill.length+" result="+result.length);
+	 	//log("lastOk="+lastOk+"/"+ritexts.length + " toKill="+toKill.length+" result="+result.length);
 	    
 	 	return result;
   	}
   	
   	RiText.resetDefaults = function() {
   	
-		RiText.defaults = _defaults;
+		RiText.defaults = RiText._defaults;
 	}
 
+	// TODO: implement a version(for a string) that computes the max-font-size fitting all text **
 	RiText.createLines = function(txt, x, y, w, h, pfont, leading) {
 
 		var a = arguments, t = Type.get(a[0]), g = RiText.renderer;
@@ -4362,6 +4399,9 @@
 
 		h = h || Number.MAX_VALUE;
 		pfont = pfont || RiText.defaultFont();
+
+		//log("createLines.pfont: "+pfont.name+"/"+pfont.size);
+
 		leading = leading || pfont.size * RiText.defaults.leadingFactor;
 
 		if (is(txt, A)) {
@@ -4506,7 +4546,7 @@
 	      s = s.substring(0, s.length - 1);
 	    
 	    return RiText(s, xPos, nextY, pf);
-	    //console.log(rt);return rt;
+	    //log(rt);return rt;
 	}
 	
 	RiText._createRiTexts = function(txt, x, y, w, h, fontObj, lead, splitFun) {  
@@ -4622,41 +4662,24 @@
 	
 	RiText._getDefaultFont = function() {
 		
-		//log("RiText._getDefaultFont: "+RiText.defaults.fontFamily+","+RiText.defaults.font.size);
+		//log("RiText._getDefaultFont: "+RiText.defaults.fontFamily+","+RiText.defaults._font.size);
 		
-		RiText.defaults.font = RiText.defaults.font || 
+		RiText.defaults._font = RiText.defaults._font || 
 			RiText.renderer._createFont(RiText.defaults.fontFamily, 
 				RiText.defaults.fontSize, RiText.defaults.leading);
 		
-		return RiText.defaults.font;
+		return RiText.defaults._font;
 	}
 	
-	// PUBLIC statics (TODO: clean up) ///////////////////////////////////////////
+	// PUBLIC statics   ///////////////////////////////////////////
    
     // TODO: make into regex that matches '<p>', '<p/>', '&lt;p&gt;', and '&lt;p/&gt;' 
 	RiText.NON_BREAKING_SPACE = "<sp/>";
 	RiText.PARAGRAPH_BREAK = "<p/>";  //   regex: /<p\/?>/g;
 	RiText.LINE_BREAK = "<br/>";
 	RiText.instances = [];
-	
-	var _defaults = { 
-		
-		fill : { r : 0, g : 0, b : 0, a : 255 }, fontFamily: 'Times New Roman',  
-		alignment : RiTa.LEFT, motionType : RiTa.LINEAR, font: null, fontSize: 14,
-		paragraphLeading : 0, paragraphIndent: 30, indentFirstParagraph : false,
-		boundingStroke : null, boundingStrokeWeight : 1, showBounds : false, 
-		leadingFactor: 1.2, rotateX:0, rotateY:0, rotateZ:0, scaleX:1, scaleY:1, scaleZ:1, 
-		metrics : {"name":"Times New Roman","size":14,"ascent":9.744,"descent":3.024,"widths":
-		{ "0":7,"1":7,"2":7,"3":7,"4":7,"5":7,"6":7,"7":7,"8":7,"9":7,"!":5,"\"":6,"#":7,"$":7,
-		"%":12,"&":11,"'":3,"(":5,")":5,"*":7,"+":8,",":4,"-":5,".":4,"/":4,":":4,";":4,"<":8,
-		"=":8,">":8,"?":6,"@":13,"A":10,"B":9,"C":9,"D":10,"E":9,"F":8,"G":10,"H":10,"I":5,
-		"J":5,"K":10,"L":9,"M":12,"N":10,"O":10,"P":8,"Q":10,"R":9,"S":8,"T":9,"U":10,"V":10,
-		"W":13,"X":10,"Y":10,"Z":9,"[":5,"\\":4,"]":5,"^":7,"_":7,"`":5,"a":6,"b":7,"c":6,"d":7,
-		"e":6,"f":5,"g":7,"h":7,"i":4,"j":4,"k":7,"l":4,"m":11,"n":7,"o":7,"p":7,"q":7,"r":5,
-		"s":5,"t":4,"u":7,"v":7,"w":10,"x":7,"y":7,"z":6,"{":7,"|":3,"}":7," ":4 } }
-	}
-	
-	RiText.defaults = _defaults;
+
+	RiText.defaults = RiText._defaults;
 
 	RiText.prototype = {
 
@@ -4763,9 +4786,9 @@
       		return scx;
 		},
 
-		get : function(featureName) {
+		get : function(fn) {
 			
-			return this._rs.get(featureName);
+			return this._rs.get(fn);
 		},
 		
 		features : function() {
@@ -4926,7 +4949,7 @@
 		  // grab the alphas if needed
 		  var c = this._color, startAlpha = 0, endAlpha = endAlpha || 255; // this._color.a
 		  
-		  if (this.textToCopy) 
+		  if (this.textToCopy)
 		  {
 			startAlpha = this.textToCopy.alpha();
 			//RiText.dispose(this.textToCopy); // TODO: do we need this?
@@ -5401,7 +5424,7 @@
 		},
 
 		fill : function(cr, cg, cb, ca) {
-			//console.log("fill");
+			//log("fill");
 			if (arguments.length == 0) 
 				return this._color;
 			this._color = parseColor.apply(this, arguments);
@@ -5759,7 +5782,7 @@
 			  this.letterIndex[c] = index;
 			  
 			}
-			//console.log(type+" : "+c+" : "+index + " "+this.letterIndex[c]);
+			//log(type+" : "+c+" : "+index + " "+this.letterIndex[c]);
 		  } 
 		  else if (type==LetterToSound.TOTAL)
 		  {
@@ -6166,7 +6189,7 @@
 		// actual creation: only called from RiText.createDefaultFont();!
 		_createFont : function(fontName, fontSize) {
 			
-			//console.log("[Node] Creating font: "+fontName+"-"+fontSize);
+			//log("[Node] Creating font: "+fontName+"-"+fontSize);
 			// TODO: load json for a font here ???
 			// what to return
 			// this.font = loadJSONFont(fontName, fontSize); 
@@ -6279,7 +6302,7 @@
 		},
 		
 		_rotate : function(zRot) {
-			//console.log('rotate: '+zRot);
+			//log('rotate: '+zRot);
 			this.ctx.rotate(0,0,zRot);
 		},
 		
@@ -6347,7 +6370,7 @@
 			
 			var font = {
 				name:       fontName, 
-				size:       fontSize || RiText.defaults.font.size 
+				size:       fontSize || RiText.defaults._font.size 
 			};
 			return font;
 		},
@@ -6543,7 +6566,7 @@
 			
 			var timer = this;
 			if (isNaN(time)) time = 0;
-			window.setTimeout(function() {timer.action();}, time);
+			window.setTimeout(function() { timer.action(); }, time);
 			return this;
 		};
 		
@@ -9144,10 +9167,10 @@
 			this.p.background.apply(this,arguments);
 		},
 
-		// actual creation: only called from RiText.createDefaultFont()!
+		// actual creation: only called from RiText.defaultFont()!
 		_createFont : function(fontName, fontSize) {
 			
-			//console.log("[P5] Creating font: "+fontName+"-"+fontSize);
+			//log("[P5] Creating font: "+fontName+"-"+fontSize);
 			
 			return this.p.createFont(fontName, fontSize);                
 		},
@@ -9178,7 +9201,7 @@
 			var tw = this.p.textWidth(str);
 			//this.p.popStyle();
 			this.ctx.restore();
-			//console.log(str+" -> "+tw);
+			//log(str+" -> "+tw);
 			return tw;
 		},
 		
@@ -9328,49 +9351,57 @@
 		  RE("crises", 2, "is"),
 		  RE("(human|german|roman)$", 0, "s")
 	];
+	
+  	var ANY_STEM = "^((\\w+)(-\\w+)*)(\\s((\\w+)(-\\w+)*))*$";
+  	var C = "[bcdfghjklmnpqrstvwxyz]", VL = "[lraeiou]";
+  	
+	var PLURAL_RULES = [ // TODO: extract all these consts to single file for js/java
+		  NULL_PLURALS,
+	      RE("^(piano|photo|solo|ego|tobacco|cargo|golf|grief)$", 0,"s"),
+	      RE("^(wildlife)$", 0, "s"),
+	      RE(C + "o$", 0, "es"),
+	      RE(C + "y$", 1, "ies"),
+	      RE("^ox$", 0, "en"),
+	      RE("^(stimulus|alumnus)$", 2, "i"),
+	      RE("^corpus$", 2, "ora"),
+	      RE("(xis|sis)$", 2, "es"),
+	      RE("([zsx]|ch|sh)$", 0, "es"),
+	      RE(VL + "fe$", 2, "ves"),
+	      RE(VL + "f$", 1, "ves"),
+	      RE("(eu|eau)$", 0, "x"),
+	      
+	      RE("(man|woman)$", 2, "en"),
+	      RE("money$", 2, "ies"),
+	      RE("person$", 4, "ople"),
+	      RE("motif$", 0, "s"),
+	      RE("^meninx|phalanx$", 1, "ges"),
+	      
+	      RE("schema$", 0, "ta"),
+	      RE("^bus$", 0, "ses"),
+	      RE("child$", 0, "ren"),
+	      RE("^(curi|formul|vertebr|larv|uln|alumn|signor|alg)a$", 0,"e"),
+	      RE("^(maharaj|raj|myn|mull)a$", 0, "hs"),
+	      RE("^aide-de-camp$", 8, "s-de-camp"),
+	      RE("^apex|cortex$", 2, "ices"),
+	      RE("^weltanschauung$", 0, "en"),
+	      RE("^lied$", 0, "er"),
+	      RE("^tooth$", 4, "eeth"),
+	      RE("^[lm]ouse$", 4, "ice"),
+	      RE("^foot$", 3, "eet"),
+	      RE("femur", 2, "ora"),
+	      RE("goose", 4, "eese"),
+	      RE("(human|german|roman)$", 0, "s"),
+	      RE("^(monarch|loch|stomach)$", 0, "s"),
+	      RE("^(taxi|chief|proof|ref|relief|roof|belief)$", 0, "s"),
+	      RE("^(co|no)$", 0, "'s"),
+		  RE("^blond$", 0, "es"),
 
-	var PLURAL_RULES = [
-		NULL_PLURALS,
-		RE("^(piano|photo|solo|ego)$", 0, "s"),
-		RE("[bcdfghjklmnpqrstvwxyz]o$", 0, "es"),
-		RE("[bcdfghjklmnpqrstvwxyz]y$", 1, "ies"),
-		RE("^ox$", 0, "en"),
-		RE("([zsx]|ch|sh)$", 0, "es"),
-		RE("[lraeiou]fe$", 2, "ves"),
-		RE("[lraeiou]f$", 1, "ves"),
-		RE("(eu|eau)$", 0, "x"),
-		RE("(man|woman)$", 2, "en"),
-		RE("money$", 2, "ies"),
-		RE("person$", 4, "ople"),
-		RE("motif$", 0, "s"),
-		RE("^meninx|phalanx$", 1, "ges"),
-		RE("(xis|sis)$", 2, "es"),
-		RE("schema$", 0, "ta"),
-		RE("^bus$", 0, "ses"),
-		RE("child$", 0, "ren"),
-		RE("^(curi|formul|vertebr|larv|uln|alumn|signor|alg)a$", 0, "e"),
-		RE("^corpus$", 2, "ora"),
-		RE("^(maharaj|raj|myn|mull)a$", 0, "hs"),
-		RE("^aide-de-camp$", 8, "s-de-camp"),
-		RE("^apex|cortex$", 2, "ices"),
-		RE("^weltanschauung$", 0, "en"),
-		RE("^lied$", 0, "er"),
-		RE("^tooth$", 4, "eeth"),
-		RE("^[lm]ouse$", 4, "ice"),
-		RE("^foot$", 3, "eet"),
-		RE("femur", 2, "ora"),
-		RE("goose", 4, "eese"),
-		RE("(human|german|roman)$", 0, "s"),
-		RE("(crisis)$", 2, "es"),
-		RE("^(monarch|loch|stomach)$", 0, "s"),
-		RE("^(taxi|chief|proof|ref|relief|roof|belief)$", 0, "s"),
-		RE("^(co|no)$", 0, "'s"),
-		RE("^(memorandum|bacterium|curriculum|minimum|"
-			+ "maximum|referendum|spectrum|phenomenon|criterion)$", 2, "a"),
-		RE("^(appendix|index|matrix)", 2, "ices"),
-		RE("^(stimulus|alumnus)$", 2, "i")
-	],
-		
+	      // Latin stems
+	      RE("^(memorandum|bacterium|curriculum|minimum|"
+	          + "maximum|referendum|spectrum|phenomenon|criterion)$", 2,"a"),
+	      RE("^(appendix|index|matrix)", 2, "ices")
+		],
+
 	ANY_STEM = "^((\\w+)(-\\w+)*)(\\s((\\w+)(-\\w+)*))*$", CONS = "[bcdfghjklmnpqrstvwxyz]",
 	VERBAL_PREFIX = "((be|with|pre|un|over|re|mis|under|out|up|fore|for|counter|co|sub)(-?))",
 	AUXILIARIES = [ "do", "have", "be" ],
@@ -10274,7 +10305,7 @@
 	// ///////////////////////////// End Functions ////////////////////////////////////
 
 	var context2d, hasProcessing = (typeof Processing !== 'undefined');
-	//console.log('hasProcessing='+hasProcessing);
+	//log('hasProcessing='+hasProcessing);
 	
 	// Processing Renderer
 	if (hasProcessing) {
@@ -10352,7 +10383,7 @@
 		module.exports['RiMarkov'] = RiMarkov;
 		module.exports['RiTaEvent'] = RiTaEvent;
 		module.exports['RiWordNet'] = RiWordNet;
-		module.exports['MinEditDist'] = MinEditDist;
+		//module.exports['MinEditDist'] = MinEditDist;
 	}
 
 	RiTa.p5Compatible(false);
