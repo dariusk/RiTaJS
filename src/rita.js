@@ -10312,26 +10312,16 @@
 
 		Processing.registerLibrary("RiTa", {
 			
-			//log("Processing.registerLibrary()");
-			p : null, 
-			
-			init : function(obj) {
-			  //log("Processing.registerLibrary.init: ");
-			},
-		
 			attach : function(p5) {
-				p = p5;
+				//p = p5;
 				//log("Processing.registerLibrary.attach");log(p.externals);log(p.externals['canvas']);
-				var context2d = p.externals['canvas'].getContext("2d");
-				//log("p5:");log(context2d);
+				var context2d = p5.externals['canvas'].getContext("2d");
 				RiText.renderer = new RiText_P5(p5, context2d);
-			},
-			
-			detach : function(p5) {
-				//log("Processing.registerLibrary.detach");
 			}
-			
-			// exports : [] // export global function names?
+			/*p : null, 
+			init : function(obj) {},
+			detach : function(p5) {},
+			exports : [] // export global function names?*/
 		})
 	}
 	// Canvas Renderer
