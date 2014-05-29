@@ -6329,13 +6329,11 @@
 	
 	var timers = new Object(); // static
 
-	/**
-	 * @name Timer - modified from Resig's JQuery-Timer
-	 * @class
-	 * @private
-	 */
+	// Timer - modified from Resig's JQuery-Timer
 	var Timer = function(func, time, autostart) {
 			
+		this.timerImpl = isNode() ? require("timers") : window;
+		
 		this.set = function(func, time, autostart) {
 			
 			this.init = true;
@@ -6352,7 +6350,7 @@
 			
 			var timer = this;
 			if (isNaN(time)) time = 0;
-			window.setTimeout(function() { timer.action(); }, time);
+			this.timerImpl.setTimeout(function() { timer.action(); }, time);
 			return this;
 		};
 		
@@ -6404,7 +6402,8 @@
 		};
 			
 		this.clearTimer = function() { // private
-			window.clearTimeout(this.timeoutObject);
+			
+			this.timerImpl.clearTimeout(this.timeoutObject);
 		};
 		
 		this.setTimer = function(time) {
@@ -6415,7 +6414,7 @@
 			this.remaining = time;
 			this.last = new Date();
 			this.clearTimer();
-			this.timeoutObject = window.setTimeout
+			this.timeoutObject = this.timerImpl.setTimeout
 				(function() { timer.go(); }, time);
 		};
 		
@@ -6426,12 +6425,8 @@
 			}
 		};
 		
-		if (this.init) {
-			return new Timer(func, time, autostart);
-		} else {
+		return (this.init) ? new Timer(func, time, autostart) :
 			this.set(func, time, autostart);
-			return this;
-		}
 	};
 		
 	// ////////////////////////////////////////////////////////////
