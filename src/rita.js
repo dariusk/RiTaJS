@@ -492,17 +492,7 @@
 		// Start Methods =================================
 		
 		start : function() { /* no-op, just for api */ },
-		
-		/**
-		 * Joins array of word, similar to words.join(" "), but attempts to preserve punctuation position
-		 * unless the 'adjustPunctuationSpacing' flag is set to false
-		 * 
-		 * @param {array} arr the array to join
-		 * @param {string} delim the characters to place between each array element (optional)
-		 * @param {boolean} adjustPunctuationSpacing (optional, default=true)
-		 * 
-		 * @returns {string} the joined array as string
-		 */
+
 		untokenize : function(arr, delim, adjustPunctuationSpacing) {
 			 
 			delim = delim || SP;
@@ -525,11 +515,6 @@
 			return arr.join(delim);  
 		},
 
-		
-		/**
-		 * Returns a random number between min(default=0) and max(default=1)
-		 * @returns {number}
-		 */
 		random : function() {
 			
 			var currentRandom = Math.random();
@@ -551,7 +536,7 @@
 			return Math.sqrt(dx * dx + dy * dy);
 		},
 		
-		// TODO: BROKEN?
+		// TODO: test (with and w'out callback)
 		timer : function(period, callback) {
 			 
 			var a = arguments;
@@ -577,7 +562,7 @@
 			return id;
 		}, 
 		
-		// TODO: BROKEN?
+		// TODO: test
 		stopTimer : function(id) { 
 			
 			// TODO: THIS DEFINITELY BROKEN
@@ -587,22 +572,32 @@
 				warn('no timer with id: '+id);
 		}, 
 
-		// TODO: BROKEN?
+		// TODO: test
 		pauseTimer : function(id, pauseSec) {  
 		 
+		 	console.log("id: "+id);
+		 	
 			pauseSec = is(pauseSec, N) ? pauseSec : Number.MAX_VALUE;
 			
 			if (timers[id])  {
+				
 				timers[id].pause();
+				
+				var theId = id;
+				
+				console.log("OK-theId: "+theId);
+				
 				setTimeout(function() { 
-					if (timers[id])
-						timers[id].play(); 
+					if (timers[theId])
+						timers[theId].play(); 
 					else
 						warn("no timer!!!");
 				}, pauseSec*1000);
-				return timers[id].id();
+				
+				return theId;
 			}
 			else {
+				
 				warn('no timer with id: '+id);
 			}
 			 
@@ -1258,12 +1253,6 @@
 			return res.join(SP);
 		},
 		
-		/**
-		 * Provides backwards compatibility (when possible) with
-		 * the original RiTa/Processing Java library
-		 * 
-		 * @param {boolean} true to enable compatibility, else false
-		 */
 		p5Compatible : function(value) {  // TODO: remove? yes, no one cares
 			
 			//log('p5Compatible('+value+'['+window+'])');
@@ -1276,7 +1265,6 @@
 				};
 			}
 
-			
 			if (typeof window != 'undefined' && window) {
 				
 				// TODO: add mouse-handling methods here?
@@ -1289,10 +1277,6 @@
 				if (typeof window.mouseMoved == F) 
 					window.onmousemove = window.mouseMoved;
 			}
-			
-			//if (typeof window.mouseDragged == F) 
-				//window.onmousemove = window.mouseDragged; 
-			// window.onmousemove = mouseDragged;
 
 			if (value) {
 				
@@ -1300,59 +1284,22 @@
 				RiText.prototype.textAlign  = RiText.prototype.align;
 				RiText.prototype.textFont   = RiText.prototype.font;
 				RiText.prototype.textSize   = RiText.prototype.fontSize;
-				RiText.prototype.setText    = RiText.prototype.text;
-				RiText.prototype.fadeColor  = RiText.prototype.colorTo;
-				RiText.prototype.fadeToText = RiText.prototype.textTo;
-				RiText.prototype.setColor   = RiText.prototype.fill;
-	
-				// alias' for RiTa-java static functions  (?)
-				RiText.setDefaultFont = RiText.defaultFont; 
-				RiText.setDefaultColor = RiText.defaultFill;
-				RiText.setCallbackTimer = RiText.timer;
-				
+
 				if (typeof window != 'undefined' && window && !hasProcessing) { 
 					
 					if (!window.LEFT) window.LEFT = RiTa.LEFT;
 					if (!window.RIGHT) window.RIGHT = RiTa.RIGHT;
 					if (!window.CENTER) window.CENTER = RiTa.CENTER;	
-	
-					if (!window.line) window.line = RiText.line;
-					if (!window.size) window.size = RiText.size;
-					if (!window.createFont) window.createFont = RiText.createFont;
-					if (!window.background) window.background = RiText.background;
-					if (!window.random) window.random = RiText.random;	
-					
 					if (!window.onload) window.onload = arguments.callee.setupAndDraw;					
 				}
 			}
 			else { // non-compatible mode (clear extra stuff)
-				
-				delete RiText.prototype.textAlign;
-				delete RiText.prototype.textFont;
-				delete RiText.prototype.textSize;
-				
-				delete RiText.prototype.setColor;
-				delete RiText.prototype.setText;
-				delete RiText.prototype.fadeColor;
-				delete RiText.prototype.fadeToText;
-				
-				delete RiText.setDefaultFont;
-				delete RiText.setDefaultColor;
-				//delete RiText.setDefaultAlignment;
-				delete RiText.setCallbackTimer;
 
 				if (typeof window != 'undefined' && window && !hasProcessing)  {
 					
 					if (window.RIGHT === RiTa.RIGHT) delete window.RIGHT;
 					if (window.LEFT === RiTa.LEFT) delete window.LEFT;
 					if (window.CENTER === RiTa.CENTER) delete window.CENTER;
-					
-					if (window.line === RiTa.line) delete window.line;
-					if (window.size === RiTa.size) delete window.size;
-					if (window.random === RiTa.random) delete window.random;
-					if (window.background === RiTa.background) delete window.background;
-					if (window.createFont === RiTa.createFont) delete window.createFont;
-					
 					if (window.onload && (window.onload == arguments.callee.setupAndDraw))
 						window.onload = undefined; // ?
 				}
@@ -2088,7 +2035,7 @@
 			return this._type === t;  
 		},
 		
-		_fire: function(callback) {
+		_fire : function(callback) {
 			
 			callback = callback || window.onRiTaEvent;
 			
@@ -3906,63 +3853,13 @@
 		timeSinceLastFPS : Date.now()
 	}
 	
-	/**
-	 * Returns the current graphics context, either a canvas 2d'-context or ProcessingJS instance 
-	 * @returns {object}
-	 */
+	/* Returns the current graphics context, either a canvas 2d-context or ProcessingJS instance */
 	RiText._graphics = function() {
 		
 		return RiText.renderer ? RiText.renderer._getGraphics() : null;
 	}
-
-	RiText.timer = function(period, callback) { // TODO: need these? remove
-
-		return RiTa.timer.apply(this,arguments);
-	}
-
-	RiText.stopTimer = function(id) {  // TODO: need these? remove
-
-		RiTa.stopTimer.apply(this,arguments);
-	} 
-
-	RiText.pauseTimer = function(id, pauseSec) { // TODO: need these? remove
-		
-		return RiTa.pauseTimer.apply(this,arguments);
-	}   
 	
-	/**
-	 * Returns the number of frames since the start of the sketch 
-	 * @returns {number} the number of frames
-	 */
-	RiText.frameCount = function() {   // TODO: REMOVE
-		return RiText._animator.frameCount;
-	}
-	
-	/**
-	 * Immediately stops the current animation loop
-	 */
-	RiText.noLoop = function() {  // TODO: REMOVE
-		var an = RiText._animator;
-		an.isLooping = false;
-		an.loopStarted = false;
-		an.clearInterval(loopId);
-	}
-		
-	/**
-	 * Starts an animation loop that calls the specified callback (usually 'draw') 
-	 * at the specified fps  
-	 * 
-	 * @param {function} callback the animation callback (optional, default='draw')
-	 * @param {number} fps the target framesPerSecond (optional, default=60)
-	 * <pre>
-	 * Examples:
-	 *  RiText.loop();
-	 *  RiText.loop('draw');
-	 *  RiText.loop(30);
-	 *  RiText.loop(draw, 10);
-	 * </pre>
-	 */
-	RiText.loop = function(callbackFun, fps) {   // TODO: REMOVE
+	RiText.loop = function(callbackFun, fps) {   // TODO: REMOVE?
 		
 		var a = arguments, 
 			g = RiText.renderer,  
@@ -4042,120 +3939,8 @@
 			an.isLooping = true;
 			an.loopStarted = true;
 		}
-
 	}
 	
-	/**
-	 * Convenience method to get the height of the current drawing surface
-	 * @returns {number} width
-	 */
-	RiText.width = function() { return RiText.renderer._width(); } // TODO: REMOVE
-	  
-
-	/**
-	 * Convenience method to get the height of the current drawing surface
-	 * @returns {number} height
-	 */
-	RiText.height = function() { return RiText.renderer._height(); } // TODO: REMOVE
- 
- 		
-	/**
-	 * Convenience method to fill drawing surface background with specified color
-	 * @param {number} r
-	 * @param {number} g
-	 * @param {number} b
-	 * @param {number} a
-	 */
-	RiText.background = function(r,g,b,a) {  // TODO: REMOVE?
-		
-		var br, bg, bb, ba = 255, r = (typeof r == N) ? r : 255;
-
-		if (arguments.length >= 3) {
-			br = r;
-			bg = g;
-			bb = b;
-		}
-		if (arguments.length == 4) {
-			ba = a;
-		}
-		if (arguments.length <= 2) {
-			br = r;
-			bg = r;
-			bb = r;
-		}
-		if (arguments.length == 2) {
-			ba = g;
-		}
- 
-		RiText.renderer._background(br,bg,bb,ba);
-	}
-	
-	/**
-	 * Returns the mouse position from a mouse event
-	 * in a cross-browser compatible fashion
-	 * @param {MouseEvent} e mouseEvent
-	 * @returns {object} mouse position with x,y properties
-	RiText.mouse = function(e) { // TODO: broken for canvas (see contains-test)  // TODO: REMOVE
-		
-		var posX = -1,posY = -1;
-		
-		if (!e) var e = window.event;
-		
-		if (!e && !RiText.mouse.printedWarning) { 
-			warn("No mouse-position without event!");
-			RiText.mouse.printedWarning = true;
-		}        
-		
-		if (e.pageX) {
-			
-			posX = e.pageX;
-		}
-		else if (e.clientX)    {
-			
-			posX = e.clientX + document.body.scrollLeft
-				+ document.documentElement.scrollLeft;
-		}
-
-		if (e.pageY) {
-			
-			posY = e.pageY;
-		}
-		else if (e.clientY)    {
-			
-			posY = e.clientY + document.body.scrollTop
-				+ document.documentElement.scrollTop;
-		}
- 
-		return {x:posX,y:posY};
-	}	 */
-	
-	/**
-	 * Convenience method to draw a crisp line on the drawing surface
-	 * @param {number} x1
-	 * @param {number} y1
-	 * @param {number} x2
-	 * @param {number} y2
-	 * @param {number} lineWidth (optional: default=1)
-	 */ 
-	RiText.line = function(x1, y1, x2, y2, lineWidth) {  // TODO: REMOVE
-
-		var g = RiText.renderer;
-		g._pushState();
-		g._line(x1, y1, x2, y2, lineWidth || 1);
-		g._popState();
-	}
-	  
-	/**
-	 * Convenience method to set the size of the drawing surface in the current 
-	 * renderer context 
-	 * @param {number} w width
-	 * @param {number} h height
-	 */
-	RiText.size = function(w ,h) {  // TODO: REMOVE?
-		
-		RiText.renderer._size(w, h);
-	}
-
 	RiText.randomColor = function(min,max,includeAlpha) {
 		
 		min = min || 0, max = max || 256;
@@ -4170,6 +3955,7 @@
 	}	
 
 	RiText.picked = function(x, y) {
+		
 	  var hits = [];
 	  for (var i = 0; i < RiText.instances.length; i++)
 	  {
