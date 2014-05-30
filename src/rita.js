@@ -4113,7 +4113,7 @@
 	RiText.defaultFill = function(r, g, b, a) {
  
 		if (arguments.length) { 
-			RiText.defaults.fill = parseColor.apply(this,arguments);
+			RiText.defaults.fill = parseColor.apply(null, arguments);
 		}
 		return RiText.defaults.fill;
 	}
@@ -4777,7 +4777,8 @@
 					   rt._color.r = this.r;
 					   rt._color.g = this.g;
 					   rt._color.b = this.b;
-					   rt._color.a = this.a
+					   rt._color.a = this.a;
+					   rt._boundingStroke.a = this.a;
 					})
 					.onComplete( 
 						
@@ -9996,7 +9997,9 @@
    
 		var a = arguments, len = a.length;
 		
-		var color = { r: 0, g: 0, b: 0, a: 255 };
+		var alpha = (this && this.alpha) ? this.alpha() : 255;
+		
+		var color = { r: 0, g: 0, b: 0, a: alpha };
 
 		if (!len) return color;
 
