@@ -4051,7 +4051,7 @@
 						
 			// TODO: What if defaults.fontSize has changed since defaults.font was created? 
 			RiText.defaults._font = isNode() ? RiText.defaults.metrics 
-				: RiText.createFont(RiText.defaults.fontFamily, RiText.defaults.fontSize);
+				: RiText.renderer._createFont(RiText.defaults.fontFamily, RiText.defaults.fontSize);
 		}
 
 		return RiText.defaults._font;
@@ -4089,9 +4089,9 @@
 	   	};
 	}
 	
-	RiText.createFont = function(fontName, fontSize) {
+	RiText._createFont = function(fontName, fontSize) {
 		
-		if (!fontName) err('RiText.createFont requires fontName');
+		if (!fontName) err('RiText._createFont requires fontName');
 		
 		fontSize = fontSize || RiText.defaults.fontSize;
 
@@ -5195,7 +5195,7 @@
 			}
 			else if (a.length == 2) {
 				
-				return this.font( RiText.createFont(a[0], a[1]) );
+				return this.font(RiText.renderer._createFont(a[0], a[1]) );
 			}
 
 			return this._font;
