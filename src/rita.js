@@ -4730,31 +4730,29 @@
 			return id;
 		},
 		
-		textTo: function(newText, seconds, endAlpha, callback) {
-			
-		  // grab the alphas if needed
-		  var c = this._color, startAlpha = 0, endAlpha = endAlpha || 255; // this._color.a
-		  
-		  if (this.textToCopy)
-		  {
-			startAlpha = this.textToCopy.alpha();
-			//RiText.dispose(this.textToCopy); // TODO: do we need this?
-		  }
-		
-		  // use the copy to fade out
-		  this.textToCopy = this.copy();
+		textTo: function(newText, seconds, startTime, callback) {
 
-		  //this.textToCopy.fadeOut(seconds, 0, true);
-		  this.textToCopy.colorTo(
-		  		[this._color.r, this._color.g, this._color.b, 0], 
-				seconds, 0, null, RiTa.INTERNAL, true); // fade-out
-		  
-		  RiText.dispose(this.textToCopy.textToCopy); // no turtles
-		  
-		  // and use 'this' to fade in
-		  this.text(newText).alpha(startAlpha);
-		  
-		  return this.colorTo([c.r, c.g, c.b, endAlpha], seconds * .95, 0, null, RiTa.TEXT_TO, false);
+			// grab the start alpha if needed
+			var c = this._color, startAlpha = 0;
+
+			if (this.textToCopy) {
+				
+				startAlpha = this.textToCopy.alpha();
+				RiText.dispose(this.textToCopy);
+			}
+
+			// use the copy to fade out
+			this.textToCopy = this.copy();
+			this.textToCopy.colorTo( [this._color.r, this._color.g, this._color.b, 0],
+				 seconds, startTime, null, RiTa.INTERNAL, true);
+				 
+			RiText.dispose(this.textToCopy.textToCopy);	// no turtles [js-only]
+
+			// and use 'this' to fade in
+			this.text(newText).alpha(startAlpha);
+
+			return this.colorTo([c.r, c.g, c.b, c.a], seconds * .95, 
+				startTime, callback, RiTa.TEXT_TO, false);
 		},
 
 		colorTo : function(colors, seconds, delay, callback, _type, _destroyOnComplete) {             
