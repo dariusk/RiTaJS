@@ -4733,7 +4733,7 @@
 		textTo: function(newText, seconds, startTime, callback) {
 
 			// grab the start alpha if needed
-			var c = this._color, startAlpha = 0;
+			var c = this._color, startAlpha = 0, endAlpha = c.a;
 
 			if (this.textToCopy) {
 				
@@ -4744,14 +4744,14 @@
 			// use the copy to fade out
 			this.textToCopy = this.copy();
 			this.textToCopy.colorTo( [this._color.r, this._color.g, this._color.b, 0],
-				 seconds, startTime, null, RiTa.INTERNAL, true);
+				 seconds/2.0, startTime, null, RiTa.INTERNAL, true); // fade-out
 				 
 			RiText.dispose(this.textToCopy.textToCopy);	// no turtles [js-only]
 
 			// and use 'this' to fade in
 			this.text(newText).alpha(startAlpha);
 
-			return this.colorTo([c.r, c.g, c.b, c.a], seconds * .95, 
+			return this.colorTo([c.r, c.g, c.b, endAlpha], seconds * .95, 
 				startTime, callback, RiTa.TEXT_TO, false);
 		},
 
