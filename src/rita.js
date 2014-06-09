@@ -1279,11 +1279,6 @@
 			}
 
 			if (value) {
-				
-				// alias' for RiTa-java member functions 
-				RiText.prototype.textAlign  = RiText.prototype.align;
-				RiText.prototype.textFont   = RiText.prototype.font;
-				RiText.prototype.textSize   = RiText.prototype.fontSize;
 
 				if (typeof window != 'undefined' && window && !hasProcessing) { 
 					
@@ -5195,7 +5190,7 @@
 			return this._alignment;
 		},
 
-		font : function(font, size) {
+		font : function(font, size) { // TODO: cases for when arg1 is object & string
 			
 			var a = arguments;
 			
@@ -5209,7 +5204,7 @@
 			}
 			else if (a.length == 2) {
 				
-				return this.font(RiText.renderer._createFont(a[0], a[1]) );
+				return this.font(RiText.renderer._createFont(a[0], a[1]));
 			}
 
 			return this._font;
@@ -5343,21 +5338,24 @@
 
 		fontSize : function(f) {
  
-			if (!arguments.length) 
-				return RiText.defaults.fontSize;
+			if (!arguments.length) {
+				
+				return this._font ? this._font.size : -1;
+			}
 			
 			// DCH: changed:
 			//return (arguments.length) ? this.scale( sz / this._font.size) 
 				//: (this._font.size * this._scaleX);
-				
-		    if (f != this._font.size) {
-		    	
-		    	var name = RiText.defaults.fontFamily;
-		    	if (this._font && this._font.name)
-		    		name = this._font.name;
-		    	this.font(name, f);	// recreate		      	
-		    }
-		    
+			
+			if (this._font && (this._font.size == f)) 
+				return this; // no-op
+			    	
+	    	var name = RiText.defaults.fontFamily;
+	    	if (this._font && this._font.name)
+	    		name = this._font.name;
+	    		
+	    	this.font(name, f);	// recreate	from name/sz	      	
+
 		    return this;
 		},
 
