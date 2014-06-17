@@ -4165,9 +4165,8 @@
 		RiText.defaults = RiText._defaults;
 	}
 
-	// TODO: implement a version(for a string) that computes the max-font-size fitting all text **
 	RiText.createLines = function(txt, x, y, w, h, pfont, leading) {
-
+	
 		var a = arguments, t = Type.get(a[0]), g = RiText.renderer;
 
 		if (t != S && t != A) { // ignore first (PApplet/window) argument, shift
@@ -4179,8 +4178,6 @@
 
 		h = h || Number.MAX_VALUE;
 		pfont = pfont || RiText.defaultFont();
-
-		//log("createLines.pfont: "+pfont.name+"/"+pfont.size);
 
 		leading = leading || pfont.size * RiText.defaults.leadingFactor;
 
@@ -4226,7 +4223,7 @@
 		//log(g._type()+'.ascent/descent='+ascent+'/'+descent);
 
 		currentY = y + ascent;
-
+	
 		if (RiText.defaults.indentFirstParagraph)
 			startX += RiText.defaults.paragraphIndent;
 
@@ -4261,7 +4258,7 @@
 			else {
 				
 				// check yPosition to see if its ok for another line?
-				if (RiText._withinBoundsY(currentY, leading, maxH, descent)) {
+				if (RiText._withinBoundsY(currentY, leading, maxH, descent, firstLine)) {
 
 					yPos = firstLine ? currentY : currentY + leading;
 					rt = RiText._newRiTextLine(sb, pfont, startX, yPos);
@@ -4292,10 +4289,11 @@
 		}
 
 		// check if leftover words can make a new line
-		if (RiText._withinBoundsY(currentY, leading, maxH, descent)) {
+		if (RiText._withinBoundsY(currentY, leading, maxH, descent, firstLine)) {
 
 			// TODO: what if there is are tags in here -- is it possible?)
-			rlines.push(RiText._newRiTextLine(sb, pfont, x, leading + currentY));
+			yPos = firstLine ? currentY : currentY + leading;
+			rlines.push(RiText._newRiTextLine(sb, pfont, x, currentY));
 			sb = E;
 		} 
 		else {
@@ -4307,9 +4305,11 @@
 		return rlines;
 	}
 
-	RiText._withinBoundsY = function(currentY, leading, maxY, descent) {
+	RiText._withinBoundsY = function(currentY, leading, maxY, descent, firstLine) {
 		
-    	return currentY + leading <= maxY - descent;
+    	if (!firstLine) 
+    		return currentY + leading <= maxY - descent;
+		return currentY <= maxY - descent;
   	}
   
 	RiText._addToStack = function(txt, words) {
