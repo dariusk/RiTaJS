@@ -575,7 +575,7 @@
 		// TODO: test
 		pauseTimer : function(id, pauseSec) {  
 		 
-		 	console.log("id: "+id);
+		 	//console.log("id: "+id);
 		 	
 			pauseSec = is(pauseSec, N) ? pauseSec : Number.MAX_VALUE;
 			
@@ -585,7 +585,7 @@
 				
 				var theId = id;
 				
-				console.log("OK-theId: "+theId);
+				//console.log("OK-theId: "+theId);
 				
 				setTimeout(function() { 
 					if (timers[theId])
@@ -4109,7 +4109,7 @@
 		if (arguments.length) { 
 			RiText.defaults.fill = parseColor.apply(null, arguments);
 		}
-		return RiText.defaults.fill;
+		toColArr(RiText.defaults.fill);
 	}
 		
 	
@@ -4190,7 +4190,8 @@
 			txt = txt.join(SP); // else join into single string
 		}
 		
-		if (!w && g) w = g._width() - x;
+		if (!w && g && g.width) w = g.width - x; // TODO: how to get width of sketch in Node renderer?
+		
 		if (w < 0) w = Number.MAX_VALUE;
 
 		var ascent, descent, leading, startX = x, currentX, currentY, 
@@ -4441,14 +4442,17 @@
 	
 	RiText._getDefaultFont = function() {
 		
-		//log("RiText._getDefaultFont: "+RiText.defaults.fontFamily+","+RiText.defaults._font.size);
-		
+		//log("RiText._getDefaultFont1: "+RiText.defaults._font+","+RiText.defaults.fontFamily+","+RiText.defaults.fontSize);
+
 		RiText.defaults._font = RiText.defaults._font || 
-			RiText.renderer._createFont(RiText.defaults.fontFamily, 
-				RiText.defaults.fontSize, RiText.defaults.leading);
-		
+			RiText.renderer._createFont(RiText.defaults.fontFamily, RiText.defaults.fontSize);
+
 		return RiText.defaults._font;
 	}
+
+	RiText.timer = RiTa.timer;
+	RiText.pauseTimer = RiTa.pauseTimer;
+	RiText.stopTimer = RiTa.stopTimer;
 	
 	// PUBLIC statics   ///////////////////////////////////////////
    
@@ -4485,12 +4489,6 @@
 			};
 			
 			this._boundingFill = RiText.defaults.boundingFill;
-			// this._boundingFill = { 
-				// r : (bbf && bbf.r) || -1, 
-				// g : (bbf && bbf.g) || -1, 
-				// b : (bbf && bbf.b) || -1, 
-				// a : this._color.a	
-			// };
 
 			this._showBounds = RiText.defaults.showBounds;
 			this._motionType = RiText.defaults.motionType;
@@ -4516,7 +4514,8 @@
 
 			// center by default
 			this.x = is(args[1], N) ? args[1] : this._screenCenterX();
-			this.y = is(args[2],N) ? args[2] : (this.g._height() / 2)  + (this.textHeight() / 2.0) ;
+			var screenH =  (this.g && this.g.p) ? (this.g._height() / 2) : 50;  // TODO: what to do for Node?
+			this.y = is(args[2],N) ? args[2] : screenH + (this.textHeight() / 2.0) ;
 			this.z = 0;
 			
 			//log('RiText: '+this._rs._text +"("+this.x+","+this.y+")"+" / "+ this._font.name);
@@ -4565,7 +4564,7 @@
 		
 		_screenCenterX : function() {  // to match java
 			
-			var scx = this.g._width() / 2.0;
+			var scx = (this.g && this.g.p) ? this.g._width() / 2.0 : -1; // TODO: what to do for Node?
 			
 			if (this._alignment == RiTa.LEFT)
       			scx -= (this.textWidth() / 2.0);
@@ -4672,14 +4671,14 @@
 
 		fadeIn : function(seconds, delay, callback) {
 			
-			return this.colorTo([this._color.r, this._color.g, this._color.b, 255],
+			return this.colorTo(toColArr(c, 255),
 				seconds, delay, null, RiTa.FADE_IN, false);
 		},
 
 		fadeOut : function(seconds, delay, callback, destroyOnComplete) {
 	
 			destroyOnComplete = destroyOnComplete || false;
-			return this.colorTo([this._color.r, this._color.g, this._color.b, 0], 
+			return this.colorTo(toColArr(c, 0), 
 				seconds, delay, null, RiTa.FADE_OUT, destroyOnComplete);
 		},
 
@@ -4752,7 +4751,7 @@
 
 			// use the copy to fade out
 			this.textToCopy = this.copy();
-			this.textToCopy.colorTo( [this._color.r, this._color.g, this._color.b, 0],
+			this.textToCopy.colorTo( toColArr(c,0),
 				 seconds/2.0, startTime, null, RiTa.INTERNAL, true); // fade-out
 				 
 			RiText.dispose(this.textToCopy.textToCopy);	// no turtles [js-only]
@@ -4760,7 +4759,7 @@
 			// and use 'this' to fade in
 			this.text(newText).alpha(startAlpha);
 
-			return this.colorTo([c.r, c.g, c.b, endAlpha], seconds * .95, 
+			return this.colorTo(toColArr(c, endAlpha), seconds * .95, 
 				startTime, callback, RiTa.TEXT_TO, false);
 		},
 
@@ -5195,11 +5194,10 @@
 			var a = arguments;
 			
 			if (a.length == 1) {
-
+			
 				this._font = font || RiText._getDefaultFont();
 				this._font.size = this._font.size || RiText.defaults.fontSize;
-				if (!this._font.leading) this._font.leading = 0;
-				
+
 				return this;
 			}
 			else if (a.length == 2) {
@@ -5935,7 +5933,7 @@
 
 	var RiText_Node = makeClass();
 
-	RiText_Node.prototype = {
+	RiText_Node.prototype = {  // TODO: get rid of all no-op methods...
 
 		init : function(metrics) {
 			
@@ -6006,11 +6004,7 @@
 
 		// actual creation: only called from RiText.createDefaultFont();!
 		_createFont : function(fontName, fontSize) {
-			
-			//log("[Node] Creating font: "+fontName+"-"+fontSize);
-			// TODO: load json for a font here ???
-			// what to return
-			// this.font = loadJSONFont(fontName, fontSize); 
+
 			return this.font;
 		},
 
@@ -9609,8 +9603,15 @@
 		doubling : false
 	};
 
-	//////// Utility functions (private) /////////////////////////////////////////////
-		
+	// ////////////////////////////////////////////////////////////
+	// Global util functions (private)
+	// ////////////////////////////////////////////////////////////
+
+	function toColArr(obj, overrideAlpha) {
+		var a = (typeof overrideAlpha === 'undefined') ? obj.a || 255 : overrideAlpha;
+		return [ obj.r, obj.g, obj.b, a ];
+	}
+	
 	function isNum(n) {
 		
 	  return !isNaN(parseFloat(n)) && isFinite(n);
@@ -9874,11 +9875,11 @@
 		}
 	}*/
 	else if (isNode()) {
-		RiText.renderer = RiText_Node();
+		RiText.renderer = RiText_Node(RiText.defaults.metrics);
 	}
 	else {
-		warn('Unknown Env: not Processing, Node, or Canvas; renderer is null');
-		RiText.renderer = RiText_Node();
+		warn('Unknown Env: not Processing(JS), Node, or Android; renderer is null');
+		RiText.renderer = RiText_Node(RiText.defaults.metrics);
 	}
 	
 	if (!RiTa.SILENT)
