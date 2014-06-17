@@ -4109,7 +4109,7 @@
 		if (arguments.length) { 
 			RiText.defaults.fill = parseColor.apply(null, arguments);
 		}
-		toColArr(RiText.defaults.fill);
+		return toColArr(RiText.defaults.fill);
 	}
 		
 	
@@ -4514,7 +4514,7 @@
 
 			// center by default
 			this.x = is(args[1], N) ? args[1] : this._screenCenterX();
-			var screenH =  (this.g && this.g.p) ? (this.g._height() / 2) : 50;  // TODO: what to do for Node?
+			var screenH =  (this.g && this.g.p) ? (this.g.p.height / 2) : 50;  // TODO: what to do for Node?
 			this.y = is(args[2],N) ? args[2] : screenH + (this.textHeight() / 2.0) ;
 			this.z = 0;
 			
