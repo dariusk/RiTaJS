@@ -2,7 +2,7 @@
 	
 	var _VERSION_ = '##version##';	
 
-	/**  @private Simple type-checking functions */ 
+	/*  @private Simple type-checking functions */ 
 	var Type = {
 		
 		N : 'number', S : 'string', O : 'object', A :'array', B : 'boolean', R : 'regexp', F : 'function',
@@ -354,10 +354,10 @@
 
 	RiTa = {
 
-		/** The current version of the RiTa tools */
+		/* The current version of the RiTa tools */
 		VERSION : _VERSION_,
 
-		/** For tokenization, Can't -> Can not, etc. */
+		/* For tokenization, Can't -> Can not, etc. */
 		SPLIT_CONTRACTIONS : false,
 		
 		// :::: For RiTaEvents :::::::::
@@ -471,22 +471,22 @@
 		
 		ABBREVIATIONS : [   "Adm." ,"Capt." ,"Cmdr." ,"Col." ,"Dr." ,"Gen." ,"Gov." ,"Lt." ,"Maj." ,"Messrs." ,"Mr.","Mrs." ,"Ms." ,"Prof." ,"Rep." ,"Reps." ,"Rev." ,"Sen." ,"Sens." ,"Sgt." ,"Sr." ,"St.","a.k.a." ,"c.f." ,"i.e." ,"e.g." ,"vs." ,"v.", "Jan." ,"Feb." ,"Mar." ,"Apr." ,"Mar." ,"Jun." ,"Jul." ,"Aug." ,"Sept." ,"Oct." ,"Nov." ,"Dec." ],
 
-		/** The infinitive verb form  - 'to eat an apple' */
+		/* The infinitive verb form  - 'to eat an apple' */
 		INFINITIVE : 1,
 
-		/** Gerund form of a verb  - 'eating an apple' */
+		/* Gerund form of a verb  - 'eating an apple' */
 		GERUND : 2,
 
-		/** The imperative verb form - 'eat an apple!' */
+		/* The imperative verb form - 'eat an apple!' */
 		IMPERATIVE : 3,
 
-		/** Bare infinitive verb form - 'eat an apple' */
+		/* Bare infinitive verb form - 'eat an apple' */
 		BARE_INFINITIVE : 4,
 
-		/** The subjunctive verb form */
+		/* The subjunctive verb form */
 		SUBJUNCTIVE : 5,
  
-		/** Set to true to disable all console output */
+		/* Set to true to disable all console output */
 		SILENT : false,
 		
 		// Start Methods =================================
@@ -810,7 +810,7 @@
 			
 		},
 
-		/**
+		/*
 		 * Returns true if and only if the string matches 'pattern'
 		 * 
 		 * @param {string} string string to test
@@ -1309,7 +1309,7 @@
 			return input.substring(0,1).toUpperCase() + input.substring(1);
 		},
 		
-		/**
+		/*
 		 * Takes pair of strings or string-arrays and returns the min-edit distance
 		 * @param normalized based on max-length if 3rd (optional) parameter is true (default=f).
 		 */
@@ -1326,7 +1326,7 @@
 	
 	var RiMarkov = makeClass();
 
-	 /** constant for max # of tries for a generation */
+	 /* constant for max # of tries for a generation */
   	RiMarkov.MAX_GENERATION_ATTEMPTS = 1000;
   
 	RiMarkov._SSRE =  /"?[A-Z][a-z"',;`-]*/;  
@@ -1335,7 +1335,7 @@
 
 	RiMarkov.prototype = {
 
-		/**
+		/*
 		 * @function
 		 * @name RiMarkov 
 		 * 
@@ -2324,7 +2324,7 @@
 			return sorted ? wordArr : shuffle(wordArr);  
 		},
 		
-		/**
+		/*
 		 * Returns true if c is a vowel
 		 */
 		_isVowel : function(c) {
@@ -2332,7 +2332,7 @@
 			return (strOk(c) && RiTa.VOWELS.indexOf(c) > -1);
 		},
 
-		/**
+		/*
 		 * Returns true if c is a consonant
 		 */
 		_isConsonant : function(p) {
@@ -2417,7 +2417,7 @@
 			return (strOk(c1) && strOk(c2) && c1 === c2);  
 		},
 
-		/**
+		/*
 		 * Returns the first stressed syllable of the input word
 		 */
 		_firstStressedSyllable : function(word) {
@@ -2486,7 +2486,7 @@
 			return false;  
 		 },
 		 
-		/**
+		/*
 		 * Returns a String containing the phonemes for each syllable of each word of the input text, 
 		 * delimited by dashes (phonemes) and semi-colons (words). 
 		 * For example, the 4 syllables of the phrase 
@@ -2512,7 +2512,7 @@
 			return RiTa.untokenize(raw).replace(/1/g, E).trim();
 		},
 
-		/**
+		/*
 		 * Returns a String containing all phonemes for the input text, delimited by semi-colons
 		 * 
 		 * @example "dh:ax:d:ao:g:r:ae:n:f:ae:s:t"
@@ -2546,7 +2546,7 @@
 			return RiTa.untokenize(raw).replace(/1/g, E).trim(); 
 		},
 
-		/**
+		/*
 		 * Returns a String containing the stresses for each syllable of the input text, delimited by semi-colons, 
 		 * @example "0:1:0:1", with 1's meaning 'stressed', and 0's meaning 'unstressed', 
 		 * 
@@ -2598,7 +2598,7 @@
 			return RiLexicon.data;
 		},
 		
-		/**
+		/*
 		 * Returns the raw (RiTa-format) dictionary entry for the given word 
 		 * 
 		 * @param {string} word
@@ -3153,7 +3153,7 @@
 
 		wordAt : function(index) {
 			
-			var words = RiTa.tokenize((this._text));
+			var words = this.words();
 			if (index < 0 || index >= words.length)
 				return E;
 			return words[index];  
@@ -3161,11 +3161,10 @@
 
 		wordCount : function() {
 			
-			if (!this._text.length) return 0;
-			return this.words().length;  
+			return this._text.length ? this.words().length : 0 ;
 		},
 
-		words : function() { //TODO: change to words()
+		words : function() {
 			
 			return RiTa.tokenize(this._text);  
 		},
@@ -4051,7 +4050,7 @@
 		return RiText.defaults._font;
 	}
 	
-	/**
+	/*
 	 * Returns json-formatted string representing the font metrics for the default font,
 	 *  with the following fields: { name, size, ascent, descent, widths }
 	 * 
@@ -4564,7 +4563,7 @@
 		
 		_screenCenterX : function() {  // to match java
 			
-			var scx = (this.g && this.g.p) ? this.g._width() / 2.0 : -1; // TODO: what to do for Node?
+			var scx = (this.g && this.g.p) ? this.g.p.width / 2.0 : -1; // TODO: what to do for Node?
 			
 			if (this._alignment == RiTa.LEFT)
       			scx -= (this.textWidth() / 2.0);
@@ -4640,8 +4639,8 @@
 
   					g._strokeWeight(this._boundingStrokeWeight);
 
-					// shift bounds based on alignment  // TODO: check that rotation still works w bounds? 
-					switch(this._alignment) {
+					// shift bounds based on alignment  
+					switch(this._alignment) { // this should be part of updateBoundingBox() (see Java)
 						
 						case RiTa.RIGHT:
 							g._translate(-bb.width,0);
@@ -4650,7 +4649,7 @@
 							g._translate(-bb.width/2,0);
 							break;
 					}
-					g._rect(0, bb.y, bb.width, bb.height);
+					g._rect(0, bb.y, bb.width, bb.height); // what??
 				}
 				
 				g._popState();
@@ -5093,25 +5092,25 @@
 
 		distanceTo : function(a,b) {
 			
-	      var p2x, p2y, p1 = this.center(), p1x = p1.x, p1y = p1.y;
+	      var p2x, p2y, p1 = this.center();
 	       
-	      if (a.length == 1) {
-		     //p2 = a.center();
-		     p2x = p1.x;
-		     p2y = p1.y;
+	      if (a.length == 1 && is(a.center,F)) {
+		     p2 = a.center();
+		     p2x = p2[0];
+		     p2y = p2[1];
 		  }
 		  else {
 		  	 p2x = a;
 		     p2y = b;
 		  }
 		  
-		  return RiTa.distance( p1.x,  p1.y,  p2x,  p2y);
+		  return RiTa.distance(p1[0], p1[1],  p2x,  p2y);
 		},
 
 		center : function() {
 			
-			var bb = this.boundingBox();
-			return { x: bb.x + bb.width/2.0, y: bb.y - bb.height/2.0 };
+			var bb = this.boundingBox(); // note: this is different than RiTa (TODO: sync)
+			return [ bb[0] + bb[2]/2.0, bb[1]  + bb[3]/2.0 ];
 		},
 
 		splitWords : function(regex) {
@@ -5160,11 +5159,11 @@
 
 		contains : function(mx, my) {
 
-		   var bb = this.boundingBox(false);
-		   bb.x += this.x;
-		   bb.y += this.y;
+		   var bb = this.boundingBox(true);
+		   bb[0] += this.x;
+		   bb[1] += this.y;
 		   
-		   return (!(mx<bb.x || mx > bb.x+bb.width || my < bb.y || my > bb.y+bb.height));
+		   return (!(mx<bb[0] || mx > bb[0]+bb[2] || my < bb[1] || my > bb[1]+bb[3]));
 		},
 
 		copy : function() {
@@ -5245,7 +5244,7 @@
 			//TODO: add Z
 			 
 			if (!arguments.length) 
-				return { x: this.x, y: this.y };
+				return [ this.x, this.y ];
 			this.x = x;
 			this.y = y;
 			return this;
@@ -5293,35 +5292,35 @@
 
 		wordOffset : function(wordIdx) { 
 			
-			var words =  this.text().split(' ');
-			return RiText._wordOffsetFor(this, words, wordIdx);
+			return RiText._wordOffsetFor(this, this.words(), wordIdx);
 		},
 
-		boundingBox : function(transformed) {
+		boundingBox : function(noTransform) { // argument is not part of api
 
-			var g = this.g;
+			var g = this.g, bb = this.g._getBoundingBox(this);
 
-			g._pushState();
-
-			g._rotate(this._rotateZ);
+			g._pushState(); // really, do we need all this here? 
+			
+			// make function (here and in draw)
 			g._translate(this.x, this.y);
-			g._scale(this._scaleX, this._scaleY, this._scaleZ); 
-	
+			g._translate(bb.width/2, bb.height/-4);
+			g._rotate(this._rotateZ);				
+			g._translate(bb.width/-2, bb.height/4);
+			g._scale(this._scaleX, this._scaleY, this._scaleZ);
+			 
 			// Set font params
 			g._textFont(this._font);
 			g._textAlign(this._alignment);
 
-				var bb = this.g._getBoundingBox(this);
-				if (transformed) {
-					bb.x += this.x;
-					bb.y += this.y;
-					bb.width *= this._scaleX;
-					bb.height *= this._scaleY
-				}
-					
+			if (!noTransform) {
+				bb.x += this.x;
+				bb.y += this.y;
+				bb.width *= this._scaleX;
+				bb.height *= this._scaleY;
+			}
 			g._popState();
 
-			return bb;
+			return [bb.x,bb.y,bb.width,bb.height];
 		},
 
 		textWidth : function() { 
@@ -5367,7 +5366,7 @@
 			return this.g._textDescent(this);
 		},
 		 
-		/**
+		/*
 		 * Adds a new text behavior to the object  
 		 * @returns {array} 
 		 */
@@ -5377,7 +5376,7 @@
 
 		},
 		
-		/**
+		/*
 		 * Returns the specified text behavior  
 		 * @param {number} the behavior id
 		 */
@@ -5412,7 +5411,7 @@
 			return this;
 		},
 		
-		/**
+		/*
 		 * Updates existing text behaviors for the object 
 		 * @param {string} the behaviors
 		 */
@@ -5449,14 +5448,14 @@
 	
 	var LetterToSound = makeClass();
 	
-	/**
+	/*
 	 * Entry in file represents the total number of states in the file. This
 	 * should be at the top of the file. The format should be "TOTAL n" where n is
 	 * an integer value.
 	 */
 	LetterToSound.TOTAL = "TOTAL";
 	
-	/**
+	/*
 	 * Entry in file represents the beginning of a new letter index. This should
 	 * appear before the list of a new set of states for a particular letter. The
 	 * format should be "INDEX n c" where n is the index into the state machine
@@ -5464,7 +5463,7 @@
 	 */
 	LetterToSound.INDEX = "INDEX";
 	
-	/**
+	/*
 	 * Entry in file represents a state. The format should be "STATE i c t f"
 	 * where 'i' represents an index to look at in the decision string, c is the
 	 * character that should match, t is the index of the state to go to if there
@@ -5472,20 +5471,20 @@
 	 */
 	LetterToSound.STATE = "STATE";
 	
-	/**
+	/*
 	 * Entry in file represents a final state. The format should be "PHONE p"
 	 * where p represents a phone string that comes from the phone table.
 	 */
 	LetterToSound.PHONE = "PHONE";
 	
-	/**
+	/*
 	 * If true, the state string is tokenized when it is first read. The side
 	 * effects of this are quicker lookups, but more memory usage and a longer
 	 * startup time.
 	 */
 	LetterToSound.tokenizeOnLoad = true;
 	
-	/**
+	/*
 	 * If true, the state string is tokenized the first time it is referenced. The
 	 * side effects of this are quicker lookups, but more memory usage.
 	 */
@@ -5497,12 +5496,12 @@
 
 		init : function() {
 			
-			/**
+			/*
 			 * The indices of the starting points for letters in the state machine.
 			 */
 			this.letterIndex = {};
 			
-			/**
+			/*
 			 * An array of characters to hold a string for checking against a rule. This
 			 * will be reused over and over again, so the goal was just to have a single
 			 * area instead of new'ing up a new one for every word. The name choice is to
@@ -5510,14 +5509,14 @@
 			 */
 		   this.fval_buff = [];
 	
-			/**
+			/*
 			 * The LTS state machine. Entries can be String or State. An ArrayList could
 			 * be used here -- I chose not to because I thought it might be quicker to
 			 * avoid dealing with the dynamic resizing.
 			 */
 			this.stateMachine = null;
 	
-			/**
+			/*
 			 * The number of states in the state machine.
 			 */
 			this.numStates = 0;
@@ -5554,12 +5553,8 @@
 			throw Error("Unexpected type: "+type);
 		},
 		
-		/**
-		 * Creates a word from the given input line and add it to the state machine.
-		 * It expects the TOTAL line to come before any of the states.
-		 * 
-		 * @param line the line of text from the input file
-		 */
+		/* Creates a word from the given input line and add it to the state machine.
+		   It expects the TOTAL line to come before any of the states.*/
 		 parseAndAdd : function(line) {
 			 
 		  var tokenizer = new StringTokenizer(line, SP);
@@ -5621,14 +5616,6 @@
 			return result.join(delim);  
 		},
 
-		/**
-		 * Calculates the phone list for a given word. If a phone list cannot be
-		 * determined, <code>null</code> is returned. 
-		 * 
-		 * @param word the word or words to find
-		 * 
-		 * @return array of phones for word or <code>null</code>
-		 */
 		_computePhones : function(word) {
 			
 		  var dig, phoneList = [], full_buff, tmp, currentState, startIndex, stateIndex, c;
@@ -5654,7 +5641,7 @@
 			  return phoneList;
 		  }
 	
-		  // Create "000#word#000"
+		  // Create "000#word#000", uggh
 		  tmp = "000#"+word.trim()+"#000", full_buff = tmp.split(E);
 		  
 		  // For each character in the word, create a WINDOW_SIZE
@@ -5731,7 +5718,7 @@
 	
 	DecisionState.prototype = {
 	
-		/**
+		/*
 		 * Class constructor.
 		 * 
 		 * @param index
@@ -5756,7 +5743,7 @@
 			return "DecisionState";
 		},
 	
-		/**
+		/*
 		 * Gets the next state to go to based upon the given character sequence.
 		 * 
 		 * @param chars the characters for comparison
@@ -5769,7 +5756,7 @@
 		  return (chars[this.index] == this.c) ? this.qtrue : this.qfalse;
 		},
 	
-		/**
+		/*
 		 * Outputs this <code>State</code> as though it came from the text input
 		 * file. 
 		 */
@@ -5778,7 +5765,7 @@
 		}, 
 
 	
-		/**
+		/*
 		 * Compares this state to another state for debugging purposes.
 		 */
 		compare : function(other) {
@@ -5804,9 +5791,8 @@
 	
 	FinalState.prototype = {
 		
-		/**
-		 * Class constructor. The string "epsilon" is used to indicate an empty list.
-		 * @param {} phones the phones for this state
+		/*
+		 * Constructor: the string "epsilon" is used to indicate an empty list.
 		 */
 		init : function(phones) {
 			
@@ -5840,9 +5826,8 @@
 			return "FinalState";
 		},
 	
-		/**
+		/*
 		 * Appends the phone list for this state to the given <code>ArrayList</code>.
-		 * @param {array} array the array to append to
 		 */
 		append : function(array) {
 			
@@ -5852,7 +5837,7 @@
 				array.push(this.phoneList[i]);
 		},
 	
-		/**
+		/*
 		 * Outputs this <code>State</code> as though it came from the text input
 		 * file. The string "epsilon" is used to indicate an empty list.
 		 */
@@ -5872,7 +5857,7 @@
 		  }
 		},
 	
-		/**
+		/*
 		 * Compares this state to another state for debugging purposes.
 		 * 
 		 * @param other
@@ -6987,7 +6972,7 @@
 	
 	// Stemming demo/comparison - http://text-processing.com/demo/stem/
 	
-	/**  
+	/*  
 	 *  Porter stemmer in Javascript: from https://github.com/kristopolous/Porter-Stemmer
 	 *  Ported from Porter, 1980, An algorithm for suffix stripping, Program, Vol. 14,
 	 *  no. 3, pp 130-137, see also http:www.tartarus.org/~martin/PorterStemmer
@@ -8001,64 +7986,64 @@
 	/*From the PlingStemmer stemmer implementation included in the Java Tools package (see http://mpii.de/yago-naga/javatools). */
 	Stemmer.stem_Pling = (function() {
 		
-		/** Words that are both singular and plural */
+		/* Words that are both singular and plural */
 		var categorySP = ["acoustics", "aestetics", "aquatics", "basics", "ceramics", "classics", "cosmetics", "dermatoglyphics", "dialectics", "deer", "dynamics", "esthetics", "ethics", "harmonics", "heroics", "isometrics", "mechanics", "metrics", "statistics", "optic", "people", "physics", "polemics", "propaedeutics", "pyrotechnics", "quadratics", "quarters", "statistics", "tactics", "tropics"];
 	
-		/** Words that end in "-se" in their plural forms (like "nurse" etc.) */
+		/* Words that end in "-se" in their plural forms (like "nurse" etc.) */
 		var categorySE_SES = ["nurses", "cruises"];
 	
-		/** Words that do not have a distinct plural form (like "atlas" etc.) */
+		/* Words that do not have a distinct plural form (like "atlas" etc.) */
 		var category00 = ["alias", "asbestos", "atlas", "barracks", "bathos", "bias", "breeches", "britches", "canvas", "chaos", "clippers", "contretemps", "corps", "cosmos", "crossroads", "diabetes", "ethos", "gallows", "gas", "graffiti", "headquarters", "herpes", "high-jinks", "innings", "jackanapes", "lens", "means", "measles", "mews", "mumps", "news", "pathos", "pincers", "pliers", "proceedings", "rabies", "rhinoceros", "sassafras", "scissors", "series", "shears", "species", "tuna"];
 	
-		/** Words that change from "-um" to "-a" (like "curriculum" etc.), listed in their plural forms */
+		/* Words that change from "-um" to "-a" (like "curriculum" etc.), listed in their plural forms */
 		var categoryUM_A = ["addenda", "agenda", "aquaria", "bacteria", "candelabra", "compendia", "consortia", "crania", "curricula", "data", "desiderata", "dicta", "emporia", "enconia", "errata", "extrema", "gymnasia", "honoraria", "interregna", "lustra", "maxima", "media", "memoranda", "millenia", "minima", "momenta", "optima", "ova", "phyla", "quanta", "rostra", "spectra", "specula", "stadia", "strata", "symposia", "trapezia", "ultimata", "vacua", "vela"];
 	
-		/** Words that change from "-on" to "-a" (like "phenomenon" etc.), listed in their plural forms */
+		/* Words that change from "-on" to "-a" (like "phenomenon" etc.), listed in their plural forms */
 		var categoryON_A = ["aphelia", "asyndeta", "automata", "criteria", "hyperbata", "noumena", "organa", "perihelia", "phenomena", "prolegomena"];
 	
-		/** Words that change from "-o" to "-i" (like "libretto" etc.), listed in their plural forms */
+		/* Words that change from "-o" to "-i" (like "libretto" etc.), listed in their plural forms */
 		var categoryO_I = ["alti", "bassi", "canti", "contralti", "crescendi", "libretti", "soli", "soprani", "tempi", "virtuosi"];
 	
-		/**  Words that change from "-us" to "-i" (like "fungus" etc.), listed in their plural forms		 */
+		/*  Words that change from "-us" to "-i" (like "fungus" etc.), listed in their plural forms		 */
 		var categoryUS_I = ["alumni", "bacilli", "cacti", "foci", "fungi", "genii", "hippopotami", "incubi", "nimbi", "nuclei", "nucleoli", "octopi", "radii", "stimuli", "styli", "succubi", "syllabi", "termini", "tori", "umbilici", "uteri"];
 	
-		/** Words that change from "-ix" to "-ices" (like "appendix" etc.), listed in their plural forms */
+		/* Words that change from "-ix" to "-ices" (like "appendix" etc.), listed in their plural forms */
 		var categoryIX_ICES = ["appendices", "cervices"];
 	
-		/** Words that change from "-is" to "-es" (like "axis" etc.), listed in their plural forms, plus everybody ending in theses */
+		/* Words that change from "-is" to "-es" (like "axis" etc.), listed in their plural forms, plus everybody ending in theses */
 		var categoryIS_ES = ["analyses", "axes", "bases", "crises", "diagnoses", "ellipses", "em_PHASEs", "neuroses", "oases", "paralyses", "synopses"];
 	
-		/** Words that change from "-oe" to "-oes" (like "toe" etc.), listed in their plural forms*/
+		/* Words that change from "-oe" to "-oes" (like "toe" etc.), listed in their plural forms*/
 		var categoryOE_OES = ["aloes", "backhoes", "beroes", "canoes", "chigoes", "cohoes", "does", "felloes", "floes", "foes", "gumshoes", "hammertoes", "hoes", "hoopoes", "horseshoes", "leucothoes", "mahoes", "mistletoes", "oboes", "overshoes", "pahoehoes", "pekoes", "roes", "shoes", "sloes", "snowshoes", "throes", "tic-tac-toes", "tick-tack-toes", "ticktacktoes", "tiptoes", "tit-tat-toes", "toes", "toetoes", "tuckahoes", "woes"];
 	
-		/** Words that change from "-ex" to "-ices" (like "index" etc.), listed in their plural forms*/
+		/* Words that change from "-ex" to "-ices" (like "index" etc.), listed in their plural forms*/
 		var categoryEX_ICES = ["apices", "codices", "cortices", "indices", "latices", "murices", "pontifices", "silices", "simplices", "vertices", "vortices"];
 	
-		/** Words that change from "-u" to "-us" (like "emu" etc.), listed in their plural forms*/
+		/* Words that change from "-u" to "-us" (like "emu" etc.), listed in their plural forms*/
 		var categoryU_US = ["apercus", "barbus", "cornus", "ecrus", "emus", "fondus", "gnus", "iglus", "mus", "nandus", "napus", "poilus", "quipus", "snafus", "tabus", "tamandus", "tatus", "timucus", "tiramisus", "tofus", "tutus"];
 	
-		/** Words that change from "-sse" to "-sses" (like "finesse" etc.), listed in their plural forms,plus those ending in mousse*/
+		/* Words that change from "-sse" to "-sses" (like "finesse" etc.), listed in their plural forms,plus those ending in mousse*/
 		var categorySSE_SSES = ["bouillabaisses", "coulisses", "crevasses", "crosses", "cuisses", "demitasses", "ecrevisses", "fesses", "finesses", "fosses", "impasses", "lacrosses", "largesses", "masses", "noblesses", "palliasses", "pelisses", "politesses", "posses", "tasses", "wrasses"];
 	
-		/** Words that change from "-che" to "-ches" (like "brioche" etc.), listed in their plural forms*/
+		/* Words that change from "-che" to "-ches" (like "brioche" etc.), listed in their plural forms*/
 		var categoryCHE_CHES = ["adrenarches", "attaches", "avalanches", "barouches", "brioches", "caches", "caleches", "caroches", "cartouches", "cliches", "cloches", "creches", "demarches", "douches", "gouaches", "guilloches", "headaches", "heartaches", "huaraches", "menarches", "microfiches", "moustaches", "mustaches", "niches", "panaches", "panoches", "pastiches", "penuches", "pinches", "postiches", "psyches", "quiches", "schottisches", "seiches", "soutaches", "synecdoches", "thelarches", "troches"];
 	
-		/** Words that end with "-ics" and do not exist as nouns without the 's' (like "aerobics" etc.)*/
+		/* Words that end with "-ics" and do not exist as nouns without the 's' (like "aerobics" etc.)*/
 		var categoryICS = ["aerobatics", "aerobics", "aerodynamics", "aeromechanics", "aeronautics", "alphanumerics", "animatronics", "apologetics", "architectonics", "astrodynamics", "astronautics", "astrophysics", "athletics", "atmospherics", "autogenics", "avionics", "ballistics", "bibliotics", "bioethics", "biometrics", "bionics", "bionomics", "biophysics", "biosystematics", "cacogenics", "calisthenics", "callisthenics", "catoptrics", "civics", "cladistics", "cryogenics", "cryonics", "cryptanalytics", "cybernetics", "cytoarchitectonics", "cytogenetics", "diagnostics", "dietetics", "dramatics", "dysgenics", "econometrics", "economics", "electromagnetics", "electronics", "electrostatics", "endodontics", "enterics", "ergonomics", "eugenics", "eurhythmics", "eurythmics", "exodontics", "fibreoptics", "futuristics", "genetics", "genomics", "geographics", "geophysics", "geopolitics", "geriatrics", "glyptics", "graphics", "gymnastics", "hermeneutics", "histrionics", "homiletics", "hydraulics", "hydrodynamics", "hydrokinetics", "hydroponics", "hydrostatics", "hygienics", "informatics", "kinematics", "kinesthetics", "kinetics", "lexicostatistics", "linguistics", "lithoglyptics", "liturgics", "logistics", "macrobiotics", "macroeconomics", "magnetics", "magnetohydrodynamics", "mathematics", "metamathematics", "metaphysics", "microeconomics", "microelectronics", "mnemonics", "morphophonemics", "neuroethics", "neurolinguistics", "nucleonics", "numismatics", "obstetrics", "onomastics", "orthodontics", "orthopaedics", "orthopedics", "orthoptics", "paediatrics", "patristics", "patristics", "pedagogics", "pediatrics", "periodontics", "pharmaceutics", "pharmacogenetics", "pharmacokinetics", "phonemics", "phonetics", "phonics", "photomechanics", "physiatrics", "pneumatics", "poetics", "politics", "pragmatics", "prosthetics", "prosthodontics", "proteomics", "proxemics", "psycholinguistics", "psychometrics", "psychonomics", "psychophysics", "psychotherapeutics", "robotics", "semantics", "semiotics", "semitropics", "sociolinguistics", "stemmatics", "strategics", "subtropics", "systematics", "tectonics", "telerobotics", "therapeutics", "thermionics", "thermodynamics", "thermostatics"];
 	
-		/** Words that change from "-ie" to "-ies" (like "auntie" etc.), listed in their plural forms*/
+		/* Words that change from "-ie" to "-ies" (like "auntie" etc.), listed in their plural forms*/
 		var categoryIE_IES = ["aeries", "anomies", "aunties", "baddies", "beanies", "birdies", "boccies", "bogies", "bolshies", "bombies", "bonhomies", "bonxies", "booboisies", "boogies", "boogie-woogies", "bookies", "booties", "bosies", "bourgeoisies", "brasseries", "brassies", "brownies", "budgies", "byrnies", "caddies", "calories", "camaraderies", "capercaillies", "capercailzies", "cassies", "catties", "causeries", "charcuteries", "chinoiseries", "collies", "commies", "cookies", "coolies", "coonties", "cooties", "corries", "coteries", "cowpies", "cowries", "cozies", "crappies", "crossties", "curies", "dachsies", "darkies", "dassies", "dearies", "dickies", "dies", "dixies", "doggies", "dogies", "dominies", "dovekies", "eyries", "faeries", "falsies", "floozies", "folies", "foodies", "freebies", "gaucheries", "gendarmeries", "genies", "ghillies", "gillies", "goalies", "goonies", "grannies", "grotesqueries", "groupies", "hankies", "hippies", "hoagies", "honkies", "hymies", "indies", "junkies", "kelpies", "kilocalories", "knobkerries", "koppies", "kylies", "laddies", "lassies", "lies", "lingeries", "magpies", "magpies", "marqueteries", "mashies", "mealies", "meanies", "menageries", "millicuries", "mollies", "facts1", "moxies", "neckties", "newbies", "nighties", "nookies", "oldies", "organdies", "panties", "parqueteries", "passementeries", "patisseries", "pies", "pinkies", "pixies", "porkpies", "potpies", "prairies", "preemies", "premies", "punkies", "pyxies", "quickies", "ramies", "reveries", "rookies", "rotisseries", "scrapies", "sharpies", "smoothies", "softies", "stoolies", "stymies", "swaggies", "sweeties", "talkies", "techies", "ties", "tooshies", "toughies", "townies", "veggies", "walkie-talkies", "wedgies", "weenies", "weirdies", "yardies", "yuppies", "zombies"];
 	
-		/** Maps irregular Germanic English plural nouns to their singular form */
+		/* Maps irregular Germanic English plural nouns to their singular form */
 		var categoryIRR = ["beefs", "beef", "beeves", "beef", "brethren", "brother", "busses", "bus", "cattle", "cattlebeast", "children", "child", "corpora", "corpus", "ephemerides", "ephemeris", "firemen", "fireman", "genera", "genus", "genies", "genie", "genii", "genie", "kine", "cow", "lice", "louse", "men", "man", "mice", "mouse", "mongooses", "mongoose", "monies", "money", "mythoi", "mythos", "octopodes", "octopus", "octopuses", "octopus", "oxen", "ox", "people", "person", "soliloquies", "soliloquy", "throes", "throes", "trilbys", "trilby", "women", "woman"];
 	
-		/** Tells whether a noun is plural. */
+		/* Tells whether a noun is plural. */
 		function isPlural(s) { return (!s === stem(s)); }
 	
-		/** Tells whether a word form is singular. Note that a word can be both plural and singular */
+		/* Tells whether a word form is singular. Note that a word can be both plural and singular */
 		function isSingular(s) { return (categorySP._arrayContains(s.toLowerCase()) || !isPlural(s)); }
 	
-		/**
+		/*
 		 * Tells whether a word form is the singular form of one word and at
 		 * the same time the plural form of another.
 		 */
@@ -8066,17 +8051,17 @@
 			return (categorySP._arrayContains(s.toLowerCase()));
 		}
 	
-		/** Cuts a suffix from a string (that is the number of chars given by the suffix) */
+		/* Cuts a suffix from a string (that is the number of chars given by the suffix) */
 		function cut(s, suffix) {
 			return (s.substring(0, s.length - suffix.length));
 		}
 	
-		/** Returns true if a word is probably not Latin */
+		/* Returns true if a word is probably not Latin */
 		function noLatin(s) {
 			return (s.indexOf('h') > 0 || s.indexOf('j') > 0 || s.indexOf('k') > 0 || s.indexOf('w') > 0 || s.indexOf('y') > 0 || s.indexOf('z') > 0 || s.indexOf("ou") > 0 || s.indexOf("sh") > 0 || s.indexOf("ch") > 0 || s._endsWith("aus"));
 		}
 	
-		/** Returns true if a word is probably Greek */
+		/* Returns true if a word is probably Greek */
 		function greek(s) {
 			return (s.indexOf("ph") > 0 || s.indexOf('y') > 0 && s._endsWith("nges"));
 		}
@@ -8244,7 +8229,7 @@
 		
 	})();
 
-	/**
+	/*
 	 * Minimum-Edit-Distance (or Levenshtein distance) is a measure of the similarity 
 	 * between two strings, the source string and the target string (t). The distance 
 	 * is the number of deletions, insertions, or substitutions required to transform 
@@ -8321,7 +8306,7 @@
 		},
 
 		
-		/**
+		/*
 		 * Compute min-edit-distance between 2 strings (or 2 arrays)
 		 */ 
 		computeRaw : function(source, target) { 
@@ -8384,7 +8369,7 @@
 			
 		},
 
-		/**
+		/*
 		 * Compute min-edit-distance between 2 strings (or 2 arrays of strings) 
 		 * divided by the max of their lengths.
 		 */ 
