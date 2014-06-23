@@ -1253,9 +1253,7 @@
 			return res.join(SP);
 		},
 		
-		p5Compatible : function(value) {  // TODO: remove? yes, no one cares
-			
-			//log('p5Compatible('+value+'['+window+'])');
+		p5Compatible : function(value) {  // TODO: remove? yes, no one cares (cnage to autoLoop() or similar)
 			
 			if (!arguments.callee.setupAndDraw) {
 				
