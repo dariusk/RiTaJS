@@ -2097,19 +2097,31 @@
 
 			if (!RiLexicon.data) {
 
-				if (typeof _RiTa_DICT != 'undefined') {
-
-					//log('[RiTa] Loading lexicon data...');
-
-					RiLexicon.data = {}; // TODO: test perf. of this
-					for (var word in _RiTa_DICT) {
-						RiLexicon.data[word] = _RiTa_DICT[word]; // needed?
-					}
-				} else {
-
-					err("Dictionary not found! Make sure to include it in your sketch...");
-				}
+				this._load();
 			}
+		},
+		
+		_load : function() {
+			
+			if (typeof _RiTa_DICT != 'undefined') {
+
+				//log('[RiTa] Loading lexicon data...');
+
+				RiLexicon.data = {}; // TODO: test perf. of this
+				for (var word in _RiTa_DICT) {
+					RiLexicon.data[word] = _RiTa_DICT[word]; // needed?
+				}
+			} 
+			else {
+
+				err("Dictionary not found! Make sure to include it in your sketch...");
+			}
+		},
+		
+		reload : function() {
+			
+			this.clear();
+			this._load();
 		},
 			
 		clear : function() {
@@ -2321,18 +2333,12 @@
 
 			return sorted ? wordArr : shuffle(wordArr);  
 		},
-		
-		/*
-		 * Returns true if c is a vowel
-		 */
+
 		_isVowel : function(c) {
 
 			return (strOk(c) && RiTa.VOWELS.indexOf(c) > -1);
 		},
-
-		/*
-		 * Returns true if c is a consonant
-		 */
+		
 		_isConsonant : function(p) {
 
 			return (typeof p == S && p.length==1 && 
@@ -2410,8 +2416,6 @@
 			var c1 = this._firstConsonant(this._firstStressedSyllable(word1)),
 				c2 = this._firstConsonant(this._firstStressedSyllable(word2));
 
-			//log("'"+c1+"'=?'"+c2+"'");
-			
 			return (strOk(c1) && strOk(c2) && c1 === c2);  
 		},
 
@@ -2489,9 +2493,6 @@
 		 * delimited by dashes (phonemes) and semi-colons (words). 
 		 * For example, the 4 syllables of the phrase 
 		 * 'The dog ran fast' are "dh-ax:d-ao-g:r-ae-n:f-ae-s-t".
-		 * 
-		 * @param {string} word
-		 * 
 		 * @returns {string} the phonemes for each syllable of each word
 		 */
 		_getSyllables : function(word) {
@@ -2512,12 +2513,7 @@
 
 		/*
 		 * Returns a String containing all phonemes for the input text, delimited by semi-colons
-		 * 
 		 * @example "dh:ax:d:ao:g:r:ae:n:f:ae:s:t"
-		 * 
-		 * @param {string} word
-		 * 
-		 * @returns {string} all phonemes,
 		 */
 		_getPhonemes : function(word) {
 			
@@ -2546,11 +2542,7 @@
 
 		/*
 		 * Returns a String containing the stresses for each syllable of the input text, delimited by semi-colons, 
-		 * @example "0:1:0:1", with 1's meaning 'stressed', and 0's meaning 'unstressed', 
-		 * 
-		 * @param {string} word
-		 * 
-		 * @returns {string} stresses for each syllable
+		 * @example "0:1:0:1", with 1's meaning 'stressed', and 0's meaning 'unstressed'
 		 */
 		_getStresses : function(word) {
 
@@ -2598,9 +2590,6 @@
 		
 		/*
 		 * Returns the raw (RiTa-format) dictionary entry for the given word 
-		 * 
-		 * @param {string} word
-		 * 
 		 * @returns {array} a 2-element array of strings, 
 		 * the first is the stress and syllable data, 
 		 * the 2nd is the pos data, or null if the word is not found
@@ -3312,6 +3301,11 @@
 			}
 			
 			return this;  
+		},
+		
+		toCharArray : function() {
+			
+			return this._text.split(RiTa.E);
 		},
 
 		replaceWord : function(wordIdx, newWord) {
