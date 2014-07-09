@@ -2035,38 +2035,32 @@
 			return EA; 
 		},
 
-		alliterations : function(word, matchMinLength) {
+		alliterations : function(word, matchMinLength, useLTS) {
 			
 			matchMinLength = matchMinLength || 4;
 			
-			if (this.containsWord(word)) { // RODO: else useLTS ??
+			var c2, entry, results = [];
+			var c1 = this._firstConsonant(this._firstStressedSyllable(word, useLTS));
 
-				var c2, entry, results = [];
-				var c1 = this._firstConsonant(this._firstStressedSyllable(word));
-
-				for (entry in RiLexicon.data) {
-					
-					c2 = this._firstConsonant(this._firstStressedSyllable(entry));
-					
-					if (c2 && c1 === c2 && entry.length > matchMinLength) {
-						results.push(entry);
-					}
+			for (entry in RiLexicon.data) {
+				
+				c2 = this._firstConsonant(this._firstStressedSyllable(entry, useLTS));
+				
+				if (c2 && c1 === c2 && entry.length > matchMinLength) {
+					results.push(entry);
 				}
-				return results; 
 			}
-
-			
-			return EA;
+			return results; 
 		},
 
-		isAlliteration : function(word1, word2) {
+		isAlliteration : function(word1, word2, useLTS) {
 
 			if (!strOk(word1) || !strOk(word2)) return false;
 
 			if (equalsIgnoreCase(word1, word2)) return true;
 
-			var c1 = this._firstConsonant(this._firstStressedSyllable(word1)),
-				c2 = this._firstConsonant(this._firstStressedSyllable(word2));
+			var c1 = this._firstConsonant(this._firstStressedSyllable(word1, useLTS)),
+				c2 = this._firstConsonant(this._firstStressedSyllable(word2, useLTS));
 
 			return (strOk(c1) && strOk(c2) && c1 === c2);  
 		},
@@ -2074,9 +2068,9 @@
 		/*
 		 * Returns the first stressed syllable of the input word
 		 */
-		_firstStressedSyllable : function(word) {
+		_firstStressedSyllable : function(word, useLTS) {
 
-			var raw = this._getRawPhones(word), idx = -1, c, firstToEnd;
+			var raw = this._getRawPhones(word, useLTS), idx = -1, c, firstToEnd;
 
 			if (!strOk(raw)) return E; // return null?
 			
