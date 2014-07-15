@@ -938,7 +938,8 @@
 		 */
 		minEditDist : function(a, b, adjusted) { // TODO: add to docs/tests
 			
-			return (!adjusted ? MinEditDist.computeRaw : MinEditDist.computeAdjusted)(a,b);
+			var fun = !adjusted ? MinEditDist.computeRaw : MinEditDist.computeAdjusted;
+			return fun.call(MinEditDist, a, b);
 		}
 		
 	}; // end RiTa object
@@ -6217,7 +6218,7 @@
 		},
 
 		/* Computes min-edit-distance between 2 string arrays where each array element either matches or does not */
-		_computeRawArray : function(srcArr, trgArr) { // TODO: make private to class
+		_computeRawArray : function(srcArr, trgArr) { 
 
 			//log((srcArr)+" "+(trgArr));
 			
@@ -6280,7 +6281,9 @@
 		 */ 
 		computeRaw : function(source, target) { 
 
-			if (Type.get(source)===A) return this._computeRawArray(source, target);
+			//log('computeRaw: '+arguments.length+ " "+Type.get(source));
+			
+			if (is(source,A)) return this._computeRawArray(source, target);
 			
 			if (!source.length && !target.length) return 0;
 
