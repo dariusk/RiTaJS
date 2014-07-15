@@ -609,7 +609,9 @@
 
 			var fun = isNode() ? this._loadStringNode : this._loadStringDOM;
 
-			if (is(url, A)) { // array of files/urls
+			ok(url, S);
+			
+			/*if (is(url, A)) { // array of files/urls
 				
 				var allData = '', last = url[url.length-1];
 				
@@ -630,9 +632,9 @@
 				return;
 			}
 			else if (ok(url, S)) {
-			
-				fun.call(this, url, callback, linebreakChars); // single-url
-			}
+			*/
+			fun.call(this, url, callback, linebreakChars); // single-url
+			//}
 		},
 		
 		fireDataLoaded : function(url, callback, data) {
@@ -2680,6 +2682,7 @@
 				syllables += phones.replace(/ /g, slash).replace(/1/g, E) + SP;
 
 				if (!useRaw) {
+					
 					stressyls = phones.split(SP);   
 					for (var j = 0; j < stressyls.length; j++) {
 	
@@ -2828,7 +2831,8 @@
 		replaceAll : function(pattern, replacement) {
 			
 			if (pattern && (replacement || replacement==='')) {
-				this._text = replaceAll(this._text, pattern, replacement);
+
+				this._text = this._text.replace(pattern, replacement);
 			}
 			return this;   
 		},
