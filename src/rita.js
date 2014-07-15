@@ -1,5 +1,5 @@
 (function(window, undefined) {
-	
+
 	var _VERSION_ = '##version##';	
 
 	/*  @private Simple type-checking functions */ 
@@ -185,7 +185,7 @@
 		// TODO: test (with and w'out callback)
 		timer : function(period, callback) {
 			 
-			var a = arguments;
+			var a = arguments, id, timer;
 			
 			// if 1st arg is an object (e.g., 'this'), ignore it...
 			if (a.length && is(a[0], O)) 
@@ -194,15 +194,15 @@
 			if (a.length < 1)
 				throw Error("Bad args to RiTa.timer("+a+")");
 				
-			var callback = a.length > 1 ? a[1] : null;
+			callback = a.length > 1 ? a[1] : null;
 				
-			var timer = new Timer(
+			timer = new Timer(
 				function() {       					
 					RiTaEvent(RiTa, 'tick')._fire(callback);  
 			}, [a[0]] * 1000, true);
 			
 			timer.go();
-			var id = timer.id(); 
+			id = timer.id(); 
 			timers[id] = timer;
 			
 			return id;
@@ -360,7 +360,7 @@
 				return word;
 			}
 
-			for (var i = 0; i < rules.length; i++) {
+			for (i = 0; i < rules.length; i++) {
 				rule = rules[i];
 				if (rule.applies(word.toLowerCase())) {
 					return rule.fire(word);
@@ -604,37 +604,11 @@
 						
 		// TODO: add NodeJS tests for all loadXX methods
 		loadString : function(url, callback, linebreakChars) {
-			
-			var lb = linebreakChars || SP, cwin, iframe;// me = this;
 
-			var fun = isNode() ? this._loadStringNode : this._loadStringDOM;
-
-			ok(url, S);
-			
-			/*if (is(url, A)) { // array of files/urls
-				
-				var allData = '', last = url[url.length-1];
-				
-				for (var i=0,j=url.length; i<j; i++) {
-					
-					var fireDataLoaded = this.fireDataLoaded;
-					
-					fun.call(this, url[i], function(t,u) {
-						
-						allData += t;
-						
-						if (u === last)
-							fireDataLoaded(url, callback, allData);
-						 
-					}, linebreakChars);
-				};
-				
-				return;
-			}
-			else if (ok(url, S)) {
-			*/
-			fun.call(this, url, callback, linebreakChars); // single-url
-			//}
+            ok(url, S);
+            var lb = linebreakChars || SP, cwin, iframe,
+                fun = isNode() ? this._loadStringNode : this._loadStringDOM;
+            fun.call(this, url, callback, linebreakChars); // single-url
 		},
 		
 		fireDataLoaded : function(url, callback, data) {
@@ -793,10 +767,9 @@
 			return (text === E) ? E : text.replace(PUNCTUATION_CLASS, E); 
 		},
 		
-		// PUNCTUATION : "����`'""\",;:!?)([].#\"\\!@$%&}<>|+=-_\\/*{^",
-		
-		//  Trims punctuation from each side of the token (does not trim whitespace or internal punctuation).
-		trimPunctuation : function(text) {
+		// Trims punctuation from each side of token 
+        //   (doesnt trim whitespace or internal punctuation).
+        trimPunctuation : function(text) {
 			
 			// TODO: replace all this with 1 regex
 
@@ -821,7 +794,6 @@
 			return text;
 		},
 		
-		// TEST: PUNCTUATION : "����`'""\",;:!?)([].#\"\\!@$%&}<>|+=-_\\/*{^",
 		isPunctuation : function(text) { 
 			
 			if (!text || !text.length) return false;
@@ -830,7 +802,6 @@
 			
 		},
 		
-		// TEST: PUNCTUATION : "����`'""\",;:!?)([].#\"\\!@$%&}<>|+=-_\\/*{^",
 		hasPunctuation : function(text) { 
 			
 			if (!text || !text.length) return false;
@@ -1265,7 +1236,7 @@
 				toAdd = [];
 
 				for (var j = 0; j < this._n; j++) {
-					if ((k + j) < tokens.length) toAdd[j] = (!undef(tokens[k + j])) ? tokens[k + j] : null;
+					if ((k + j) < tokens.length) toAdd[j] = (tokens[k + j]) ? tokens[k + j] : null;
 					else toAdd[j] = null;
 				}
 
@@ -1874,7 +1845,7 @@
 
 				med = MinEditDist.computeRaw(phonesArr, targetPhonesArr);
 
-				if (med == 0) continue; // same phones 
+				if (med === 0) continue; // same phones 
 
 				// found something even closer
 				if (med >= minEditDist && med < minVal) {
@@ -1942,7 +1913,7 @@
 
 		words : function() {
 			
-			var a = arguments, sorted = false, regex = undefined, 
+			var a = arguments, sorted = false, regex, 
 				wordArr = [], words = okeys(RiLexicon.data);
 			
 			switch (a.length) {
@@ -2001,7 +1972,7 @@
 
 		containsWord : function(word) {
 
-			return (strOk(word) && RiLexicon.data && !undef(RiLexicon.data[word.toLowerCase()]));
+			return (strOk(word) && RiLexicon.data && RiLexicon.data[word.toLowerCase()]);
 		},
 
 		isRhyme : function(word1, word2, useLTS) {
@@ -2194,18 +2165,18 @@
 		 */
 		_getStresses : function(word) {
 
-			var stresses = [], phones, raw = [],
+			var i, stresses = [], phones, raw = [],
 				wordArr = is(word,A) ? word : RiTa.tokenize(word);
 
 			if (!strOk(word)) return E;
 			
-			for (var i=0; i< wordArr.length; i++) {
+			for (i=0; i< wordArr.length; i++) {
 				
 				if (!RiTa.isPunctuation(wordArr[i]))
 					raw[i] = this._getRawPhones(wordArr[i]);
 			}
 
-			for (var i = 0; i < raw.length; i++) {
+			for (i = 0; i < raw.length; i++) {
 
 				if (raw[i]) { // ignore undefined array items (eg Punctuation)
 					
@@ -2259,10 +2230,9 @@
 			
 			// TODO: test this with useLTS=true
 			
-			var data = this._lookupRaw(word);
+			var phones, data = this._lookupRaw(word);
 			useLTS = useLTS || false;
 			
-			var phones, data = this._lookupRaw(word);
 			if (data && useLTS)
 			{
 				log("[RiTa] Using letter-to-sound rules for: " + word);
@@ -2350,7 +2320,7 @@
 			
 			var found = false, a = arguments, wordArr = okeys(RiLexicon.data),
 				ran = Math.floor(Math.random() * okeys(RiLexicon.data).length),
-				ranWordArr = shuffle(wordArr);
+				ranWordArr = shuffle(wordArr), i, j, data; 
 			
 			switch (a.length) {
 					
@@ -2358,7 +2328,7 @@
 					
 						a[0] = trim(a[0]); 
 						
-						for (var j = 0; j < PosTagger.TAGS.length; j++) { 
+						for (j = 0; j < PosTagger.TAGS.length; j++) { 
 							
 							if (PosTagger.TAGS[j] == a[0]) found = true;
 						} 
@@ -2368,12 +2338,14 @@
 							
 							a[0] = a[0].toLowerCase(); 
 							
-							for (var i=0; i< ranWordArr.length; i++){
+							for (i=0; i< ranWordArr.length; i++){
 								
-								var data = this._lookupRaw(ranWordArr[i]);
+								data = this._lookupRaw(ranWordArr[i]);
 								var posTag = RiTa.getPosTags(ranWordArr[i]);
 								
-								if (data[0].split(SP).length == a[1] && a[0] == this._getBestPos(ranWordArr[i])) {
+								if (data[0].split(SP).length == a[1] 
+                                        && a[0] == this._getBestPos(ranWordArr[i])) 
+                                {
 									return ranWordArr[i];
 								}
 							} 
@@ -2381,15 +2353,13 @@
 						
 						return E;
 						
-					break;
-					
 				case 1:
 					
 					if (is(a[0],S)) { // a[0] = pos
 						
 						a[0] = trim(a[0]); 
 						
-						for(var j = 0; j < PosTagger.TAGS.length; j++) {
+						for(j = 0; j < PosTagger.TAGS.length; j++) {
 							
 							if (PosTagger.TAGS[j] == a[0]) found = true;
 						} 
@@ -2399,7 +2369,7 @@
 							a[0] = a[0].toLowerCase();
 
 							
-							for(var i=0; i< ranWordArr.length; i++){
+							for(i=0; i< ranWordArr.length; i++){
 								
 								var thePos = this._getBestPos(ranWordArr[i]);
 								if (a[0] == thePos) {
@@ -2411,9 +2381,9 @@
 					
 					else { // a[0] = syllableCount    
 						
-						for(var i=0; i< ranWordArr.length; i++) {
+						for (i=0; i< ranWordArr.length; i++) {
 							
-							var data = this._lookupRaw(ranWordArr[i]);
+							data = this._lookupRaw(ranWordArr[i]);
 							
 							if (data[0].split(SP).length == a[0]) {
 								
@@ -2459,101 +2429,103 @@
 		  digits: [ 'z-ih-r-ow', 'w-ah-n', 't-uw', 'th-r-iy', 'f-ao-r', 'f-ay-v', 's-ih-k-s', 
 					's-eh1-v-ax-n', 'ey-t', 'n-ih-n' ]
 	}
-	
-	RiString._syllabify = function(input) { // adapted from FreeTTS
-	   
-		var dbug, None=undefined, internuclei = [], syllables = [],   // returned data structure.
-			sylls = ((typeof (input) == 'string') ? input.split('-') : input);
 
-		for (var i = 0; i < sylls.length; i++) {
-		
-			var phoneme = sylls[i].trim(), stress = None;
+    RiString._syllabify = function(input) { // adapted from FreeTTS
+       
+        var dbug, None, internuclei = [], syllables = [],   // returned data structure.
+            sylls = ((typeof (input) == 'string') ? input.split('-') : input);
 
-			if (!phoneme.length) continue;
-			
-			if ( isNum(last(phoneme)) ) {
-				
-				stress = parseInt(last(phoneme));
-				phoneme = phoneme.substring(0, phoneme.length-1);
-			}
-			
-			if (dbug)log(i+")"+phoneme + ' stress='+stress+' inter='+internuclei.join(':'));
-			
-			if (inArray(RiString.phones.vowels, phoneme)) {
-	 
-				// Split the consonants seen since the last nucleus into coda and onset.            
-				var coda = None, onset = None;
-				
-				// Make the largest onset we can. The 'split' variable marks the break point.
-				for (var split = 0; split < internuclei.length+1; split++) {
-					
-					coda  = internuclei.slice(0, split);
-					onset = internuclei.slice(split, internuclei.length);
-					
-					if (dbug)log('  '+split+') onset='+onset.join(':')+
-						'  coda='+coda.join(':')+'  inter='+internuclei.join(':'));
-					
-					// If we are looking at a valid onset, or if we're at the start of the word
-					// (in which case an invalid onset is better than a coda that doesn't follow
-					// a nucleus), or if we've gone through all of the onsets and we didn't find
-					// any that are valid, then split the nonvowels we've seen at this location.
-					var bool = inArray(RiString.phones.onsets, onset.join(" "));
-					if (bool || syllables.length == 0 || onset.length == 0) {
-						if (dbug)log('  break '+phoneme);
-					   break;
-					}
-				}
-				
-				//if (dbug)log('  onset='+join(',',onset)+'  coda='+join(',',coda));
-				
-				// Tack the coda onto the coda of the last syllable. Can't do it if this
-				// is the first syllable.
-				if (syllables.length > 0 ) {
-					
-					//syllables[syllables.length-1][3] = syllables[syllables.length-1][3] || [];
-					//log('  len='+syllables[syllables.length-1][3].length);
-					extend(syllables[syllables.length-1][3], coda);
-					if (dbug) log('  tack: '+coda+' -> len='+syllables[syllables.length-1][3].length+" ["+syllables[syllables.length-1][3]+"]");
-				}
-				
-				// Make a new syllable out of the onset and nucleus.
+        for (var i = 0; i < sylls.length; i++) {
+        
+            var phoneme = sylls[i].trim(), stress = None;
 
-				var toPush = [ [stress], onset, [phoneme], [] ];
-				syllables.push(toPush);
-					
-				// At this point we've processed the internuclei list.
-				internuclei = [];
-			}
-			
-			else if (!inArray(RiString.phones.consonants, phoneme) && phoneme != " ") {
-				throw Error('Invalid phoneme: ' + phoneme);
-			}
-				
-			else { // a consonant
-				
-				//log('inter.push: '+phoneme);
-				internuclei.push(phoneme)
-			}
-		}
-	  
-		
-		// Done looping through phonemes. We may have consonants left at the end.
-		// We may have even not found a nucleus.
-		if (internuclei.length > 0) {
+            if (!phoneme.length) continue;
+            
+            if ( isNum(last(phoneme)) ) {
+                
+                stress = parseInt(last(phoneme));
+                phoneme = phoneme.substring(0, phoneme.length-1);
+            }
+            
+            if (dbug)log(i+")"+phoneme + ' stress='+stress+' inter='+internuclei.join(':'));
+            
+            if (inArray(RiString.phones.vowels, phoneme)) {
+     
+                // Split the consonants seen since the last nucleus into coda and onset.            
+                var coda = None, onset = None;
+                
+                // Make the largest onset we can. The 'split' variable marks the break point.
+                for (var split = 0; split < internuclei.length+1; split++) {
+                    
+                    coda  = internuclei.slice(0, split);
+                    onset = internuclei.slice(split, internuclei.length);
+                    
+                    if (dbug)log('  '+split+') onset='+onset.join(':')+
+                        '  coda='+coda.join(':')+'  inter='+internuclei.join(':'));
+                    
+                    // If we are looking at a valid onset, or if we're at the start of the word
+                    // (in which case an invalid onset is better than a coda that doesn't follow
+                    // a nucleus), or if we've gone through all of the onsets and we didn't find
+                    // any that are valid, then split the nonvowels we've seen at this location.
+                    var bool = inArray(RiString.phones.onsets, onset.join(" "));
+                    if (bool || syllables.length === 0 || onset.length === 0) {
+                        if (dbug)log('  break '+phoneme);
+                       break;
+                    }
+                }
+                
+                //if (dbug)log('  onset='+join(',',onset)+'  coda='+join(',',coda));
+                
+                // Tack the coda onto the coda of the last syllable. Can't do it if this
+                // is the first syllable.
+                if (syllables.length > 0 ) {
+                    
+                    //syllables[syllables.length-1][3] = syllables[syllables.length-1][3] || [];
+                    //log('  len='+syllables[syllables.length-1][3].length);
+                    extend(syllables[syllables.length-1][3], coda);
+                    if (dbug) log('  tack: '+coda+' -> len='+
+                        syllables[syllables.length-1][3].length+" ["+
+                        syllables[syllables.length-1][3]+"]");
+                }
+                
+                // Make a new syllable out of the onset and nucleus.
 
-			if (syllables.length == 0) {
-				
-				syllables.push([ [None], internuclei, [], [] ]);
-			}
-			else {
-				
-				extend(syllables[syllables.length-1][3], internuclei);
-			}
-				
-		}
+                var toPush = [ [stress], onset, [phoneme], [] ];
+                syllables.push(toPush);
+                    
+                // At this point we've processed the internuclei list.
+                internuclei = [];
+            }
+            
+            else if (!inArray(RiString.phones.consonants, phoneme) && phoneme != " ") {
+                throw Error('Invalid phoneme: ' + phoneme);
+            }
+                
+            else { // a consonant
+                
+                //log('inter.push: '+phoneme);
+                internuclei.push(phoneme)
+            }
+        }
+      
+        
+        // Done looping through phonemes. We may have consonants left at the end.
+        // We may have even not found a nucleus.
+        if (internuclei.length > 0) {
 
-		return RiString._stringify(syllables);
-	}
+            if (syllables.length === 0) {
+                
+                syllables.push([ [None], internuclei, [], [] ]);
+            }
+            else {
+                
+                extend(syllables[syllables.length-1][3], internuclei);
+            }
+                
+        }
+
+        return RiString._stringify(syllables);
+    }
 	  
 	/*
 	 * Takes a syllabification and turns it into a string of phonemes, 
@@ -2561,8 +2533,8 @@
 	 */
 	RiString._stringify = function(syllables) {
 			
-		var ret = [];
-		for (var i = 0; i < syllables.length; i++) {
+		var i,j,ret = [];
+		for (i = 0; i < syllables.length; i++) {
 			
 			var syl = syllables[i];
 			var stress = syl[0][0];
@@ -2570,17 +2542,17 @@
 			var nucleus = syl[2];
 			var coda = syl[3];
 		  
-			if (stress != undefined && nucleus.length) // dch
+			if (stress !== undefined && nucleus.length) // dch
 				nucleus[0] += (E+stress);
 			
 			var data = [];
-			for (var j = 0; j < onset.length; j++) 
+			for (j = 0; j < onset.length; j++) 
 				data.push(onset[j]);
 			
-			for (var j = 0; j < nucleus.length; j++) 
+			for (j = 0; j < nucleus.length; j++) 
 			   data.push(nucleus[j]);
 			
-			for (var j = 0; j < coda.length; j++) 
+			for (j = 0; j < coda.length; j++) 
 			   data.push(coda[j]);
 			
 			ret.push(data.join('-'));
@@ -2649,7 +2621,7 @@
 	
 			var phonemes = E, syllables = E, stresses = E, slash = '/',  delim = '-',
 				phones, lts, ltsPhones, useRaw, words = RiTa.tokenize(this._text), 
-				lts, stressyls, lex = RiLexicon();//._getInstance(); 
+				stressyls, lex = RiLexicon();//._getInstance(); 
 			
 			if (!this._features) this._initFeatureMap();
 			
@@ -2682,7 +2654,6 @@
 				syllables += phones.replace(/ /g, slash).replace(/1/g, E) + SP;
 
 				if (!useRaw) {
-					
 					stressyls = phones.split(SP);   
 					for (var j = 0; j < stressyls.length; j++) {
 	
@@ -2832,7 +2803,7 @@
 			
 			if (pattern && (replacement || replacement==='')) {
 
-				this._text = this._text.replace(pattern, replacement);
+				this._text = this._text.replace(new RegExp(pattern,'g'), replacement);
 			}
 			return this;   
 		},
@@ -2879,9 +2850,8 @@
 			}
 			idx = idx < 0 ? idx += s.length : idx;
 				
-			var s = this.text();
-			var beg = s.substring(0, idx);
-			var end = s.substring(idx + 1);
+			s = this.text();
+			var beg = s.substring(0, idx), end = s.substring(idx + 1);
 		 
 			if (replaceWith)
 				beg += replaceWith;
@@ -2986,7 +2956,7 @@
 
 		startsWith : function(substr) {
 			
-			return this.indexOf(substr) == 0;  
+			return this.indexOf(substr) === 0;  
 		},
 
 		substr : function(start, length) {
@@ -3064,7 +3034,7 @@
 
 		ready : function(url) {
 			
-			return (Object.keys(this._rules).length > 0);
+			return (okeys(this._rules).length > 0);
 		},
 		
 		loadFrom : function(url, callback) {
@@ -3127,7 +3097,7 @@
 				var prob = weight;
 				var m = RiGrammar.PROB_PATT.exec(rule);
 	
-				if (m != null) // found weighting
+				if (m) // found weighting
 				{
 					if (dbug) {
 						log("Found weight for " + rule);
@@ -3262,7 +3232,7 @@
 		
 		expandFrom : function(rule, context) {
  
-    		if (!Object.keys(this._rules).length)
+    		if (!okeys(this._rules).length)
 		      err("(RiGrammar) No grammar rules found!");
 		      
 		    if (!this.hasRule(rule))
@@ -3301,7 +3271,7 @@
 		        
 		        if (!callResult) {
 		          
-		          if (0==1) log("[WARN] (RiGrammar.expandFrom) Unexpected"
+		          if (0) log("[WARN] (RiGrammar.expandFrom) Unexpected"
 		              +" state: eval("+theCall+") :: returning '"+rule+"'");
 		          
 		          break; // return
@@ -3411,19 +3381,19 @@
 		// private?? (add structure test case)
 		_getStochasticRule : function(temp)    { // map
 	 
-			var dbug = false;
+			var name, dbug = false;
 			
 			if (dbug) log("_getStochasticRule(" + temp + ")");
 			
 			var p = Math.random();
 			var result, total = 0;
-			for ( var name in temp) {
+			for (name in temp) {
 				total += parseFloat(temp[name]);
 			}
 			
 			if (dbug) log("total=" + total+"p=" + p);
 			
-			 for ( var name in temp) {
+			 for (name in temp) {
 				if (dbug) log("  name=" + name);
 				var amt = temp[name] / total;
 				
@@ -3599,7 +3569,7 @@
 
 		getPhones : function(input, delim) {
 			
-			var ph, result = []; 
+			var i, ph, result = []; 
 			
 			delim = delim || '-';
 			
@@ -3610,7 +3580,7 @@
 				input = RiTa.tokenize(input);
 			}
   
-			for (var i = 0; i < input.length; i++) {
+			for (i = 0; i < input.length; i++) {
 				
 				ph = this._computePhones(input[i]);
 				result[i] = ph ? ph.join(delim) : E;
@@ -3618,73 +3588,72 @@
 			
 			return result.join(delim);  
 		},
+        _computePhones : function(word) {
+            
+          var dig, phoneList = [], full_buff, tmp, currentState, startIndex, stateIndex, c;
+          
+          if (!word || !word.length || RiTa.isPunctuation(word))
+              return null;
+          
+          word = word.toLowerCase();
+          
+          if (isNum(word)) {
+              
+              word = (word.length>1) ? word.split(E) : [word];
+              
+              for (var k = 0; k < word.length; k++) {
+                  
+                  dig = parseInt(word[k]);
+                  if (dig < 0 || dig > 9)
+                      throw Error("Attempt to pass multi-digit number to LTS: '"+word+"'");
+                  
+                  phoneList.push(RiString.phones.digits[dig]);
+              }
+              
+              return phoneList;
+          }
+    
+          // Create "000#word#000", uggh
+          tmp = "000#"+word.trim()+"#000", full_buff = tmp.split(E);
+          
+          // For each character in the word, create a WINDOW_SIZE
+          // context on each size of the character, and then ask the
+          // state machine what's next
+          for (var pos = 0; pos < word.length; pos++) {
+              
+            for (var i = 0; i < LetterToSound.WINDOW_SIZE; i++) {
+                
+              this.fval_buff[i] = full_buff[pos + i];
+              this.fval_buff[i + LetterToSound.WINDOW_SIZE] = 
+                full_buff[i + pos + 1 + LetterToSound.WINDOW_SIZE];
+            }
+            
+            c = word.charAt(pos);
+            startIndex = this.letterIndex[c];
+            
+            // must check for null here, not 0 (and not ===)
+            if (!isNum(startIndex))  { 
+                warn("Unable to generate LTS for '"+word+"'\n       No LTS index for character: '"
+                    + c + "', isDigit=" + isNum(c) + ", isPunct=" + RiTa.isPunctuation(c));
+                return null;
+            }
 
-		_computePhones : function(word) {
-			
-		  var dig, phoneList = [], full_buff, tmp, currentState, startIndex, stateIndex, c;
-		  
-		  if (!word || !word.length || RiTa.isPunctuation(word))
-			  return null;
-		  
-		  word = word.toLowerCase();
-		  
-		  if (isNum(word)) {
-			  
-			  word = (word.length>1) ? word.split(E) : [word];
-			  
-			  for (var i = 0; i < word.length; i++) {
-				  
-				  dig = parseInt(word[i]);
-				  if (dig < 0 || dig > 9)
-					  throw Error("Attempt to pass multi-digit number to LTS: '"+word+"'");
-				  
-				  phoneList.push(RiString.phones.digits[dig]);
-			  }
-			  
-			  return phoneList;
-		  }
-	
-		  // Create "000#word#000", uggh
-		  tmp = "000#"+word.trim()+"#000", full_buff = tmp.split(E);
-		  
-		  // For each character in the word, create a WINDOW_SIZE
-		  // context on each size of the character, and then ask the
-		  // state machine what's next
-		  for (var pos = 0; pos < word.length; pos++) {
-			  
-			for (var i = 0; i < LetterToSound.WINDOW_SIZE; i++) {
-				
-			  this.fval_buff[i] = full_buff[pos + i];
-			  this.fval_buff[i + LetterToSound.WINDOW_SIZE] = 
-			  	full_buff[i + pos + 1 + LetterToSound.WINDOW_SIZE];
-			}
-			
-			c = word.charAt(pos);
-			startIndex = this.letterIndex[c];
-			
-			// must check for null here, not 0
-			if (startIndex==null) {
-				warn("Unable to generate LTS for '"+word+"'\n       No LTS index for character: '"
-					+ c + "', isDigit=" + isNum(c) + ", isPunct=" + RiTa.isPunctuation(c));
-				return null;
-			}
-
-			stateIndex = parseInt(startIndex);
-			
-			currentState = this.getState(stateIndex);
-			
-			while (! (currentState instanceof FinalState) ) {
-				
-			  stateIndex = currentState.getNextState(this.fval_buff);
-			  currentState = this.getState(stateIndex);
-			}
-			
-			currentState.append(phoneList);
-		  }
-		  
-		  return phoneList;
-		},
-		
+            stateIndex = parseInt(startIndex);
+            
+            currentState = this.getState(stateIndex);
+            
+            while (! (currentState instanceof FinalState) ) {
+                
+              stateIndex = currentState.getNextState(this.fval_buff);
+              currentState = this.getState(stateIndex);
+            }
+            
+            currentState.append(phoneList);
+          }
+          
+          return phoneList;
+        },
+        		
 		getState : function(i) {
 
 			if (is(i,N)) {
@@ -3873,16 +3842,14 @@
 			var otherState = other;
 			if (!phoneList)
 			{
-			  return (otherState.phoneList == null);
+			  return (!otherState.phoneList);
 			} 
 			else
 			{
 			  for (var i = 0; i < phoneList.length; i++)
 			  {
-				if (!phoneList[i].equals(otherState.phoneList[i]))
-				{
+				if (phoneList[i] !== otherState.phoneList[i])
 				  return false;
-				}
 			  }
 			  return true;
 			}
@@ -4062,7 +4029,7 @@
 	// Timer
 	// ////////////////////////////////////////////////////////////
 	
-	var timers = new Object(); // static
+	var timers = {}; // static
 
 	// Timer - modified from Resig's JQuery-Timer
 	var Timer = function(func, time, autostart) {
@@ -4263,7 +4230,7 @@
 		
 		isLeaf : function() {
 			
-			return this.childCount() == 0;
+			return this.childCount() === 0;
 		},
 		
 		probability : function() {
@@ -4345,11 +4312,11 @@
 
 		childrenToString : function(textNode, str, depth, sort)  {
 
-		  var mn = textNode, l = [], node = null, indent = "\n";
+		  var i, j, k, mn = textNode, l = [], node = null, indent = "\n";
 		  
 		  sort = sort || false;
 		  
-		  for (var k in textNode.children) {
+		  for (k in textNode.children) {
 			  l.push(textNode.children[k]);
 		  }
 		  
@@ -4357,10 +4324,10 @@
 		  
 		  if (sort) l.sort();
 					
-		  for (var j = 0; j < depth; j++) 
+		  for (j = 0; j < depth; j++) 
 			indent += "  ";
 		  
-		  for (var i = 0; i < l.length; i++) {
+		  for (i = 0; i < l.length; i++) {
 			  
 			node = l[i];
 			
@@ -4390,7 +4357,7 @@
 		  }
 		  
 		  indent = "\n";
-		  for (var j = 0; j < depth-1; j++) 
+		  for (j = 0; j < depth-1; j++) 
 			indent += "  ";
 		  
 		  return str + indent + "}";
@@ -4486,7 +4453,7 @@
 					conjs.push(pp);
 					
 				}
-				else if (this.interrogative && !(verb == "be") && conjs.length < 1) {
+				else if (this.interrogative && verb != "be" && conjs.length < 1) {
 
 					conjs.push(frontVG);
 					
@@ -4501,7 +4468,7 @@
 			// add modal, and we're done
 			actualModal && conjs.push(actualModal);
 
-			var s = E;
+			s = E;
 			for ( var i = 0; i < conjs.length; i++) {
 				
 				s = conjs[i] + " " + s;
@@ -4895,7 +4862,7 @@
 
 				// transform 2: convert a noun to a number (cd) if it is
 				// all digits and/or a decimal "."
-				if (sW(result[i], "n") && choices[i] == null) {
+				if (sW(result[i], "n") && !choices[i]) {
 					if (isNum(words[i])) {
 						result[i] = "cd";
 					} // mods: dch (add choice check above) <---- ? >
@@ -5025,7 +4992,8 @@
 			s_v = '^(' + C + ')?' + v;                   // vowel in stem
 	
 		return function (w) {
-			var stem, suffix, firstch, re, re2, re3, re4, origword = w;
+
+			var fp, stem, suffix, firstch, re, re2, re3, re4, origword = w;
 	
 			if (w.length < 3) { return w; }
 	
@@ -5045,14 +5013,14 @@
 			re = /^(.+?)eed$/;
 			re2 = /^(.+?)(ed|ing)$/;
 			if (re.test(w)) {
-				var fp = re.exec(w);
+				fp = re.exec(w);
 				re = new RegExp(mgr0);
 				if (re.test(fp[1])) {
 					re = /.$/;
 					w = w.replace(re,E);
 				}
 			} else if (re2.test(w)) {
-				var fp = re2.exec(w);
+				fp = re2.exec(w);
 				stem = fp[1];
 				re2 = new RegExp(s_v);
 				if (re2.test(stem)) {
@@ -5069,7 +5037,7 @@
 			// Step 1c
 			re = /^(.+?)y$/;
 			if (re.test(w)) {
-				var fp = re.exec(w);
+				fp = re.exec(w);
 				stem = fp[1];
 				re = new RegExp(s_v);
 				if (re.test(stem)) w = stem + "i";
@@ -5078,7 +5046,7 @@
 			// Step 2
 			re = /^(.+?)(ational|tional|enci|anci|izer|bli|alli|entli|eli|ousli|ization|ation|ator|alism|iveness|fulness|ousness|aliti|iviti|biliti|logi)$/;
 			if (re.test(w)) {
-				var fp = re.exec(w);
+				fp = re.exec(w);
 				stem = fp[1];
 				suffix = fp[2];
 				re = new RegExp(mgr0);
@@ -5090,7 +5058,7 @@
 			// Step 3
 			re = /^(.+?)(icate|ative|alize|iciti|ical|ful|ness)$/;
 			if (re.test(w)) {
-				var fp = re.exec(w);
+				fp = re.exec(w);
 				stem = fp[1];
 				suffix = fp[2];
 				re = new RegExp(mgr0);
@@ -5103,14 +5071,14 @@
 			re = /^(.+?)(al|ance|ence|er|ic|able|ible|ant|ement|ment|ent|ou|ism|ate|iti|ous|ive|ize)$/;
 			re2 = /^(.+?)(s|t)(ion)$/;
 			if (re.test(w)) {
-				var fp = re.exec(w);
+				fp = re.exec(w);
 				stem = fp[1];
 				re = new RegExp(mgr1);
 				if (re.test(stem)) {
 					w = stem;
 				}
 			} else if (re2.test(w)) {
-				var fp = re2.exec(w);
+				fp = re2.exec(w);
 				stem = fp[1] + fp[2];
 				re2 = new RegExp(mgr1);
 				if (re2.test(stem)) {
@@ -5121,7 +5089,7 @@
 			// Step 5
 			re = /^(.+?)e$/;
 			if (re.test(w)) {
-				var fp = re.exec(w);
+				fp = re.exec(w);
 				stem = fp[1];
 				re = new RegExp(mgr1);
 				re2 = new RegExp(meq1);
@@ -6039,7 +6007,7 @@
 		var categoryIRR = ["beefs", "beef", "beeves", "beef", "brethren", "brother", "busses", "bus", "cattle", "cattlebeast", "children", "child", "corpora", "corpus", "ephemerides", "ephemeris", "firemen", "fireman", "genera", "genus", "genies", "genie", "genii", "genie", "kine", "cow", "lice", "louse", "men", "man", "mice", "mouse", "mongooses", "mongoose", "monies", "money", "mythoi", "mythos", "octopodes", "octopus", "octopuses", "octopus", "oxen", "ox", "people", "person", "soliloquies", "soliloquy", "throes", "throes", "trilbys", "trilby", "women", "woman"];
 	
 		/* Tells whether a noun is plural. */
-		function isPlural(s) { return (!s === stem(s)); }
+		function isPlural(s) { return s !== stem(s); }
 	
 		/* Tells whether a word form is singular. Note that a word can be both plural and singular */
 		function isSingular(s) { return (categorySP._arrayContains(s.toLowerCase()) || !isPlural(s)); }
@@ -6185,7 +6153,7 @@
 	
 			// -x to -xes
 			// No other common word ends with "xe(s)" except for "axe"
-			if (s._endsWith("xes") && !s === ("axes"))
+			if (s._endsWith("xes") && s !== "axes")
 				return (cut(s, "es"));
 	
 			// -[nlw]ife to -[nlw]ives
@@ -6316,7 +6284,7 @@
 			
 			if (!source.length && !target.length) return 0;
 
-			var matrix = []; // matrix
+			var i,j,matrix = []; // matrix
 			var cost; // cost
 			var sI; // ith character of s
 			var tJ; // jth character of t
@@ -6332,23 +6300,23 @@
 
 			// Step 2 ----------------------------------------------
 
-			for (var i = 0; i <= sourceLength; i++) {
+			for (i = 0; i <= sourceLength; i++) {
 				matrix[i] = [];
 				matrix[i][0] = i;
 			}
 
-			for (var j = 0; j <= targetLength; j++)   
+			for (j = 0; j <= targetLength; j++)   
 				matrix[0][j] = j;
 
 			// Step 3 ----------------------------------------------
 
-			for (var i = 1; i <= sourceLength; i++)
+			for (i = 1; i <= sourceLength; i++)
 			{
 				sI = source.charAt(i - 1);
 
 				// Step 4 --------------------------------------------
 
-				for (var j = 1; j <= targetLength; j++)
+				for (j = 1; j <= targetLength; j++)
 				{
 					tJ = target.charAt(j - 1);
 
@@ -6429,7 +6397,7 @@
 		
 		truncate : function(word) {
 
-			return (this.offset == 0) ? word : word.substr(0, word.length - this.offset);
+			return (this.offset === 0) ? word : word.substr(0, word.length - this.offset);
 		}
 	}
 	
@@ -6447,13 +6415,12 @@
 	
 	var PUNCTUATION_CLASS = /[`~\"\/'_\-[\]{}()*+!?%&.,\\^$|#@<>|+=;:]/g; // TODO: missing smart-quotes
 	
-	var ONLY_PUNCT = /^[^0-9A-Za-z\s]*$/, RiTextCallbacksDisabled = false;
+	var ONLY_PUNCT = /^[^0-9A-Za-z\s]*$/, RiTextCallbacksDisabled = false,
+	    DEFAULT_PLURAL_RULE = RE("^((\\w+)(-\\w+)*)(\\s((\\w+)(-\\w+)*))*$", 0, "s"),
+	    ALL_PUNCT = /^[-[\]{}()*+!?%&.,\\^$|#@<>|+=;:]+$/g, DeLiM = ':DeLiM:',
+	    SP = ' ', E = '', N = Type.N, S = Type.S, O = Type.O, A = Type.A, 
+        B = Type.B, R = Type.R, F = Type.F, EA = []; 
 	
-	var ALL_PUNCT = /^[-[\]{}()*+!?%&.,\\^$|#@<>|+=;:]+$/g, DeLiM = ':DeLiM:', EA = new Array();
-	
-	var SP = ' ', E = '', N = Type.N, S = Type.S, O = Type.O, A = Type.A, B = Type.B, R = Type.R, F = Type.F;
-	
-	var DEFAULT_PLURAL_RULE = RE("^((\\w+)(-\\w+)*)(\\s((\\w+)(-\\w+)*))*$", 0, "s");
 	
 	var NULL_PLURALS = RE( // these don't change for plural/singular
 		"^(bantu|bengalese|bengali|beninese|boche|bonsai|digitalis|mess|"
@@ -6505,7 +6472,6 @@
 		  RE("(human|german|roman)$", 0, "s")
 	];
 	
-  	var ANY_STEM = "^((\\w+)(-\\w+)*)(\\s((\\w+)(-\\w+)*))*$";
   	var C = "[bcdfghjklmnpqrstvwxyz]", VL = "[lraeiou]";
   	
 	var PLURAL_RULES = [ // TODO: extract all these consts to single file for js/java
@@ -7243,34 +7209,9 @@
 		return keys;
 	}
    
-	function dump(obj) {
-
-		var properties = E;
-		for ( var propertyName in obj) {
-
-			properties += propertyName + ": ";
-
-			// Check if its NOT a function
-			if (!(obj[propertyName] instanceof Function)) {
-				properties += obj.propertyName;
-			} else {
-				properties += "function()";
-			}
-			properties += ", ";
-		}
-		return properties;
-	}
-
-	function undef(obj) {
-		
-		return (typeof obj=='undefined' || obj == null || !obj);
-	}
-
 	function err(msg) {
 		
-		console.log("err(msg) :: "+typeof console.trace);
-		
-		(!RiTa.SILENT) && console && console.trace(this);
+		//(!RiTa.SILENT) && console && console.trace(this);
 		
 		throw Error("[RiTa] " + msg);
 	}
@@ -7319,13 +7260,6 @@
 		}
 	}
 
-    // TODO: remove
-	function replaceAll(theText, replace, withThis) {
-		
-		return theText && is(replace, S) ?  
-			theText.replace(new RegExp(replace, 'g'), withThis) : theText;
-	}
-
 	function endsWith(str, ending) { 
 		
 		if (!is(str,S)) return false;
@@ -7338,10 +7272,6 @@
 		if (!is(str,S)) return false;
 		return new RegExp('^'+starting).test(str);
 		//return text.slice(0, substr.length) == substr;
-	}
-	
-	function err(msg) {
-		throw Error("[RiTa] "+msg);
 	}
 	
 	function equalsIgnoreCase(str1, str2) {
@@ -7367,13 +7297,6 @@
 		};
 	}
 	
-	function addSpaces(str, num) {
-		
-		for ( var i = 0; i < num; i++)
-			str += " ";
-		return str;
-	}
-
 	// Arrays ////////////////////////////////////////////////////////////////////////
 	
 	function shuffle(oldArray) {
@@ -7397,28 +7320,6 @@
 		return (typeof module != 'undefined' && module.exports);
 	}
 	
-	// Array Remove - from John Resig (MIT Licensed)
-	function remove(array, from, to) { // we have this elsewhere on array proto
-		
-	  // remove? only used once
-	  var rest = array.slice((to || from) + 1 || array.length);
-	  array.length = from < 0 ? array.length + from : from;
-	  return array.push.apply(array, rest);
-	}
- 	/*
-	function insert(array, item, idx) {
-		
-	  array.slice(idx,0,item);
-	  return array;
-	}
-	
-	function removeFromArray(items, element) {
-		
-		while (items.indexOf(element) !== -1) {
-			items.splice(items.indexOf(element), 1);
-		}
-	}*/
-	
 	function inArray(array, val) {
 		if (!array) return false;
 		return array.indexOf(val)>-1;
@@ -7427,46 +7328,19 @@
 	// ///////////////////////////// End Functions ////////////////////////////////////
  	
  	var hasProcessing = (typeof Processing !== 'undefined');
- 	
-	/*var context2d, hasProcessing = (typeof Processing !== 'undefined');
-	//log('hasProcessing='+hasProcessing);
-	
-	// Processing Renderer
-	if (hasProcessing) {
 
-		Processing.registerLibrary("RiTa", {
-			
-			attach : function(p5) {
-				//p = p5;
-				//log("Processing.registerLibrary.attach");log(p.externals);log(p.externals['canvas']);
-				var context2d = p5.externals['canvas'].getContext("2d");
-				RiText.renderer = new RiText_P5(p5, context2d);
-			}
-			//p : null, 
-			//init : function(obj) {},
-			//detach : function(p5) {},
-			//exports : [] // export global function names?
-		})
-	}
-	else if (isNode()) {
-		RiText.renderer = RiText_Node(RiText.defaults.metrics);
-	}
-	else {
-		warn('Unknown Env: not Processing(JS), Node, or Android; renderer is null');
-		RiText.renderer = RiText_Node(RiText.defaults.metrics);
-	}*/
-	
-	if (!RiTa.SILENT)
-		console && console.log('[INFO] RiTaJS.version ['+RiTa.VERSION+']');
+	if (!RiTa.SILENT && console)
+		console.log('[INFO] RiTaJS.version ['+RiTa.VERSION+']');
 	
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// Core RiTa objects (in global namespace)
 	/////////////////////////////////////////////////////////////////////////////////////////
 
+    /*jshint -W069 */
+
 	if (window) { // for browser
 		
 		window['RiTa'] = RiTa;
-		//window['RiText'] = RiText;
 		window['RiString'] = RiString;
 		window['RiLexicon'] = RiLexicon;
 		window['RiGrammar'] = RiGrammar;
@@ -7478,15 +7352,15 @@
 	if (typeof module != 'undefined' && module.exports) { // for node
 
 		module.exports['RiTa'] = RiTa;		
-		//module.exports['RiText'] = RiText;
 		module.exports['RiString'] = RiString;
 		module.exports['RiLexicon'] = RiLexicon;
 		module.exports['RiGrammar'] = RiGrammar;
 		module.exports['RiMarkov'] = RiMarkov;
 		module.exports['RiTaEvent'] = RiTaEvent;
 		module.exports['RiWordNet'] = RiWordNet;
-		//module.exports['MinEditDist'] = MinEditDist;
 	}
+
+    /*jshint +W069 */
 
 	RiTa.p5Compatible(false);
 
