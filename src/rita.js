@@ -2575,7 +2575,8 @@
 				text = String.fromCharCode(text);
 			}
 			
-			ok(text,S);
+			text = text || '';
+			
 			this._text = text;
 			this._features = undefined;
 		},
@@ -7354,7 +7355,8 @@
 	
 	if (typeof module != 'undefined' && module.exports) { // for node
 
-		module.exports['RiTa'] = RiTa;		
+		module.exports['RiTa'] = RiTa;	
+		module.exports['RiText'] = RiText;		
 		module.exports['RiString'] = RiString;
 		module.exports['RiLexicon'] = RiLexicon;
 		module.exports['RiGrammar'] = RiGrammar;
