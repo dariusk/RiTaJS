@@ -2801,20 +2801,12 @@
 			return this._text.slice(begin, end) || E;  
 		},
 
-		replaceAll : function(pattern, replacement) {
-			
-			if (pattern && (replacement || replacement==='')) {
-
-				this._text = this._text.replace(new RegExp(pattern,'g'), replacement);
-			}
-			return this;   
-		},
-
 		insertChar : function(idx, toInsert) {
 			
 			var s = this.text();
 			
 			if (idx > s.length || idx < -s.length) {
+				
 				warn("RiString.insertChar: bad index="+idx);
 				return this;
 			}
@@ -2841,7 +2833,7 @@
 			this.text(this._text.substring(0, idx).concat(this._text.substring(idx + 1)));
 			return this;   
 		},
-
+		
 		replaceChar : function(idx, replaceWith) {
 			
 			var s = this.text();
@@ -2862,43 +2854,46 @@
 		},
 
 		replaceFirst : function(regex, replaceWith) {
+
+			// strip out global if we have it
+			if (regex && !is(regex, S) && regex.global) {
+
+				var flags = ''; 
+				regex.ignoreCase && (flags += 'i');
+				regex.multiline && (flags += 'm');
+				regex.sticky && (flags += 'y');
+				regex = new RegExp(regex.source, flags)
+			} 
 			
 			this._text = this._text.replace(regex, replaceWith);
 			return this;  
 		},
 
-		replaceLast : function(regex, replaceWith) {
+		replaceAll : function(pattern, replacement) {
 			
-			//TODO: this fails for '?', other regex chars? Make TEST
-			
-			if (!regex) return this;
-			
-			var ret = this._text;
+			var flags = 'g'; 
+						
+			if (pattern && (replacement || replacement==='')) {
 
-			if (is(regex, S)) {
-
-				var len = regex.length, idx = ret.lastIndexOf(regex);
-				if (idx >= 0) {
+				if (!is(pattern, S) && pattern.source) {
+									
+					pattern.ignoreCase && (flags += 'i');
+					pattern.multiline && (flags += 'm');
+					pattern.sticky && (flags += 'y');
 					
-					this._text = ret.substring(0, idx) + replaceWith + ret.substring(idx + len);
-				}	
-			} 
-			else {
-
-				var matches = ret.match(regex);
-				if (matches) {
-
-					var target = matches.pop(), tmp = this._text.split(target), last = tmp.pop();
-					tmp[tmp.length - 1] += replaceWith + last;
-					ret = tmp.join(target);
+				 	pattern = pattern.source;
 				}
-
-				this._text = ret;
+				else {
+					
+					pattern = escapeRegExp(pattern);
+				}
+				console.log("RE: /"+pattern+"/"+flags);
+				
+				this._text = this._text.replace(new RegExp(pattern, flags), replacement);
 			}
-
-			return this;
+			return this;   
 		},
-
+		
 		removeWord : function(wordIdx) {
 			
 			return this.replaceWord(wordIdx, E);
@@ -3883,149 +3878,7 @@
 	}
 	
 	////////////////////////// PRIVATE CLASSES ///////////////////////////////
-
-	// ///////////////////////////////////////////////////////////////////////
-	// RiText_Node Renderer (for headless operation, eg. in Node.js)
-	// ///////////////////////////////////////////////////////////////////////
-
-	/* var RiText_Node = makeClass();
-
-	RiText_Node.prototype = {  // TODO: get rid of all no-op methods...
-
-		init : function(metrics) {
-			
-			this.font = metrics;
-		},
-		
-		_size : function() {
-			
-			return this.font.size;
-		},
-		
-		_getGraphics : function() {
-			
-			warn("NodeRenderer._getGraphics() returning null graphics context!");
-			return null;
-		},
-		
-		_pushState : function() {
-			// no-op
-			return this;
-		},
-		
-		_popState : function() {
-			// no-op
-			return this;
-		},
-
-		_textAlign : function(align) {
-			// no-op
-			return this;
-		},
-		
-		_scale : function(sx, sy) {
-			//warn("scale("+sx+","+sy+") not yet implemented");
-		},
-		
-		_translate : function(tx, ty) {
-			//warn("translate("+tx+","+ty+") not yet implemented");
-		},
-		
-		_rotate : function(zRot) {
-			//warn("rotate() not yet implemented");
-		},
-		
-		_text : function(str, x, y) {
-			// no-op
-		},
-		
-		_fill : function(r,g,b,a) {
-			// no-op			
-		},
-		
-		_stroke : function(r,g,b,a) {
-			// no-op			
-		},
-		
-		_noFill : function() {
-			// no-op
-		},
-		
-		_strokeWeight : function() {
-			// no-op
-		},
-		
-		_background : function(r,g,b,a) {
-			// no-op			
-		},
-
-		// actual creation: only called from RiText.createDefaultFont();!
-		_createFont : function(fontName, fontSize) {
-
-			return this.font;
-		},
-
-		_rect : function(x,y,w,h) {
-			// no-op
-		},
-		
-		_textFont : function(fontObj) {
-			// TODO: apply one of the (cached?) fonts?
-			this.font = fontObj;
-		},
-		
-		_textWidth : function(fontObj, str) {
-		
-			var w = 0;
-			var def = this.font.widths["i"];
-			if (str && str.length) {
-				for (var i = 0; i < str.length; i++)  {
-					var c = str.charAt(i);
-					if (c == '\n' || c == '\r') continue;
-					var k = this.font.widths[c];
-					if (!k) {
-					  warn("No glyph for \""+c+"\"in word: "+str);
-					  k = def;
-					}
-					w += k;
-				}
-			}
-			return w;
-		},
-		
-		_textHeight : function(rt) {
-			
-			return this._textAscent() + this._textDescent();
-		},
-		
-		_textAscent : function(rt,ignoreContext) {
-			
-			return this.font.ascent;
-		},
-		
-		_textDescent : function(rt) {
-			
-			return this.font.descent;
-		},
-
-		// TODO: what about scale/rotate?
-		_getBoundingBox : function(rt) {
-			
-			// bc of no translate(), we use the actual x,y
-			return { x: rt.x, y: rt.y-this._textAscent()-1, 
-				width: this._textWidth(), height: this._textHeight()+1 };
-		},
-		
-		_type : function() {
-			
-			return "Node";
-		},
-			
-		toString : function() {
-			
-			return "RiText_"+this._type();
-		}
-	}*/
+	
 
 	// ////////////////////////////////////////////////////////////
 	// Timer
@@ -4388,7 +4241,6 @@
 			this.number = RiTa.SINGULAR;
 			this.form = RiTa.NORMAL;
 			this.head = E;
-
 		},
 
 		// Conjugates the verb based on the current state of the conjugator.
@@ -4439,6 +4291,7 @@
 			}
 
 			if (actualModal) {
+				
 				// log("push: "+frontVG);
 				conjs.push(frontVG);
 				frontVG = null;
@@ -4453,12 +4306,10 @@
 
 					// !@# not yet implemented! ??? WHAT?
 					conjs.push(pp);
-					
 				}
 				else if (this.interrogative && verb != "be" && conjs.length < 1) {
 
 					conjs.push(frontVG);
-					
 				}
 				else {
 
@@ -4699,7 +4550,6 @@
 					+ this.getNumber() + "\n" + "  Person = " + this.getPerson() + "\n"
 					+ "  Tense = " + this.getTense() + "\n" + "  ---------------------\n";
 		}
-
 	}
 
 	// ////////////////////////////////////////////////////////////
@@ -4828,7 +4678,6 @@
 			// Adjust pos according to transformation rules
 			return this._applyContext(words, result, choices2d);	
 		},
-
 		
 		// Applies a customized subset of the Brill transformations
 		_applyContext : function(words, result, choices) {
@@ -4935,7 +4784,6 @@
 		 
 			return result;
 		}
-
 	}// end PosTagger
 
 	var Stemmer = {};
@@ -6373,7 +6221,7 @@
 	//////// RE 
 	////////////////////////////////////////////////////////////////
 
-	var RE = makeClass();
+	var RE = makeClass();  // TODO: replace with JS RegEx
 
 	RE.prototype = {
 		
@@ -6404,11 +6252,7 @@
 			return (this.offset === 0) ? word : word.substr(0, word.length - this.offset);
 		}
 	}
-	
-	
-	
 
-	
 	////////////////////////////////// End Classes ///////////////////////////////////
 
 	// TODO: clean this mess up... wrap in Constants, and EnglishConstants?
@@ -7304,6 +7148,7 @@
 	// Arrays ////////////////////////////////////////////////////////////////////////
 	
 	function shuffle(oldArray) {
+		
 		var newArray = oldArray.slice();
 		var len = newArray.length;
 		var i = len;
@@ -7316,18 +7161,23 @@
 		return newArray; 
 	}
 			
-	/*
-	 * Returns true if NodeJS is the current environment
-	 */
+	// Returns true if NodeJS is the current environment
 	function isNode() {
 		
 		return (typeof module != 'undefined' && module.exports);
 	}
 	
 	function inArray(array, val) {
+		
 		if (!array) return false;
 		return array.indexOf(val)>-1;
 	}
+	
+	function escapeRegExp(string) {
+		
+		return string.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+	}
+
 
 	// ///////////////////////////// End Functions ////////////////////////////////////
  	
@@ -7352,8 +7202,7 @@
 		window['RiTaEvent'] = RiTaEvent;
 		window['RiWordNet'] = RiWordNet;
 	}
-	
-	if (typeof module != 'undefined' && module.exports) { // for node
+	else if (typeof module != 'undefined' && module.exports) { // for node
 
 		module.exports['RiTa'] = RiTa;	
 		module.exports['RiText'] = RiText;		
