@@ -2887,7 +2887,8 @@
 					
 					pattern = escapeRegExp(pattern);
 				}
-				console.log("RE: /"+pattern+"/"+flags);
+				
+				//console.log("RE: /"+pattern+"/"+flags);
 				
 				this._text = this._text.replace(new RegExp(pattern, flags), replacement);
 			}
