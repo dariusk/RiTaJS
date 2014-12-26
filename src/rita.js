@@ -7224,6 +7224,7 @@
 	}
 
     /*jshint +W069 */
+    // test from Cyrus
 
 	RiTa.p5Compatible(false);
 
