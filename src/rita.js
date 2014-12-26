@@ -36,7 +36,7 @@
 	},  is = Type.is, ok = Type.ok; // alias
 
 	var RiText = {}; 
-	RiText._graphics = function() { return null; }
+	//RiText._graphics = function() { return null; }
 		
 	// ////////////////////////////////////////////////////////////
 	// RiTa object (singleton)
@@ -184,7 +184,7 @@
 		
 		// TODO: test (with and w'out callback)
 		timer : function(period, callback) {
-			 
+
 			var a = arguments, id, timer;
 			
 			// if 1st arg is an object (e.g., 'this'), ignore it...
@@ -196,6 +196,7 @@
 				
 			callback = a.length > 1 ? a[1] : null;
 				
+			// TODO: need to pass Id to RiTaEvent here (to match Java-API[or change Java**])
 			timer = new Timer(
 				function() {       					
 					RiTaEvent(RiTa, 'tick')._fire(callback);  
@@ -1655,34 +1656,36 @@
 		},
 		
 		_fire : function(callback) {
-			
+				
 			callback = callback || window.onRiTaEvent;
 			
-			// check if callback is inside the Processing sketch
+			// check if callback is inside a Processing sketch
 			if (!callback) {
+				
 				var g = RiText._graphics();
 				if (g && g.onRiTaEvent)
 					callback = g.onRiTaEvent;
 			} 
  
-			if (callback && is(callback,F)) {
+ 			if (callback && is(callback,F)) {
 
 				try {
-					callback(this); // first arg should be ??
-					return this;
 					
-				} catch(err) {
+					callback(this); // first arg ??
+					return this;
+				} 
+				catch(err) {
 
 					RiTaEvent._callbacksDisabled = true; 
-					warn("RiTaEvent: error calling '"+callback+"': " + err);
+					msg = "RiTaEvent: error calling '"+callback+"': " + err;
+					is(callback,S) && (msg += "**callback must be a function in JS");
+					warn(msg);
 					throw err;
 				}
 			}
 			 
 			RiTaEvent._callbacksDisabled = true; 
-
-			//else if (!RiTaEvent._callbacksDisabled) warn("RiTaEvent: no '"+callback+"' callback found...");
-				
+	
 			return this;
 		}
 	}
@@ -3956,27 +3959,32 @@
 		};
 		
 		this.id = function() {
-			return this.timeoutObject;
+			
+			return this.timeoutId;
 		};
 			
 		this.clearTimer = function() { // private
 			
-			this.timerImpl.clearTimeout(this.timeoutObject);
+			this.timerImpl.clearTimeout(this.timeoutId);
 		};
 		
 		this.setTimer = function(time) {
 			
 			var timer = this;
-			if (typeof this.action != 'function') return;
+
+			if (typeof this.action != 'function') 
+				return;
+				
 			if (isNaN(time)) time = this.intervalTime;
 			this.remaining = time;
 			this.last = new Date();
 			this.clearTimer();
-			this.timeoutObject = this.timerImpl.setTimeout
+			this.timeoutId = this.timerImpl.setTimeout
 				(function() { timer.go(); }, time);
 		};
 		
 		this.go = function() {
+			
 			if (this.isActive) {
 				this.action();
 				this.setTimer();
