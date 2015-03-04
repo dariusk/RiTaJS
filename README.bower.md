@@ -42,7 +42,7 @@ Now, create a file on your desktop called hello.html, add the following lines, s
   &lt;/script&gt;
   &lt;div id="content" width=200 height=200&gt;&lt;/div&gt;
   &lt;html&gt;
-</pre>  
+</pre>
 
 
 
@@ -55,13 +55,13 @@ Please! We are looking for more coders to help out... Just press *Fork* at the t
 --------
 1. Download and install <a href="https://npmjs.org/">npm</a>. The easiest way to do this is to just install <a href="http://nodejs.org/">node</a>. 
 2. <a href="https://help.github.com/articles/fork-a-repo">Fork and clone</a> this library. 
-  
+
   a. First, login to github and fork the project
-  
+
   b. Then, from a terminal/shell: 
   <pre><code>$ git clone https://github.com/dhowe/RiTaJS.git</code></pre>
 3. Now navigate into the project folder and install dependencies via npm. <pre>$ cd RiTaJS; npm install</pre>
 4. To create the library from src, use gulp.<pre>$ gulp build</pre>
 5. Run non-graphical tests in node with gulp.<pre>$ gulp test.node</pre>
-6. Run all tests (in phantomJS) with gulp.<pre>$ gulp test</pre>   
+6. Run all tests (in phantomJS) with gulp.<pre>$ gulp test</pre>
 7. Work on an existing <a href="https://github.com/dhowe/RiTaJS/issues?state=open">issue</a>, then <a href="https://help.github.com/articles/creating-a-pull-request">submit a pull request...</a>

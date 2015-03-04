@@ -47,7 +47,7 @@ Create a new file on your desktop called hello.html, add the following lines, sa
 
   &lt;/script&gt;
   &lt;html&gt;
-</pre>  
+</pre>
 
 
 #### With ProcessingJS
@@ -69,7 +69,7 @@ If you want to use RiTa with <a href="http://processingjs.org/">ProcessingJS</a>
   &lt;/script&gt;
   &lt;canvas id="mycanvas"&gt;&lt;/canvas&gt;
   &lt;html&gt;
-</pre>  
+</pre>
 
 
 #### With NodeJS
@@ -81,7 +81,7 @@ If you want to use RiTa with <a href="http://processingjs.org/">ProcessingJS</a>
  rita = require('rita');
  rs = rita.RiString("The white elephant smiled.");
  console.log(rs.features());
-</pre>  
+</pre>
 
 
 #### Can I contribute?
@@ -93,13 +93,13 @@ Please! We are looking for more coders to help out... Just press *Fork* at the t
 --------
 1. Download and install <a href="https://npmjs.org/">npm</a>. The easiest way to do this is to just install <a href="http://nodejs.org/">node</a>.
 2. <a href="https://help.github.com/articles/fork-a-repo">Fork and clone</a> this library. 
-  
+
   a. First, login to github and fork the project
-  
+
   b. Then, from a terminal/shell (substitute your github name for $YOUR_GITHUB_LOGIN): 
   <pre><code>$ git clone https://github.com/$YOUR_GITHUB_LOGIN/RiTaJS.git</code></pre>
 3. Now navigate into the project folder and install dependencies via npm. <pre>$ cd RiTaJS; npm install</pre>
 4. To create the library from src, use gulp.<pre>$ gulp build</pre>
 5. To run non-graphical tests in node, use gulp.<pre>$ gulp test.node</pre>
-6. To run all tests (in phantomJS), use gulp.<pre>$ gulp test</pre>   
+6. To run all tests (in phantomJS), use gulp.<pre>$ gulp test</pre>
 7. Work on an existing <a href="https://github.com/dhowe/RiTaJS/issues?state=open">issue</a>, then <a href="https://help.github.com/articles/creating-a-pull-request">submit a pull request...</a>
